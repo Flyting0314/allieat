@@ -5,7 +5,7 @@
 <hibernate-configuration>
 	<session-factory>
 		<property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/hibernatesample?serverTimezone=Asia/Taipei</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/allieatfinal_db01?serverTimezone=Asia/Taipei</property>
 		<property name="hibernate.connection.username">root</property>
 		<property name="hibernate.connection.password">123456</property>
 
@@ -16,6 +16,12 @@
 		<property name="hibernate.hbm2ddl.auto">validate</property>
 		
 		<property name="hibernate.current_session_context_class">thread</property>
+		
+		<!-- For OrderFood&OrderDetails -->
+		<mapping class="com.entity.OrderFoodVO"/>
+		<mapping class="com.entity.OrderDetailVO"/>
+		<mapping class="com.entity.MemberVO"/>
+		<mapping class="com.entity.StoreVO"/>
 		
 		
 	</session-factory>
