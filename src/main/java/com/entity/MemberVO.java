@@ -2,19 +2,37 @@ package com.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 @Entity
 @Table(name = "member")
 public class MemberVO implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "memberId ", updatable = false)
     private Integer memberId;
-    private Integer organizationId;
+	
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	@OrderBy("memberId asc")
+	private Set<PayDetailVO> payDetail;
+	
+	@ManyToOne
+    @JoinColumn(name = "organizationId")  
+	@JsonIgnore// Jackson的忽略標籤，應用於SpringBoot環境。
+    private OrganizationVO organization;
     private String name;
     private String idNum;
     private String permAddr;
@@ -28,6 +46,7 @@ public class MemberVO implements Serializable {
     private Integer pointsBalance;
     private Integer unclaimedMealCount;
     private Integer accStat;
+    @Column(name = "reviewed", columnDefinition = "TINYINT(1)")
     private Boolean reviewed; 
 
  
@@ -38,14 +57,15 @@ public class MemberVO implements Serializable {
         this.memberId = memberId;
     }
 
-    public Integer getOrganizationId() {
-        return organizationId;
-    }
-    public void setOrganizationId(Integer organizationId) {
-        this.organizationId = organizationId;
-    }
 
-    public String getName() {
+
+    public OrganizationVO getOrganization() {
+		return organization;
+	}
+	public void setOrganization(OrganizationVO organization) {
+		organization = organization;
+	}
+	public String getName() {
         return name;
     }
     public void setName(String name) {
@@ -142,4 +162,31 @@ public class MemberVO implements Serializable {
     public void setReviewed(Boolean reviewed) {
         this.reviewed = reviewed;
     }
+	public Set<PayDetailVO> getPayDetail() {
+		return payDetail;
+	}
+	public void setPayDetail(Set<PayDetailVO> payDetail) {
+		this.payDetail = payDetail;
+	}
+	@Override
+	public String toString() {
+		return "memberId=" + memberId +"\n" 
+				+ "payDetail=" + payDetail.hashCode() +"\n" //避免遞迴，使用hashcode替代
+				+ "organizationId=" + organization.getOrganizationId()+"\n" 
+				+ "name=" + name +"\n" 
+				+ "idNum=" + idNum +"\n" 
+				+ "permAddr=" + permAddr+"\n" 
+				+ "address=" + address+"\n" 
+				+ "regTime=" + regTime +"\n" 
+				+ "kycImage=" + kycImage +"\n" 
+				+ "email=" + email +"\n" 
+				+ "phone=" + phone+"\n" 
+				+ "account=" + account +"\n" 
+				+ "password=" + password +"\n" 
+				+ "pointsBalance=" + pointsBalance+"\n" 
+				+ "unclaimedMealCount=" + unclaimedMealCount +"\n" 
+				+ "accStat=" + accStat +"\n" 
+				+ "reviewed=" + reviewed;
+	}
+    
 }

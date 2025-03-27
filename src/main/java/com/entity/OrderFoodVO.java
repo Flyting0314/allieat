@@ -1,6 +1,8 @@
 package com.entity;
 
 import java.sql.Timestamp;
+
+
 import jakarta.persistence.*;
 
 @Entity
@@ -13,21 +15,21 @@ public class OrderFoodVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "orderId", updatable = false)
     private Integer orderId;
-//	
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "storeId",referencedColumnName = "storeId")  // 外鍵
-    private StoreVO storeVO;
+    private StoreVO store;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId",referencedColumnName = "memberId")  // 外鍵
-    private MemberVO memberVO;
-	@Column(name = "rate")
+    private MemberVO member;
+	@Column(name = "rate", columnDefinition = "TINYINT(1)")
     private Boolean  rate;
 	@Column(name = "comment")
     private String comment;
-	@Column(name = "serveStat")
+	@Column(name = "serveStat",columnDefinition = "TINYINT(1)")
     private Boolean  serveStat;
-	@Column(name = "pickStat")
+	 @Column(name = "pickStat", columnDefinition = "TINYINT(1)")
     private Boolean pickStat;
 	@Column(name = "pickTime")
     private Timestamp pickTime;
@@ -49,21 +51,27 @@ public class OrderFoodVO {
 		this.orderId = orderId;
 	}
 
-	public StoreVO getStoreVO() {
-		return storeVO;
+
+
+	public StoreVO getStore() {
+		return store;
 	}
 
-	public void setStoreVO(StoreVO storeVO) {
-		this.storeVO = storeVO;
+
+	public void setStore(StoreVO store) {
+		this.store = store;
 	}
 
-	public MemberVO getMemberVO() {
-		return memberVO;
+
+	public MemberVO getMember() {
+		return member;
 	}
 
-	public void setMemberVO(MemberVO memberVO) {
-		this.memberVO = memberVO;
+
+	public void setMember(MemberVO member) {
+		this.member = member;
 	}
+
 
 	public Boolean getRate() {
 		return rate;
@@ -117,8 +125,8 @@ public class OrderFoodVO {
 	@Override
 	public String toString() {
 		return "orderId=" + orderId +"\n"
-				+ ", storeId=" + storeVO +"\n"
-				+ ", memberId=" + memberVO+"\n"
+				+ ", storeId=" + store.getStoreId() +"\n"
+				+ ", memberId=" + member.getMemberId()+"\n"
 				+ ", rate=" + rate +"\n"
 				+ ", comment=" + comment +"\n"
 				+ ", serveStat="+ serveStat +"\n"

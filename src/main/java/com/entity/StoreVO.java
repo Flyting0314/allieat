@@ -2,11 +2,17 @@ package com.entity;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Set;
 
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 
 import java.io.*;
@@ -16,7 +22,25 @@ public class StoreVO implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "storeId", updatable = false)
 	private Integer storeId;
+	
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+	@OrderBy("storeId asc")
+	private Set<PhotoVO> storeToPhoto;
+	
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+	@OrderBy("storeId asc")
+	private Set<FoodTypeVO> storeToFoodType;
+
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+	@OrderBy("storeId asc")
+	private Set<FoodVO> storeToFood;
+	
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+	@OrderBy("storeId asc")
+	private Set<FoodVO> storeToOrderFood;
+	
 	private String name;
 	private String managerName;
 	private String email;
@@ -26,18 +50,21 @@ public class StoreVO implements Serializable{
 	private String businessRegNum;
 	private Timestamp regTime;
 	private Integer points;
+	@Column(name = "accStat",columnDefinition = "TINYINT(1)")
 	private Boolean accStat;
+	@Column(name = "opStat",columnDefinition = "TINYINT(1)")
 	private Boolean opStat;
-	private Timestamp opTime;
-	private Timestamp  pickTime;
-	private Timestamp lastOrder;
-	private Timestamp closeTime; 
+	private String opTime;
+	private String  pickTime;
+	private String lastOrder;
+	private String closeTime; 
 	private String address;
 	private String county;
 	private String district;
 	private Integer postalCode;
 	private Integer starNum;
 	private Integer visitorsNum;
+	@Column(name = "reviewed",columnDefinition = "TINYINT(1)")
 	private Boolean reviewed; 
 	
 	public Boolean getReviewed() {
@@ -121,28 +148,30 @@ public class StoreVO implements Serializable{
 	public void setOpStat(Boolean opStat) {
 		this.opStat = opStat;
 	}
-	public Timestamp getOpTime() {
+
+	public String getOpTime() {
 		return opTime;
 	}
-	public void setOpTime(Timestamp opTime) {
+	public void setOpTime(String opTime) {
 		this.opTime = opTime;
 	}
-	public Timestamp getPickTime() {
+	
+	public String getPickTime() {
 		return pickTime;
 	}
-	public void setPickTime(Timestamp pickTime) {
+	public void setPickTime(String pickTime) {
 		this.pickTime = pickTime;
 	}
-	public Timestamp getLastOrder() {
+	public String getLastOrder() {
 		return lastOrder;
 	}
-	public void setLastOrder(Timestamp lastOrder) {
+	public void setLastOrder(String lastOrder) {
 		this.lastOrder = lastOrder;
 	}
-	public Timestamp getCloseTime() {
+	public String getCloseTime() {
 		return closeTime;
 	}
-	public void setCloseTime(Timestamp closeTime) {
+	public void setCloseTime(String closeTime) {
 		this.closeTime = closeTime;
 	}
 	public String getAddress() {
@@ -180,6 +209,32 @@ public class StoreVO implements Serializable{
 	}
 	public void setVisitorsNum(Integer visitorsNum) {
 		this.visitorsNum = visitorsNum;
+	}
+	@Override
+	public String toString() {
+		return "storeId=" + storeId +"\n"
+				+ "name=" + name  +"\n"
+				+ "managerName=" + managerName  +"\n"
+				+ "email=" + email +"\n"
+				+ "password=" + password  +"\n"
+				+ "phoneNum=" + phoneNum  +"\n"
+				+ "guiNum=" + guiNum  +"\n"
+				+ "businessRegNum="+ businessRegNum  +"\n"
+				+ "regTime=" + regTime  +"\n"
+				+ "points=" + points  +"\n"
+				+ "accStat=" + accStat  +"\n"
+				+ "opStat="+ opStat  +"\n"
+				+ "opTime=" + opTime  +"\n"
+				+ "pickTime=" + pickTime  +"\n"
+				+ "lastOrder=" + lastOrder  +"\n"
+				+ "closeTime="+ closeTime  +"\n"
+				+ "address=" + address  +"\n"
+				+ "county=" + county  +"\n"
+				+ "district=" + district  +"\n"
+				+ "postalCode="+ postalCode  +"\n"
+				+ "starNum=" + starNum  +"\n"
+				+ "visitorsNum=" + visitorsNum +"\n"
+				+ "reviewed=" + reviewed;
 	}
 	
 	
