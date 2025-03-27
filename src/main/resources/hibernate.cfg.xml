@@ -17,12 +17,27 @@
 		
 		<property name="hibernate.current_session_context_class">thread</property>
 		
-		<!-- For OrderFood&OrderDetails -->
+		
+		
+		
+		
+		
+		
 		<mapping class="com.entity.OrderFoodVO"/>
 		<mapping class="com.entity.OrderDetailVO"/>
+		<mapping class="com.entity.AdminVO"/>
+		<mapping class="com.entity.RankVO"/>
+		<mapping class="com.entity.TotalAmountVO"/>
+		<mapping class="com.entity.DonaVO"/>
+		<mapping class="com.entity.DonationVO"/>
+		<mapping class="com.entity.PayRecordVO"/>
+		<mapping class="com.entity.PayDetailVO"/>
 		<mapping class="com.entity.MemberVO"/>
+		<mapping class="com.entity.OrganizationVO"/>
+		<mapping class="com.entity.FoodTypeVO"/>
 		<mapping class="com.entity.StoreVO"/>
-		
-		
+		<mapping class="com.entity.PhotoVO"/>
+		<mapping class="com.entity.AttachedVO"/>
+		<mapping class="com.entity.FoodVO"/>
 	</session-factory>
 </hibernate-configuration>

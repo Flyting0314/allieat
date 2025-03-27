@@ -14,6 +14,14 @@ public class OrderDetailVO {
 
 	@EmbeddedId 
 	private OrderDetailId id;
+	
+	
+    @Column(name = "orderId",insertable = false, updatable = false)
+    private Integer orderId; 
+    
+    @Column(name = "foodId", insertable = false, updatable = false)
+    private Integer foodId;  
+	
 
 	@Column(name = "createdTime")
 	private Timestamp createdTime ;
