@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>後台登入</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">後台登入</div>
+        <div class="mt-3">
+            <label class="form-label">帳號</label>
+            <input type="text" id="username" class="form-control" placeholder="請輸入帳號">
+        </div>
+        <div class="mt-3">
+            <label class="form-label">密碼</label>
+            <input type="password" id="password" class="form-control" placeholder="請輸入密碼">
+        </div>
+        <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" id="rememberMe">
+            <label class="form-check-label" for="rememberMe"> 記住我 </label>
+        </div>
+        <button class="btn btn-primary w-100 mt-3" onclick="login()">登入</button>
+        <p class="error-msg text-danger mt-2" id="error-msg"></p>
+    </div>
+</div>
+
+<script src="js/backstage_login_js.js"></script>
+
+</body>
+</html>

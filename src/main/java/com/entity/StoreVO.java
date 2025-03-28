@@ -248,4 +248,7 @@ public class StoreVO implements Serializable{
 				+ "mapApi=" + mapApi ;
 	}
 	
+	
+	
+
 }
