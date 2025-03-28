@@ -1,0 +1,155 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+.header-container {
+    background: linear-gradient(135deg, #3a6186, #89253e);
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.side-bar {
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px;
+    height: 100vh;
+    font-size: 18px;
+    border-radius: 8px;
+}
+.side-bar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 15px 0;
+    padding: 8px;
+    transition: background 0.3s;
+}
+.side-bar a:hover {
+    background-color: #34495e;
+}
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.card-body {
+    border-radius: 8px;
+}
+.table {
+    background-color: white;
+    margin-top: 15px;
+    border-collapse: collapse;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.table th {
+    background: linear-gradient(to right, #3a6186, #89253e);
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+}
+.table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #eaeaea;
+}
+.pagination .page-link {
+    color: #007bff;
+}
+.pagination .page-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 2px;
+    font-weight: bold;
+}
+.btn-primary {
+    background-color: #3498db;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 20px;
+}
+.login-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.login-header {
+    background: linear-gradient(135deg, #3a6186, #89253e);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    border-radius: 8px 8px 0 0;
+    font-size: 20px;
+}
+.btn-primary {
+    background-color: #3498db;
+    border: none;
+}
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+.error-msg {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+}
+
+
+/* for backstage_unit_management */
+.side-bar {
+    /* background-color: #f8f9fa; */
+    padding: 20px;
+    height: 100vh;
+    color: white !important; /* 確保整個 side-bar 內的所有文字為白色 */
+}
+
+
+
+/* 確保 a 連結是白色 */
+.side-bar a {
+    display: block;
+    margin: 10px 0;
+    color: white !important;
+    text-decoration: none;
+}
+
+/* 確保 hover 時仍然是白色 */
+.side-bar a:hover {
+    text-decoration: underline;
+    color: white !important;
+}
+
+.table .thead-light th {
+    color: white;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+.side-bar h4 {
+    font-weight: bold;
+    background-color: #34495e;
+    border-left: 4px solid #f1c40f; /* 左側黃色線條，和 active 一樣 */
+    padding: 8px 12px;
+    margin-bottom: 30px;
+    border-radius: 4px;
+}
+
