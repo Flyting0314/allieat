@@ -1,6 +1,6 @@
 package com.entity;
 
-import java.sql.Date;
+
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -26,19 +26,19 @@ public class StoreVO implements Serializable{
 	private Integer storeId;
 	
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-	@OrderBy("storeId asc")
+	@OrderBy("store asc")
 	private Set<PhotoVO> storeToPhoto;
 	
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-	@OrderBy("storeId asc")
+	@OrderBy("store asc")
 	private Set<FoodTypeVO> storeToFoodType;
 
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-	@OrderBy("storeId asc")
+	@OrderBy("store asc")
 	private Set<FoodVO> storeToFood;
 	
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-	@OrderBy("storeId asc")
+	@OrderBy("store asc")
 	private Set<FoodVO> storeToOrderFood;
 	
 	private String name;
@@ -65,8 +65,9 @@ public class StoreVO implements Serializable{
 	private Integer starNum;
 	private Integer visitorsNum;
 	@Column(name = "reviewed",columnDefinition = "TINYINT(1)")
-	private Boolean reviewed; 
-	
+	private Boolean reviewed;
+	private String mapApi;
+
 	public Boolean getReviewed() {
 		return reviewed;
 	}
@@ -210,6 +211,15 @@ public class StoreVO implements Serializable{
 	public void setVisitorsNum(Integer visitorsNum) {
 		this.visitorsNum = visitorsNum;
 	}
+
+	public String getMapApi() {
+		return mapApi;
+	}
+
+	public void setMapApi(String mapApi) {
+		this.mapApi = mapApi;
+	}
+
 	@Override
 	public String toString() {
 		return "storeId=" + storeId +"\n"
@@ -234,10 +244,8 @@ public class StoreVO implements Serializable{
 				+ "postalCode="+ postalCode  +"\n"
 				+ "starNum=" + starNum  +"\n"
 				+ "visitorsNum=" + visitorsNum +"\n"
-				+ "reviewed=" + reviewed;
+				+ "reviewed=" + reviewed+"\n"
+				+ "mapApi=" + mapApi ;
 	}
 	
-	
-	
-
 }

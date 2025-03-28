@@ -14,9 +14,9 @@ public class FoodTest {
 			
 			OrderFoodVO food1 = session.get(OrderFoodVO.class, 1);
 			System.out.println(food1);
-			System.out.println("------------------------");
-			System.out.println(food1.getOrderId());
-			System.out.println(food1.getComment());
+//			System.out.println("------------------------");
+//			System.out.println(food1.getOrderId());
+//			System.out.println(food1.getComment());
 			session.getTransaction().commit();
 			
 		} catch (Exception e) {
