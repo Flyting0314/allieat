@@ -33,9 +33,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
-
+//共用的取資料函式
 function fetchData(elementId, apiUrl, unit, key, useFormat = true) {
-    fetch(apiUrl)
+    authFetch(apiUrl)
         .then(response => response.json())
         .then(data => {
             const value = data[key];
@@ -48,9 +48,9 @@ function fetchData(elementId, apiUrl, unit, key, useFormat = true) {
         })
         .catch(error => console.error(`Error fetching ${elementId} data:`, error));
 }
-
+//共用的取資料函式
 function fetchChartData(chartId, apiUrl, label, borderColor) {
-    fetch(apiUrl)
+    authFetch(apiUrl)
         .then(response => response.json())
         .then(data => {
             const chartKey = Object.keys(data)[0];
@@ -86,3 +86,5 @@ function fetchChartData(chartId, apiUrl, label, borderColor) {
 function formatNumber(num) {
     return num.toLocaleString(); // 加上千位逗號
 }
+//驗證有沒有token，若沒有token則回到首頁，前端驗證權限的方式。
+window.backstageAuth.requireLogin();
