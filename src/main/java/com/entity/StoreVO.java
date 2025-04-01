@@ -64,6 +64,7 @@ public class StoreVO implements Serializable {
 	private String mapApi;
 
 	// ---------- Getter / Setter ----------
+
 	public Integer getStoreId() {
 		return storeId;
 	}
