@@ -17,6 +17,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "member")
 public class MemberVO implements Serializable {
@@ -33,20 +36,31 @@ public class MemberVO implements Serializable {
     @JoinColumn(name = "organizationId")  
 	@JsonIgnore// Jackson的忽略標籤，應用於SpringBoot環境。
     private OrganizationVO organization;
+	@NotBlank(message = "姓名不得為空")
     private String name;
+	@NotBlank(message = "身份證字號不得為空")
     private String idNum;
+	@NotBlank(message = "戶籍地址不得為空")
     private String permAddr;
+	@NotBlank(message = "通訊地址不得為空")
     private String address;
     private Timestamp regTime;
     private String  kycImage; 
+    @Email(message = "請輸入正確的電子郵件格式")
+	@NotBlank(message = "信箱不得為空")
     private String email;
+    @NotBlank(message = "電話不得為空")
     private String phone;
+    @NotBlank(message = "帳號不得為空")
     private String account;
+    @Size(min = 6, message = "密碼長度至少需為 6 位")
     private String password;
+
     private Integer pointsBalance;
     private Integer unclaimedMealCount;
     private Integer accStat;
     private Integer reviewed; 
+
 
  
     public Integer getMemberId() {
@@ -62,7 +76,7 @@ public class MemberVO implements Serializable {
 		return organization;
 	}
 	public void setOrganization(OrganizationVO organization) {
-		organization = organization;
+		this.organization = organization;
 	}
 	public String getName() {
         return name;
