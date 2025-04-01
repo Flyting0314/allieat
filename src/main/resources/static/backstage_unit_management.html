@@ -54,10 +54,18 @@
             <thead class="thead-light">
             <tr>
 <!--              <th><input type="checkbox"></th>-->
-              <th>組織名稱</th>
-              <th>單位性質</th>
-              <th>創建時間</th>
-              <th>啟用狀態</th>
+                <th data-sort-field="name" style="cursor: pointer;">
+                    組織名稱<span class="arrow-group" id="sort-name">▲▼</span>
+                </th>
+                <th data-sort-field="type" style="cursor: pointer;">
+                    單位性質<span class="arrow-group" id="sort-type">▲▼</span>
+                </th>
+                <th data-sort-field="createdTime" style="cursor: pointer;">
+                    註冊時間<span class="arrow-group" id="sort-createdTime">▲▼</span>
+                </th>
+                <th data-sort-field="status" style="cursor: pointer;">
+                    啟用狀態<span class="arrow-group" id="sort-status">▲▼</span>
+                </th>
             </tr>
             </thead>
             <tbody id="data-body">
@@ -77,6 +85,7 @@
 </div>
 
 <script src="js/backstage_unt_management_js.js"></script>
+<script src="./js/backstage_auth_js.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const toggle = document.querySelector(".collapsible-menu");

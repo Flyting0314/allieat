@@ -153,3 +153,15 @@ body {
     border-radius: 4px;
 }
 
+.arrow-group {
+    font-size: 0.8rem;
+    margin-left: 4px;
+    color: #aaa;
+}
+
+.arrow-group .active {
+    color: black;
+    font-weight: bold;
+}
+
+

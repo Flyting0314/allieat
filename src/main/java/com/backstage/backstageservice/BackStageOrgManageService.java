@@ -1,11 +1,12 @@
 package com.backstage.backstageservice;
 
-
-
 import com.entity.AdminVO;
+import com.entity.OrganizationVO;
 import org.springframework.http.ResponseEntity;
+
 import java.util.Map;
 
-public interface BackStageLoginService {
-    ResponseEntity<Map<String, Object>> findByAccount(AdminVO admin);
+public interface BackStageOrgManageService {
+    ResponseEntity<Map<String, Object>> getInitData();
+
 }
