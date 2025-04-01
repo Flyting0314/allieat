@@ -18,19 +18,19 @@ import com.backstage.backstagrepository.MemberRepository;
 import com.backstage.backstagrepository.OrganizationRepository;
 import com.entity.MemberVO;
 import com.entity.OrganizationVO;
-import com.frontservice.MemberService;
+import com.frontservice.MemberRegistAndLoginService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/member")
-public class MemberController {
+public class MemberRegistAndLoginController {
 
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private MemberService memberService;
+    private MemberRegistAndLoginService memberService;
     @Autowired
     private OrganizationRepository organizationRepository;
 

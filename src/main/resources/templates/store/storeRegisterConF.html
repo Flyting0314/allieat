@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>合作店家註冊確認 - 攏呷霸 ALLiEAT</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .confirm-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .confirm-title {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .confirm-field {
+            margin-bottom: 10px;
+        }
+        .confirm-label {
+            font-weight: bold;
+        }
+        .confirm-photo-preview {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .confirm-photo-preview img {
+            max-width: 200px;
+            height: auto;
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .confirm-buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .confirm-buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="confirm-container">
+    <h1 class="confirm-title">請確認您的合作店家資料</h1>
+
+    <div class="confirm-field"><span class="confirm-label">店家名稱：</span><span th:text="${store.name}"></span></div>
+    <div class="confirm-field"><span class="confirm-label">負責人姓名：</span><span th:text="${store.managerName}"></span></div>
+    <div class="confirm-field"><span class="confirm-label">Email：</span><span th:text="${store.email}"></span></div>
+    <div class="confirm-field"><span class="confirm-label">電話：</span><span th:text="${store.phoneNum}"></span></div>
+    <div class="confirm-field"><span class="confirm-label">統一編號：</span><span th:text="${store.guiNum}"></span></div>
+    <div class="confirm-field"><span class="confirm-label">食品業者登錄字號：</span><span th:text="${store.businessRegNum}"></span></div>
+    <div class="confirm-field"><span class="confirm-label">地址：</span>
+        <span th:text="${store.county}"></span>
+        <span th:text="${store.district}"></span>
+        <span th:text="${store.address}"></span>
+    </div>
+    <div class="confirm-field"><span class="confirm-label">郵遞區號：</span><span th:text="${store.postalCode}"></span></div>
+
+
+<div class="confirm-photo-preview">
+    <div th:each="photo, iterStat : ${store.storeToPhoto}">
+        <div>
+            <p th:text="'圖片' + ${iterStat.index + 1}"></p>
+            <img th:src="@{'/photo/preview/' + ${photo.photoId}}" alt="預覽圖片">
+        </div>
+    </div>
+</div>
+
+    <form method="post" th:action="@{/store/register/submit}">
+        <div class="confirm-buttons">
+            <a href="javascript:history.back();"><button type="button">返回修改</button></a>
+            <button type="submit">確認送出</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
