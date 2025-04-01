@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="zh-TW" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>攏呷霸 ALLiEAT - 愛心代用餐平台</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="愛心代用餐, 公益, 餐飲捐贈" name="keywords">
+<meta content="攏呷霸愛心代用餐平台，連結善心人士與需要溫飽的人" name="description">
+
+<!-- Favicon -->
+<link href="img/favicon.ico" rel="icon">
+
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link
+	href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap"
+	rel="stylesheet">
+
+<!-- Font Awesome -->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+	rel="stylesheet">
+
+<!-- Libraries Stylesheet -->
+<link href="lib/owlcarousel/assets/owl.carousel.min.css"
+	rel="stylesheet">
+<link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
+	rel="stylesheet" />
+<link
+	href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap"
+	rel="stylesheet">
+
+<!-- Customized Bootstrap Stylesheet -->
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+
+<!-- 評分星星樣式 -->
+<style>
+/* 評分星星樣式 */
+.stars-outer {
+	display: inline-block;
+	position: relative;
+	font-family: 'Font Awesome 5 Free';
+	font-weight: 900;
+}
+
+.stars-outer::before {
+	content: "\f005 \f005 \f005 \f005 \f005";
+	color: #ccc;
+}
+
+.stars-inner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	width: 0;
+}
+
+.stars-inner::before {
+	content: "\f005 \f005 \f005 \f005 \f005";
+	color: #f8ce0b;
+}
+
+/* 地圖信息視窗樣式 */
+.gm-style .gm-style-iw {
+	font-family: 'Roboto', sans-serif;
+	padding: 15px;
+}
+
+.info-window {
+	padding: 10px;
+}
+
+.info-window h3 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	color: #da9f5b;
+}
+
+.info-window div {
+	margin-bottom: 5px;
+}
+
+/* 搜尋框焦點樣式 */
+#search-input:focus {
+	box-shadow: 0 0 0 0.2rem rgba(218, 159, 91, 0.25);
+	border-color: #da9f5b;
+}
+
+.section-title::after {
+	position: absolute;
+	content: "";
+	width: 100%;
+	height: 0;
+	top: 50%;
+	left: 0;
+	border-top: 2px dashed #bbb;
+	z-index: -1;
+}
+
+.section-title {
+	position: relative;
+	display: inline-block;
+	letter-spacing: 1px;
+	color: #da9f5b;
+	border-color: #da9f5b;
+}
+
+.section-title span {
+	position: relative;
+	background: #ffffff;
+	padding: 0 10px;
+}
+
+/* 餐廳列表樣式 */
+.restaurant-item {
+	transition: all 0.2s ease;
+	border-left: 3px solid transparent;
+}
+
+.restaurant-item:hover {
+	border-left: 3px solid #da9f5b;
+	background-color: rgba(218, 159, 91, 0.05);
+}
+
+.restaurant-category .badge {
+	background-color: #da9f5b;
+	font-weight: normal;
+}
+
+.location-item .badge {
+	background-color: #da9f5b;
+	font-weight: normal;
+}
+
+/* 搜尋結果區域樣式 */
+.nearby-restaurants {
+	max-height: 300px;
+	overflow-y: auto;
+	padding-right: 5px;
+}
+
+.nearby-restaurants::-webkit-scrollbar {
+	width: 5px;
+}
+
+.nearby-restaurants::-webkit-scrollbar-track {
+	background: #f1f1f1;
+	border-radius: 10px;
+}
+
+.nearby-restaurants::-webkit-scrollbar-thumb {
+	background: #da9f5b;
+	border-radius: 10px;
+}
+
+.nearby-restaurants::-webkit-scrollbar-thumb:hover {
+	background: #c28a4a;
+}
+
+/* 餐廳標籤樣式 */
+.restaurant-tags {
+	margin-top: 5px;
+}
+
+.restaurant-tags .tag {
+	display: inline-block;
+	padding: 2px 8px;
+	margin-right: 5px;
+	font-size: 0.7rem;
+	border-radius: 10px;
+	background-color: rgba(218, 159, 91, 0.2);
+	color: #8b5a2b;
+}
+
+/* 載入動畫 */
+.loading-spinner {
+	display: inline-block;
+	width: 1rem;
+	height: 1rem;
+	border: 2px solid rgba(218, 159, 91, 0.2);
+	border-radius: 50%;
+	border-top-color: #da9f5b;
+	animation: spin 1s ease-in-out infinite;
+}
+
+keyframes spin {to { transform:rotate(360deg);
+	
+}
+
+}
+
+/* 餐廳詳情視窗樣式 */
+.restaurant-detail-modal .modal-header {
+	background-color: #da9f5b;
+	color: white;
+}
+
+.restaurant-detail-modal .close {
+	color: white;
+	opacity: 0.8;
+}
+
+.restaurant-detail-modal .close:hover {
+	opacity: 1;
+}
+
+.restaurant-detail-modal .restaurant-amenities i {
+	color: #da9f5b;
+	margin-right: 5px;
+}
+
+/* 餐廳詳情視窗底部按鈕樣式 */
+.restaurant-detail-modal .modal-footer .btn-primary {
+	background-color: #da9f5b;
+	border-color: #da9f5b;
+}
+
+.restaurant-detail-modal .modal-footer .btn-primary:hover {
+	background-color: #c28a4a;
+	border-color: #c28a4a;
+}
+
+/* 返回按鈕樣式 */
+.back-to-restaurants {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	z-index: 1000;
+	background-color: rgba(255, 255, 255, 0.9);
+	border: 1px solid #da9f5b;
+	color: #da9f5b;
+	padding: 5px 12px;
+	border-radius: 4px;
+	font-size: 0.9rem;
+	display: none;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.back-to-restaurants:hover {
+	background-color: #da9f5b;
+	color: white;
+}
+
+/* 路線指引列表樣式 */
+.route-steps ol {
+	padding-left: 20px;
+	margin-top: 5px;
+}
+
+.route-steps li {
+	margin-bottom: 8px;
+	font-size: 0.9rem;
+}
+
+#autocomplete-suggestions {
+	max-height: 250px;
+	overflow-y: auto;
+	border-radius: 0 0 10px 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#autocomplete-suggestions li {
+	padding: 10px 15px;
+	border-bottom: 1px solid #f1f1f1;
+}
+
+#autocomplete-suggestions li:hover {
+	background-color: #f8f9fa;
+	cursor: pointer;
+	border-left: 3px solid #da9f5b;
+}
+
+#autocomplete-suggestions li:last-child {
+	border-bottom: none;
+	border-radius: 0 0 10px 10px;
+}
+
+.pac-container {
+	display: none !important;
+}
+</style>
+</head>
+
+<body>
+	<!-- Navbar Start -->
+	<section id="header">
+		<div class="container-fluid p-0 nav-bar">
+			<nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+				<a href="index.html" class="navbar-brand px-lg-4 m-0">
+					<h1 class="m-0 display-4 text-uppercase text-white"
+						style="display: inline-block;">
+						<img src="/img/logo3.png" width="80px" height="80px" alt=""
+							style="vertical-align: middle; margin-right: 0px; margin-top: -10px; border-radius: 50%; object-fit: cover;">
+						<span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+					</h1>
+				</a>
+				<button type="button" class="navbar-toggler" data-toggle="collapse"
+					data-target="#navbarCollapse">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse justify-content-between"
+					id="navbarCollapse">
+					<div class="navbar-nav ml-auto p-4">
+						<a href="index.html" class="nav-item nav-link active">關於我們</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-toggle="dropdown">我要捐款</a>
+							<div class="dropdown-menu text-capitalize">
+								<a href="reservation.html" class="dropdown-item">我要捐款</a> <a
+									href="testimonial.html" class="dropdown-item">捐款查詢</a>
+							</div>
+						</div>
+						<a href="service.html" class="nav-item nav-link">受助者取餐</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-toggle="dropdown">註冊/登入</a>
+							<div class="dropdown-menu text-capitalize">
+								<a href="reservation.html" class="dropdown-item">註冊</a> <a
+									href="testimonial.html" class="dropdown-item">登入</a>
+							</div>
+						</div>
+						<a href="contact.html" class="nav-item nav-link">會員專區</a>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</section>
+
+	<!-- Hero Section Start -->
+	<section id="hero">
+		<div class="container-fluid p-0 mb-5">
+			<div id="hero-carousel" class="carousel slide overlay-bottom"
+				data-ride="carousel">
+				<div class="carousel-inner">
+					<div class="carousel-item active"
+						style="background-image: url('img/圖片3.png'); background-size: 110% auto; background-position: center -300px; height: 570px; filter: brightness(200%);">
+						<div
+							class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+							<h2 class="text-primary font-weight-medium m-0"></h2>
+							<h1 class="display-1 text-white m-0"></h1>
+							<h2 class="text-white m-0"></h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Hero Section End -->
+
+	<!-- 美化後的地圖區域 -->
+	<div class="container-fluid py-5 bg-light">
+		<div class="container">
+			<div class="row mb-4">
+				<div class="col-12 text-center">
+					<h2 class="section-title text-uppercase mb-2">
+						<span>尋找愛心餐廳</span>
+					</h2>
+					<p class="text-muted">搜尋您附近的愛心代用餐合作餐廳</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4 mb-4">
+					<div class="card shadow-sm h-100">
+						<div class="card-body">
+							<h4 class="mb-3">搜尋餐廳</h4>
+							<div class="input-group mb-4 position-relative">
+								<input id="search-input" class="form-control"
+									placeholder="輸入地點或餐廳名稱..."
+									style="border-radius: 30px 0 0 30px; padding: 12px 20px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+								<div class="input-group-append">
+									<button class="btn btn-primary"
+										style="border-radius: 0 30px 30px 0;">
+										<i class="fas fa-search"></i>
+									</button>
+								</div>
+								<!-- 🔽 自動完成提示 -->
+								<ul id="autocomplete-suggestions"
+									class="list-group position-absolute w-100"
+									style="z-index: 1000; top: 100%; left: 0; display: none;"></ul>
+							</div>
+
+							<div id="restaurant-info" class="mt-4 d-none">
+								<h5 class="restaurant-name font-weight-bold"></h5>
+								<div class="restaurant-rating mb-2">
+									<div class="stars-outer">
+										<div class="stars-inner"></div>
+									</div>
+									<span class="rating-value ml-2"></span>
+								</div>
+								<p class="restaurant-address mb-1">
+									<i class="fas fa-map-marker-alt mr-2 text-primary"></i> <span></span>
+								</p>
+								<p class="restaurant-phone mb-1">
+									<i class="fas fa-phone mr-2 text-primary"></i> <span></span>
+								</p>
+								<p class="walking-time mb-3">
+									<i class="fas fa-walking mr-2 text-primary"></i> <span></span>
+								</p>
+								<button class="btn btn-primary btn-block mt-3">前往導航</button>
+							</div>
+
+							<!-- 交換順序：先顯示愛心合作餐廳區塊 -->
+							<div class="nearby-restaurants mt-4">
+								<h5>附近愛心合作餐廳</h5>
+								<div class="list-group mt-3 restaurants-list">
+									<!-- 餐廳列表會由JS動態生成 -->
+								</div>
+							</div>
+
+							<!-- 交換順序：再顯示熱門地點區塊 -->
+							<div class="location-tips mt-4">
+								<h5>附近熱門地點</h5>
+								<div class="list-group mt-3">
+									<!-- 熱門地點會由API動態生成 -->
+									<div class="text-center py-2">
+										<div class="loading-spinner"></div>
+										<span class="ml-2">載入中...</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-8 mb-4">
+					<div class="card shadow-sm h-100">
+						<div class="card-body p-0">
+							<div id="map"
+								style="width: 100%; height: 600px; border-radius: 5px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 餐廳詳情模態視窗 -->
+	<div class="modal fade restaurant-detail-modal"
+		id="restaurantDetailModal" tabindex="-1" role="dialog"
+		aria-labelledby="restaurantDetailModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="restaurantDetailModalLabel">餐廳詳情</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-6">
+							<img src="/api/placeholder/400/300" class="img-fluid rounded"
+								alt="餐廳照片">
+						</div>
+						<div class="col-md-6">
+							<h4 class="restaurant-name"></h4>
+							<div class="restaurant-rating mb-2">
+								<div class="stars-outer">
+									<div class="stars-inner"></div>
+								</div>
+								<span class="rating-value ml-2"></span>
+							</div>
+							<p class="restaurant-address mb-1">
+								<i class="fas fa-map-marker-alt mr-2 text-primary"></i> <span></span>
+							</p>
+							<p class="restaurant-phone mb-1">
+								<i class="fas fa-phone mr-2 text-primary"></i> <span></span>
+							</p>
+							<p class="restaurant-category mb-1">
+								<i class="fas fa-utensils mr-2 text-primary"></i> <span></span>
+							</p>
+							<div class="restaurant-tags mt-2">
+								<!-- 標籤會在這裡動態生成 -->
+							</div>
+						</div>
+					</div>
+
+					<hr>
+
+					<div class="row mt-3">
+						<div class="col-12">
+							<h5>愛心代用餐訊息</h5>
+							<p>本餐廳是「攏呷霸 ALLiEAT」愛心代用餐合作夥伴，您可以在此處：</p>
+							<ul>
+								<li>捐贈愛心餐點給有需要的人</li>
+								<li>若您有愛心代用餐券，可在此兌換餐點</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="row mt-3">
+						<div class="col-12">
+							<h5>餐廳設施</h5>
+							<div class="restaurant-amenities row">
+								<div class="col-md-4 mb-2">
+									<i class="fas fa-wifi"></i> 免費WiFi
+								</div>
+								<div class="col-md-4 mb-2">
+									<i class="fas fa-parking"></i> 停車場
+								</div>
+								<div class="col-md-4 mb-2">
+									<i class="fas fa-wheelchair"></i> 無障礙設施
+								</div>
+								<div class="col-md-4 mb-2">
+									<i class="fas fa-baby"></i> 兒童座椅
+								</div>
+								<div class="col-md-4 mb-2">
+									<i class="fas fa-credit-card"></i> 刷卡服務
+								</div>
+								<div class="col-md-4 mb-2">
+									<i class="fas fa-dog"></i> 寵物友善
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">關閉</button>
+					<button type="button" class="btn btn-primary">前往導航</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer Start -->
+	<section id="footer">
+		<div
+			class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
+			<div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">聯絡我們</h4>
+					<p>
+						<i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號
+					</p>
+					<p>
+						<i class="fa fa-phone-alt mr-2"></i>02-2222-5252
+					</p>
+					<p class="m-0">
+						<i class="fa fa-envelope mr-2"></i>allieat105@gmail.com
+					</p>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">關注我們</h4>
+					<p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
+					<div class="d-flex justify-content-start">
+						<a class="btn btn-lg btn-outline-light btn-lg-square mr-2"
+							href="#"><i class="fab fa-twitter"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+							class="fab fa-facebook-f"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+							class="fab fa-linkedin-in"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i
+							class="fab fa-instagram"></i></a>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">客服時間</h4>
+					<div>
+						<h6 class="text-white text-uppercase">周一 - 週五</h6>
+						<p>早上10:00 - 晚上21:00</p>
+						<h6 class="text-white text-uppercase">週六 - 週日</h6>
+						<p>早上11:00 - 晚上19:00</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">訂閱電子報</h4>
+					<p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
+					<div class="w-100">
+						<div class="input-group">
+							<input type="text" class="form-control border-light"
+								style="padding: 25px;" placeholder="輸入您的信箱">
+							<div class="input-group-append">
+								<button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div
+				class="container-fluid text-center text-white  mt-4 py-4 px-sm-3 px-md-5"
+				style="border-color: rgba(256, 256, 256, .1) !important;">
+				<p class="mb-2 text-white">
+					版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>.
+					保留所有權利
+				</p>
+				<p class="m-0 text-white">
+					網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司
+						設計部 設計</a>
+				</p>
+			</div>
+		</div>
+	</section>
+	<!-- Footer End -->
+
+	<!-- Back to Top -->
+	<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
+		class="fa fa-angle-double-up"></i></a>
+
+	<!-- 將後端的 storeList 傳到前端變成 JS 變數 -->
+	<script th:inline="javascript">
+    /*<![CDATA[*/
+    const stores = /*[[${storeList}]]*/ [];
+    /*]]>*/
+</script>
+
+	<!-- JavaScript Libraries -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+	<script src="lib/easing/easing.min.js"></script>
+	<script src="lib/waypoints/waypoints.min.js"></script>
+	<script src="lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="lib/tempusdominus/js/moment.min.js"></script>
+	<script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+	<script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+	<!-- 地圖相關腳本 -->
+	<script>
+    // 整合地圖JavaScript
+    let map;
+    let currentPosition;
+    let selectRestaurant;
+    let marker;
+    let autocomplete;
+    let directionsService;
+    let directionsRenderer;
+    let infowindow;
+    let markers = []; // 存儲所有標記
+    let userMarker; // 用戶位置標記
+    
+    // 模擬 API 獲取熱門地點數據（實際使用時替換為真實 API）
+    const restaurantApi = {
+        getPopularLocations: function() {
+            // 返回熱門地點
+            return [
+                { name: "台北車站", count: 12 },
+                { name: "台大醫院", count: 8 },
+                { name: "西門町", count: 15 },
+                { name: "東區", count: 10 },
+                { name: "信義區", count: 14 }
+            ];
+        }
+    };
+
+    function initMap() {
+        // 初始化地圖
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 25.033, lng: 121.565 },
+            zoom: 14,
+            styles: [
+                {
+                    "featureType": "administrative",
+                    "elementType": "labels.text.fill",
+                    "stylers": [{"color": "#444444"}]
+                },
+                {
+                    "featureType": "landscape",
+                    "elementType": "all",
+                    "stylers": [{"color": "#f2f2f2"}]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "all",
+                    "stylers": [{"visibility": "off"}]
+                },
+                {
+                    "featureType": "poi.business",
+                    "elementType": "geometry.fill",
+                    "stylers": [{"visibility": "on"}]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "all",
+                    "stylers": [{"saturation": -100}, {"lightness": 45}]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "all",
+                    "stylers": [{"visibility": "simplified"}]
+                },
+                {
+                    "featureType": "road.arterial",
+                    "elementType": "labels.icon",
+                    "stylers": [{"visibility": "off"}]
+                },
+                {
+                    "featureType": "transit",
+                    "elementType": "all",
+                    "stylers": [{"visibility": "on"}]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "all",
+                    "stylers": [{"color": "#b4d4e1"}, {"visibility": "on"}]
+                }
+            ],
+            mapTypeControl: false,
+            streetViewControl: false,
+            fullscreenControl: true,
+            zoomControl: true
+        });
+
+        // 初始化導航服務
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({
+            map: map,
+            suppressMarkers: true,
+            polylineOptions: {
+                strokeColor: '#da9f5b',
+                strokeWeight: 5,
+                strokeOpacity: 0.7
+            }
+        });
+        
+        // 初始化信息窗口
+        infowindow = new google.maps.InfoWindow({
+            maxWidth: 300,
+            pixelOffset: new google.maps.Size(0, -30)
+        });
+
+        // 獲取用戶位置
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                currentPosition = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                
+                // 用戶位置標記
+                userMarker = new google.maps.Marker({
+                    position: currentPosition,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 10,
+                        fillColor: "#4285F4",
+                        fillOpacity: 1,
+                        strokeColor: "white",
+                        strokeWeight: 2
+                    },
+                    title: "您的位置",
+                    zIndex: 999
+                });
+                
+                // 設置搜尋範圍
+                map.setCenter(currentPosition);
+                
+                // 初始化自動完成
+                autocomplete = new google.maps.places.Autocomplete(
+                    document.getElementById('search-input'),
+                    {
+                        types: ['restaurant', 'food'],
+                        componentRestrictions: { country: 'tw' }
+                    }
+                );
+                
+                // 從 Thymeleaf 獲取數據並添加標記
+                addRestaurantMarkers();
+                
+                // 監聽自動完成
+                autocomplete.addListener('place_changed', onPlaceChanged);
+                
+                // 更新側邊欄
+                updateSidebar();
+                
+            }, function() {
+                handleLocationError(true, map.getCenter());
+            });
+        } else {
+            handleLocationError(false, map.getCenter());
+        }
+    }
+
+    function handleLocationError(browserHasGeolocation, pos) {
+        // 定位錯誤處理
+        alert(browserHasGeolocation ?
+            '無法取得您的位置。請確認位置權限已開啟。' :
+            '您的瀏覽器不支援定位功能。');
+        
+        // 預設位置設為台北車站
+        currentPosition = { lat: 25.047924, lng: 121.517081 };
+        map.setCenter(currentPosition);
+        
+        // 初始化其他功能
+        autocomplete = new google.maps.places.Autocomplete(
+            document.getElementById('search-input')
+        );
+        autocomplete.addListener('place_changed', onPlaceChanged);
+        
+        // 添加餐廳標記
+        addRestaurantMarkers();
+        
+        // 更新側邊欄
+        updateSidebar();
+    }
+
+    function onPlaceChanged() {
+        const place = autocomplete.getPlace();
+        
+        if (!place.geometry || !place.geometry.location) {
+            alert("找不到該地點的詳細資訊，請選擇搜尋結果中的餐廳。");
+            return;
+        }
+        
+        selectRestaurant = {
+            location: {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            },
+            placeId: place.place_id,
+            name: place.name,
+            address: place.formatted_address || "無地址資訊",
+            phoneNumber: place.formatted_phone_number || "無電話資訊",
+            rating: place.rating || "尚未評分"
+        };
+        
+        // 更新地圖
+        map.setCenter(selectRestaurant.location);
+        map.setZoom(17);
+        
+        // 更新標記
+        if (marker) marker.setMap(null);
+        marker = new google.maps.Marker({
+            map: map,
+            position: selectRestaurant.location,
+            animation: google.maps.Animation.DROP,
+            icon: {
+                url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                scaledSize: new google.maps.Size(40, 40)
+            },
+            title: selectRestaurant.name
+        });
+        
+        // 更新側邊欄資訊
+        updateRestaurantInfo(selectRestaurant);
+        
+        // 顯示信息窗口
+        const content = `
+            <div class="info-window">
+                <h3>${selectRestaurant.name}</h3>
+                <div><strong>地址：</strong>${selectRestaurant.address}</div>
+                <div><strong>電話：</strong>${selectRestaurant.phoneNumber}</div>
+                <div><strong>評分：</strong>${selectRestaurant.rating} / 5</div>
+                <div class="mt-2 text-center">
+                    <button class="btn btn-sm btn-primary mt-2" onclick="showRouteInMap(${selectRestaurant.location.lat}, ${selectRestaurant.location.lng}, '${selectRestaurant.name}')">
+                        <i class="fas fa-route mr-1"></i>顯示路線
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        infowindow.setContent(content);
+        infowindow.open(map, marker);
+    }
+
+    function updateRestaurantInfo(restaurant) {
+        const infoDiv = document.getElementById('restaurant-info');
+        infoDiv.classList.remove('d-none');
+        
+        // 更新餐廳名稱
+        infoDiv.querySelector('.restaurant-name').textContent = restaurant.name;
+        
+        // 更新評分星星
+        const starsInner = infoDiv.querySelector('.stars-inner');
+        const starPercentage = (restaurant.rating / 5) * 100;
+        starsInner.style.width = `${starPercentage}%`;
+        infoDiv.querySelector('.rating-value').textContent = `${restaurant.rating} / 5`;
+        
+        // 更新地址與電話
+        infoDiv.querySelector('.restaurant-address span').textContent = restaurant.address;
+        infoDiv.querySelector('.restaurant-phone span').textContent = restaurant.phoneNumber || restaurant.phone;
+        
+        // 更新步行時間
+        if (restaurant.duration) {
+            infoDiv.querySelector('.walking-time span').textContent = restaurant.duration;
+        } else {
+            infoDiv.querySelector('.walking-time span').textContent = "計算中...";
+            // 計算步行時間
+            if (currentPosition && restaurant.location) {
+                directionsService.route({
+                    origin: new google.maps.LatLng(currentPosition.lat, currentPosition.lng),
+                    destination: new google.maps.LatLng(restaurant.location.lat, restaurant.location.lng),
+                    travelMode: 'WALKING'
+                }, function(response, status) {
+                    if (status === 'OK') {
+                        const leg = response.routes[0].legs[0];
+                        infoDiv.querySelector('.walking-time span').textContent = leg.duration.text;
+                        restaurant.duration = leg.duration.text;
+                    }
+                });
+            }
+        }
+        
+        // 更新導航按鈕事件 - 在地圖上顯示路線
+        const navButton = infoDiv.querySelector('.btn-primary');
+        navButton.onclick = function() {
+            if (restaurant.location) {
+                showRouteInMap(restaurant.location, restaurant.name);
+            }
+        };
+    }
+
+    // 添加餐廳標記 - 使用從 Thymeleaf 獲取的數據
+    function addRestaurantMarkers() {
+        // 清除現有標記
+        markers.forEach(marker => marker.setMap(null));
+        markers = [];
+        
+        // 使用後端提供的餐廳數據
+        if (typeof stores !== 'undefined' && stores.length > 0) {
+            stores.forEach((store, index) => {
+                // 將後端數據轉換為地圖所需格式
+                const storeLocation = { 
+                    lat: store.latitude,
+                    lng: store.longitude
+                };
+                
+                const marker = new google.maps.Marker({
+                    position: storeLocation,
+                    map: map,
+                    title: store.name,
+                    animation: google.maps.Animation.DROP,
+                    icon: {
+                        url: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+                        scaledSize: new google.maps.Size(36, 36)
+                    },
+                    label: {
+                        text: store.name,
+                        color: '#000',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                    },
+                    storeId: store.id || index
+                });
+                
+                markers.push(marker);
+                
+                // 點擊標記時顯示信息
+                marker.addListener('click', function() {
+                    selectRestaurant = {
+                        name: store.name,
+                        address: store.address,
+                        phoneNumber: store.phone,
+                        rating: store.rating || 4.5,
+                        location: storeLocation,
+                        id: store.id,
+                        category: store.category || '餐飲',
+                        tags: store.tags || ['愛心合作店']
+                    };
+                    
+                    // 信息窗口內容
+                    const infoContent = `
+                        <div class="info-window">
+                            <h3>${store.name}</h3>
+                            <div><strong>地址：</strong>${store.address}</div>
+                            <div><strong>電話：</strong>${store.phone}</div>
+                            <div><strong>評分：</strong>${store.rating || 4.5} / 5</div>
+                            <div><strong>愛心代用餐合作餐廳</strong></div>
+                            <div class="mt-2 text-center">
+                                <button class="btn btn-sm btn-primary mt-2" onclick="showRouteInMap({lat: ${storeLocation.lat}, lng: ${storeLocation.lng}}, '${store.name}')">
+                                    <i class="fas fa-route mr-1"></i>顯示路線
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    infowindow.setContent(infoContent);
+                    infowindow.open(map, marker);
+                    
+                    // 更新側欄信息
+                    updateRestaurantInfo(selectRestaurant);
+                });
+            });
+        } else {
+            console.error('沒有可用的餐廳數據');
+        }
+    }
+
+    function handlePlacesResult(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+            const place = results[0];
+            
+            selectRestaurant = {
+                location: {
+                    lat: place.geometry.location.lat(),
+                    lng: place.geometry.location.lng()
+                },
+                placeId: place.place_id,
+                name: place.name,
+                address: place.formatted_address || "無地址資訊",
+                phoneNumber: "02-XXXX-XXXX", // la4模擬電話
+                rating: place.rating || "尚未評分"
+            };
+            
+            // 更新地圖
+            map.setCenter(selectRestaurant.location);
+            map.setZoom(17);
+            
+            // 更新標記
+            if (marker) marker.setMap(null);
+            marker = new google.maps.Marker({
+                map: map,
+                position: selectRestaurant.location,
+                animation: google.maps.Animation.DROP
+            });
+            
+            // 更新側邊欄資訊
+            updateRestaurantInfo(selectRestaurant);
+            
+            // 創建信息窗口
+            const infoContent = `
+                <div class="info-window">
+                    <h3>${selectRestaurant.name}</h3>
+                    <div><strong>地址：</strong>${selectRestaurant.address}</div>
+                    <div><strong>電話：</strong>${selectRestaurant.phoneNumber}</div>
+                    <div><strong>評分：</strong>${selectRestaurant.rating} / 5</div>
+                    <div class="mt-2 text-center">
+                        <button class="btn btn-sm btn-primary mt-2" onclick="showRouteInMap({lat: ${selectRestaurant.location.lat}, lng: ${selectRestaurant.location.lng}}, '${selectRestaurant.name}')">
+                            <i class="fas fa-route mr-1"></i>顯示路線
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            infowindow.setContent(infoContent);
+            infowindow.open(map, marker);
+        } else {
+            alert("找不到相關餐廳");
+        }
+    }
+    
+    // 更新側邊欄
+    function updateSidebar() {
+        // 先添加餐廳列表區域 (修改順序)
+        addRestaurantsList();
+        
+        // 後更新熱門地點區域 (修改順序)
+        updatePopularLocations();
+    }
+
+    // 更新熱門地點區域
+    function updatePopularLocations() {
+        const popularLocations = restaurantApi.getPopularLocations();
+        const locationContainer = document.querySelector('.location-tips .list-group');
+        
+        // 清除現有項目
+        locationContainer.innerHTML = '';
+        
+        // 添加新項目
+        popularLocations.forEach(location => {
+            const locationItem = document.createElement('a');
+            locationItem.href = '#';
+            locationItem.className = 'list-group-item list-group-item-action location-item';
+            locationItem.setAttribute('data-name', location.name);
+            locationItem.innerHTML = `
+                <i class="fas fa-utensils mr-2 text-primary"></i>
+                ${location.name} <span class="badge badge-pill badge-primary">${location.count}</span>
+            `;
+            
+            // 添加點擊事件監聽器
+            locationItem.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('search-input').value = this.getAttribute('data-name');
+                
+                // 觸發搜尋
+                const service = new google.maps.places.PlacesService(map);
+                service.textSearch({
+                    query: this.getAttribute('data-name') + " 餐廳",
+                    location: currentPosition,
+                    radius: 5000
+                }, handlePlacesResult);
+            });
+            
+            locationContainer.appendChild(locationItem);
+        });
+    }
+
+    // 添加餐廳列表區域
+    function addRestaurantsList() {
+        // 餐廳列表區域已經在HTML中預先創建，不需要重新創建
+        
+        // 添加餐廳列表項目
+        const restaurantsList = document.querySelector('.restaurants-list');
+        restaurantsList.innerHTML = '';
+        
+        if (typeof stores !== 'undefined' && stores.length > 0) {
+            // 使用後端提供的餐廳數據
+            stores.forEach(store => {
+                const restaurantItem = document.createElement('a');
+                restaurantItem.href = '#';
+                restaurantItem.className = 'list-group-item list-group-item-action restaurant-item';
+                restaurantItem.setAttribute('data-id', store.id);
+                
+                // 計算標籤
+                const tags = store.tags || ['愛心合作店'];
+                const tagHtml = tags.map(tag => `<small class="badge badge-info ml-1">${tag}</small>`).join('');
+                
+                restaurantItem.innerHTML = `
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">${store.name}</h6>
+                        <small>${store.distance || '附近'}</small>
+                    </div>
+                    <div class="restaurant-category mb-1">
+                        <small class="text-muted">${store.category || '餐飲'}</small>
+                        ${tagHtml}
+                    </div>
+                    <small class="d-block">
+                        <div class="stars-outer d-inline-block" style="font-size: 0.8rem;">
+                            <div class="stars-inner" style="width: ${((store.rating || 4.5) / 5) * 100}%"></div>
+                        </div>
+                        <span class="rating-value ml-1">${store.rating || 4.5}</span>
+                    </small>
+                `;
+                
+                // 添加點擊事件監聽器
+                restaurantItem.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 在地圖上找到相應的標記
+                    const marker = markers.find(m => m.storeId == store.id);
+                    if (marker) {
+                        // 觸發標記的點擊事件
+                        google.maps.event.trigger(marker, 'click');
+                    } else {
+                        // 或者直接顯示餐廳信息
+                        showRestaurantModal(store);
+                    }
+                });
+                
+                restaurantsList.appendChild(restaurantItem);
+            });
+        } else {
+            restaurantsList.innerHTML = '<p class="text-center">沒有可用的餐廳數據</p>';
+        }
+    }
+
+    // 餐廳詳情模態視窗
+    function showRestaurantModal(restaurant) {
+        const modal = $('#restaurantDetailModal');
+        
+        // 設置餐廳資訊
+        modal.find('.restaurant-name').text(restaurant.name);
+        
+        // 設置評分
+        const starsInner = modal.find('.stars-inner');
+        const starPercentage = ((restaurant.rating || 4.5) / 5) * 100;
+        starsInner.css('width', `${starPercentage}%`);
+        modal.find('.rating-value').text(`${restaurant.rating || 4.5} / 5`);
+        
+        // 設置地址、電話、類別
+        modal.find('.restaurant-address span').text(restaurant.address);
+        modal.find('.restaurant-phone span').text(restaurant.phone || restaurant.phoneNumber);
+        modal.find('.restaurant-category span').text(restaurant.category || '一般餐飲');
+        
+        // 設置標籤
+        const tagsContainer = modal.find('.restaurant-tags');
+        tagsContainer.empty();
+        
+        const tags = restaurant.tags || ['愛心合作店'];
+        tags.forEach(tag => {
+            tagsContainer.append(`<span class="tag">${tag}</span>`);
+        });
+        
+        // 顯示模態視窗
+        modal.modal('show');
+        
+        // 設置導航按鈕事件 - 改為在地圖上顯示路線
+        modal.find('.modal-footer .btn-primary').off('click').on('click', function() {
+            // 關閉模態視窗
+            modal.modal('hide');
+            
+            // 如果有經緯度，使用經緯度顯示路線
+            if (restaurant.latitude && restaurant.longitude) {
+                const destination = {
+                    lat: parseFloat(restaurant.latitude),
+                    lng: parseFloat(restaurant.longitude)
+                };
+                showRouteInMap(destination, restaurant.name);
+            } else {
+                // 如果沒有經緯度，使用地址轉換為經緯度
+                const geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ 'address': restaurant.address }, function(results, status) {
+                    if (status === 'OK' && results[0].geometry) {
+                        const destination = {
+                            lat: results[0].geometry.location.lat(),
+                            lng: results[0].geometry.location.lng()
+                        };
+                        showRouteInMap(destination, restaurant.name);
+                    } else {
+                        alert('無法找到該地址的位置：' + restaurant.address);
+                    }
+                });
+            }
+        });
+    }
+
+    // 格式化路線指引文字
+    function formatInstructions(instruction) {
+        // 移除HTML標籤但保留文字
+        const div = document.createElement('div');
+        div.innerHTML = instruction;
+        let text = div.textContent || div.innerText || '';
+        
+        // 如果有距離資訊，保留距離但簡化格式
+        const distanceMatch = instruction.match(/(\d+)\s*(公尺|米|m|km|公里)/i);
+        if (distanceMatch) {
+            const distance = distanceMatch[0];
+            text = text.replace(/向(東|南|西|北|東北|東南|西南|西北)走/, '向$1走 ' + distance);
+        }
+        
+        // 簡化常見指引
+        text = text.replace('繼續直行', '直行')
+               .replace('輕微向右轉', '稍微右轉')
+               .replace('輕微向左轉', '稍微左轉')
+               .replace('目的地在', '到達');
+        
+        return text;
+    }
+
+    // 在地圖上顯示路線導航
+    function showRouteInMap(destination, destinationName) {
+        // 檢查是否有用戶位置
+        if (!currentPosition) {
+            alert('請先允許獲取您的位置，以便規劃路線');
+            return;
+        }
+        
+        // 顯示返回按鈕
+        const backButton = document.getElementById('back-to-restaurants');
+        if (backButton) {
+            backButton.style.display = 'block';
+        } else {
+            // 創建返回按鈕
+            const btn = document.createElement('button');
+            btn.id = 'back-to-restaurants';
+            btn.className = 'back-to-restaurants';
+            btn.innerHTML = '<i class="fas fa-arrow-left mr-2"></i>返回餐廳列表';
+            btn.onclick = function() {
+                // 清除路線
+                directionsRenderer.set('directions', null);
+                
+                // 隱藏返回按鈕
+                this.style.display = 'none';
+                
+                // 重新顯示所有餐廳標記
+                markers.forEach(marker => marker.setVisible(true));
+                
+                // 關閉信息窗口
+                infowindow.close();
+                
+                // 顯示所有餐廳
+                showAllRestaurants();
+            };
+            document.getElementById('map').parentNode.appendChild(btn);
+        }
+        
+        // 隱藏所有餐廳標記
+        markers.forEach(marker => marker.setVisible(false));
+        
+        // 規劃路線
+        directionsService.route({
+            origin: new google.maps.LatLng(currentPosition.lat, currentPosition.lng),
+            destination: new google.maps.LatLng(destination.lat, destination.lng),
+            travelMode: 'WALKING',
+            provideRouteAlternatives: false,
+            avoidHighways: true,
+            avoidTolls: true
+        }, function(response, status) {
+            if (status === 'OK') {
+                // 設置路線渲染器選項
+                directionsRenderer.setOptions({
+                    directions: response,
+                    suppressMarkers: true, // 隱藏默認標記
+                    polylineOptions: {
+                        strokeColor: '#da9f5b',
+                        strokeWeight: 5,
+                        strokeOpacity: 0.7
+                    }
+                });
+                
+                // 獲取路線詳情
+                const leg = response.routes[0].legs[0];
+                
+                // 格式化路線指引步驟
+                const formattedSteps = leg.steps.map(step => {
+                    return `<li>${formatInstructions(step.instructions)}</li>`;
+                }).join('');
+                
+                // 創建路線詳情信息窗口
+                const routeInfo = `
+                    <div class="info-window">
+                        <h3>前往 ${destinationName}</h3>
+                        <div><strong><i class="fas fa-map-marker-alt mr-2 text-primary"></i>起點：</strong>${leg.start_address}</div>
+                        <div><strong><i class="fas fa-flag-checkered mr-2 text-danger"></i>終點：</strong>${leg.end_address}</div>
+                        <div><strong><i class="fas fa-route mr-2 text-success"></i>距離：</strong>${leg.distance.text}</div>
+                        <div><strong><i class="fas fa-walking mr-2 text-info"></i>步行時間：</strong>${leg.duration.text}</div>
+                        <div class="route-steps mt-2">
+                            <strong><i class="fas fa-directions mr-2"></i>路線指引：</strong>
+                            <ol class="mt-1">
+                                ${formattedSteps}
+                            </ol>
+                        </div>
+                    </div>
+                `;
+                
+                // 顯示路線詳情
+                infowindow.setContent(routeInfo);
+                infowindow.setPosition(destination);
+                infowindow.open(map);
+                
+                // 更新地圖視角以顯示整條路線
+                const bounds = new google.maps.LatLngBounds();
+                const path = response.routes[0].overview_path;
+                path.forEach(point => bounds.extend(point));
+                map.fitBounds(bounds);
+                
+                // 添加起點和終點標記
+                // 起點已有用戶位置標記
+                // 添加終點標記
+                if (marker) marker.setMap(null);
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(destination.lat, destination.lng),
+                    map: map,
+                    title: destinationName,
+                    icon: {
+                        url: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+                        scaledSize: new google.maps.Size(40, 40)
+                    },
+                    zIndex: 900
+                });
+            } else {
+                alert('無法規劃路線：' + status);
+                
+                // 重新顯示所有餐廳標記
+                markers.forEach(marker => marker.setVisible(true));
+                
+                // 隱藏返回按鈕
+                document.getElementById('back-to-restaurants').style.display = 'none';
+            }
+        });
+    }
+
+    // 顯示所有餐廳
+    function showAllRestaurants() {
+        if (markers.length > 0) {
+            const bounds = new google.maps.LatLngBounds();
+            
+            markers.forEach(marker => {
+                marker.setVisible(true);
+                bounds.extend(marker.getPosition());
+            });
+            
+            map.fitBounds(bounds);
+        }
+    }
+
+    // 模糊搜索函數 - 在stores數組中搜尋符合條件的餐廳
+    function fuzzySearchRestaurants(searchText) {
+        if (!stores || !stores.length) {
+            return [];
+        }
+        
+        // 將搜尋文字轉小寫以進行不區分大小寫的比對
+        const searchLower = searchText.toLowerCase();
+        
+        // 篩選符合條件的餐廳
+        return stores.filter(store => {
+            // 檢查餐廳名稱
+            if (store.name && store.name.toLowerCase().includes(searchLower)) {
+                return true;
+            }
+            
+            // 檢查地址
+            if (store.address && store.address.toLowerCase().includes(searchLower)) {
+                return true;
+            }
+            
+            // 檢查類別
+            if (store.category && store.category.toLowerCase().includes(searchLower)) {
+                return true;
+            }
+            
+            // 檢查標籤
+            if (store.tags && Array.isArray(store.tags)) {
+                return store.tags.some(tag => tag.toLowerCase().includes(searchLower));
+            }
+            
+            return false;
+        });
+    }
+
+    // 顯示搜尋結果函數
+    function displaySearchResults(results) {
+        // 先清除地圖上的所有標記
+        markers.forEach(marker => marker.setMap(null));
+        markers = [];
+        
+        if (results.length === 0) {
+            // 沒有搜尋結果
+            alert('沒有找到符合條件的餐廳');
+            // 重新加載所有餐廳標記
+            addRestaurantMarkers();
+            return;
+        }
+        
+        // 更新餐廳列表
+        const restaurantsList = document.querySelector('.restaurants-list');
+        restaurantsList.innerHTML = '';
+        
+        // 創建邊界對象，用於調整地圖視角
+        const bounds = new google.maps.LatLngBounds();
+        
+        // 添加搜尋結果的標記和列表項目
+        results.forEach((store, index) => {
+            // 創建標記位置
+           const storeLocation = { 
+    lat: parseFloat(store.latitude),
+    lng: parseFloat(store.longitude)
+};
+
+            
+            // 將位置添加到地圖邊界中
+            bounds.extend(new google.maps.LatLng(storeLocation.lat, storeLocation.lng));
+            
+            // 創建標記
+            const marker = new google.maps.Marker({
+                position: storeLocation,
+                map: map,
+                title: store.name,
+                animation: google.maps.Animation.DROP,
+                icon: {
+                    url: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+                    scaledSize: new google.maps.Size(36, 36)
+                },
+                label: {
+                    text: store.name,
+                    color: '#000',
+                    fontSize: '12px',
+                    fontWeight: 'bold'
+                },
+                storeId: store.id || index
+            });
+            
+            markers.push(marker);
+            
+            // 點擊標記時顯示信息
+            marker.addListener('click', function() {
+                selectRestaurant = {
+                    name: store.name,
+                    address: store.address,
+                    phoneNumber: store.phone,
+                    rating: store.rating || 4.5,
+                    location: storeLocation,
+                    id: store.id,
+                    category: store.category || '餐飲',
+                    tags: store.tags || ['愛心合作店']
+                };
+                
+                // 信息窗口內容
+                const infoContent = `
+                    <div class="info-window">
+                        <h3>${store.name}</h3>
+                        <div><strong>地址：</strong>${store.address}</div>
+                        <div><strong>電話：</strong>${store.phone}</div>
+                        <div><strong>評分：</strong>${store.rating || 4.5} / 5</div>
+                        <div><strong>愛心代用餐合作餐廳</strong></div>
+                        <div class="mt-2 text-center">
+                            <button class="btn btn-sm btn-primary mt-2" onclick="showRouteInMap({lat: ${storeLocation.lat}, lng: ${storeLocation.lng}}, '${store.name}')">
+                                <i class="fas fa-route mr-1"></i>顯示路線
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                infowindow.setContent(infoContent);
+                infowindow.open(map, marker);
+                
+                // 更新側欄信息
+                updateRestaurantInfo(selectRestaurant);
+            });
+            
+            // 添加列表項目
+            const restaurantItem = document.createElement('a');
+            restaurantItem.href = '#';
+            restaurantItem.className = 'list-group-item list-group-item-action restaurant-item';
+            restaurantItem.setAttribute('data-id', store.id);
+            
+            // 計算標籤
+            const tags = store.tags || ['愛心合作店'];
+            const tagHtml = tags.map(tag => `<small class="badge badge-info ml-1">${tag}</small>`).join('');
+            
+            restaurantItem.innerHTML = `
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">${store.name}</h6>
+                    <small>${store.distance || '附近'}</small>
+                </div>
+                <div class="restaurant-category mb-1">
+                    <small class="text-muted">${store.category || '餐飲'}</small>
+                    ${tagHtml}
+                </div>
+                <small class="d-block">
+                    <div class="stars-outer d-inline-block" style="font-size: 0.8rem;">
+                        <div class="stars-inner" style="width: ${((store.rating || 4.5) / 5) * 100}%"></div>
+                    </div>
+                    <span class="rating-value ml-1">${store.rating || 4.5}</span>
+                </small>
+            `;
+            
+            // 添加點擊事件監聽器
+            restaurantItem.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 在地圖上找到相應的標記
+                const marker = markers.find(m => m.storeId == store.id);
+                if (marker) {
+                    // 觸發標記的點擊事件
+                    google.maps.event.trigger(marker, 'click');
+                    
+                    // 移動到標記位置並調整縮放
+                    map.setCenter(marker.getPosition());
+                    map.setZoom(16);
+                } else {
+                    // 或者直接顯示餐廳信息
+                    showRestaurantModal(store);
+                }
+            });
+            
+            restaurantsList.appendChild(restaurantItem);
+        });
+        
+        // 調整地圖視角以顯示所有結果
+        if (markers.length > 0) {
+            map.fitBounds(bounds);
+            
+            // 如果只有一個結果，適當縮放
+            if (markers.length === 1) {
+                google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
+                    map.setZoom(16);
+                });
+            }
+        }
+    }
+    </script>
+
+	<!-- Contact Javascript File -->
+	<script src="mail/jqBootstrapValidation.min.js"></script>
+	<script src="mail/contact.js"></script>
+
+	<!-- Template Javascript -->
+	<script src="js/main.js"></script>
+</body>
+</html>
+
+<!-- Google Maps API -->
+<script async
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwk4bH6RdOWmqwmrpdYu7-NKZin0St0vQ&libraries=places&callback=initMap&region=TW&language=zh-TW">
+    </script>
+
+<!-- 初始化功能 -->
+<script>
+//當頁面完全載入後執行
+$(document).ready(function() {
+    // 修改搜尋按鈕點擊事件 - 結合 Google Places API 和資料庫搜尋
+    $('.input-group-append .btn').click(function() {
+        const searchText = $('#search-input').val().trim();
+        if (!searchText) return;
+        
+        // 首先在本地資料庫中搜尋
+        const localResults = fuzzySearchRestaurants(searchText);
+        
+        if (localResults.length > 0) {
+            // 如果在本地資料庫中找到結果，顯示這些結果
+            displaySearchResults(localResults);
+            
+            const storeLocation = { 
+            	    lat: parseFloat(store.latitude),
+            	    lng: parseFloat(store.longitude)
+            	};
+            
+        } else {
+            // 如果本地沒有找到結果，使用 Google Places API 搜尋
+            if (typeof google !== 'undefined' && google.maps && google.maps.places) {
+                const service = new google.maps.places.PlacesService(map);
+                service.textSearch({
+                    query: searchText,
+                    location: currentPosition,
+                    radius: 5000
+                }, handlePlacesResult);
+            }
+        }
+    });
+    
+    // 監聽搜尋輸入框的 Enter 鍵
+    $('#search-input').keypress(function(e) {
+        if (e.which === 13) { // Enter 鍵的 keyCode
+            $('.input-group-append .btn').click();
+            e.preventDefault();
+        }
+    });
+    
+    // 添加側邊欄導航按鈕點擊事件 - 改為在地圖上顯示路線
+    $(document).on('click', '#restaurant-info .btn-primary', function() {
+        if (selectRestaurant && selectRestaurant.location) {
+            showRouteInMap(selectRestaurant.location, selectRestaurant.name);
+        }
+    });
+    
+    // 添加餐廳項目點擊事件處理
+    $(document).on('click', '.restaurant-item', function(e) {
+        e.preventDefault();
+        
+        // 確保地圖已初始化
+        if (!map) {
+            console.error('地圖尚未初始化');
+            return;
+        }
+        
+        // 獲取餐廳 ID
+        const restaurantId = $(this).data('id');
+        
+        // 顯示地圖載入中狀態
+        console.log('正在加載餐廳位置...');
+        
+        // 找到對應的標記並觸發點擊
+        const marker = markers.find(m => m.storeId == restaurantId);
+        if (marker) {
+            // 確保標記可見
+            marker.setVisible(true);
+            
+            // 移動地圖視角到標記位置
+            map.setCenter(marker.getPosition());
+            map.setZoom(16);
+            
+            // 觸發標記的點擊事件
+            google.maps.event.trigger(marker, 'click');
+        } else {
+            // 如果找不到標記，直接從stores數據中獲取餐廳信息
+            const store = stores.find(s => s.id == restaurantId);
+            if (store && store.latitude && store.longitude) {
+                const storeLocation = { 
+                    lat: parseFloat(store.latitude), 
+                    lng: parseFloat(store.longitude) 
+                };
+                
+                // 移動地圖到餐廳位置
+                map.setCenter(storeLocation);
+                map.setZoom(16);
+                
+                // 顯示餐廳信息
+                showRestaurantModal(store);
+            } else {
+                console.error('找不到餐廳資料或位置資訊');
+            }
+        }
+    });
+    
+    // 🔍 自動完成建議 + 高亮關鍵字
+    $('#search-input').on('input', function () {
+        const keyword = $(this).val().trim().toLowerCase();
+        const suggestionBox = $('#autocomplete-suggestions');
+        suggestionBox.empty();
+        if (keyword.length === 0) {
+            suggestionBox.hide();
+            return;
+        }
+        const matched = stores.filter(store =>
+            store.name.toLowerCase().includes(keyword) ||
+            store.address.toLowerCase().includes(keyword)
+        );
+        if (matched.length === 0) {
+            suggestionBox.hide();
+            return;
+        }
+        matched.slice(0, 8).forEach(store => {
+            // 👉 高亮店名和地址中的關鍵字
+            const highlight = (text) => {
+                const regex = new RegExp(`(${keyword})`, 'gi');
+                return text.replace(regex, '<b>$1</b>');
+            };
+            const suggestionItem = $(`
+                <li class="list-group-item list-group-item-action">
+                    ${highlight(store.name)} - ${highlight(store.address)}
+                </li>
+            `);
+            suggestionItem.on('click', function () {
+                $('#search-input').val(store.name);
+                suggestionBox.hide();
+                displaySearchResults([store]);
+            });
+            suggestionBox.append(suggestionItem);
+        });
+        suggestionBox.show();
+    });
+    
+    // 🔍 點擊其他地方時隱藏建議清單
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('#search-input').length &&
+            !$(e.target).closest('#autocomplete-suggestions').length) {
+            $('#autocomplete-suggestions').hide();
+        }
+    });
+});
+</script>
+
+<!-- Contact Javascript File -->
+<script src="mail/jqBootstrapValidation.min.js"></script>
+<script src="mail/contact.js"></script>
+
+<!-- Template Javascript -->
+<script src="js/main.js"></script>
+</body>
+</html>
