@@ -17,7 +17,7 @@ import com.entity.MemberVO;
 import com.entity.OrganizationVO;
 
 @Service("memberService")
-public class MemberService {
+public class MemberRegistAndLoginService {
     @Autowired
     private MemberRepository memberRepository;
 
