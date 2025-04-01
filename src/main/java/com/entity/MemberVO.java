@@ -55,11 +55,12 @@ public class MemberVO implements Serializable {
     private String account;
     @Size(min = 6, message = "密碼長度至少需為 6 位")
     private String password;
-    private Integer pointsBalance= 0;
-    private Integer unclaimedMealCount= 1;
-    private Integer accStat= 0;
-    @Column(name = "reviewed", columnDefinition = "TINYINT(1)")
-    private Integer reviewed= 0; 
+
+    private Integer pointsBalance;
+    private Integer unclaimedMealCount;
+    private Integer accStat;
+    private Integer reviewed; 
+
 
  
     public Integer getMemberId() {
