@@ -1,4 +1,4 @@
-package com.dona.model;
+package com.frontservice;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -10,48 +10,52 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.backstage.backstagrepository.DonorRepository;
+import com.dona.model.DonaReq;
+import com.entity.DonaVO;
+
 
 
 @Service("donaService")
 public class DonaService {
 
     @Autowired
-    private DonaRepository donaRepository;
+    private DonorRepository donorRepository;
 
     // 查詢所有紀錄
-    public List<Dona> getAllDonas() {
-        return donaRepository.findAll(); // 使用 JPA 查詢所有紀錄
+    public List<DonaVO> getAllDonas() {
+        return donorRepository.findAll(); // 使用 JPA 查詢所有紀錄
     }
 
     // 根據 donationRecordId 查詢單筆紀錄
-    public Dona findById(Integer donationRecordId) {
-        return donaRepository.findById(donationRecordId).orElse(null);
+    public DonaVO findById(Integer donationRecordId) {
+        return donorRepository.findById(donationRecordId).orElse(null);
     }
 
     // 新增捐款紀錄
-    public Dona insertDona(DonaReq donaReq) {
-        Dona dona = convertToDona(donaReq); // 轉換 DonaReq 為 Dona
+    public DonaVO insertDona(DonaReq donaReq) {
+    	DonaVO dona = convertToDona(donaReq); // 轉換 DonaReq 為 DonaVO
         dona.setCreatedTime(new Timestamp(System.currentTimeMillis())); // 設置建立時間
-        return donaRepository.save(dona); // 儲存到資料庫
+        return donorRepository.save(dona); // 儲存到資料庫
     }
 
     // 更新捐款紀錄
-    public Dona updateDona(Integer donationRecordId, DonaReq donaReq) {
-        return donaRepository.findById(donationRecordId).map(existingDona -> {
-            updateFromDonaReq(existingDona, donaReq); // 更新資料欄位
-            existingDona.setCreatedTime(new Timestamp(System.currentTimeMillis())); // 更新時間
-            return donaRepository.save(existingDona); // 保存更新後的資料
+    public DonaVO updateDona(Integer donationRecordId, DonaReq donaReq) {
+        return donorRepository.findById(donationRecordId).map(existingdonorRepository -> {
+            updateFromDonaReq(existingdonorRepository, donaReq); // 更新資料欄位
+            existingdonorRepository.setCreatedTime(new Timestamp(System.currentTimeMillis())); // 更新時間
+            return donorRepository.save(existingdonorRepository); // 保存更新後的資料
         }).orElse(null);
     }
 
     // 刪除捐款紀錄
     public void deleteDona(Integer donationRecordId) {
-        donaRepository.deleteById(donationRecordId); // 使用 JPA 刪除紀錄
+    	donorRepository.deleteById(donationRecordId); // 使用 JPA 刪除紀錄
     }
 
-    // 將 DonaReq 轉換為 Dona
-    private Dona convertToDona(DonaReq donaReq) {
-        Dona dona = new Dona();
+    // 將 DonaReq 轉換為 DonaVO
+    private DonaVO convertToDona(DonaReq donaReq) {
+    	DonaVO dona = new DonaVO();
         dona.setIdentityData(donaReq.getIdentityData());
         dona.setDonationIncome(donaReq.getDonationIncome());
         dona.setEmail(donaReq.getEmail());
@@ -71,8 +75,8 @@ public class DonaService {
         return dona;
     }
 
-    // 更新已有的 Dona 實體
-    private void updateFromDonaReq(Dona dona, DonaReq donaReq) {
+    // 更新已有的 DonaVO 實體
+    private void updateFromDonaReq(DonaVO dona, DonaReq donaReq) {
         dona.setIdentityData(donaReq.getIdentityData());
         dona.setDonationIncome(donaReq.getDonationIncome());
         dona.setEmail(donaReq.getEmail());
@@ -106,7 +110,7 @@ public class DonaService {
         }
         
      // 搜索捐款紀錄（根據條件篩選）
-        public List<Dona> searchDonas(DonaReq donaReq, Timestamp startTime, Timestamp endTime) {
+        public List<DonaVO> searchDonas(DonaReq donaReq, Timestamp startTime, Timestamp endTime) {
         	if (donaReq.getSalutation() == null || donaReq.getSalutation().isBlank()) {
                 return List.of(); // 必填：捐款抬頭
             }
@@ -117,7 +121,7 @@ public class DonaService {
                 return List.of(); // 沒有填身分證也沒填統編，視為無效查詢
             }
 
-            return donaRepository.findBySalutationAndIdOrGui(
+            return donorRepository.findBySalutationAndIdOrGui(
                     donaReq.getSalutation(),
                     donaReq.getIdNum(),
                     donaReq.getGuiNum(),

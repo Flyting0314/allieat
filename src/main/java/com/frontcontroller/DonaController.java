@@ -1,15 +1,12 @@
-package com.dona.controller;
+package com.frontcontroller;
 import java.sql.Timestamp;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.SmartValidator;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,16 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.dona.model.Dona;
+import com.entity.DonaVO;
 import com.dona.model.DonaReq;
 import com.dona.model.DonaReq.StepOne;
 import com.dona.model.DonaReq.StepTwo;
-import com.dona.model.DonaService;
+import com.frontservice.DonaService;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @Controller
@@ -71,7 +66,7 @@ public class DonaController {
 	// 列出所有捐款紀錄
 	@GetMapping("/list")
 	public String getAllDonas(Model model) {
-		List<Dona> donaList = donaService.getAllDonas();
+		List<DonaVO> donaList = donaService.getAllDonas();
 		model.addAttribute("donaList", donaList);
 		return "dona/listAllDona";
 	}
@@ -177,8 +172,8 @@ public class DonaController {
         }
         System.out.println("✅ 信用卡驗證成功，準備儲存捐款");
         // 儲存捐款資料（不儲存信用卡信息）
-     // 儲存並回傳真正的 Dona 實體
-        Dona savedDona = donaService.insertDona(donaReq);
+     // 儲存並回傳真正的 DonaVO 實體
+        DonaVO savedDona = donaService.insertDona(donaReq);
         System.out.println("🚀 前往成功頁面 dona = " + savedDona);
        
         redirectAttributes.addFlashAttribute("dona", savedDona);
@@ -191,7 +186,7 @@ public class DonaController {
     }   
   //最後捐完顯示
   	@GetMapping("/donaAddOne")
-  	public String showDonaSuccessPage(@ModelAttribute("dona") Dona dona, Model model, SessionStatus status) {
+  	public String showDonaSuccessPage(@ModelAttribute("dona") DonaVO dona, Model model, SessionStatus status) {
   		 
   		System.out.println("======跳轉到 donaAddOneF.html 準備中...======");
   		
@@ -222,7 +217,7 @@ public class DonaController {
 	// 顯示修改表單
 	@GetMapping("/update/{donationRecordId}")
 	public String showUpdateForm(@PathVariable Integer donationRecordId, Model model) {
-		Dona dona = donaService.findById(donationRecordId);
+		DonaVO dona = donaService.findById(donationRecordId);
 		DonaReq donaReq = new DonaReq();
 		if (dona != null) {
 			donaReq.setDonationRecordId(dona.getDonationRecordId());
@@ -293,7 +288,7 @@ public class DonaController {
             return "dona/donaAddD"; // 提前 return
         }
         // 根據條件進行查詢
-        List<Dona> filteredDonaList = donaService.searchDonas(donaReq, startTime, endTime);
+        List<DonaVO> filteredDonaList = donaService.searchDonas(donaReq, startTime, endTime);
         model.addAttribute("donaList", filteredDonaList); // 添加篩選結果到 Model
         return "dona/donaAddD"; // 返回查詢結果頁面
     }
@@ -336,7 +331,7 @@ public class DonaController {
     
     @PostMapping("/getOne")
     public String getOneDona(@RequestParam Integer donationRecordId, Model model) {
-        Dona dona = donaService.findById(donationRecordId);
+    	DonaVO dona = donaService.findById(donationRecordId);
         if (dona != null) {
             model.addAttribute("dona", dona); // 如果找到資料，將資料添加到 Model
         } else {
