@@ -16,7 +16,7 @@ public interface DonorRepository extends JpaRepository<DonaVO, Integer> {
     long countDonorLastMonth();
     
  // 如果需要自定義查詢，這裡可以加入 JPQL 或 Native Query
- 	@Query("SELECT d FROM Dona d WHERE "
+ 	@Query("SELECT d FROM DonaVO d WHERE "
  	         + "(:salutation IS NULL OR d.salutation = :salutation) AND "
  	         + "(:idNum IS NULL OR d.idNum = :idNum) AND "
  	         + "(:guiNum IS NULL OR d.guiNum = :guiNum) AND "
@@ -31,7 +31,7 @@ public interface DonorRepository extends JpaRepository<DonaVO, Integer> {
  	
  	
  	
- 	@Query("SELECT d FROM Dona d WHERE "
+ 	@Query("SELECT d FROM DonaVO d WHERE "
  		     + "(:salutation IS NOT NULL AND d.salutation = :salutation) AND "
  		     + "((:idNum IS NOT NULL AND d.idNum = :idNum) OR (:guiNum IS NOT NULL AND d.guiNum = :guiNum))")
  		List<DonaVO> findBySalutationAndEitherIdNumOrGuiNum(@Param("salutation") String salutation,
@@ -39,7 +39,7 @@ public interface DonorRepository extends JpaRepository<DonaVO, Integer> {
  		                                                  @Param("guiNum") String guiNum);
  	
  	
- 	@Query("SELECT d FROM Dona d WHERE " +
+ 	@Query("SELECT d FROM DonaVO d WHERE " +
  		       "(:salutation IS NULL OR d.salutation = :salutation) AND " +
  		       "(:idNum IS NOT NULL AND d.idNum = :idNum OR " +
  		       " :guiNum IS NOT NULL AND d.guiNum = :guiNum) AND " +
