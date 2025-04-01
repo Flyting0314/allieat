@@ -1663,42 +1663,78 @@ $(document).ready(function() {
     });
     
     // 🔍 自動完成建議 + 高亮關鍵字
-    $('#search-input').on('input', function () {
-        const keyword = $(this).val().trim().toLowerCase();
-        const suggestionBox = $('#autocomplete-suggestions');
-        suggestionBox.empty();
-        if (keyword.length === 0) {
+   // 🔍 自動完成建議 + 高亮關鍵字 + 自動導航
+$('#search-input').on('input', function () {
+    const keyword = $(this).val().trim().toLowerCase();
+    const suggestionBox = $('#autocomplete-suggestions');
+    suggestionBox.empty();
+    if (keyword.length === 0) {
+        suggestionBox.hide();
+        return;
+    }
+    const matched = stores.filter(store =>
+        store.name.toLowerCase().includes(keyword) ||
+        store.address.toLowerCase().includes(keyword)
+    );
+    if (matched.length === 0) {
+        suggestionBox.hide();
+        return;
+    }
+    matched.slice(0, 8).forEach(store => {
+        // 👉 高亮店名和地址中的關鍵字
+        const highlight = (text) => {
+            const regex = new RegExp(`(${keyword})`, 'gi');
+            return text.replace(regex, '<b>$1</b>');
+        };
+        const suggestionItem = $(`
+            <li class="list-group-item list-group-item-action">
+                ${highlight(store.name)} - ${highlight(store.address)}
+            </li>
+        `);
+        suggestionItem.on('click', function () {
+            $('#search-input').val(store.name);
             suggestionBox.hide();
-            return;
-        }
-        const matched = stores.filter(store =>
-            store.name.toLowerCase().includes(keyword) ||
-            store.address.toLowerCase().includes(keyword)
-        );
-        if (matched.length === 0) {
-            suggestionBox.hide();
-            return;
-        }
-        matched.slice(0, 8).forEach(store => {
-            // 👉 高亮店名和地址中的關鍵字
-            const highlight = (text) => {
-                const regex = new RegExp(`(${keyword})`, 'gi');
-                return text.replace(regex, '<b>$1</b>');
+            displaySearchResults([store]);
+
+            const destination = {
+                lat: parseFloat(store.latitude),
+                lng: parseFloat(store.longitude)
             };
-            const suggestionItem = $(`
-                <li class="list-group-item list-group-item-action">
-                    ${highlight(store.name)} - ${highlight(store.address)}
-                </li>
-            `);
-            suggestionItem.on('click', function () {
-                $('#search-input').val(store.name);
-                suggestionBox.hide();
-                displaySearchResults([store]);
-            });
-            suggestionBox.append(suggestionItem);
+
+            // 更新 selectRestaurant，這樣右側餐廳資訊才能正確顯示
+            selectRestaurant = {
+                name: store.name,
+                address: store.address,
+                phoneNumber: store.phone || store.phoneNumber,
+                rating: store.rating || 4.5,
+                location: destination,
+                id: store.id,
+                category: store.category || '餐飲',
+                tags: store.tags || ['愛心合作店']
+            };
+
+            // 顯示側欄資訊
+            updateRestaurantInfo(selectRestaurant);
+
+            // 找到標記並觸發點擊
+            const marker = markers.find(m => m.storeId == store.id);
+            if (marker) {
+                map.setCenter(marker.getPosition());
+                map.setZoom(16);
+                google.maps.event.trigger(marker, 'click');
+            }
+
+            // 顯示導航
+            if (destination && currentPosition) {
+                showRouteInMap(destination, store.name);
+            }
         });
-        suggestionBox.show();
+
+        suggestionBox.append(suggestionItem);
     });
+    suggestionBox.show();
+});
+
     
     // 🔍 點擊其他地方時隱藏建議清單
     $(document).on('click', function (e) {
