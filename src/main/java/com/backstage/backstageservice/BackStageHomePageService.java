@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public interface BackStageHomePageService {
-//    ResponseEntity<Map<String, Object>> getInitData();
+
     ResponseEntity<Map<String, Object>> getTotalDonations();
     ResponseEntity<Map<String, Object>>getTotalDonors();
     ResponseEntity<Map<String, Object>> getMonthlyDonations();

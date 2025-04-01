@@ -46,8 +46,7 @@ public class MemberVO implements Serializable {
     private Integer pointsBalance;
     private Integer unclaimedMealCount;
     private Integer accStat;
-    @Column(name = "reviewed", columnDefinition = "TINYINT(1)")
-    private Boolean reviewed; 
+    private Integer reviewed; 
 
  
     public Integer getMemberId() {
@@ -156,10 +155,10 @@ public class MemberVO implements Serializable {
         this.accStat = accStat;
     }
 
-    public Boolean getReviewed() {
+    public Integer getReviewed() {
         return reviewed;
     }
-    public void setReviewed(Boolean reviewed) {
+    public void setReviewed(Integer reviewed) {
         this.reviewed = reviewed;
     }
 	public Set<PayDetailVO> getPayDetail() {
