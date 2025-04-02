@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f5f5f5;
@@ -5,6 +9,7 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
+    overflow-y: scroll;
 }
 .header-container {
     background: linear-gradient(135deg, #3a6186, #89253e);
@@ -20,29 +25,44 @@ body {
 }
 .side-bar {
     background-color: #2c3e50;
-    color: white;
-    padding: 15px;
+    color: white !important;
+    padding: 20px;
     height: 100vh;
     font-size: 18px;
     border-radius: 8px;
 }
 .side-bar a {
     display: block;
-    color: white;
+    color: white !important;
     text-decoration: none;
-    margin: 15px 0;
+    margin: 10px 0;
     padding: 8px;
     transition: background 0.3s;
 }
 .side-bar a:hover {
     background-color: #34495e;
+    text-decoration: underline;
+}
+.side-bar h4 {
+    font-weight: bold;
+    background-color: #34495e;
+    border-left: 4px solid #f1c40f;
+    padding: 8px 12px;
+    margin-bottom: 30px;
+    border-radius: 4px;
 }
 .card {
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: white;
 }
 .card-body {
     border-radius: 8px;
+}
+.card-header {
+    background: linear-gradient(to right, #3a6186, #89253e);
+    color: white;
+    font-weight: bold;
 }
 .table {
     background-color: white;
@@ -62,6 +82,15 @@ body {
     text-align: center;
     border-bottom: 1px solid #eaeaea;
 }
+.table .thead-light th {
+    color: white;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+.pagination {
+    justify-content: center;
+    margin-top: 20px;
+}
 .pagination .page-link {
     color: #007bff;
 }
@@ -79,8 +108,11 @@ body {
 }
 .btn-primary {
     background-color: #3498db;
+    border: none;
 }
-
+.btn-primary:hover {
+    background-color: #2980b9;
+}
 .login-container {
     max-width: 400px;
     margin: 80px auto;
@@ -100,68 +132,44 @@ body {
     border-radius: 8px 8px 0 0;
     font-size: 20px;
 }
-.btn-primary {
-    background-color: #3498db;
-    border: none;
-}
-.btn-primary:hover {
-    background-color: #2980b9;
-}
 .error-msg {
     color: red;
     font-weight: bold;
     text-align: center;
     margin-top: 10px;
 }
-
-
-/* for backstage_unit_management */
-.side-bar {
-    /* background-color: #f8f9fa; */
-    padding: 20px;
-    height: 100vh;
-    color: white !important; /* 確保整個 side-bar 內的所有文字為白色 */
+.badge-success {
+    background-color: #28a745;
 }
-
-
-
-/* 確保 a 連結是白色 */
-.side-bar a {
-    display: block;
-    margin: 10px 0;
-    color: white !important;
-    text-decoration: none;
+.badge-warning {
+    background-color: #ffc107;
+    color: black;
 }
-
-/* 確保 hover 時仍然是白色 */
-.side-bar a:hover {
-    text-decoration: underline;
-    color: white !important;
+.badge-secondary {
+    background-color: #6c757d;
 }
-
-.table .thead-light th {
-    color: white;
-    background-color: #e9ecef;
-    border-color: #dee2e6;
-}
-.side-bar h4 {
-    font-weight: bold;
-    background-color: #34495e;
-    border-left: 4px solid #f1c40f; /* 左側黃色線條，和 active 一樣 */
-    padding: 8px 12px;
-    margin-bottom: 30px;
-    border-radius: 4px;
-}
-
 .arrow-group {
     font-size: 0.8rem;
     margin-left: 4px;
     color: #aaa;
 }
-
 .arrow-group .active {
     color: black;
     font-weight: bold;
 }
+.search-bar input {
+    border-radius: 6px;
+    padding: 6px 12px;
+    border: none;
+    width: 250px;
+}
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
 
+/*body {*/
+/*    overflow-y: scroll;*/
+/*}*/
