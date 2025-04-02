@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
       tdAction.classList.add("text-center", "align-middle"); //  讓按鈕置中對齊
 
       let editBtn = document.createElement("a");
-      editBtn.href = `./edit_unit.html?id=${item.organizationId}`;//這裡是準備修改的頁面
+      editBtn.href = `./backstage_unit_management_update.html?id=${item.organizationId}`;//傳id到下一頁
       editBtn.classList.add("btn", "btn-sm", "btn-primary");
       editBtn.textContent = "修改";
 

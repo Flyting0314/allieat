@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>攏呷霸 - 新增在冊單位</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/style_backstage.css">
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- 左側側邊欄 -->
+        <div class="col-md-2 side-bar">
+            <h4>在冊單位管理</h4>
+            <a href="./backstage_homepage.html">後台首頁</a>
+            <a href="#">合作店家管理</a>
+            <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#recipientSubMenu" aria-expanded="false">
+                受助者管理 <i class="fas fa-angle-down float-right mt-1"></i>
+            </a>
+            <div class="collapse" id="recipientSubMenu">
+                <div class="sub-menu">
+                    <a href="#" class="sub-item">受助者管理</a>
+                    <a href="#" class="sub-item">受助者點數發放</a>
+                </div>
+            </div>
+            <a href="#" class="active">在冊單位管理</a>
+            <a href="#">捐款管理</a>
+            <a href="#">未領餐紀錄</a>
+        </div>
+
+        <!-- 主內容 -->
+        <div class="col-md-10">
+            <div class="card mt-4">
+                <div class="card-header">新增在冊單位</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="orgName">組織名稱</label>
+                        <input type="text" class="form-control" id="orgName" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="orgType">單位性質</label>
+                        <input type="text" class="form-control" id="orgType" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="orgStatus">啟用狀態</label>
+                        <select class="form-control" id="orgStatus">
+                            <option value="1">啟用</option>
+                            <option value="0">停用</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-start mt-4">
+                        <button class="btn btn-success mr-2" onclick="submitNew()">新增</button>
+                        <button class="btn btn-secondary" onclick="goBack()">返回</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- JWT 驗證 -->
+<script src="./js/backstage_auth_js.js"></script>
+
+
+<script src="./js/backstage_unt_management_new_js.js"></script>
+
+</body>
+</html>
