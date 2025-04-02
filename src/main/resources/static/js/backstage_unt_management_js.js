@@ -5,13 +5,15 @@ document.addEventListener("DOMContentLoaded", function () {
   const baseURL = window.location.origin;
   const apiUri = `${baseURL}/backStage/orgManage`;
   let allData = [];  // 存放從後端獲取的所有資料
+  let filteredData = []; // 搜尋結果用
   let currentPage = 1;
   let pageSize = parseInt(pageSizeSelect.value);
   let currentSortField = null;
   let currentSortOrder = "asc"; // or "desc"
   const toggle = document.querySelector(".collapsible-menu");
   const target = document.querySelector("#recipientSubMenu");
- //側邊欄位切換
+
+  // 側邊欄位切換
   toggle.addEventListener("click", function () {
     const isExpanded = toggle.getAttribute("aria-expanded") === "true";
     toggle.setAttribute("aria-expanded", !isExpanded);
@@ -19,22 +21,17 @@ document.addEventListener("DOMContentLoaded", function () {
     target.classList.toggle("show");
   });
 
-
   ["name", "type", "createdTime", "status"].forEach(f => {
     const el = document.getElementById(`sort-${f}`);
     if (el) el.innerHTML = "▲▼";
   });
 
-
   document.querySelectorAll("th[data-sort-field]").forEach(th => {
-    console.log("綁定點擊事件到：", th);
     th.addEventListener("click", function () {
       const field = this.getAttribute("data-sort-field");
-      console.log("你點了欄位：", field); // ← 點了就會印出來
       sortData(field);
     });
   });
-
 
   function sortData(field) {
     if (currentSortField === field) {
@@ -44,7 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
       currentSortOrder = "asc";
     }
 
-    allData.sort((a, b) => {
+    const data = filteredData.length ? filteredData : allData;
+
+    data.sort((a, b) => {
       let aValue = a[field];
       let bValue = b[field];
 
@@ -61,12 +60,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     renderTable(getPageData(currentPage, pageSize));
     renderPagination();
+
     // 清除所有欄位箭頭
     ["name", "type", "createdTime", "status"].forEach(f => {
       const el = document.getElementById(`sort-${f}`);
-      if (el) {
-        el.innerHTML = "▲▼"; // 重設所有欄位的箭頭
-      }
+      if (el) el.innerHTML = "▲▼";
     });
 
     const currentEl = document.getElementById(`sort-${field}`);
@@ -75,66 +73,62 @@ document.addEventListener("DOMContentLoaded", function () {
           ? "<strong>▲</strong>▼"
           : "▲<strong>▼</strong>";
     }
-
   }
 
   async function fetchData() {
     try {
-      const response = await authFetch( apiUri);//call api 位置
+      const response = await authFetch(apiUri); // call api 位置
       if (!response.ok) {
         throw new Error("HTTP 錯誤，狀態碼：" + response.status);
       }
 
       const result = await response.json(); // 接收整體 JSON 物件
       allData = result.orgInitDataList || [];  // 取出陣列部分
-      // renderTable(getPageData(currentPage, pageSize));
-      // renderPagination();
       sortData("createdTime");
     } catch (error) {
       console.error("載入資料時發生錯誤：", error);
     }
   }
 
-
-  function getPageData(page, limit) {
-    if (limit === "all") return allData;  // 如果選擇 "全部" 則顯示所有資料
+  function getPageData(page, limit, data = filteredData.length ? filteredData : allData) {
+    if (limit === "all") return data;  // 如果選擇 "全部" 則顯示所有資料
     const startIndex = (page - 1) * limit;
-    return allData.slice(startIndex, startIndex + limit);
+    return data.slice(startIndex, startIndex + limit);
   }
-  
+
   function pad(n) {
     return n.toString().padStart(2, '0');
   }
 
+
   function renderTable(data) {
     dataBody.innerHTML = "";
+    // console.log(data);
     data.forEach(item => {
       const tr = document.createElement("tr");
-
-
+      console.log(item.organizationId);
+      // 組織名稱欄
       let tdName = document.createElement("td");
       tdName.textContent = item.name;
       tr.appendChild(tdName);
 
+      // 單位性質欄
       let tdType = document.createElement("td");
       tdType.textContent = item.type;
       tr.appendChild(tdType);
 
+      // 註冊時間欄（格式化顯示）
       let tdCreated = document.createElement("td");
-	  const date = new Date(item.createdTime);
-	  const formattedDate = `${date.getFullYear()}
-	  						/${pad(date.getMonth() + 1)}
-							/${pad(date.getDate())}  
-							${pad(date.getHours())}
-							: ${pad(date.getMinutes())}
-							: ${pad(date.getSeconds())}`;
-	  tdCreated.textContent = formattedDate;
+      const date = new Date(item.createdTime);
+      const formattedDate = `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())}  ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+      tdCreated.textContent = formattedDate;
       tr.appendChild(tdCreated);
 
+      // 啟用狀態欄（加上 badge 樣式）
       let tdStatus = document.createElement("td");
       let badge = document.createElement("span");
       badge.classList.add("badge", "badge-status");
-      if (item.status === "1"||item.status ===1) {
+      if (item.status === "1" || item.status === 1) {
         badge.classList.add("badge-success");
         badge.textContent = "啟用";
       } else {
@@ -144,18 +138,27 @@ document.addEventListener("DOMContentLoaded", function () {
       tdStatus.appendChild(badge);
       tr.appendChild(tdStatus);
 
+      // 操作欄（新增：修改按鈕）
+      let tdAction = document.createElement("td");
+      tdAction.classList.add("text-center", "align-middle"); //  讓按鈕置中對齊
+
+      let editBtn = document.createElement("a");
+      editBtn.href = `./edit_unit.html?id=${item.organizationId}`;//這裡是準備修改的頁面
+      editBtn.classList.add("btn", "btn-sm", "btn-primary");
+      editBtn.textContent = "修改";
+
+      tdAction.appendChild(editBtn);
+      tr.appendChild(tdAction);
+      // 插入整列資料
       dataBody.appendChild(tr);
     });
   }
 
-
-
-
-  function renderPagination() {
+  function renderPagination(data = filteredData.length ? filteredData : allData) {
     pagination.innerHTML = "";
     if (pageSize === "all") return; // 顯示全部時不需要分頁
 
-    const totalPages = Math.ceil(allData.length / pageSize);
+    const totalPages = Math.ceil(data.length / pageSize);
     if (totalPages <= 1) return;
 
     let paginationHtml = `<li class="page-item ${currentPage === 1 ? "disabled" : ""}">
@@ -180,8 +183,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const newPage = parseInt(this.dataset.page);
         if (newPage >= 1 && newPage <= totalPages) {
           currentPage = newPage;
-          renderTable(getPageData(currentPage, pageSize));
-          renderPagination();
+          renderTable(getPageData(currentPage, pageSize, data));
+          renderPagination(data);
         }
       });
     });
@@ -192,9 +195,28 @@ document.addEventListener("DOMContentLoaded", function () {
     currentPage = 1; // 變更筆數後重置到第一頁
     renderTable(getPageData(currentPage, pageSize));
     renderPagination();
+  });
 
+  // 搜尋欄輸入事件（依 name 或 type）
+  document.getElementById("searchInput").addEventListener("input", function () {
+    const keyword = this.value.trim().toLowerCase();
+    if (keyword === "") {
+      filteredData = [];
+    } else {
+      filteredData = allData.filter(item =>
+          item.name.toLowerCase().includes(keyword) ||
+          item.type.toLowerCase().includes(keyword)
+      );
+    }
+
+    currentPage = 1;
+    if (currentSortField) {
+      sortData(currentSortField); // 套用目前排序
+    } else {
+      renderTable(getPageData(currentPage, pageSize));
+      renderPagination();
+    }
   });
 
   fetchData();
 });
-
