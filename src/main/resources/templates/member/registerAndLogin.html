@@ -66,7 +66,7 @@
             margin-bottom: 30px; /* Increased from 20px */
             line-height: 1.6;
         }
-        .membership-box a {
+        .membership-box button {
             background-color: #007bff;
             color: white;
             padding: 15px 30px; /* Larger button */
@@ -157,7 +157,7 @@
         <div class="membership-box">
             <h2>合作店家</h2>
             <p>申請成為提供待用餐的合作夥伴</p>
-            <a href="Instructions for use 2.html">註冊/登入</a>
+            <button type="button" class="df-button df-button-member" th:onclick="|location.href='@{/store/register}'|">註冊/登入</button>
         </div>
     </div>
     <!-- Membership Selection End -->

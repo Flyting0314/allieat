@@ -1,6 +1,9 @@
 package com.frontcontroller;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.backstage.backstagrepository.StoreRepository;
 import com.entity.StoreVO;
 import com.frontservice.StoreRegistAndLoginService;
 
@@ -29,24 +31,58 @@ public class StoreRegistAndLoginController {
     private StoreRegistAndLoginService storeService;
 
     @GetMapping("/register")
-    public String showRegisterPage(Model model, HttpSession session) {
+    public String registerPage(Model model, HttpSession session) {
         StoreVO store = (StoreVO) session.getAttribute("storeForm");
+
         if (store == null) {
             store = new StoreVO();
         }
         model.addAttribute("store", store);
+
+        // ✅ 確保表單驗證的錯誤訊息載入
+        BindingResult result = (BindingResult) session.getAttribute("formErrors");
+        if (result != null) {
+            model.addAttribute(BindingResult.MODEL_KEY_PREFIX + "store", result);
+            session.removeAttribute("formErrors"); // 清除 session 以避免錯誤殘留
+        }
+
+        // ✅ 確保所有錯誤訊息載入
+        model.addAttribute("photoError", session.getAttribute("photoError"));
+        model.addAttribute("agreeWarning", session.getAttribute("agreeWarning"));
+        model.addAttribute("error", session.getAttribute("error"));
+        session.removeAttribute("agreeWarning"); // ✅ 避免錯誤殘留
+        session.removeAttribute("photoError"); 
         return "store/storeRegister";
     }
 
     @PostMapping("/register")
-    public String handleRegister(@Valid @ModelAttribute("store") StoreVO store,
-                                 BindingResult result,
-                                 @RequestParam("photoFiles") MultipartFile[] photoFiles,
-                                 @RequestParam(value = "agreedToTerms", required = false) String agreedToTerms,
-                                 Model model,
-                                 HttpSession session) {
+    public String register(@Valid @ModelAttribute("store") StoreVO store,
+                           BindingResult result,
+                           @RequestParam("photoFiles") MultipartFile[] photoFiles,
+                           @RequestParam(value = "agreedToTerms", required = false) String agreedToTerms,
+                           Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return "store/storeRegister";
+            session.setAttribute("formErrors", result); // ✅ 保留錯誤訊息
+            session.setAttribute("storeForm", store);   // ✅ 保留填寫的資料
+            return "redirect:/store/register";
+        }
+
+        long validPhotoCount = Arrays.stream(photoFiles)
+                                     .filter(f -> f != null && !f.isEmpty())
+                                     .count();
+
+        if (!"true".equals(agreedToTerms)) {
+            session.setAttribute("agreeWarning", "請勾選同意使用須知"); // ✅ 存入 session
+            session.setAttribute("storeForm", store);  // ✅ 保留填寫的資料
+            return "redirect:/store/register";
+        }
+
+        
+
+        if (validPhotoCount < 3) {
+            session.setAttribute("photoError", "請上傳至少三張照片"); // ✅ 存入 session
+            session.setAttribute("storeForm", store);  // ✅ 保留填寫的資料
+            return "redirect:/store/register";
         }
 
         try {
@@ -54,37 +90,56 @@ public class StoreRegistAndLoginController {
             session.setAttribute("storeForm", preparedStore);
             return "redirect:/store/register/confirm";
         } catch (IllegalArgumentException | IOException e) {
-            model.addAttribute("error", e.getMessage());
-            return "store/storeRegister";
+            session.setAttribute("storeForm", store);  // ✅ 保留填寫的資料
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/store/register";
+        }
+    }
+    @PostMapping("/register/submit")
+    public String submitFinalRegister(HttpSession session, RedirectAttributes redirectAttributes) {
+        StoreVO store = (StoreVO) session.getAttribute("storeForm");
+        if (store == null || store.getStoreToPhoto().isEmpty()) {
+            return "redirect:/store/register";
+        }
+
+        try {
+            storeService.finalizeRegistration(store);
+            session.removeAttribute("storeForm");
+
+            // ✅ 傳遞 FlashAttribute 給 /register/confirm
+            redirectAttributes.addFlashAttribute("showModal", true);
+            return "redirect:/store/register/confirm";
+
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/store/register/confirm";
         }
     }
 
     @GetMapping("/register/confirm")
-    public String showConfirmPage(HttpSession session, Model model) {
+    public String confirmPage(HttpSession session, Model model) {
         StoreVO store = (StoreVO) session.getAttribute("storeForm");
         if (store == null) {
             return "redirect:/store/register";
         }
+
+        List<String> base64List = store.getStoreToPhoto().stream()
+            .map(photo -> {
+                byte[] bytes = photo.getPhotoSrc();
+                return (bytes != null && bytes.length > 0) ?
+                        "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes) : "";
+            })
+            .toList();
+
         model.addAttribute("store", store);
+        model.addAttribute("photoBase64List", base64List);
+
+        // ✅ 從 FlashAttribute 讀取 showModal
+        if (model.containsAttribute("showModal")) {
+            model.addAttribute("showModal", true);
+        }
+
+       
         return "store/storeRegisterConF";
     }
-
-    @PostMapping("/register/submit")
-    public String finalizeRegistration(HttpSession session, RedirectAttributes redirectAttributes) {
-        StoreVO store = (StoreVO) session.getAttribute("storeForm");
-        if (store == null) {
-            return "redirect:/store/register";
-        }
-
-        storeService.finalizeRegistration(store);
-        session.removeAttribute("storeForm");
-        redirectAttributes.addFlashAttribute("success", "註冊成功，請等待審核");
-        return "redirect:/store/registerAndLogin";
-    }
-
-    @GetMapping("/registerAndLogin")
-    public String registerAndLoginPage() {
-        return "store/registerAndLogin";
-    }
 }
-
