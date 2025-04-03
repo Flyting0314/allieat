@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +21,8 @@ public class StoreRegistAndLoginService {
 
     @Autowired
     private PhotoRepository photoRepository;
+    
+
 
     public StoreVO prepareStoreForSession(StoreVO store, MultipartFile[] photoFiles, String agreedToTerms) throws IOException {
         if (!"true".equals(agreedToTerms)) {
@@ -32,7 +33,8 @@ public class StoreRegistAndLoginService {
             throw new IllegalArgumentException("信箱已註冊，請使用其他信箱");
         }
 
-        // 儲存圖片資訊至 PhotoVO (byte[] 儲存)
+
+     // 儲存圖片資訊至 PhotoVO (byte[] 儲存)
         Set<PhotoVO> photoSet = new HashSet<>();
         for (MultipartFile file : photoFiles) {
             if (file != null && !file.isEmpty()) {
@@ -41,6 +43,10 @@ public class StoreRegistAndLoginService {
                 photo.setStore(store); // 尚未存進 DB，但已建立雙向關聯
                 photoSet.add(photo);
             }
+        }
+     // ✅ 如果使用者沒有上傳照片，仍然建立空集合
+        if (photoSet.isEmpty()) {
+            throw new IllegalArgumentException("請上傳至少三張照片");
         }
 
         store.setStoreToPhoto(photoSet);
