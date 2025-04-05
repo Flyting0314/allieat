@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
@@ -80,6 +80,20 @@
         .membership-box a:hover {
             background-color: #0056b3;
         }
+        /* 按鈕容器樣式 */
+        .verification_back_btn {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: white;
+            color: #666;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -152,14 +166,18 @@
         <div class="membership-box">
             <h2>受助者</h2>
             <p>註冊會員至合作店家領取待用餐</p>
-            <button type="button" class="df-button df-button-member" th:onclick="|location.href='@{/member/register}'|">註冊/登入</button>
+            <button type="button" class="df-button df-button-member" th:onclick="|location.href='@{/registerAndLogin/register/member/register}'|">申請註冊</button>
         </div>
         <div class="membership-box">
             <h2>合作店家</h2>
             <p>申請成為提供待用餐的合作夥伴</p>
-            <button type="button" class="df-button df-button-member" th:onclick="|location.href='@{/store/register}'|">註冊/登入</button>
+            <button type="button" class="df-button df-button-member" th:onclick="|location.href='@{/registerAndLogin/register/store/register}'|">申請註冊</button>
         </div>
     </div>
+    
+                <button type="button" class="verification_back_btn" th:onclick="|location.href='@{/registerAndLogin/login}'|">上一頁</button>
+                
+            
     <!-- Membership Selection End -->
 
 
@@ -208,7 +226,7 @@
             </div>
         </div>
         <div class="container-fluid text-center text-white border-top mt-4 py-4 px-sm-3 px-md-5" style="border-color: rgba(256, 256, 256, .1) !important;">
-            <p class="mb-2 text-white">版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>. 保留所有權利</a></p>
+            <p class="mb-2 text-white">版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>. 保留所有權利</p>
             <p class="m-0 text-white">網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司 設計部 設計</a></p>
         </div>
     </div>

@@ -151,16 +151,23 @@
 </div>
 
         <div class="confirm-photo-preview">
-            <div class="confirm-photo-item" th:each="base64, iterStat : ${photoBase64List}">
-    <span class="confirm-photo-label" th:switch="${iterStat.index}">
-        <span th:case="0">店家封面照：</span>
-        <span th:case="1">廚房環境照：</span>
-        <span th:case="2">店面環境照：</span>
-        <span th:case="*">其他照片：</span>
-    </span>
-    <img th:attr="src=${base64}" alt="店家圖片" />
+    <div class="confirm-photo-item" th:each="photo : ${photoList}">
+<!--     <span class="confirm-photo-label" th:switch="${iterStat.index}"> -->
+<!--         <span th:case="0">店家封面照：</span> -->
+<!--         <span th:case="1">廚房環境照：</span> -->
+<!--         <span th:case="2">店面環境照：</span> -->
+<!--         <span th:case="*">其他照片：</span> -->
+<!--     </span> -->
+<!--     <img th:attr="src=${base64}" alt="店家圖片" /> -->
+<span class="confirm-photo-label" th:switch="${photo.photoType}">
+            <span th:case="'COVER'">店家封面照：</span>
+            <span th:case="'KITCHEN'">廚房環境照：</span>
+            <span th:case="'STORE'">店面環境照：</span>
+            <span th:case="*">其他照片：</span>
+        </span>
+        <img th:src="${photo.src}" alt="店家圖片" />
+    </div>
 </div>
-        </div>
 
         <div class="confirm-buttons">
             <a href="javascript:history.back();"><button type="button">返回修改</button></a>
