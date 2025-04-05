@@ -3,7 +3,9 @@ package com.frontcontroller;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +26,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/store")
+@RequestMapping("/registerAndLogin/register/store")
 public class StoreRegistAndLoginController {
 
     @Autowired
@@ -52,7 +54,7 @@ public class StoreRegistAndLoginController {
         model.addAttribute("error", session.getAttribute("error"));
         session.removeAttribute("agreeWarning"); // ✅ 避免錯誤殘留
         session.removeAttribute("photoError"); 
-        return "store/storeRegister";
+        return "registerAndLogin/storeRegister";
     }
 
     @PostMapping("/register")
@@ -64,7 +66,7 @@ public class StoreRegistAndLoginController {
         if (result.hasErrors()) {
             session.setAttribute("formErrors", result); // ✅ 保留錯誤訊息
             session.setAttribute("storeForm", store);   // ✅ 保留填寫的資料
-            return "redirect:/store/register";
+            return "redirect:/registerAndLogin/register/store/register";
         }
 
         long validPhotoCount = Arrays.stream(photoFiles)
@@ -74,7 +76,7 @@ public class StoreRegistAndLoginController {
         if (!"true".equals(agreedToTerms)) {
             session.setAttribute("agreeWarning", "請勾選同意使用須知"); // ✅ 存入 session
             session.setAttribute("storeForm", store);  // ✅ 保留填寫的資料
-            return "redirect:/store/register";
+            return "redirect:/registerAndLogin/register/store/register";
         }
 
         
@@ -82,24 +84,24 @@ public class StoreRegistAndLoginController {
         if (validPhotoCount < 3) {
             session.setAttribute("photoError", "請上傳至少三張照片"); // ✅ 存入 session
             session.setAttribute("storeForm", store);  // ✅ 保留填寫的資料
-            return "redirect:/store/register";
+            return "redirect:/registerAndLogin/register/store/register";
         }
 
         try {
             StoreVO preparedStore = storeService.prepareStoreForSession(store, photoFiles, agreedToTerms);
             session.setAttribute("storeForm", preparedStore);
-            return "redirect:/store/register/confirm";
+            return "redirect:/registerAndLogin/register/store/register/confirm";
         } catch (IllegalArgumentException | IOException e) {
             session.setAttribute("storeForm", store);  // ✅ 保留填寫的資料
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/store/register";
+            return "redirect:/registerAndLogin/register/store/register";
         }
     }
     @PostMapping("/register/submit")
     public String submitFinalRegister(HttpSession session, RedirectAttributes redirectAttributes) {
         StoreVO store = (StoreVO) session.getAttribute("storeForm");
         if (store == null || store.getStoreToPhoto().isEmpty()) {
-            return "redirect:/store/register";
+            return "redirect:/registerAndLogin/register/store/register";
         }
 
         try {
@@ -108,38 +110,69 @@ public class StoreRegistAndLoginController {
 
             // ✅ 傳遞 FlashAttribute 給 /register/confirm
             redirectAttributes.addFlashAttribute("showModal", true);
-            return "redirect:/store/register/confirm";
+            return "redirect:/registerAndLogin/register/store/register/confirm";
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/store/register/confirm";
+            return "redirect:/registerAndLogin/register/store/register/confirm";
         }
     }
-
+    
     @GetMapping("/register/confirm")
     public String confirmPage(HttpSession session, Model model) {
         StoreVO store = (StoreVO) session.getAttribute("storeForm");
         if (store == null) {
-            return "redirect:/store/register";
+            return "redirect:/registerAndLogin/register/store/register";
         }
 
-        List<String> base64List = store.getStoreToPhoto().stream()
-            .map(photo -> {
-                byte[] bytes = photo.getPhotoSrc();
-                return (bytes != null && bytes.length > 0) ?
-                        "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes) : "";
-            })
-            .toList();
+        // 改成 List<Map<String, String>> 結合 base64 + photoType
+        List<Map<String, String>> base64Photos = store.getStoreToPhoto().stream().map(photo -> {
+            Map<String, String> map = new HashMap<>();
+            byte[] bytes = photo.getPhotoSrc();
+            String base64 = (bytes != null && bytes.length > 0)
+                    ? "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes)
+                    : "";
+            map.put("photoType", photo.getPhotoType()); // COVER / KITCHEN / STORE
+            map.put("src", base64);
+            return map;
+        }).toList();
 
         model.addAttribute("store", store);
-        model.addAttribute("photoBase64List", base64List);
+        model.addAttribute("photoList", base64Photos);
 
-        // ✅ 從 FlashAttribute 讀取 showModal
+        // ✅ 彈窗提示用
         if (model.containsAttribute("showModal")) {
             model.addAttribute("showModal", true);
         }
 
-       
-        return "store/storeRegisterConF";
+        return "registerAndLogin/storeRegisterConF";
     }
+
+
+//    @GetMapping("/register/confirm")
+//    public String confirmPage(HttpSession session, Model model) {
+//        StoreVO store = (StoreVO) session.getAttribute("storeForm");
+//        if (store == null) {
+//            return "redirect:/store/register";
+//        }
+//
+//        List<String> base64List = store.getStoreToPhoto().stream()
+//            .map(photo -> {
+//                byte[] bytes = photo.getPhotoSrc();
+//                return (bytes != null && bytes.length > 0) ?
+//                        "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes) : "";
+//            })
+//            .toList();
+//
+//        model.addAttribute("store", store);
+//        model.addAttribute("photoBase64List", base64List);
+//
+//        // ✅ 從 FlashAttribute 讀取 showModal
+//        if (model.containsAttribute("showModal")) {
+//            model.addAttribute("showModal", true);
+//        }
+
+       
+//        return "store/storeRegisterConF";
+//    }
 }

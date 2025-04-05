@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/member")
+@RequestMapping("/registerAndLogin/register/member")
 public class MemberRegistAndLoginController {
 
     @Autowired
@@ -35,10 +35,7 @@ public class MemberRegistAndLoginController {
     private OrganizationRepository organizationRepository;
 
     
-	@GetMapping("/registerAndLogin")
-	public String index() {
-		return "member/registerAndLogin";
-	}
+
     @GetMapping("/register")
     public String registerPage(Model model, HttpSession session) {
         MemberVO member = (MemberVO) session.getAttribute("memberForm");
@@ -49,7 +46,7 @@ public class MemberRegistAndLoginController {
         List<OrganizationVO> organizations = organizationRepository.findAll();
         model.addAttribute("member", member);
         model.addAttribute("organizations", organizations);
-        return "member/registerMember";
+        return "registerAndLogin/registerMember";
     }
 
     @PostMapping("/register")
@@ -59,26 +56,26 @@ public class MemberRegistAndLoginController {
                            Model model, HttpSession session) {
         if (result.hasErrors()) {
             model.addAttribute("organizations", organizationRepository.findAll());
-            return "member/registerMember";
+            return "registerAndLogin/registerMember";
         }
 
         try {
             // ✅ 整合帳號驗證、單位邏輯與檔案儲存
             MemberVO preparedMember = memberService.prepareMemberForSession(member, kycFile,agreedToTerms);
             session.setAttribute("memberForm", preparedMember);
-            return "redirect:/member/register/confirm";
+            return "redirect:/registerAndLogin/register/member/register/confirm";
 
         } catch (IllegalArgumentException | IOException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("organizations", organizationRepository.findAll());
-            return "member/registerMember";
+            return "registerAndLogin/registerMember";
         }
     }
     @PostMapping("/register/submit")
     public String submitFinalRegister(HttpSession session, RedirectAttributes redirectAttributes) {
         MemberVO member = (MemberVO) session.getAttribute("memberForm");
         if (member == null || member.getKycImage() == null) {
-            return "redirect:/member/register";
+            return "redirect:/registerAndLogin/register/member/register";
         }
 
         try {
@@ -87,11 +84,11 @@ public class MemberRegistAndLoginController {
 
             // ✅ 傳遞 FlashAttribute 給 /register/confirm
             redirectAttributes.addFlashAttribute("showModal", true);
-            return "redirect:/member/register/confirm";
+            return "redirect:/map";
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/member/register/confirm";
+            return "redirect:/registerAndLogin/register/member/register/confirm";
         }
     }
 
@@ -99,7 +96,7 @@ public class MemberRegistAndLoginController {
     public String confirmPage(HttpSession session, Model model) {
         MemberVO member = (MemberVO) session.getAttribute("memberForm");
         if (member == null) {
-            return "redirect:/member/register";
+            return "redirect:/registerAndLogin/register/member/register";
         }
 
         model.addAttribute("member", member);
@@ -114,7 +111,7 @@ public class MemberRegistAndLoginController {
             // 已自動加入，不需再次處理，Thymeleaf 可直接用 ${error}
         }
 
-        return "member/registerMemberConF";
+        return "registerAndLogin/registerMemberConF";
     }
 
 
@@ -152,20 +149,20 @@ public class MemberRegistAndLoginController {
 //    }
 
 
-    @GetMapping("/login")
-    public String loginPage() {
-        return "member/login";
-    }
-
-    @PostMapping("/login")
-    public String login(@RequestParam String account,
-                        @RequestParam String password,
-                        Model model) {
-        MemberVO member = memberRepository.findByAccountAndPassword(account, password);
-        if (member == null) {
-            model.addAttribute("error", "帳號或密碼錯誤！");
-            return "member/login";
-        }
-        return "redirect:/dashboard";
-    }
+//    @GetMapping("/login")
+//    public String loginPage() {
+//        return "member/login";
+//    }
+//
+//    @PostMapping("/login")
+//    public String login(@RequestParam String account,
+//                        @RequestParam String password,
+//                        Model model) {
+//        MemberVO member = memberRepository.findByAccountAndPassword(account, password);
+//        if (member == null) {
+//            model.addAttribute("error", "帳號或密碼錯誤！");
+//            return "member/login";
+//        }
+//        return "redirect:/dashboard";
+//    }
 }

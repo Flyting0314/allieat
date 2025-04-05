@@ -358,7 +358,7 @@
         <h1 class="partner_reg_title">合作店家註冊</h1>
         <p class="partner_reg_subtitle">以下欄位皆為必填</p>
 
-        <form th:action="@{/store/register}" th:object="${store}" method="post" enctype="multipart/form-data" >
+        <form th:action="@{/registerAndLogin/register/store/register}" th:object="${store}" method="post" enctype="multipart/form-data" >
             <!-- ✅ 全域錯誤提示 -->
 <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 <div class="text-danger" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
@@ -459,17 +459,17 @@
                         <div class="partner_photo_item">
                             <div class="partner_photo_label">店家封面照</div>
                             <div class="partner_photo_preview" id="coverPhotoPreview"></div>
-                            <input type="file" name="photoFiles" id="file_upload_cover" accept="image/*">
+                            <input type="file" name="photoFiles" id="file_upload_cover" accept="image/*" data-phototype="COVER">
                         </div>
                         <div class="partner_photo_item">
                             <div class="partner_photo_label">廚房環境照</div>
                             <div class="partner_photo_preview" id="kitchenPhotoPreview"></div>
-                            <input type="file" name="photoFiles" id="file_upload_kitchen" accept="image/*">
+                            <input type="file" name="photoFiles" id="file_upload_kitchen" accept="image/*" data-phototype="KITCHEN">
                         </div>
                         <div class="partner_photo_item">
                             <div class="partner_photo_label">店面環境照</div>
                             <div class="partner_photo_preview" id="storePhotoPreview"></div>
-                            <input type="file" name="photoFiles" id="file_upload_store" accept="image/*">
+                            <input type="file" name="photoFiles" id="file_upload_store" accept="image/*" data-phototype="STORE">
                         </div>
                     </div>
                 </div>
@@ -500,7 +500,7 @@
 
 
 <div class="partner_button_container">
-    <button type="button" class="partner_back_btn" th:onclick="|location.href='@{/member/registerAndLogin}'|">上一頁</button>
+    <button type="button" class="partner_back_btn" th:onclick="|location.href='@{/registerAndLogin/register}'|">上一頁</button>
     <button type="submit" class="partner_next_btn" id="submitBtn">下一步</button>
 </div>
         </form>

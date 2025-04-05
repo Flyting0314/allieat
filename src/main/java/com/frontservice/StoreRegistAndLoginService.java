@@ -3,6 +3,7 @@ package com.frontservice;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,6 @@ public class StoreRegistAndLoginService {
     @Autowired
     private PhotoRepository photoRepository;
     
-
-
     public StoreVO prepareStoreForSession(StoreVO store, MultipartFile[] photoFiles, String agreedToTerms) throws IOException {
         if (!"true".equals(agreedToTerms)) {
             throw new IllegalArgumentException("請詳閱並同意使用須知");
@@ -33,25 +32,26 @@ public class StoreRegistAndLoginService {
             throw new IllegalArgumentException("信箱已註冊，請使用其他信箱");
         }
 
-
-     // 儲存圖片資訊至 PhotoVO (byte[] 儲存)
         Set<PhotoVO> photoSet = new HashSet<>();
+        String[] types = {"COVER", "KITCHEN", "STORE"};
+        int i = 0;
         for (MultipartFile file : photoFiles) {
             if (file != null && !file.isEmpty()) {
                 PhotoVO photo = new PhotoVO();
                 photo.setPhotoSrc(file.getBytes());
-                photo.setStore(store); // 尚未存進 DB，但已建立雙向關聯
+                photo.setStore(store);
+                String type = (i < types.length) ? types[i] : "OTHER";
+                photo.setPhotoType(type);
                 photoSet.add(photo);
+                i++;
             }
         }
-     // ✅ 如果使用者沒有上傳照片，仍然建立空集合
+
         if (photoSet.isEmpty()) {
             throw new IllegalArgumentException("請上傳至少三張照片");
         }
 
         store.setStoreToPhoto(photoSet);
-
-        // 預設值初始化
         store.setRegTime(new Timestamp(System.currentTimeMillis()));
         if (store.getAccStat() == null) store.setAccStat(0);
         if (store.getReviewed() == null) store.setReviewed(3);
@@ -59,6 +59,43 @@ public class StoreRegistAndLoginService {
 
         return store;
     }
+
+
+//    public StoreVO prepareStoreForSession(StoreVO store, MultipartFile[] photoFiles, String agreedToTerms) throws IOException {
+//        if (!"true".equals(agreedToTerms)) {
+//            throw new IllegalArgumentException("請詳閱並同意使用須知");
+//        }
+//
+//        if (storeRepository.existsByEmail(store.getEmail())) {
+//            throw new IllegalArgumentException("信箱已註冊，請使用其他信箱");
+//        }
+//
+//
+//     // 儲存圖片資訊至 PhotoVO (byte[] 儲存)
+//        Set<PhotoVO> photoSet = new HashSet<>();
+//        for (MultipartFile file : photoFiles) {
+//            if (file != null && !file.isEmpty()) {
+//                PhotoVO photo = new PhotoVO();
+//                photo.setPhotoSrc(file.getBytes());
+//                photo.setStore(store); // 尚未存進 DB，但已建立雙向關聯
+//                photoSet.add(photo);
+//            }
+//        }
+//     // ✅ 如果使用者沒有上傳照片，仍然建立空集合
+//        if (photoSet.isEmpty()) {
+//            throw new IllegalArgumentException("請上傳至少三張照片");
+//        }
+//
+//        store.setStoreToPhoto(photoSet);
+//
+//        // 預設值初始化
+//        store.setRegTime(new Timestamp(System.currentTimeMillis()));
+//        if (store.getAccStat() == null) store.setAccStat(0);
+//        if (store.getReviewed() == null) store.setReviewed(3);
+//        if (store.getOpStat() == null) store.setOpStat(0);
+//
+//        return store;
+//    }
 
     public void finalizeRegistration(StoreVO store) {
         // 儲存店家與圖片資訊
@@ -77,4 +114,9 @@ public class StoreRegistAndLoginService {
             storeRepository.deleteById(id);
         }
     }
+    
+    public List<PhotoVO> getStorePhotosByOrder(StoreVO store) {
+        return photoRepository.findByStoreOrderByPhotoIdAsc(store);
+    }
+
 }

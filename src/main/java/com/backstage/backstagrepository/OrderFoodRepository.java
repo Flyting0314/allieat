@@ -13,6 +13,10 @@ import java.util.Map;
 
 @Repository
 public interface OrderFoodRepository extends JpaRepository<OrderFoodVO, Integer> {
+	
+	List<OrderFoodVO> findByMember_MemberId(Integer memberId);
+	
+	
     @Query(value = """
     SELECT DATE_FORMAT(pickTime, '%Y-%m') AS labels, 
                COUNT(*) AS data
