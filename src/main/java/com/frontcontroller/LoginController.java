@@ -71,7 +71,7 @@ public class LoginController {
             }
             session.setAttribute("loggedInStore", store);
             model.addAttribute("store", store);
-            return "registerAndLogin/storeInfo";
+            return "redirect:/registerAndLogin/storeInfo";
 
 
         }
@@ -121,24 +121,35 @@ public class LoginController {
     public String storeInfoPage(HttpSession session, Model model) {
         StoreVO store = (StoreVO) session.getAttribute("loggedInStore");
         if (store == null) {
+            System.out.println("使用者未登入，導向登入頁面");
             return "redirect:/registerAndLogin/login";
         }
 
         model.addAttribute("store", store);
 
-        // 嘗試從資料庫撈取 photoType = "COVER" 的封面照
-        Optional<PhotoVO> coverOpt = photoRepository.findTopByStoreAndPhotoType(store, "COVER");
+        //  嘗試撈取 photoType = "COVER" 的封面照
+        System.out.println("查詢封面照: storeId=" + store.getStoreId());
+        Optional<PhotoVO> coverPhotoOpt = photoRepository.findFirstByStoreStoreIdAndPhotoTypeOrderByUpdateTimeDesc(store.getStoreId(), "COVER");
 
-        if (coverOpt.isPresent()) {
-            String base64 = Base64.getEncoder().encodeToString(coverOpt.get().getPhotoSrc());
-            String coverPhotoUrl = "data:image/png;base64," + base64;
+        if (coverPhotoOpt.isPresent()) {
+            System.out.println("封面照，photoId=" + coverPhotoOpt.get().getPhotoId());
+            String base64Cover = Base64.getEncoder().encodeToString(coverPhotoOpt.get().getPhotoSrc());
+            String coverPhotoUrl = "data:image/jpeg;base64," + base64Cover;
             model.addAttribute("coverPhotoUrl", coverPhotoUrl);
+            System.out.println("已成功載入");
         } else {
-            model.addAttribute("coverPhotoUrl", "/img/default-cover.png"); // 預設圖片
+            System.out.println("使用預設圖片");
+            model.addAttribute("coverPhotoUrl", "/img/default-cover.png");
         }
 
-        return "registerAndLogin/storeInfo";
+        return "registerAndLogin/storeInfo"; //  保留 return，確保視圖正確渲染
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate(); // 清除 session 
+        System.out.println("登出session 清空");
+        return "redirect:/registerAndLogin/login"; //  重導回登入頁面
+    }
     
 }

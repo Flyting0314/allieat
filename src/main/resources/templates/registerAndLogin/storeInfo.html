@@ -109,6 +109,7 @@
         
         /* 主內容區域 */
         .vendor_main_content {
+        
             flex-grow: 1;
             background-color: #fff;
             border-radius: 8px;
@@ -127,7 +128,7 @@
         
         /* 編輯/保存按鈕 */
         .vendor_edit_btn, .vendor_save_btn {
-            position: absolute;
+/*             position: absolute; */
             top: 30px;
             right: 30px;
             padding: 8px 20px;
@@ -137,11 +138,14 @@
             cursor: pointer;
             font-size: 15px;
             transition: all 0.2s;
+            z-index: 10;
         }
         
         .vendor_edit_btn {
-            background-color: #2196F3;
-        }
+    background-color: #2196F3;
+    
+   
+}
         
         .vendor_edit_btn:hover {
             background-color: #0b7dda;
@@ -186,27 +190,28 @@
         }
         
         /* 店家照片上傳區域 */
-        .vendor_photo_container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
+/* .vendor_photo_container { */
+/*     display: flex; */
+/*     justify-content: flex-start; /* ✅ 照片靠左 */ */
+/*     align-items: flex-start; */
+/*     margin-bottom: 40px; */
+/*     position: relative; */
+/* } */
         
-        .vendor_photo_upload {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background-color: #f0f0f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 20px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            cursor: pointer;
-            position: relative;
-        }
+/*         .vendor_photo_upload { */
+/*             width: 120px; */
+/*             height: 120px; */
+/*             border-radius: 50%; */
+/*             background-color: #f0f0f5; */
+/*             display: flex; */
+/*             justify-content: center; */
+/*             align-items: center; */
+/*             margin-right: 20px; */
+/*             overflow: hidden; */
+/*             box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
+/*             cursor: pointer; */
+/*             position: relative; */
+/*         } */
         
         .vendor_photo_upload img {
             width: 100%;
@@ -305,6 +310,18 @@
         }
         
         /* 編輯模式樣式 */
+        
+        .form-action-buttons {
+/*     position: absolute; */
+/*     top: 30px; */
+/*     right: 30px; */
+/*     display: flex; */
+/*     flex-direction: row; */
+/*     gap: 15px; /* ✅ 讓按鈕有間距 */ 
+/* display: flex; */
+/*     gap: 10px; */
+/*     margin-top: 10px; */
+}
         .vendor_edit_mode .vendor_info_value {
             display: none;
         }
@@ -369,6 +386,69 @@
     height: 45px !important;
     cursor: pointer;
 }
+
+.store-cover {
+    max-width: 100%;  /* 確保圖片不會超出容器 */
+    max-height: 400px; /* 限制圖片最大高度 */
+    width: auto;
+    height: auto;
+    display: block;
+    margin: auto;
+    object-fit: cover; /* 確保圖片按比例裁切 */
+    border-radius: 10px; /* 圓角美化 */
+}
+.vendor_photo_display {
+/*     display: flex; */
+/*     justify-content: flex-start; /* ✅ 確保封面照靠左 */ 
+/*     align-items: center; */
+/*     flex-direction: row; /* ✅ 水平排列 */ 
+/*     padding: 20px; */
+/*     margin-bottom: 50px;  */
+/*     width: 100%; /* ✅ 擴展區塊寬度 */ 
+display: flex;
+    justify-content: flex-start; /* ✅ 照片靠左 */
+    align-items: flex-start;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.vendor_photo_display img {
+    max-width: 300px;  /* ✅ 限制圖片大小，避免過大 */
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.vendor_action_buttons {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    display: flex;
+    gap: 10px; /* ✅ 按鈕間距 */
+}
+.logout-button {
+    display: inline-block; /* ✅ 讓超連結像按鈕 */
+    background-color: #d9534f; /* ✅ 按鈕背景色 */
+    color: white; /* ✅ 文字顏色 */
+    padding: 8px 20px; /* ✅ 按鈕內距 */
+    text-align: center; /* ✅ 文字置中 */
+    font-size: 15px;
+    border-radius: 4px; /* ✅ 圓角效果 */
+    text-decoration: none; /* ✅ 移除超連結的底線 */
+    cursor: pointer; /* ✅ 讓它有按鈕效果 */
+    border: none; 
+    transition: all 0.2s;
+     position: absolute; 
+     top: 30px; 
+     right: 130px; 
+}
+
+.logout-button:hover {
+    background-color: #d32f2f; 
+ }
+
+
+
+
     </style>
 </head>
 
@@ -467,26 +547,29 @@
         <!-- 主要內容 -->
         <div class="vendor_main_content" id="profileContent">
         <h1 class="vendor_page_title">店家封面照</h1>
+
+        <!--  店家封面照 -->
+<div class="vendor_photo_display">
+    <th:block th:if="${coverPhotoUrl}">
+        <img th:src="${coverPhotoUrl}" alt="店家封面照" class="store-cover">
+    </th:block>
+    <th:block th:unless="${coverPhotoUrl}">
+        <img src="/img/default-cover.png" alt="預設封面照" class="store-cover">
+    </th:block>
+</div>
+
+<a th:href="@{/registerAndLogin/logout}" class="vendor_logout_btn logout-button">登出</a>
+    
         <form id="profileForm" th:object="${store}" th:action="@{/registerAndLogin/store/update}" method="post">
-            <div class="form-action-buttons" style="position: absolute; top: 30px; right: 30px;">
+<!--             <div class="form-action-buttons" style="position: absolute; top: 30px; right: 30px;"> -->
+            <div class="vendor_action_buttons">
                 <button type="button" class="vendor_edit_btn" id="editBtn">編輯</button>
                 <button type="submit" class="vendor_save_btn" id="saveBtn">儲存</button>
-            </div>
+                </div>
+           
 <input type="hidden" name="storeId" th:value="*{storeId}">
             
-            <!-- 店家照片 -->
-<!--             <div class="vendor_photo_container"> -->
-<!--                 <div class="vendor_photo_upload"> -->
-<!--     <img th:src="'data:image/jpeg;base64,' + ${coverPhoto}" alt="店家封面照" id="profileImage"> -->
-<!--     <div class="vendor_photo_overlay"> -->
-<!--         <span class="vendor_photo_text">封面照（不可更換）</span> -->
-<!--     </div> -->
-<!-- </div> -->
-<!--             </div> -->
-<div class="vendor_photo_display">
-                <img th:src="${coverPhotoUrl}" alt="店家封面照">
-                
-            </div>
+
             
                             <!-- 店家資訊表格 -->
             
