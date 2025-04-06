@@ -32,6 +32,13 @@ document.addEventListener("DOMContentLoaded", function () {
             target.classList.toggle("show");
         });
     }
+    // 綁定登出按鈕功能
+    document.querySelector(".btn-logout").addEventListener("click", function () {
+        if (confirm("確定要登出嗎？")) {
+            backstageAuth.logout();
+        }
+    });
+
 });
 //共用的取資料函式
 function fetchData(elementId, apiUrl, unit, key, useFormat = true) {
@@ -88,3 +95,4 @@ function formatNumber(num) {
 }
 //驗證有沒有token，若沒有token則回到首頁，前端驗證權限的方式。
 window.backstageAuth.requireLogin();
+

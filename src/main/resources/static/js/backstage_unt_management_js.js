@@ -219,4 +219,13 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   fetchData();
+
+  // 綁定登出按鈕功能
+  document.querySelector(".btn-logout").addEventListener("click", function () {
+    if (confirm("確定要登出嗎？")) {
+      backstageAuth.logout();
+    }
+  });
+
+
 });
