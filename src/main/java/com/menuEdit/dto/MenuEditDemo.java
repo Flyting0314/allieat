@@ -9,6 +9,11 @@ public class MenuEditDemo {
 	private Integer status;
 	
 	public MenuEditDemo(Integer foodId, String foodName, String photoPath, Integer amount, Integer status) {
+		this.foodId = foodId;
+		this.foodName = foodName;
+		this.photoPath = photoPath;
+		this.amount = amount;
+		this.status = status;
 	}
 	public Integer getFoodId() {
 		return foodId;

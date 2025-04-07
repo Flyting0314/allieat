@@ -23,18 +23,30 @@ public class MenuEditServiceImpl implements MenuEditService{
 		List<FoodVO> foodList = foodRepository
 				.findAll()
 				.stream()
-				.filter(f ->f.getStatus() == 1 || f.getStatus() == 2)
+				.filter(f ->f.getStatus() == 0 || f.getStatus() == 1)
 				.toList();
 		
 		List<MenuEditDemo> result = new ArrayList<>();
 		
 		for (FoodVO foodVO : foodList) {
-			result.add(new MenuEditDemo(foodVO.getFoodId(), foodVO.getName(), foodVO.getPhoto(), foodVO.getAmount(), foodVO.getStatus()));
+			result.add(new MenuEditDemo(foodVO.getFoodId(), foodVO.getName(), foodVO.getPhoto()
+					, foodVO.getAmount(), foodVO.getStatus()));
 		}
 				
 		return result;
 	}
 	
+	@Override
+	public void updateMenuItem(MenuEditDemo item) {
+	    FoodVO food = foodRepository.findById(item.getFoodId()).orElse(null);
+	    if (food != null) {
+	        food.setAmount(item.getAmount());
+	        food.setStatus(item.getStatus());
+	        foodRepository.save(food);
+	    } else {
+	        throw new RuntimeException("找不到指定的餐點 ID: " + item.getFoodId());
+	    }
+	}
 	
 	
 }
