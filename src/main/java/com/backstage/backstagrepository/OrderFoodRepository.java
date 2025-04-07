@@ -3,16 +3,20 @@ package com.backstage.backstagrepository;
 
 
 
-import com.entity.OrderFoodVO;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
+import com.entity.OrderFoodVO;
 
 @Repository
 public interface OrderFoodRepository extends JpaRepository<OrderFoodVO, Integer> {
+	
+	List<OrderFoodVO> findByMember_MemberId(Integer memberId);
+	
+	
     @Query(value = """
     SELECT DATE_FORMAT(pickTime, '%Y-%m') AS labels, 
                COUNT(*) AS data
@@ -23,5 +27,8 @@ public interface OrderFoodRepository extends JpaRepository<OrderFoodVO, Integer>
     ORDER BY labels
     """, nativeQuery = true)
     List<Object[]> findMonthlyPickedOrders();
+
+
+	 
 
 }

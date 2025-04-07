@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<title>店家封面照 - 攏呷霸 ALLiEAT</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="愛心代用餐,公益餐飲,店家資訊" name="keywords">
+<meta content="攏呷霸愛心代用餐平台店家資訊" name="description">
+
+<!-- Favicon -->
+<link href="img/favicon.ico" rel="icon">
+
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link
+	href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap"
+	rel="stylesheet">
+
+<!-- Font Awesome -->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+	rel="stylesheet">
+
+<!-- Libraries Stylesheet -->
+<link href="lib/owlcarousel/assets/owl.carousel.min.css"
+	rel="stylesheet">
+<link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
+	rel="stylesheet" />
+<link
+	href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap"
+	rel="stylesheet">
+
+<!-- Customized Bootstrap Stylesheet -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Flatpickr 核心 -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<!-- 主題：Material Blue -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+
+<style>
+/* 基本重置樣式 */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Helvetica Neue", Arial, "PingFang TC",
+		"Microsoft JhengHei", sans-serif;
+}
+
+body {
+	background-color: #f5f5f9;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+/* 主體容器樣式 */
+.vendor_profile_wrapper {
+	display: flex;
+	padding: 20px;
+	margin: 20px 0;
+	max-width: 1200px;
+}
+
+/* 側邊導航欄 */
+.vendor_sidebar {
+	width: 240px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	padding: 15px 0;
+	margin-right: 20px;
+	flex-shrink: 0;
+	height: fit-content;
+}
+
+/* 側邊導航項目 */
+.vendor_sidebar_item {
+	display: flex;
+	align-items: center;
+	padding: 12px 20px;
+	color: #333;
+	text-decoration: none;
+	position: relative;
+	transition: all 0.2s;
+}
+
+.vendor_sidebar_item:hover {
+	background-color: #f5f5f9;
+}
+
+.vendor_sidebar_item.vendor_active {
+	background-color: #f0f0f5;
+	font-weight: 500;
+}
+
+/* 側邊導航圖標 */
+.vendor_sidebar_icon {
+	margin-right: 10px;
+	color: #555;
+	font-size: 18px;
+	width: 24px;
+	text-align: center;
+}
+
+/* 展開下拉按鈕 */
+.vendor_dropdown_icon {
+	margin-left: auto;
+	font-size: 12px;
+	transition: transform 0.2s;
+}
+
+.vendor_dropdown_open .vendor_dropdown_icon {
+	transform: rotate(180deg);
+}
+
+/* 主內容區域 */
+.vendor_main_content {
+	flex-grow: 1;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	padding: 30px;
+	position: relative;
+}
+
+/* 頁面標題 */
+.vendor_page_title {
+	font-size: 24px;
+	font-weight: 500;
+	margin-bottom: 30px;
+	color: #333;
+}
+
+/* 編輯/保存按鈕 */
+.vendor_edit_btn, .vendor_save_btn {
+	/*             position: absolute; */
+	top: 30px;
+	right: 30px;
+	padding: 8px 20px;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 15px;
+	transition: all 0.2s;
+	z-index: 10;
+}
+
+.vendor_edit_btn {
+	background-color: #2196F3;
+}
+
+.vendor_edit_btn:hover {
+	background-color: #0b7dda;
+}
+
+.vendor_save_btn {
+	background-color: #4CAF50;
+	display: none;
+}
+
+.vendor_save_btn:hover {
+	background-color: #3e8e41;
+}
+
+/* 店家封面照樣式 */
+.vendor_profile_container {
+	width: 100%;
+	margin-top: 20px;
+}
+
+/* 店家金額樣式 */
+.vendor_balance_container {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	margin-bottom: 20px;
+	position: absolute;
+	top: 30px;
+	right: 120px;
+}
+
+.vendor_balance_label {
+	font-size: 16px;
+	color: #555;
+	margin-right: 10px;
+}
+
+.vendor_balance_amount {
+	font-size: 28px;
+	font-weight: 700;
+	color: #333;
+}
+
+/* 店家照片上傳區域 */
+/* .vendor_photo_container { */
+/*     display: flex; */
+/*     justify-content: flex-start; /* ✅ 照片靠左 */
+* /
+	/*     align-items: flex-start; */
+	/*     margin-bottom: 40px; */
+	/*     position: relative; */
+	/* } */
+	/*         .vendor_photo_upload { */
+	/*             width: 120px; */
+	/*             height: 120px; */
+	/*             border-radius: 50%; */
+	/*             background-color: #f0f0f5; */
+	/*             display: flex; */
+	/*             justify-content: center; */
+	/*             align-items: center; */
+	/*             margin-right: 20px; */
+	/*             overflow: hidden; */
+	/*             box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
+	/*             cursor: pointer; */
+	/*             position: relative; */
+	/*         } */
+        
+        .vendor_photo_upload img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.vendor_photo_icon {
+	font-size: 50px;
+	color: #ccc;
+}
+
+.vendor_photo_overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.3);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	opacity: 0;
+	transition: opacity 0.2s;
+}
+
+.vendor_photo_upload:hover .vendor_photo_overlay {
+	opacity: 1;
+}
+
+.vendor_photo_text {
+	color: white;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.vendor_photo_input {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
+	z-index: 10;
+}
+
+/* 店家信息表格 */
+.vendor_info_grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 20px;
+	max-width: 100%;
+}
+
+.vendor_info_item {
+	margin-bottom: 20px;
+}
+
+.vendor_info_label {
+	font-size: 15px;
+	color: #666;
+	margin-bottom: 5px;
+	display: block;
+	width: 100%;
+}
+
+.vendor_info_value {
+	padding: 12px;
+	background-color: #f5f5f9;
+	border-radius: 4px;
+	font-size: 16px;
+	color: #333;
+	border: 1px solid transparent;
+	transition: all 0.3s;
+	width: 100%;
+	box-sizing: border-box;
+	min-height: 45px;
+}
+
+.vendor_info_input {
+	width: 100%;
+	padding: 12px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 16px;
+	color: #333;
+	display: none;
+	box-sizing: border-box;
+	min-height: 45px;
+}
+
+.vendor_info_input:focus {
+	border-color: #2196F3;
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+/* 編輯模式樣式 */
+.form-action-buttons {
+	/*     position: absolute; */
+	/*     top: 30px; */
+	/*     right: 30px; */
+	/*     display: flex; */
+	/*     flex-direction: row; */
+	/*     gap: 15px; /* ✅ 讓按鈕有間距 */
+	/* display: flex; */
+	/*     gap: 10px; */
+	/*     margin-top: 10px; */
+	
+}
+
+.vendor_edit_mode .vendor_info_value {
+	display: none;
+}
+
+.vendor_edit_mode .vendor_info_input {
+	display: block;
+}
+
+.vendor_edit_mode .vendor_edit_btn {
+	display: none;
+}
+
+.vendor_edit_mode .vendor_save_btn {
+	display: block;
+}
+
+/* 響應式調整 */
+@media ( max-width : 992px) {
+	.vendor_profile_wrapper {
+		flex-direction: row; /* 強制保持水平排列 */
+	}
+	.vendor_sidebar {
+		width: 240px; /* 保持側邊欄寬度 */
+		margin-right: 20px;
+	}
+	.vendor_info_grid {
+		grid-template-columns: 1fr 1fr; /* 保持兩列 */
+	}
+}
+
+@media ( max-width : 768px) {
+	.vendor_profile_wrapper {
+		flex-direction: column;
+	}
+	.vendor_sidebar {
+		width: 100%;
+		margin-right: 0;
+		margin-bottom: 20px;
+	}
+	.vendor_info_grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.vendor_info_input.readonly {
+	background-color: #e9ecef;
+	cursor: not-allowed;
+}
+
+/* 美化 Flatpickr 讓它跟你原本欄位一致 */
+.time-picker.flatpickr-input {
+	background-color: #fff !important;
+	color: #333 !important;
+	font-size: 16px !important;
+	padding: 12px !important;
+	border: 1px solid #ddd !important;
+	border-radius: 4px !important;
+	width: 100% !important;
+	height: 45px !important;
+	cursor: pointer;
+}
+
+.store-cover {
+	max-width: 100%; /* 確保圖片不會超出容器 */
+	max-height: 400px; /* 限制圖片最大高度 */
+	width: auto;
+	height: auto;
+	display: block;
+	margin: auto;
+	object-fit: cover; /* 確保圖片按比例裁切 */
+	border-radius: 10px; /* 圓角美化 */
+}
+
+.vendor_photo_display {
+	/*     display: flex; */
+	/*     justify-content: flex-start; /* ✅ 確保封面照靠左 */
+	/*     align-items: center; */
+	/*     flex-direction: row; /* ✅ 水平排列 */
+	/*     padding: 20px; */
+	/*     margin-bottom: 50px;  */
+	/*     width: 100%; /* ✅ 擴展區塊寬度 */
+	display: flex;
+	justify-content: flex-start; /* ✅ 照片靠左 */
+	align-items: flex-start;
+	margin-bottom: 40px;
+	position: relative;
+}
+
+.vendor_photo_display img {
+	max-width: 300px; /* ✅ 限制圖片大小，避免過大 */
+	max-height: 250px;
+	object-fit: cover;
+	border-radius: 10px;
+}
+
+.vendor_action_buttons {
+	position: absolute;
+	top: 30px;
+	right: 30px;
+	display: flex;
+	gap: 10px; /* ✅ 按鈕間距 */
+}
+
+.logout-button {
+	display: inline-block; /* ✅ 讓超連結像按鈕 */
+	background-color: #d9534f; /* ✅ 按鈕背景色 */
+	color: white; /* ✅ 文字顏色 */
+	padding: 8px 20px; /* ✅ 按鈕內距 */
+	text-align: center; /* ✅ 文字置中 */
+	font-size: 15px;
+	border-radius: 4px; /* ✅ 圓角效果 */
+	text-decoration: none; /* ✅ 移除超連結的底線 */
+	cursor: pointer; /* ✅ 讓它有按鈕效果 */
+	border: none;
+	transition: all 0.2s;
+	position: absolute;
+	top: 30px;
+	right: 130px;
+}
+
+.logout-button:hover {
+	background-color: #d32f2f;
+}
+</style>
+</head>
+
+<body>
+	<!-- Navbar Start -->
+	<section id="header">
+		<div class="container-fluid p-0 nav-bar">
+			<nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+				<a href="index.html" class="navbar-brand px-lg-4 m-0">
+					<h1 class="m-0 display-4 text-uppercase text-white"
+						style="display: inline-block;">
+						<img src="/img/logo3.png" width="80px" height="80px" alt=""
+							style="vertical-align: middle; margin-right: 0px; margin-top: -10px; border-radius: 50%; object-fit: cover;">
+						<span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+					</h1>
+				</a>
+				<button type="button" class="navbar-toggler" data-toggle="collapse"
+					data-target="#navbarCollapse">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse justify-content-between"
+					id="navbarCollapse">
+					<div class="navbar-nav ml-auto p-4">
+						<a href="index.html" class="nav-item nav-link active">關於我們</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-toggle="dropdown">我要捐款</a>
+							<div class="dropdown-menu text-capitalize">
+								<a href="reservation.html" class="dropdown-item">我要捐款</a> <a
+									href="testimonial.html" class="dropdown-item">捐款查詢</a>
+							</div>
+						</div>
+						<a href="service.html" class="nav-item nav-link">受助者取餐</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-toggle="dropdown">註冊/登入</a>
+							<div class="dropdown-menu text-capitalize">
+								<a href="reservation.html" class="dropdown-item">註冊</a> <a
+									href="testimonial.html" class="dropdown-item">登入</a>
+							</div>
+						</div>
+						<a href="contact.html" class="nav-item nav-link">會員專區</a>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</section>
+	<!-- Navbar End -->
+
+	<!-- Hero Section Start -->
+	<section id="hero">
+		<div class="container-fluid p-0 mb-5">
+			<div id="hero-carousel" class="carousel slide overlay-bottom"
+				data-ride="carousel">
+				<div class="carousel-inner">
+					<div class="carousel-item active"
+						style="background-image: url('img/圖片3.png'); background-size: 110% auto; background-position: center -300px; height: 400px; filter: brightness(200%);">
+						<div
+							class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+							<h2 class="text-primary font-weight-medium m-0"></h2>
+							<h1 class="display-1 text-white m-0"></h1>
+							<h2 class="text-white m-0"></h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Hero Section End -->
+
+	<!-- Store Profile Content Start -->
+	<div class="container">
+		<div class="vendor_profile_wrapper">
+			<!-- 側邊欄 -->
+			<div class="vendor_sidebar">
+				<a href="#" class="vendor_sidebar_item vendor_active"> <i
+					class="fas fa-store vendor_sidebar_icon"></i> 店家資訊管理
+				</a> <a href="#" class="vendor_sidebar_item"> <i
+					class="fas fa-utensils vendor_sidebar_icon"></i> 餐點管理 <i
+					class="fas fa-chevron-down vendor_dropdown_icon"></i>
+				</a> <a href="#" class="vendor_sidebar_item"> <i
+					class="fas fa-dollar-sign vendor_sidebar_icon"></i> 核銷點數管理
+				</a> <a href="#" class="vendor_sidebar_item"> <i
+					class="fas fa-clipboard-list vendor_sidebar_icon"></i> 訂單管理
+				</a> <a href="#" class="vendor_sidebar_item"> <i
+					class="fas fa-question-circle vendor_sidebar_icon"></i> 常見問題
+				</a>
+			</div>
+
+			<!-- 主要內容 -->
+			<div class="vendor_main_content" id="profileContent">
+				<h1 class="vendor_page_title">店家封面照</h1>
+
+				<!--  店家封面照 -->
+				<div class="vendor_photo_display">
+					<th:block th:if="${coverPhotoUrl}">
+						<img th:src="${coverPhotoUrl}" alt="店家封面照" class="store-cover">
+					</th:block>
+					<th:block th:unless="${coverPhotoUrl}">
+						<img src="/img/default-cover.png" alt="預設封面照" class="store-cover">
+					</th:block>
+				</div>
+
+				<a th:href="@{/registerAndLogin/logout}"
+					class="vendor_logout_btn logout-button">登出</a>
+				<div th:if="${success}" class="alert alert-success" role="alert">
+					✅ <span th:text="${success}"></span>
+				</div>
+				<div th:if="${error}" class="alert alert-danger" role="alert">
+					⚠️ <span th:text="${error}"></span>
+				</div>
+				<form id="profileForm" th:object="${store}"
+					th:action="@{/registerAndLogin/store/update}" method="post">
+					<!--             <div class="form-action-buttons" style="position: absolute; top: 30px; right: 30px;"> -->
+					<div class="vendor_action_buttons">
+						<button type="button" class="vendor_edit_btn" id="editBtn">編輯</button>
+						<button type="submit" class="vendor_save_btn" id="saveBtn">儲存</button>
+					</div>
+
+					<input type="hidden" name="storeId" th:value="*{storeId}">
+
+
+
+					<!-- 店家資訊表格 -->
+
+
+					<div class="vendor_info_grid">
+						<div class="vendor_info_item">
+							<div class="vendor_info_label">店家名稱</div>
+							<div class="vendor_info_value" th:text="*{name}">張董燒肉店</div>
+							<input type="text" class="vendor_info_input readonly" name="name"
+								th:value="*{name}">
+						</div>
+						<div class="vendor_info_item">
+							<div class="vendor_info_label">統一編號</div>
+							<div class="vendor_info_value" th:text="*{guiNum}">12345678</div>
+							<input type="text" class="vendor_info_input readonly"
+								name="guiNum" th:value="*{guiNum}">
+						</div>
+						<div class="vendor_info_item">
+							<div class="vendor_info_label">負責人姓名</div>
+							<div class="vendor_info_value" th:text="*{managerName}">張董</div>
+							<input type="text" class="vendor_info_input readonly"
+								name="managerName" th:value="*{managerName}">
+						</div>
+						<div class="vendor_info_item" style="grid-column: 1/span 2;">
+							<div class="vendor_info_label">Email</div>
+							<div class="vendor_info_value" th:text="*{email}">changdon@xxx.xxx</div>
+							<input type="email" class="vendor_info_input readonly"
+								name="email" th:value="*{email}">
+						</div>
+						<div class="vendor_info_grid">
+							<div class="vendor_info_item">
+								<div class="vendor_info_label">開始營業時間</div>
+								<div class="vendor_info_value" th:text="*{opTime}"></div>
+								<input type="text" name="opTime" th:value="*{opTime}"
+									class="vendor_info_input time-picker flatpickr-input" readonly>
+							</div>
+							<div class="vendor_info_item">
+								<div class="vendor_info_label">結束營業時間</div>
+								<div class="vendor_info_value" th:text="*{closeTime}"></div>
+								<input type="text" name="closeTime" th:value="*{closeTime}"
+									class="vendor_info_input time-picker flatpickr-input" readonly>
+							</div>
+							<div class="vendor_info_item">
+								<div class="vendor_info_label">最後點餐時間</div>
+								<div class="vendor_info_value" th:text="*{lastOrder}"></div>
+								<input type="text" name="lastOrder" th:value="*{lastOrder}"
+									class="vendor_info_input time-picker flatpickr-input" readonly>
+							</div>
+							<div class="vendor_info_item" style="grid-column: 1/span 2;">
+								<div class="vendor_info_label">取餐時限(分鐘)</div>
+								<div class="vendor_info_value" th:text="*{pickTime}">訂單成立後45分鐘內</div>
+								<select name="pickTime" class="vendor_info_input">
+									<option th:value="'30'" th:selected="${store.pickTime == '30'}">30</option>
+									<option th:value="'35'" th:selected="${store.pickTime == '35'}">35</option>
+									<option th:value="'40'" th:selected="${store.pickTime == '40'}">40</option>
+									<option th:value="'45'" th:selected="${store.pickTime == '45'}">45</option>
+									<option th:value="'50'" th:selected="${store.pickTime == '50'}">50</option>
+									<option th:value="'55'" th:selected="${store.pickTime == '55'}">55</option>
+									<option th:value="'60'" th:selected="${store.pickTime == '60'}">60</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Store Profile Content End -->
+
+	<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarItems = document.querySelectorAll('.vendor_sidebar_item');
+    const profileContent = document.getElementById('profileContent');
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const form = document.getElementById('profileForm');
+
+    let formChanged = false;
+
+    // 處理側邊欄開關
+    sidebarItems.forEach(item => {
+        const dropdownIcon = item.querySelector('.vendor_dropdown_icon');
+        if (dropdownIcon) {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('vendor_dropdown_open');
+            });
+        }
+    });
+
+    // 表單監聽
+    const formInputs = form.querySelectorAll('.vendor_info_input');
+    formInputs.forEach(input => {
+        input.dataset.initialValue = input.value;
+        input.addEventListener('input', function() {
+            formChanged = [...formInputs].some(input => input.value !== input.dataset.initialValue);
+            updateButtonState();
+        });
+    });
+
+    // 編輯按鈕
+    editBtn.addEventListener('click', function () {
+        profileContent.classList.add('vendor_edit_mode');
+        document.querySelectorAll('.vendor_info_input').forEach(input => {
+            if (!input.classList.contains('readonly')) {
+                input.removeAttribute('readonly');
+            }
+        });
+    });
+
+    // 儲存按鈕
+    saveBtn.addEventListener('click', function () {
+        if (!formChanged) {
+            formInputs.forEach(input => {
+                input.value = input.dataset.initialValue;
+            });
+            profileContent.classList.remove('vendor_edit_mode');
+            updateButtonState();
+            return;
+        }
+        console.log("即將提交");
+        form.submit();
+    });
+
+    // 切換按鈕狀態
+    function updateButtonState() {
+        if (formChanged) {
+            saveBtn.textContent = '儲存';
+            saveBtn.style.backgroundColor = '#4CAF50';
+        } else {
+            saveBtn.textContent = '取消';
+            saveBtn.style.backgroundColor = '#607D8B';
+        }
+    }
+
+    // Flatpickr 互相限制時間區間
+    const opInput = document.querySelector("input[name='opTime']");
+    const closeInput = document.querySelector("input[name='closeTime']");
+    const lastOrderInput = document.querySelector("input[name='lastOrder']");
+
+    const opPicker = flatpickr(opInput, {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minuteIncrement: 10,
+        allowInput: false,
+        onChange: function(selectedDates) {
+            const opTime = selectedDates[0];
+            if (opTime) {
+                closePicker.set('minTime', opTime);
+                if (closeInput.value) {
+                    const closeTime = flatpickr.parseDate(closeInput.value, "H:i");
+                    if (closeTime <= opTime) {
+                        closeInput.value = "";
+                    }
+                }
+            }
+        }
+    });
+
+    const closePicker = flatpickr(closeInput, {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minuteIncrement: 10,
+        allowInput: false,
+        onChange: function(selectedDates) {
+            const closeTime = selectedDates[0];
+            if (closeTime) {
+                opPicker.set('maxTime', closeTime);
+                if (opInput.value) {
+                    const opTime = flatpickr.parseDate(opInput.value, "H:i");
+                    if (opTime >= closeTime) {
+                        opInput.value = "";
+                    }
+                }
+            }
+        }
+    });
+
+    flatpickr(lastOrderInput, {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minuteIncrement: 10,
+        allowInput: false,
+        onOpen: function(selectedDates, dateStr, instance) {
+            const opVal = opInput.value;
+            const closeVal = closeInput.value;
+
+            if (opVal && closeVal) {
+                const opTime = flatpickr.parseDate(opVal, "H:i");
+                const closeTime = flatpickr.parseDate(closeVal, "H:i");
+
+                instance.set("minTime", opTime);
+                instance.set("maxTime", closeTime);
+            } else {
+                alert("請先選擇開始與結束時間");
+                instance.close();
+            }
+        }
+    });
+});
+</script>
+
+	<!-- Footer Start -->
+	<section id="footer">
+		<div
+			class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
+			<div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">聯絡我們</h4>
+					<p>
+						<i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號
+					</p>
+					<p>
+						<i class="fa fa-phone-alt mr-2"></i>02-2222-5252
+					</p>
+					<p class="m-0">
+						<i class="fa fa-envelope mr-2"></i>allieat105@gmail.com
+					</p>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">關注我們</h4>
+					<p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
+					<div class="d-flex justify-content-start">
+						<a class="btn btn-lg btn-outline-light btn-lg-square mr-2"
+							href="#"><i class="fab fa-twitter"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+							class="fab fa-facebook-f"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+							class="fab fa-linkedin-in"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i
+							class="fab fa-instagram"></i></a>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">客服時間</h4>
+					<div>
+						<h6 class="text-white text-uppercase">周一 - 週五</h6>
+						<p>早上10:00 - 晚上21:00</p>
+						<h6 class="text-white text-uppercase">週六 - 週日</h6>
+						<p>早上11:00 - 晚上19:00</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">訂閱電子報</h4>
+					<p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
+					<div class="w-100">
+						<div class="input-group">
+							<input type="text" class="form-control border-light"
+								style="padding: 25px;" placeholder="輸入您的信箱">
+							<div class="input-group-append">
+								<button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div
+				class="container-fluid text-center text-white mt-4 py-4 px-sm-3 px-md-5"
+				style="border-color: rgba(256, 256, 256, .1) !important;">
+				<p class="mb-2 text-white">
+					版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>.
+					保留所有權利
+				</p>
+				<p class="m-0 text-white">
+					網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司
+						設計部 設計</a>
+				</p>
+			</div>
+		</div>
+	</section>
+	<!-- Footer End -->
+
+	<!-- Back to Top -->
+	<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
+		class="fa fa-angle-double-up"></i></a>
+
+	<!-- JavaScript Libraries -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+	<!-- <script src="lib/easing/easing.min.js"></script> -->
+	<!-- <script src="lib/waypoints/waypoints.min.js"></script> -->
+	<!-- <script src="lib/owlcarousel/owl.carousel.min.js"></script> -->
+	<!-- <script src="lib/tempusdominus/js/moment.min.js"></script> -->
+	<!-- <script src="lib/tempusdominus/js/moment-timezone.min.js"></script> -->
+	<!-- <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script> -->
+
+	<!-- Contact Javascript File -->
+	<!-- <script src="mail/jqBootstrapValidation.min.js"></script> -->
+	<!-- <script src="mail/contact.js"></script> -->
+
+	<!-- Template Javascript -->
+	<!-- <script src="js/main.js"></script> -->
+	<!-- flatpickr -->
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<!-- Vendor Profile Javascript -->
+
+
+	<script th:if="${forceEdit}">
+    window.onload = function() {
+        document.querySelector("#editBtn").click(); // 或自動開啟編輯模式的 JS
+    };
+</script>
+
+</body>
+
+</html>

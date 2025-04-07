@@ -18,7 +18,7 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
     public String generateToken(String username) {
-        Integer setTime = 10*1000;
+        Integer setTime = 30*60*1000;
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())

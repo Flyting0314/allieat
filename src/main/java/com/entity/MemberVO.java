@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
 
+import com.dona.model.DonaReq.StepTwo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -17,6 +18,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "member")
 public class MemberVO implements Serializable {
@@ -33,21 +38,36 @@ public class MemberVO implements Serializable {
     @JoinColumn(name = "organizationId")  
 	@JsonIgnore// Jackson的忽略標籤，應用於SpringBoot環境。
     private OrganizationVO organization;
+	@NotBlank(message = "姓名不得為空")
+	@Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z0-9_]{2,10}$", message = "姓名格式無效，需為 2~10 字的中英文及數字")
     private String name;
+	@NotBlank(message = "身份證字號不得為空")
     private String idNum;
+	@NotBlank(message = "戶籍地址不得為空")
     private String permAddr;
+	@NotBlank(message = "通訊地址不得為空")
     private String address;
     private Timestamp regTime;
     private String  kycImage; 
+    @Email(message = "請輸入正確的電子郵件格式")
+	@NotBlank(message = "信箱不得為空")
     private String email;
+    @NotBlank(message = "電話不得為空")
+    @Pattern(regexp = "^(09[0-9]{8})$", message = "電話格式無效，須為 09 開頭的 10 位數")
     private String phone;
+    @NotBlank(message = "帳號不得為空")
+    @Size(min = 6, message = "帳號長度至少需為 6 位")
     private String account;
+    @Size(min = 6, message = "密碼長度至少需為 6 位")
+    @NotBlank(message = "帳號不得為空")
     private String password;
-    private Integer pointsBalance;
-    private Integer unclaimedMealCount;
-    private Integer accStat;
-    @Column(name = "reviewed", columnDefinition = "TINYINT(1)")
-    private Boolean reviewed; 
+
+    private Integer pointsBalance= 0;
+    private Integer unclaimedMealCount= 1;
+    private Integer accStat= 0;
+    private Integer reviewed= 3; 
+
+    private String verificationMail;
 
  
     public Integer getMemberId() {
@@ -63,7 +83,7 @@ public class MemberVO implements Serializable {
 		return organization;
 	}
 	public void setOrganization(OrganizationVO organization) {
-		organization = organization;
+		this.organization = organization;
 	}
 	public String getName() {
         return name;
@@ -156,10 +176,10 @@ public class MemberVO implements Serializable {
         this.accStat = accStat;
     }
 
-    public Boolean getReviewed() {
+    public Integer getReviewed() {
         return reviewed;
     }
-    public void setReviewed(Boolean reviewed) {
+    public void setReviewed(Integer reviewed) {
         this.reviewed = reviewed;
     }
 	public Set<PayDetailVO> getPayDetail() {
@@ -188,5 +208,12 @@ public class MemberVO implements Serializable {
 				+ "accStat=" + accStat +"\n" 
 				+ "reviewed=" + reviewed;
 	}
+	public String getVerificationMail() {
+		return verificationMail;
+	}
+	public void setVerificationMail(String verificationMail) {
+		this.verificationMail = verificationMail;
+	}
+
     
 }

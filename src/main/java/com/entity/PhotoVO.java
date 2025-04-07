@@ -17,6 +17,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+
 @Entity
 @Table(name = "photo")
 public class PhotoVO {
@@ -26,7 +27,9 @@ public class PhotoVO {
     @Column(name = "photoId")
     private Integer photoId;
 
-    @ManyToOne
+
+
+	@ManyToOne
     @JoinColumn(name = "storeId")  
 	@JsonIgnore// Jackson的忽略標籤，應用於SpringBoot環境。
     private StoreVO store;
@@ -39,6 +42,9 @@ public class PhotoVO {
     @Column(name = "updateTime")
     private Timestamp updateTime;
 
+    @Column(name = "photoType")
+    private String photoType;
+    
     public Integer getPhotoId() {
         return photoId;
     }
@@ -65,6 +71,14 @@ public class PhotoVO {
         this.photoSrc = photoSrc;
     }
 
+    public String getPhotoType() {
+		return photoType;
+	}
+
+	public void setPhotoType(String photoType) {
+		this.photoType = photoType;
+	}
+    
     public Timestamp getUpdateTime() {
         return updateTime;
     }

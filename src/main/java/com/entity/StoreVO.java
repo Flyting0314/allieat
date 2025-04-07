@@ -14,6 +14,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.io.*;
 @Entity
@@ -28,6 +35,7 @@ public class StoreVO implements Serializable{
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
 	@OrderBy("store asc")
 	private Set<PhotoVO> storeToPhoto;
+
 	
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
 	@OrderBy("store asc")
@@ -41,37 +49,85 @@ public class StoreVO implements Serializable{
 	@OrderBy("store asc")
 	private Set<FoodVO> storeToOrderFood;
 	
+	@NotBlank(message = "姓名不得為空")
+	@Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z0-9_]{2,10}$", message = "姓名格式無效，需為 2~10 字的中英文及數字")
 	private String name;
+	
+	@NotBlank(message = "負責人姓名不得為空")
+	@Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z0-9_]{2,10}$", message = "姓名格式無效，需為 2~10 字的中英文及數字")
 	private String managerName;
+	
+	@Email(message = "請輸入正確的電子郵件格式")
+	@NotBlank(message = "信箱不得為空")
 	private String email;
+	
+	@Size(min = 6, message = "密碼長度至少需為 6 位")
 	private String password;
+	
+	@NotBlank(message = "電話不得為空")
+    @Pattern(regexp = "^(09[0-9]{8})$", message = "電話格式無效，須為 09 開頭的 10 位數")
 	private String phoneNum;
+	
+	@NotBlank(message = "統一編號不得為空")
 	private String guiNum;
+	
+	@NotBlank(message = "店家食品業者登錄字號不得為空")
 	private String businessRegNum;
+	@Column(name = "regTime")
 	private Timestamp regTime;
-	private Integer points;
+	
+	private Integer points=0;
+	
+	@Min(value = 0, message = "未啟用")
+    @Max(value = 1, message = "啟用")
 	@Column(name = "accStat",columnDefinition = "TINYINT(1)")
-	private Boolean accStat;
+	private Integer accStat=0;
+	
+	@Min(value = 0, message = "未")
+    @Max(value = 1, message = "有")
 	@Column(name = "opStat",columnDefinition = "TINYINT(1)")
-	private Boolean opStat;
+	private Integer opStat=0;
+	
 	private String opTime;
 	private String  pickTime;
 	private String lastOrder;
-	private String closeTime; 
+	private String closeTime;
+	
+	@NotBlank(message = "地址: 請勿空白")
 	private String address;
+	@NotBlank(message = "縣市: 請勿空白")
 	private String county;
+	@NotBlank(message = "鄉鎮市區: 請勿空白")
 	private String district;
+	@NotNull(message = "郵遞區號: 請勿空白")
+	@Min(value = 100, message = "郵遞區號必須大於或等於 100")
+	@Max(value = 99999, message = "郵遞區號必須小於或等於 99999")
 	private Integer postalCode;
-	private Integer starNum;
-	private Integer visitorsNum;
+	private Integer starNum=0;
+	private Integer visitorsNum=0;
 	@Column(name = "reviewed",columnDefinition = "TINYINT(1)")
-	private Boolean reviewed;
+	@Min(value = 0, message = "請填審核狀態填寫數字:0=審核中;1=已通過;2=未通過;3=未審核;")
+    @Max(value = 3, message = "請填審核狀態填寫數字:0=審核中;1=已通過;2=未通過;3=未審核;")
+	private Integer reviewed=3;
+	
 	private String mapApi;
+	
+	private String verificationMail;
+	
+	public String getVerificationMail() {
+		return verificationMail;
+	}
+	public void setVerificationMail(String verificationMail) {
+		this.verificationMail = verificationMail;
+	}
 
-	public Boolean getReviewed() {
+
+
+
+	public Integer getReviewed() {
 		return reviewed;
 	}
-	public void setReviewed(Boolean reviewed) {
+	public void setReviewed(Integer reviewed) {
 		this.reviewed = reviewed;
 	}
 	public Integer getStoreId() {
@@ -135,18 +191,18 @@ public class StoreVO implements Serializable{
 	public void setPoints(Integer points) {
 		this.points = points;
 	}
-	public Boolean getAccStat() {
+	public Integer getAccStat() {
 		return accStat;
 	}
-	public void setAccStat(Boolean accStat) {
+	public void setAccStat(Integer accStat) {
 		this.accStat = accStat;
 	}
 
 
-	public Boolean getOpStat() {
+	public Integer getOpStat() {
 		return opStat;
 	}
-	public void setOpStat(Boolean opStat) {
+	public void setOpStat(Integer opStat) {
 		this.opStat = opStat;
 	}
 
@@ -219,7 +275,29 @@ public class StoreVO implements Serializable{
 	public void setMapApi(String mapApi) {
 		this.mapApi = mapApi;
 	}
+	// 解析 mapApi 成為 latitude
+	public Double getLatitude() {
+		if (mapApi != null && mapApi.contains(",")) {
+			try {
+				return Double.parseDouble(mapApi.split(",")[0].trim());
+			} catch (NumberFormatException e) {
+				return null;
+			}
+		}
+		return null;
+	}
 
+	// 解析 mapApi 成為 longitude
+	public Double getLongitude() {
+		if (mapApi != null && mapApi.contains(",")) {
+			try {
+				return Double.parseDouble(mapApi.split(",")[1].trim());
+			} catch (NumberFormatException e) {
+				return null;
+			}
+		}
+		return null;
+	}
 	@Override
 	public String toString() {
 		return "storeId=" + storeId +"\n"
@@ -248,7 +326,13 @@ public class StoreVO implements Serializable{
 				+ "mapApi=" + mapApi ;
 	}
 	
-	
+	public Set<PhotoVO> getStoreToPhoto() {
+	    return storeToPhoto;
+	}
+
+	public void setStoreToPhoto(Set<PhotoVO> storeToPhoto) {
+	    this.storeToPhoto = storeToPhoto;
+	}
 	
 
 }

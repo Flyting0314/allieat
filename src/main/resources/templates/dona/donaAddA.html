@@ -219,6 +219,33 @@
                         </div>
                     </div>
 
+=======
+                    <form th:action="@{/dona/donaAddA}" method="post" th:object="${donaReq}">
+    <!-- 定期/單筆 捐款選擇 -->
+    <div class="donate-tabs">
+        <label class="donate-tab donate-selected">
+            <input type="radio" th:field="*{donationType}" value="0" /> 單筆捐贈
+        </label>
+        <label class="donate-tab">
+            <input type="radio" th:field="*{donationType}" value="1" /> 定期定額
+        </label>
+<!--         <span th:if="${#fields.hasErrors('donationType')}" th:errors="*{donationType}" class="error"></span> -->
+<div th:if="${#fields.hasErrors('donationType')}" 
+     th:errors="*{donationType}" 
+     class="text-danger fw-bold mb-2">
+</div>
+    </div>
+
+    <!-- 捐款金額 -->
+    <div class="mb-3">
+        <label class="donate-option" for="donate100">
+            <input type="radio" id="donate100" th:field="*{donationIncome}" value="100" onclick="hideContent('donationIncomeError')"/>
+            <strong>$100</strong>
+            <p class="mb-0 text-muted">捐款送愛心，和我們一起，用實際行動溫暖他人，用心點亮生活。</p>
+        </label>
+    </div>
+
+
                     <!-- 分頁標籤 -->
                     <div class="donate-tabs">
                         <div class="donate-tab donate-selected" id="tab-personal">定期定額</div>
