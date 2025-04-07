@@ -360,76 +360,82 @@
         <p class="verification_subtitle">請確認以下資訊是否正確</p>
 
         <form id="registerConfirmForm" th:action="@{/registerAndLogin/register/member/submit}" method="post">
-            <h2 class="verification_section_title">基本資料</h2>
+    <h2 class="verification_section_title">基本資料</h2>
 
-            <div th:if="${session.memberForm.organization != null}">
-                <div class="verification_form_group">
-                    <label class="verification_form_label">註冊單位</label>
-                    <div class="verification_form_controls">
-                        <p th:text="${session.memberForm.organization.name}" class="form-control-plaintext"></p>
-                    </div>
-                </div>
+    <div th:if="${member.organization != null}">
+        <div class="verification_form_group">
+            <label class="verification_form_label">註冊單位</label>
+            <p th:text="${member.organization.name}" class="form-control-plaintext"></p>
+        </div>
 
-                <div class="verification_form_group">
-                    <label class="verification_form_label">單位類型</label>
-                    <div class="verification_form_controls">
-                        <p th:text="${session.memberForm.organization.type}" class="form-control-plaintext"></p>
-                    </div>
-                </div>
+        <div class="verification_form_group">
+            <label class="verification_form_label">單位類型</label>
+            <p th:text="${member.organization.type}" class="form-control-plaintext"></p>
+        </div>
+    </div>
+
+    <div class="verification_form_group" th:if="${member.organization == null}">
+        <label class="verification_form_label">單位 ID</label>
+        <p th:text="${member.organizationId}" class="form-control-plaintext"></p>
+    </div>
+
+    <div class="verification_form_group">
+        <label class="verification_form_label">姓名</label>
+        <p th:text="${member.name}" class="form-control-plaintext"></p>
+    </div>
+
+    <div class="verification_form_group">
+        <label class="verification_form_label">身份證字號</label>
+        <p th:text="${member.idNum}" class="form-control-plaintext"></p>
+    </div>
+
+    <div class="verification_form_group">
+        <label class="verification_form_label">戶籍地址</label>
+        <p th:text="${member.permAddr}" class="form-control-plaintext"></p>
+    </div>
+
+    <div class="verification_form_group">
+        <label class="verification_form_label">通訊地址</label>
+        <p th:text="${member.address}" class="form-control-plaintext"></p>
+    </div>
+
+    <div class="verification_form_group">
+        <label class="verification_form_label">電子信箱</label>
+        <p th:text="${member.email}" class="form-control-plaintext"></p>
+    </div>
+
+    <div class="verification_form_group">
+        <label class="verification_form_label">聯絡電話</label>
+        <p th:text="${member.phone}" class="form-control-plaintext"></p>
+    </div>
+
+    <div class="verification_form_group">
+        <label class="verification_form_label">帳號</label>
+        <p th:text="${member.account}" class="form-control-plaintext"></p>
+    </div>
+
+    <div class="verification_form_group">
+        <label class="verification_form_label">密碼</label>
+        <p>********</p>
+    </div>
+
+    <div class="verification_form_group">
+        <label class="verification_form_label">上傳證明文件</label>
+        <div class="verification_form_controls">
+            <div th:if="${member.kycImage != null}">
+                <a th:href="@{'/member/' + ${member.kycImage}}" target="_blank">點此預覽上傳檔案</a>
+                <img th:if="${#strings.contains(member.kycImage, '.png') or #strings.contains(member.kycImage, '.jpg') or #strings.contains(member.kycImage, '.jpeg')}"
+                     th:src="@{'/member/' + ${member.kycImage}}" style="max-width: 200px;">
             </div>
+            <p th:if="${member.kycImage == null}">未上傳檔案</p>
+        </div>
+    </div>
 
-            <div class="verification_form_group" th:if="${session.memberForm.organization == null}">
-                <label class="verification_form_label">單位 ID</label>
-                <div class="verification_form_controls">
-                    <p th:text="${session.memberForm.organizationId}" class="form-control-plaintext"></p>
-                </div>
-            </div>
-
-            <div class="verification_form_group">
-                <label class="verification_form_label">姓名</label>
-                <p th:text="${session.memberForm.name}" class="form-control-plaintext"></p>
-            </div>
-
-            <div class="verification_form_group">
-                <label class="verification_form_label">身份證字號</label>
-                <p th:text="${session.memberForm.idNum}" class="form-control-plaintext"></p>
-            </div>
-
-            <div class="verification_form_group">
-                <label class="verification_form_label">戶籍地址</label>
-                <p th:text="${session.memberForm.permAddr}" class="form-control-plaintext"></p>
-            </div>
-
-            <div class="verification_form_group">
-                <label class="verification_form_label">通訊地址</label>
-                <p th:text="${session.memberForm.address}" class="form-control-plaintext"></p>
-            </div>
-
-            <div class="verification_form_group">
-                <label class="verification_form_label">電子信箱</label>
-                <p th:text="${session.memberForm.email}" class="form-control-plaintext"></p>
-            </div>
-
-            <div class="verification_form_group">
-                <label class="verification_form_label">聯絡電話</label>
-                <p th:text="${session.memberForm.phone}" class="form-control-plaintext"></p>
-            </div>
-
-            <div class="verification_form_group">
-                <label class="verification_form_label">帳號</label>
-                <p th:text="${session.memberForm.account}" class="form-control-plaintext"></p>
-            </div>
-
-            <div class="verification_form_group">
-                <label class="verification_form_label">密碼</label>
-                <p>********</p>
-            </div>
-
-            <div class="verification_button_container">
-                <button type="button" class="verification_back_btn" th:onclick="|location.href='@{/registerAndLogin/register/member/}'|">返回修改</button>
-                <button type="submit" class="verification_next_btn">送出註冊</button>
-            </div>
-        </form>
+    <div class="verification_button_container">
+        <button type="button" class="verification_back_btn" th:onclick="|location.href='@{/registerAndLogin/register/member/}'|">返回修改</button>
+        <button type="submit" class="verification_next_btn">送出註冊</button>
+    </div>
+</form>
     </div>
 </div>
 
