@@ -63,7 +63,7 @@ public class FoodServiceImpl implements FoodService {
         List<FoodVO> foodList = foodRepository
         		.findAll()
         		.stream()
-        		.filter(f -> f.getStatus() == 1)
+        		.filter(f -> f.getStatus() == 1 || f.getStatus() == 0)
         		.toList(); // 可加條件 storeId = 1
         List<FoodDemo> result = new ArrayList<>();
 
