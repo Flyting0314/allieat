@@ -7,5 +7,8 @@ import com.menuEdit.dto.MenuEditDemo;
 public interface MenuEditService {
 
 	List<MenuEditDemo> getSimpleFoods();
+
+	void updateMenuItem(MenuEditDemo item);
+
 	
 }
