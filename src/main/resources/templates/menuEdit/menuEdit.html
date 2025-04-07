@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<title>攏呷霸 ALLiEAT - 愛心代用餐平台</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="愛心代用餐, 公益, 餐飲捐贈" name="keywords">
+<meta content="攏呷霸愛心代用餐平台，連結善心人士與需要溫飽的人" name="description">
+
+<!-- Favicon -->
+<!--     <link href="img/favicon.ico" rel="icon"> -->
+
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link
+	href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap"
+	rel="stylesheet">
+
+<!-- Font Awesome -->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+	rel="stylesheet">
+
+<!--     Libraries Stylesheet -->
+<!--     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet"> -->
+<!--     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" /> -->
+
+<!-- Customized Bootstrap Stylesheet -->
+<link rel="stylesheet" href="/css/style.css">
+
+
+<!-- <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> -->
+<!-- <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> -->
+<!-- <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> -->
+<link
+	href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap"
+	rel="stylesheet">
+<style>
+.container {
+	max-width: 800px;
+	background: white;
+	padding: 30px;
+	border-radius: 12px;
+	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.meal-header, .meal-item {
+	display: grid;
+	grid-template-columns: 80px 1fr 120px 120px 150px;
+	align-items: center;
+	text-align: center;
+	padding: 10px 0;
+	border-bottom: 2px solid #ddd;
+}
+
+.meal-header {
+	font-weight: bold;
+	background: #f8f9fa;
+}
+
+.meal-item img {
+	width: 100px;
+	height: 100px;
+	background: #ddd;
+	border-radius: 10px;
+	display: block;
+	margin: auto;
+}
+
+.meal-name {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.meal-quantity-container {
+	display: flex;
+	justify-content: center;
+}
+
+.meal-quantity {
+	width: 60px;
+	text-align: center;
+	border: 1px solid #ccc;
+	background: #fff;
+	padding: 6px;
+	border-radius: 5px;
+}
+
+.switch-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 40px;
+	height: 22px;
+}
+
+.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	transition: .4s;
+	border-radius: 34px;
+}
+
+.slider:before {
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 3px;
+	bottom: 3px;
+	background-color: white;
+	transition: .4s;
+	border-radius: 50%;
+}
+
+input:checked+.slider {
+	background-color: #007bff;
+}
+
+input:checked+.slider:before {
+	transform: translateX(18px);
+}
+
+.action-buttons {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+}
+</style>
+
+</head>
+
+<body>
+	<!-- Navbar Start -->
+	<section id="header">
+		<div class="container-fluid p-0 nav-bar">
+			<nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+				<a href="index.html" class="navbar-brand px-lg-4 m-0">
+					<h1 class="m-0 display-4 text-uppercase text-white"
+						style="display: inline-block;">
+						<img src="/img/logo3.png" width="80px" height="80px" alt=""
+							style="vertical-align: middle; margin-right: 0px; margin-top: -10px; border-radius: 50%; object-fit: cover;">
+						<span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+
+
+
+					</h1>
+
+				</a>
+				<button type="button" class="navbar-toggler" data-toggle="collapse"
+					data-target="#navbarCollapse">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse justify-content-between"
+					id="navbarCollapse">
+					<div class="navbar-nav ml-auto p-4">
+						<a href="index.html" class="nav-item nav-link active">關於我們</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-toggle="dropdown">我要捐款</a>
+							<div class="dropdown-menu text-capitalize">
+								<a href="reservation.html" class="dropdown-item">我要捐款</a> <a
+									href="testimonial.html" class="dropdown-item">捐款查詢</a>
+							</div>
+						</div>
+						<a href="service.html" class="nav-item nav-link">受助者取餐</a> <a
+							href="menu.html" class="nav-item nav-link">加入合作店家</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-toggle="dropdown">註冊/登入</a>
+							<div class="dropdown-menu text-capitalize">
+								<a href="reservation.html" class="dropdown-item">註冊</a> <a
+									href="testimonial.html" class="dropdown-item">登入</a>
+							</div>
+						</div>
+						<a href="contact.html" class="nav-item nav-link">會員專區</a>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</section>
+	<!-- Navbar End -->
+
+	<!-- Hero Section Start -->
+	<section id="hero">
+		<div class="container-fluid p-0 mb-5">
+			<div id="hero-carousel" class="carousel slide overlay-bottom"
+				data-ride="carousel">
+				<div class="carousel-inner">
+					<div class="carousel-item active"
+						style="background-image: url('img/圖片3.png'); background-size: 110% auto; background-position: center -300px; height: 570px; filter: brightness(200%);">
+						<div
+							class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+							<h2 class="text-primary font-weight-medium m-0"></h2>
+							<h1 class="display-1 text-white m-0"></h1>
+							<h2 class="text-white m-0"></h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Hero Section End -->
+
+
+	<div class="container text-center">
+		<h2 class="mb-4">餐點管理</h2>
+		<div class="meal-header">
+			<span>餐點圖片</span> <span>餐點名稱</span> <span>設為代用餐</span> <span>數量</span>
+			<span>操作</span>
+		</div>
+		<div class="meal-list">
+			<div class="meal-item">
+				<img src="img/1662363284_d11462c5428ff9b3c8c5.png" alt="餐點圖片">
+				<span class="meal-name">佛跳牆套餐</span>
+				<div class="switch-container">
+					<label class="switch"> <input type="checkbox"
+						class="toggle-alternate"> <span class="slider"></span>
+					</label>
+				</div>
+				<div class="meal-quantity-container">
+					<input type="number" class="meal-quantity" value="32">
+				</div>
+				<div class="action-buttons">
+					<a href="#" class="text-primary">返回</a>
+					<button class="btn btn-primary btn-sm">儲存</button>
+				</div>
+			</div>
+			<div class="meal-item">
+				<img src="img/20230419_164440_083.jpg" alt="餐點圖片"> <span
+					class="meal-name">漢堡套餐</span>
+				<div class="switch-container">
+					<label class="switch"> <input type="checkbox"
+						class="toggle-alternate"> <span class="slider"></span>
+					</label>
+				</div>
+				<div class="meal-quantity-container">
+					<input type="number" class="meal-quantity" value="32">
+				</div>
+				<div class="action-buttons">
+					<a href="#" class="text-primary">返回</a>
+					<button class="btn btn-primary btn-sm">儲存</button>
+				</div>
+			</div>
+			<div class="meal-item">
+				<img src="img/E1713411744062.jpg" alt="餐點圖片"> <span
+					class="meal-name">雞腿套餐</span>
+				<div class="switch-container">
+					<label class="switch"> <input type="checkbox"
+						class="toggle-alternate"> <span class="slider"></span>
+					</label>
+				</div>
+				<div class="meal-quantity-container">
+					<input type="number" class="meal-quantity" value="32">
+				</div>
+				<div class="action-buttons">
+					<a href="#" class="text-primary">返回</a>
+					<button class="btn btn-primary btn-sm">儲存</button>
+				</div>
+			</div>
+			<div class="meal-item">
+				<img src="img/16pic_2166889_b.jpg" alt="餐點圖片"> <span
+					class="meal-name">魚排套餐</span>
+				<div class="switch-container">
+					<label class="switch"> <input type="checkbox"
+						class="toggle-alternate"> <span class="slider"></span>
+					</label>
+				</div>
+				<div class="meal-quantity-container">
+					<input type="number" class="meal-quantity" value="32">
+				</div>
+				<div class="action-buttons">
+					<a href="#" class="text-primary">返回</a>
+					<button class="btn btn-primary btn-sm">儲存</button>
+				</div>
+			</div>
+			<div class="meal-item">
+				<img src="img/suisei.jpg" alt="餐點圖片"> <span class="meal-name">彗星炒飯</span>
+				<div class="switch-container">
+					<label class="switch"> <input type="checkbox"
+						class="toggle-alternate"> <span class="slider"></span>
+					</label>
+				</div>
+				<div class="meal-quantity-container">
+					<input type="number" class="meal-quantity" value="32">
+				</div>
+				<div class="action-buttons">
+					<a href="#" class="text-primary">返回</a>
+					<button class="btn btn-primary btn-sm">儲存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(document).ready(
+				function() {
+					$('.toggle-alternate').change(
+							function() {
+								let quantityInput = $(this).closest(
+										'.meal-item').find('.meal-quantity');
+								quantityInput.prop('disabled', !this.checked);
+							});
+				});
+	</script>
+
+
+
+	<!-- Footer Start -->
+	<section id="footer">
+		<div
+			class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
+			<div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">聯絡我們</h4>
+					<p>
+						<i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號
+					</p>
+					<p>
+						<i class="fa fa-phone-alt mr-2"></i>02-2222-5252
+					</p>
+					<p class="m-0">
+						<i class="fa fa-envelope mr-2"></i>allieat105@gmail.com
+					</p>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">關注我們</h4>
+					<p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
+					<div class="d-flex justify-content-start">
+						<a class="btn btn-lg btn-outline-light btn-lg-square mr-2"
+							href="#"><i class="fab fa-twitter"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+							class="fab fa-facebook-f"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+							class="fab fa-linkedin-in"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i
+							class="fab fa-instagram"></i></a>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">客服時間</h4>
+					<div>
+						<h6 class="text-white text-uppercase">周一 - 週五</h6>
+						<p>早上10:00 - 晚上21:00</p>
+						<h6 class="text-white text-uppercase">週六 - 週日</h6>
+						<p>早上11:00 - 晚上19:00</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">訂閱電子報</h4>
+					<p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
+					<div class="w-100">
+						<div class="input-group">
+							<input type="text" class="form-control border-light"
+								style="padding: 25px;" placeholder="輸入您的信箱">
+							<div class="input-group-append">
+								<button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div
+				class="container-fluid text-center text-white  mt-4 py-4 px-sm-3 px-md-5"
+				style="border-color: rgba(256, 256, 256, .1) !important;">
+				<p class="mb-2 text-white">
+					版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>.
+					保留所有權利
+				</p>
+				<p class="m-0 text-white">
+					網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司
+						設計部 設計</a>
+				</p>
+			</div>
+		</div>
+	</section>
+	<!-- Footer End -->
+
+
+	<!-- Back to Top -->
+	<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
+		class="fa fa-angle-double-up"></i></a>
+
+
+	<!-- JavaScript Libraries -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+	<!--     <script src="lib/easing/easing.min.js"></script> -->
+	<!--     <script src="lib/waypoints/waypoints.min.js"></script> -->
+	<!--     <script src="lib/owlcarousel/owl.carousel.min.js"></script> -->
+	<!--     <script src="lib/tempusdominus/js/moment.min.js"></script> -->
+	<!--     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script> -->
+	<!--     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script> -->
+
+	<!--     Contact Javascript File -->
+	<!--     <script src="mail/jqBootstrapValidation.min.js"></script> -->
+	<!--     <script src="mail/contact.js"></script> -->
+
+	<!--     Template Javascript -->
+	<!--     <script src="js/main.js"></script> -->
+
+
+</body>
+
+</html>
