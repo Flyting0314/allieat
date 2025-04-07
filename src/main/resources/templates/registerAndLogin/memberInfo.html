@@ -58,8 +58,14 @@
         }
         
         .user_action_group {
-            display: flex;
-            gap: 10px;
+/*         position: relative; */
+/*             display: flex; */
+/*             gap: 10px; */
+
+    display: flex; /* 讓兩個按鈕橫向排列 */
+    justify-content: flex-end; /* 按鈕靠右 */
+    gap: 10px; /* 按鈕間距 */
+
         }
         
         .user_return_button {
@@ -186,6 +192,44 @@
         .footer_section {
             margin-top: 0;
         }
+/*        .logout-button { */
+/*     display: inline-block; */
+/*     background-color: #d9534f; */
+/*     color: white; */
+/*     padding: 8px 20px; */
+/*     text-align: center; */
+/*     font-size: 15px; */
+/*     border-radius: 4px; */
+/*     text-decoration: none; */
+/*     cursor: pointer; */
+/*     border: none; */
+/*     transition: all 0.2s; */
+/*     position: absolute; */
+/*     top: 0; */
+/*     right: -100px; */
+/* } */
+
+/* .logout-button:hover { */
+/*     background-color: #d32f2f; */
+/* } */
+.logout-button {
+    display: inline-block;
+    background-color: #d9534f;
+    color: white;
+    padding: 8px 20px;
+    text-align: center;
+    font-size: 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    /* ❌ 不要 position: absolute; */
+}
+
+.logout-button:hover {
+    background-color: #d32f2f;
+}
     </style>
 </head>
 
@@ -264,9 +308,12 @@
             <div class="user_header">
                 <div class="user_title">會員專區</div>
                 <div class="user_action_group">
+                
+                <a th:href="@{/registerAndLogin/logout}" class="logout-button">登出</a>
                     <a href="/map" class="user_return_button">前往點餐地圖</a>
                     
                 </div>
+                
             </div>
             
             <div class="user_info_section">
@@ -316,11 +363,11 @@
 <!--                     </tr> -->
 <!--                 </tbody> -->
 <tbody>
-  <tr th:each="record : ${payDetail}">
-    <td th:text="${record.storeName}">店家</td>
-    <td th:text="${#dates.format(record.createdTime, 'yyyy-MM-dd')}">日期</td>
-    <td class="user_point_negative" th:text="'-' + ${record.pointsCost} + '點'">點數</td>
-  </tr>
+<tr th:each="record : ${payDetail}">
+  <td th:text="${record.restaurantName}">店家</td>
+  <td th:text="${record.transactionDate}">日期</td>
+  <td class="user_point_negative" th:text="${record.pointAmount}">點數</td>
+</tr>
 </tbody>
             </table>
         </div>

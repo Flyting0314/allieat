@@ -6,7 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="愛心代用餐,公益餐飲,店家登入" name="keywords">
     <meta content="攏呷霸愛心代用餐平台店家登入" name="description">
-
+<link rel="stylesheet" href="/css/resendMail.css">
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
 
@@ -24,185 +24,94 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link rel="stylesheet" href="/css/style.css">
-
+    
     <style>
-        /* 基本重置樣式 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
-        }
-        
-        body {
-            background-color: #f5f5f9;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* 登入頁面主體樣式 */
-        .merchant_login_wrapper {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 40px 0;
-            margin-top: 20px;
-        }
-        
-        /* 登入容器樣式 */
-        .merchant_login_container {
-            background-color: white;
-            width: 100%;
-            max-width: 500px;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-        
-        /* 登入標題樣式 */
-        .merchant_login_title {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 30px;
-            color: #333;
-            text-align: center;
-        }
-        
-        /* 表單組樣式 */
-        .merchant_form_group {
-            margin-bottom: 20px;
-        }
-        
-        /* 表單標籤樣式 */
-        .merchant_form_label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 16px;
-            color: #333;
-        }
-        
-        /* 表單輸入欄位樣式 */
-        .merchant_form_input {
-            width: 100%;
-            padding: 14px;
-            font-size: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            background-color: #f5f5f9;
-            color: #333;
-            transition: border-color 0.3s;
-        }
-        
-        .merchant_form_input:focus {
-            border-color: #4285f4;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
-        }
-        
-        /* 登入按鈕樣式 */
-        .merchant_login_btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            background-color: #4285f4;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            text-align: center;
-            margin-top: 30px;
-        }
-        
-        .merchant_login_btn:hover {
-            background-color: #3367d6;
-        }
-        
-        /* 記住我選項樣式 */
-        .merchant_remember_container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-        
-        .merchant_remember_checkbox {
-            margin-right: 8px;
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-        
-        .merchant_remember_label {
-            font-size: 14px;
-            color: #666;
-            cursor: pointer;
-        }
-        
-        /* 忘記密碼連結樣式 */
-        .merchant_forgot_link {
-            font-size: 14px;
-            color: #4285f4;
-            text-decoration: none;
-            float: right;
-        }
-        
-        .merchant_forgot_link:hover {
-            text-decoration: underline;
-        }
-        
-        /* 分隔線樣式 */
-        .merchant_divider {
-            height: 1px;
-            background-color: #e0e0e0;
-            margin: 30px 0;
-        }
-        
-        /* 註冊連結容器 */
-        .merchant_register_container {
-            text-align: center;
-        }
-        
-        .merchant_register_text {
-            font-size: 14px;
-            color: #666;
-        }
-        
-        .merchant_register_link {
-            color: #4285f4;
-            text-decoration: none;
-            font-weight: 500;
-            
-        }
-        
-        .merchant_register_link:hover {
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        
-        /* 登入選項區塊樣式 */
-        .merchant_login_options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 5px;
-        }
-        
-        /* 響應式調整 */
-        @media (max-width: 576px) {
-            .merchant_login_container {
-                padding: 30px 20px;
-                margin: 0 15px;
-            }
-        }
-    </style>
-</head>
+    .resend_wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 15px;
+    min-height: 60vh;
+    background-color: #f5f5f9;
+}
 
+.resend_container {
+    background-color: white;
+    max-width: 450px;
+    width: 100%;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.resend_title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.resend_form label {
+    display: block;
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.resend_form input[type="email"] {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    background-color: #f5f5f9;
+}
+
+.resend_form button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.resend_form button:hover {
+    background-color: #3367d6;
+}
+
+.resend_back_link {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #4285f4;
+    text-decoration: none;
+}
+
+.resend_back_link:hover {
+    text-decoration: underline;
+}
+
+.success-message {
+    color: green;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 10px;
+}
+    
+    </style>
 <body>
-   <!-- Navbar Start -->
+<!-- Navbar Start -->
    <section id="header">
     <div class="container-fluid p-0 nav-bar">
         <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
@@ -254,58 +163,28 @@
         </div>
     </div>
 </section>
-<div class="merchant_login_wrapper">
-    <div class="merchant_login_container">
-        <h1 class="merchant_login_title">登入</h1>
-        
-         <form th:action="@{/registerAndLogin/login}" method="post">
-            <!-- 使用者類型 -->
-            <div class="merchant_form_group">
-                <label class="merchant_form_label">使用者類型</label>
-                <label><input type="radio" name="userType" value="member" checked> 受助者</label>
-                <label class="ml-3"><input type="radio" name="userType" value="store"> 合作店家</label>
-            </div>
-            
-            <!-- 帳號 or Email -->
-            <div class="merchant_form_group">
-                <label class="merchant_form_label" for="account">帳號 <span id="accountLabel">(請輸入帳號)</span></label>
-                <input type="text" name="account" id="account" class="merchant_form_input" required>
-            </div>
+    <div class="resend_wrapper">
+  <div class="resend_container">
+    <h2 class="resend_title">重新寄送驗證信</h2>
 
-            <!-- 密碼 -->
-            <div class="merchant_form_group">
-                <label class="merchant_form_label" for="password">密碼</label>
-                <input type="password" name="password" id="password" class="merchant_form_input" required>
-            </div>
-            
+    <form class="resend_form" th:action="@{/registerAndLogin/resend}" method="post">
+      <label for="email">請輸入註冊時的 Email：</label>
+      <input type="email" id="email" name="email" required>
+      <button type="submit">寄送驗證信</button>
+    </form>
 
-
-            <button type="submit" class="merchant_login_btn">登入</button>
-        </form>
-        <!-- 錯誤 or 成功訊息 -->
-<p class="text-danger text-center" th:if="${error}" th:text="${error}"></p>
-<p class="text-success text-center" th:if="${success}" th:text="${success}"></p>
-
-<div class="merchant_divider"></div>
-
-        
-        <div class="merchant_divider"></div>
-
-        
-        <div class="merchant_register_container">
-            <span class="merchant_register_text">還不是會員？</span>
-            <a  class="merchant_register_link" th:onclick="|location.href='@{/registerAndLogin/register}'|">立即註冊</a>
-        </div>
-        <div class="merchant_register_container">
-    <span class="merchant_register_text">沒有收到驗證信？</span>
-    <a class="merchant_register_link" th:href="@{/registerAndLogin/resendMail}">重新寄送驗證信</a>
-</div>
+    <div th:if="${success}" class="success-message">
+      ✅ <span th:text="${success}"></span>
     </div>
-    
-</div>
-<!-- Login Section End -->
+    <div th:if="${error}" class="error-message">
+      ⚠️ <span th:text="${error}"></span>
+    </div>
 
-<!-- Footer Start -->
+    <a th:href="@{/registerAndLogin/login}" class="resend_back_link">返回登入頁</a>
+  </div>
+</div>
+    
+    <!-- Footer Start -->
 <section id="footer">
     <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
         <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
@@ -374,21 +253,7 @@
 
 <!-- Template Javascript -->
 <script src="js/main.js"></script>
-
-<!-- Login JavaScript -->
-<!-- ✅ JS & 用戶類型切換 -->
-<script src="/js/jquery-3.2.1.min.js"></script>
-<script>
-    document.querySelectorAll('input[name="userType"]').forEach(radio => {
-        radio.addEventListener('change', function () {
-            const label = document.getElementById('accountLabel');
-            label.textContent = this.value === 'store'
-                ? '(請輸入Email)'
-                		
-                : '(請輸入帳號)';
-        });
-    });
-</script>
+    
 </body>
 
 </html>

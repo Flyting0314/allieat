@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>驗證信測試區</title>
+</head>
+<body>
+
+<!-- 店家區塊 -->
+<h2>待審核店家列表</h2>
+<div th:if="${stores.size() == 0}">
+    <p>目前沒有待審核的店家。</p>
+</div>
+<div th:each="store : ${stores}">
+    <p>店名：<span th:text="${store.name}"></span></p>
+    <p>Email：<span th:text="${store.email}"></span></p>
+    <form th:action="@{/admin/reviewStore}" method="post">
+    <input type="hidden" name="storeId" th:value="${store.storeId}">
+    <!-- 審核通過 -->
+<button type="submit" name="approved" value="true" class="btn btn-success">審核通過</button>
+
+<!-- 審核未通過 -->
+<button type="submit" name="approved" value="false" class="btn btn-danger">審核未通過</button>
+
+<!-- 補件審核（僅在非補件中才顯示） -->
+<button type="submit" name="approved" value="correction"
+        th:if="${store.reviewed != 0}" class="btn btn-warning">補件審核</button>
+
+<!-- 提示「補件已通知」 -->
+<span th:if="${store.reviewed == 0}" class="text-warning font-weight-bold">（補件中）</span>
+</form>
+    <hr/>
+</div>
+
+<!-- 會員區塊 -->
+<h2>待審核會員列表</h2>
+<div th:if="${members.size() == 0}">
+    <p>目前沒有待審核的會員。</p>
+</div>
+<div th:each="member : ${members}">
+    <p>姓名：<span th:text="${member.name}"></span></p>
+    <p>帳號：<span th:text="${member.account}"></span></p>
+    <p>Email：<span th:text="${member.email}"></span></p>
+    <form th:action="@{/admin/reviewMember}" method="post">
+    <input type="hidden" name="memberId" th:value="${member.memberId}">
+   <!-- 審核通過 -->
+<button type="submit" name="approved" value="true" class="btn btn-success">審核通過</button>
+
+<!-- 審核未通過 -->
+<button type="submit" name="approved" value="false" class="btn btn-danger">審核未通過</button>
+
+<!-- 補件審核（僅在非補件中才顯示） -->
+<button type="submit" name="approved" value="correction"
+        th:if="${member.reviewed != 0}" class="btn btn-warning">補件審核</button>
+
+<!-- 提示「補件已通知」 -->
+<span th:if="${member.reviewed == 0}" class="text-warning font-weight-bold">（補件中）</span>
+</form>
+
+    <hr/>
+</div>
+
+<!-- 提示訊息 -->
+<div th:if="${message}" class="alert alert-success">
+    <span th:text="${message}"></span>
+</div>
+<div th:if="${error}" class="alert alert-danger">
+    <span th:text="${error}"></span>
+</div>
+
+</body>
+</html>

@@ -24,49 +24,66 @@ public class StoreLoginService {
     public boolean updateStoreEditableFields(StoreVO sessionStore, StoreVO formInput) {
         if (sessionStore == null || formInput == null) return false;
 
-        // 安全性：只允許更新自己
         Optional<StoreVO> storeOpt = storeRepository.findById(sessionStore.getStoreId());
         if (storeOpt.isEmpty()) return false;
 
         StoreVO store = storeOpt.get();
 
-        // 驗證格式與空值處理
-        if (formInput.getOpTime() == null || formInput.getLastOrder() == null ||
+        // 驗證欄位是否為空
+        if (formInput.getOpTime() == null || formInput.getLastOrder() == null || 
             formInput.getCloseTime() == null || formInput.getPickTime() == null) {
             return false;
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        
-        // 資料更新
-//        store.setOpTime(formInput.getOpTime());
-//        store.setLastOrder(formInput.getLastOrder());
-//        store.setCloseTime(formInput.getCloseTime());
-//        store.setPickTime(formInput.getPickTime());
 
+        // 驗證時間邏輯
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime op = LocalTime.parse(formInput.getOpTime(), formatter);
+        LocalTime close = LocalTime.parse(formInput.getCloseTime(), formatter);
+        LocalTime last = LocalTime.parse(formInput.getLastOrder(), formatter);
+
+        if (!op.isBefore(close)) return false;
+        if (last.isBefore(op) || last.isAfter(close)) return false;
+
+        // ✅ 更新資料
+        sessionStore.setOpTime(formInput.getOpTime());
+        sessionStore.setCloseTime(formInput.getCloseTime());
+        sessionStore.setLastOrder(formInput.getLastOrder());
+        sessionStore.setPickTime(formInput.getPickTime());
+       
+
+        storeRepository.save(sessionStore);
+        return true;
+    }
+//    public boolean isStoreMissingOpeningInfo(StoreVO store) {
+//        return store.getOpTime() == null ||
+//               store.getCloseTime() == null ||
+//               store.getLastOrder() == null ||
+//               store.getPickTime() == null;
+//    }
+
+    public boolean isStoreMissingOpeningInfo(StoreVO store) {
+        return isBlank(store.getOpTime()) ||
+               isBlank(store.getCloseTime()) ||
+               isBlank(store.getLastOrder()) ||
+               isBlank(store.getPickTime());
+    }
+
+    private boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+    public boolean isInvalidTimeOrder(StoreVO store) {
         try {
-            LocalTime op = LocalTime.parse(formInput.getOpTime(), formatter);
-            LocalTime last = LocalTime.parse(formInput.getLastOrder(), formatter);
-            LocalTime close = LocalTime.parse(formInput.getCloseTime(), formatter);
-            if (op.isAfter(close) || last.isBefore(op) || last.isAfter(close)) {
-                System.out.println("時間邏輯錯誤：opTime 必須 < closeTime，lastOrder 需在兩者之間");
-                return false;
-            }
-            store.setOpTime(op.format(formatter));
-            store.setLastOrder(last.format(formatter));
-            store.setCloseTime(close.format(formatter));
-        	
-            storeRepository.save(store);
-            System.out.println("準備更新商家資料: " + formInput.getLastOrder());
-            System.out.println("接收到的資料：");
-            System.out.println("opTime: " + formInput.getOpTime());
-            System.out.println("lastOrder: " + formInput.getLastOrder());
-            System.out.println("closeTime: " + formInput.getCloseTime());
-            System.out.println("pickTime: " + formInput.getPickTime());
-            return true;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalTime op = LocalTime.parse(store.getOpTime(), formatter);
+            LocalTime close = LocalTime.parse(store.getCloseTime(), formatter);
+            LocalTime last = LocalTime.parse(store.getLastOrder(), formatter);
+
+            if (!op.isBefore(close)) return true; // 開始時間要早於結束
+            if (last.isBefore(op) || last.isAfter(close)) return true; // 最後點餐必須在營業區間內
         } catch (Exception e) {
-            e.printStackTrace(); // 或記錄 log
-            return false;
+            return true; // 有格式錯誤也當作無效
         }
+        return false;
     }
     
 }

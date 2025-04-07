@@ -559,7 +559,12 @@ display: flex;
 </div>
 
 <a th:href="@{/registerAndLogin/logout}" class="vendor_logout_btn logout-button">登出</a>
-    
+    <div th:if="${success}" class="alert alert-success" role="alert">
+        ✅ <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        ⚠️ <span th:text="${error}"></span>
+    </div>
         <form id="profileForm" th:object="${store}" th:action="@{/registerAndLogin/store/update}" method="post">
 <!--             <div class="form-action-buttons" style="position: absolute; top: 30px; right: 30px;"> -->
             <div class="vendor_action_buttons">
@@ -612,16 +617,16 @@ display: flex;
                     <input type="text" name="lastOrder" th:value="*{lastOrder}" class="vendor_info_input time-picker flatpickr-input" readonly>
                 </div>
                 <div class="vendor_info_item" style="grid-column: 1 / span 2;">
-                    <div class="vendor_info_label">取餐時限</div>
+                    <div class="vendor_info_label">取餐時限(分鐘)</div>
                     <div class="vendor_info_value" th:text="*{pickTime}">訂單成立後45分鐘內</div>
                     <select name="pickTime" class="vendor_info_input">
-                        <option th:value="'30分鐘'" th:selected="${store.pickTime == '30分鐘'}">30分鐘</option>
-                        <option th:value="'35分鐘'" th:selected="${store.pickTime == '35分鐘'}">35分鐘</option>
-                        <option th:value="'40分鐘'" th:selected="${store.pickTime == '40分鐘'}">40分鐘</option>
-                        <option th:value="'45分鐘'" th:selected="${store.pickTime == '45分鐘'}">45分鐘</option>
-                        <option th:value="'50分鐘'" th:selected="${store.pickTime == '50分鐘'}">50分鐘</option>
-                        <option th:value="'55分鐘'" th:selected="${store.pickTime == '55分鐘'}">55分鐘</option>
-                        <option th:value="'60分鐘'" th:selected="${store.pickTime == '60分鐘'}">60分鐘</option>
+                        <option th:value="'30'" th:selected="${store.pickTime == '30'}">30</option>
+                        <option th:value="'35'" th:selected="${store.pickTime == '35'}">35</option>
+                        <option th:value="'40'" th:selected="${store.pickTime == '40'}">40</option>
+                        <option th:value="'45'" th:selected="${store.pickTime == '45'}">45</option>
+                        <option th:value="'50'" th:selected="${store.pickTime == '50'}">50</option>
+                        <option th:value="'55'" th:selected="${store.pickTime == '55'}">55</option>
+                        <option th:value="'60'" th:selected="${store.pickTime == '60'}">60</option>
                     </select>
                 </div>
             </div>
@@ -704,147 +709,312 @@ display: flex;
 <!-- flatpickr -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <!-- Vendor Profile Javascript -->
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // 側邊導航菜單點擊事件
-        const sidebarItems = document.querySelectorAll('.vendor_sidebar_item');
-        const profileContent = document.getElementById('profileContent');
-        const editBtn = document.getElementById('editBtn');
-        const saveBtn = document.getElementById('saveBtn');
-        const form = document.getElementById('profileForm');
-        
-        let formChanged = false;
-        
-        // 處理側邊欄點擊
-        sidebarItems.forEach(item => {
-            const dropdownIcon = item.querySelector('.vendor_dropdown_icon');
-            
-            if (dropdownIcon) {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    this.classList.toggle('vendor_dropdown_open');
-                });
-            }
-        });
-        
-        // 照片上傳功能
-//         const photoInput = document.getElementById('photoInput');
-//         const photoIcon = document.querySelector('.vendor_photo_icon');
-        
-//         photoInput.addEventListener('change', function(e) {
-//             if (this.files && this.files[0]) {
-//                 const reader = new FileReader();
-                
-//                 reader.onload = function(e) {
-//                     // 檢查是否已有圖片元素
-//                     let profileImg = document.getElementById('profileImage');
-                    
-//                     if (!profileImg) {
-//                         // 如果沒有，創建一個新的圖片元素
-//                         profileImg = document.createElement('img');
-//                         profileImg.id = 'profileImage';
-//                         profileImg.alt = '店家照片';
-                        
-//                         // 隱藏預設圖標
-//                         photoIcon.style.display = 'none';
-                        
-//                         // 將圖片添加到上傳區域
-//                         document.querySelector('.vendor_photo_upload').appendChild(profileImg);
-//                     }
-                    
-//                     // 設置圖片源
-//                     profileImg.src = e.target.result;
-//                     formChanged = true;
-//                     updateButtonState();
-//                 };
-                
-//                 reader.readAsDataURL(this.files[0]);
-//             }
-//         });
-        
-        // 編輯按鈕點擊事件
-//         editBtn.addEventListener('click', function() {
-//             profileContent.classList.add('vendor_edit_mode');
-//         });
-        editBtn.addEventListener('click', function () {
-                profileContent.classList.add('vendor_edit_mode');
-                document.querySelectorAll('.vendor_info_input').forEach(input => {
-                    if (!input.classList.contains('readonly')) {
-                        input.removeAttribute('readonly');
-                    }
-                });
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarItems = document.querySelectorAll('.vendor_sidebar_item');
+    const profileContent = document.getElementById('profileContent');
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const form = document.getElementById('profileForm');
+
+    let formChanged = false;
+
+    // 處理側邊欄開關
+    sidebarItems.forEach(item => {
+        const dropdownIcon = item.querySelector('.vendor_dropdown_icon');
+        if (dropdownIcon) {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('vendor_dropdown_open');
             });
-        
-//         // 儲存按鈕點擊事件
-//         saveBtn.addEventListener('click', function() {
-//             if (formChanged) {
-//                 // 在真實應用中，這裡會提交表單
-//                 // 模擬保存成功
-//                 setTimeout(() => {
-//                     alert('資料已儲存成功');
-//                     profileContent.classList.remove('vendor_edit_mode');
-//                     formChanged = false;
-//                     updateButtonState();
-                    
-//                     // 將輸入框的值更新到顯示區域
-//                     const inputs = form.querySelectorAll('.vendor_info_input');
-//                     inputs.forEach(input => {
-//                         const valueDiv = input.parentElement.querySelector('.vendor_info_value');
-//                         valueDiv.textContent = input.value;
-//                     });
-//                 }, 500);
-//             } else {
-//                 profileContent.classList.remove('vendor_edit_mode');
-//             }
-//         });
-        
-        // 監聽表單變化
-        const formInputs = form.querySelectorAll('.vendor_info_input');
-        formInputs.forEach(input => {
-            // 保存初始值
-            input.dataset.initialValue = input.value;
-            
-            input.addEventListener('input', function() {
-                // 檢查當前值是否與初始值不同
-                if (this.value !== this.dataset.initialValue) {
-                    formChanged = true;
-                } else {
-                    // 檢查其他輸入框是否有改變
-                    formChanged = false;
-                    formInputs.forEach(otherInput => {
-                        if (otherInput.value !== otherInput.dataset.initialValue) {
-                            formChanged = true;
-                        }
-                    });
-                }
-                updateButtonState();
-            });
-        });
-        
-        // 更新按鈕狀態
-        function updateButtonState() {
-            if (formChanged) {
-                saveBtn.textContent = '儲存';
-                saveBtn.style.backgroundColor = '#4CAF50';
-            } else {
-                saveBtn.textContent = '取消';
-                saveBtn.style.backgroundColor = '#607D8B';
-            }
         }
-        
-        flatpickr(".time-picker", {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",      // 24小時格式
-            time_24hr: true,        // ✅ 24小時制
-            minuteIncrement: 10,
-            allowInput: false       // 不允許手動輸入
+    });
+
+    // 表單監聽
+    const formInputs = form.querySelectorAll('.vendor_info_input');
+    formInputs.forEach(input => {
+        input.dataset.initialValue = input.value;
+        input.addEventListener('input', function() {
+            formChanged = [...formInputs].some(input => input.value !== input.dataset.initialValue);
+            updateButtonState();
         });
     });
-    
 
-    
+    // 編輯按鈕
+    editBtn.addEventListener('click', function () {
+        profileContent.classList.add('vendor_edit_mode');
+        document.querySelectorAll('.vendor_info_input').forEach(input => {
+            if (!input.classList.contains('readonly')) {
+                input.removeAttribute('readonly');
+            }
+        });
+    });
+
+    // 儲存按鈕
+    saveBtn.addEventListener('click', function () {
+        if (!formChanged) {
+            formInputs.forEach(input => {
+                input.value = input.dataset.initialValue;
+            });
+            profileContent.classList.remove('vendor_edit_mode');
+            updateButtonState();
+            return;
+        }
+        console.log("即將提交");
+        form.submit();
+    });
+
+    // 切換按鈕狀態
+    function updateButtonState() {
+        if (formChanged) {
+            saveBtn.textContent = '儲存';
+            saveBtn.style.backgroundColor = '#4CAF50';
+        } else {
+            saveBtn.textContent = '取消';
+            saveBtn.style.backgroundColor = '#607D8B';
+        }
+    }
+
+    // Flatpickr 互相限制時間區間
+    const opInput = document.querySelector("input[name='opTime']");
+    const closeInput = document.querySelector("input[name='closeTime']");
+    const lastOrderInput = document.querySelector("input[name='lastOrder']");
+
+    const opPicker = flatpickr(opInput, {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minuteIncrement: 10,
+        allowInput: false,
+        onChange: function(selectedDates) {
+            const opTime = selectedDates[0];
+            if (opTime) {
+                closePicker.set('minTime', opTime);
+                if (closeInput.value) {
+                    const closeTime = flatpickr.parseDate(closeInput.value, "H:i");
+                    if (closeTime <= opTime) {
+                        closeInput.value = "";
+                    }
+                }
+            }
+        }
+    });
+
+    const closePicker = flatpickr(closeInput, {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minuteIncrement: 10,
+        allowInput: false,
+        onChange: function(selectedDates) {
+            const closeTime = selectedDates[0];
+            if (closeTime) {
+                opPicker.set('maxTime', closeTime);
+                if (opInput.value) {
+                    const opTime = flatpickr.parseDate(opInput.value, "H:i");
+                    if (opTime >= closeTime) {
+                        opInput.value = "";
+                    }
+                }
+            }
+        }
+    });
+
+    flatpickr(lastOrderInput, {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minuteIncrement: 10,
+        allowInput: false,
+        onOpen: function(selectedDates, dateStr, instance) {
+            const opVal = opInput.value;
+            const closeVal = closeInput.value;
+
+            if (opVal && closeVal) {
+                const opTime = flatpickr.parseDate(opVal, "H:i");
+                const closeTime = flatpickr.parseDate(closeVal, "H:i");
+
+                instance.set("minTime", opTime);
+                instance.set("maxTime", closeTime);
+            } else {
+                alert("請先選擇開始與結束時間");
+                instance.close();
+            }
+        }
+    });
+});
 </script>
+<script th:if="${forceEdit}">
+    window.onload = function() {
+        document.querySelector("#editBtn").click(); // 或自動開啟編輯模式的 JS
+    };
+</script>
+<!-- <script> -->
+//     document.addEventListener('DOMContentLoaded', function() {
+//         // 側邊導航菜單點擊事件
+//         const sidebarItems = document.querySelectorAll('.vendor_sidebar_item');
+//         const profileContent = document.getElementById('profileContent');
+//         const editBtn = document.getElementById('editBtn');
+//         const saveBtn = document.getElementById('saveBtn');
+//         const form = document.getElementById('profileForm');
+        
+//         let formChanged = false;
+        
+//         // 處理側邊欄點擊
+//         sidebarItems.forEach(item => {
+//             const dropdownIcon = item.querySelector('.vendor_dropdown_icon');
+            
+//             if (dropdownIcon) {
+//                 item.addEventListener('click', function(e) {
+//                     e.preventDefault();
+//                     this.classList.toggle('vendor_dropdown_open');
+//                 });
+//             }
+//         });
+        
+//         // 監聽表單變化
+//         const formInputs = form.querySelectorAll('.vendor_info_input');
+//         formInputs.forEach(input => {
+//             // 保存初始值
+//             input.dataset.initialValue = input.value;
+            
+//             input.addEventListener('input', function() {
+//                 // 檢查當前值是否與初始值不同
+//                 if (this.value !== this.dataset.initialValue) {
+//                     formChanged = true;
+//                 } else {
+//                     // 檢查其他輸入框是否有改變
+//                     formChanged = false;
+//                     formInputs.forEach(otherInput => {
+//                         if (otherInput.value !== otherInput.dataset.initialValue) {
+//                             formChanged = true;
+//                         }
+//                     });
+//                 }
+//                 updateButtonState();
+//             });
+//         });
+        
+
+//         editBtn.addEventListener('click', function () {
+//                 profileContent.classList.add('vendor_edit_mode');
+//                 document.querySelectorAll('.vendor_info_input').forEach(input => {
+//                     if (!input.classList.contains('readonly')) {
+//                         input.removeAttribute('readonly');
+//                     }
+//                 });
+//             });
+        
+// //         // 儲存按鈕點擊事件
+// saveBtn.addEventListener('click', function () {
+//     if (!formChanged) {
+//         // 還原初始值
+//         formInputs.forEach(input => {
+//             input.value = input.dataset.initialValue;
+//         });
+//         profileContent.classList.remove('vendor_edit_mode');
+//         updateButtonState();
+//         return;
+//     }
+//     console.log("即將提交")
+//     form.submit();
+// });
+
+// function updateButtonState() {
+//     if (formChanged) {
+//         saveBtn.textContent = '儲存';
+//         saveBtn.style.backgroundColor = '#4CAF50';
+//     } else {
+//         saveBtn.textContent = '取消';
+//         saveBtn.style.backgroundColor = '#607D8B';
+//     }
+// }
+    
+//     flatpickr("input[name='opTime']", {
+//         enableTime: true,
+//         noCalendar: true,
+//         dateFormat: "H:i",
+//         time_24hr: true,
+//         minuteIncrement: 10,
+//         allowInput: false
+//     });
+
+//     flatpickr("input[name='closeTime']", {
+//         enableTime: true,
+//         noCalendar: true,
+//         dateFormat: "H:i",
+//         time_24hr: true,
+//         minuteIncrement: 10,
+//         allowInput: false
+//     });
+
+//     flatpickr("input[name='lastOrder']", {
+//         enableTime: true,
+//         noCalendar: true,
+//         dateFormat: "H:i",
+//         time_24hr: true,
+//         minuteIncrement: 10,
+//         allowInput: false,
+//         onOpen: function(selectedDates, dateStr, instance) {
+//             const opTime = document.querySelector("input[name='opTime']").value;
+//             const closeTime = document.querySelector("input[name='closeTime']").value;
+//             if (opTime && closeTime) {
+//                 instance.set("minTime", opTime);
+//                 instance.set("maxTime", closeTime);
+//             }
+//         }
+//     });
+
+// });
+
+        
+    // 照片上傳功能
+//  const photoInput = document.getElementById('photoInput');
+//  const photoIcon = document.querySelector('.vendor_photo_icon');
+ 
+//  photoInput.addEventListener('change', function(e) {
+//      if (this.files && this.files[0]) {
+//          const reader = new FileReader();
+         
+//          reader.onload = function(e) {
+//              // 檢查是否已有圖片元素
+//              let profileImg = document.getElementById('profileImage');
+             
+//              if (!profileImg) {
+//                  // 如果沒有，創建一個新的圖片元素
+//                  profileImg = document.createElement('img');
+//                  profileImg.id = 'profileImage';
+//                  profileImg.alt = '店家照片';
+                 
+//                  // 隱藏預設圖標
+//                  photoIcon.style.display = 'none';
+                 
+//                  // 將圖片添加到上傳區域
+//                  document.querySelector('.vendor_photo_upload').appendChild(profileImg);
+//              }
+             
+//              // 設置圖片源
+//              profileImg.src = e.target.result;
+//              formChanged = true;
+//              updateButtonState();
+//          };
+         
+//          reader.readAsDataURL(this.files[0]);
+//      }
+//  });
+ 
+ // 編輯按鈕點擊事件
+//  editBtn.addEventListener('click', function() {
+//      profileContent.classList.add('vendor_edit_mode');
+//  });
+        
+        
+    
+<!-- </script> -->
 
 </body>
 

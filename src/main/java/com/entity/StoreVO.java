@@ -73,7 +73,7 @@ public class StoreVO implements Serializable{
 	
 	@NotBlank(message = "店家食品業者登錄字號不得為空")
 	private String businessRegNum;
-	
+	@Column(name = "regTime")
 	private Timestamp regTime;
 	
 	private Integer points=0;
@@ -111,6 +111,18 @@ public class StoreVO implements Serializable{
 	private Integer reviewed=3;
 	
 	private String mapApi;
+	
+	private String verificationMail;
+	
+	public String getVerificationMail() {
+		return verificationMail;
+	}
+	public void setVerificationMail(String verificationMail) {
+		this.verificationMail = verificationMail;
+	}
+
+
+
 
 	public Integer getReviewed() {
 		return reviewed;
@@ -263,7 +275,29 @@ public class StoreVO implements Serializable{
 	public void setMapApi(String mapApi) {
 		this.mapApi = mapApi;
 	}
+	// 解析 mapApi 成為 latitude
+	public Double getLatitude() {
+		if (mapApi != null && mapApi.contains(",")) {
+			try {
+				return Double.parseDouble(mapApi.split(",")[0].trim());
+			} catch (NumberFormatException e) {
+				return null;
+			}
+		}
+		return null;
+	}
 
+	// 解析 mapApi 成為 longitude
+	public Double getLongitude() {
+		if (mapApi != null && mapApi.contains(",")) {
+			try {
+				return Double.parseDouble(mapApi.split(",")[1].trim());
+			} catch (NumberFormatException e) {
+				return null;
+			}
+		}
+		return null;
+	}
 	@Override
 	public String toString() {
 		return "storeId=" + storeId +"\n"
