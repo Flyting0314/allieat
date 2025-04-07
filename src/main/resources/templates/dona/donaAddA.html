@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="utf-8">
+    <meta charset="utf-8">
     <title>攏呷霸 ALLiEAT - 愛心代用餐平台</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="愛心代用餐, 公益, 餐飲捐贈" name="keywords">
@@ -12,7 +13,9 @@
 
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -27,12 +30,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/css/style.css">
-    
+
     <style>
         body {
             background-color: #f8f9fa;
         }
-        
+
         .donate-box {
             background: white;
             padding: 20px;
@@ -40,7 +43,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
         }
-        
+
         .donate-option {
             background: white;
             width: 100%;
@@ -49,8 +52,9 @@
             border: 2px solid #ddd;
             cursor: pointer;
         }
-        
-        .donate-option:hover, .donate-option.donate-active {
+
+        .donate-option:hover,
+        .donate-option.donate-active {
             border-color: red;
             background: #ffe5e5;
         }
@@ -60,7 +64,7 @@
             justify-content: flex-start;
             margin-bottom: 20px;
         }
-        
+
         .donate-step {
             display: flex;
             align-items: center;
@@ -78,17 +82,17 @@
             margin-right: 5px;
             font-size: 12px;
         }
-        
+
         .donate-circle.donate-current {
             background-color: #ff0000;
             color: white;
         }
-        
+
         .donate-circle.donate-done {
             background-color: #e0e0e0;
             color: black;
         }
-        
+
         .donate-circle.donate-done::after {
             content: "✓";
         }
@@ -99,7 +103,7 @@
             margin-bottom: 20px;
             width: 100%;
         }
-        
+
         .donate-tab {
             flex: 1;
             text-align: center;
@@ -108,25 +112,25 @@
             cursor: pointer;
             border: none;
         }
-        
+
         .donate-tab.donate-selected {
             background-color: #DDDDDD;
             color: black;
         }
     </style>
-    
+
 
 
 </head>
+
 <body>
-<!-- Navbar Start -->
+    <!-- Navbar Start -->
     <section id="header">
         <div class="container-fluid p-0 nav-bar">
             <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
                 <a href="index.html" class="navbar-brand px-lg-4 m-0">
                     <h1 class="m-0 display-4 text-uppercase text-white" style="display: inline-block;">
-                        <img src="/img/logo3.png" width="80px" height="80px" alt="" 
-                         style="vertical-align: middle; margin-right: 0px; margin-top: -10px; 
+                        <img src="/img/logo3.png" width="80px" height="80px" alt="" style="vertical-align: middle; margin-right: 0px; margin-top: -10px; 
                                 border-radius: 50%; object-fit: cover;">
                         <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
                     </h1>
@@ -193,12 +197,12 @@
                         我們傳遞的不僅僅是食物，更是一份深深的關愛與陪伴。每一份餐點都是無數人的愛心與付出。您的捐款帶來持續地穩定的經費，讓我們有能力將愛傳遞給最有需要的人，讓世界更美好，形成一個善的循環。
                     </p>
                 </div>
-        
+
                 <!-- 右側捐款流程 -->
                 <div class="col-md-6">
                     <h3>信用卡捐款</h3>
                     <p>支援 VISA、MasterCard、JCB</p>
-        
+
                     <!-- 步驟流程 -->
                     <div class="donate-process">
                         <div class="donate-step">
@@ -214,6 +218,8 @@
                             <div>線上付款</div>
                         </div>
                     </div>
+
+=======
                     <form th:action="@{/dona/donaAddA}" method="post" th:object="${donaReq}">
     <!-- 定期/單筆 捐款選擇 -->
     <div class="donate-tabs">
@@ -239,46 +245,166 @@
         </label>
     </div>
 
-    <div class="mb-3">
-        <label class="donate-option" for="donate500">
-            <input type="radio" id="donate500" th:field="*{donationIncome}" value="500" onclick="hideContent('donationIncomeError')"/>
-            <strong>$500</strong>
-            <p class="mb-0 text-muted">為社會貢獻一份力量，讓更多人感受到溫暖與希望，讓世界更美好。</p>
-        </label>
-    </div>
 
-    <div class="mb-3">
-        <label class="donate-option" for="donate1000">
-            <input type="radio" id="donate1000" th:field="*{donationIncome}" value="1000" onclick="hideContent('donationIncomeError')"/>
-            <strong>$1000</strong>
-            <p class="mb-0 text-muted">餐點背後的每份心意，都將傳遞到需要的地方。您的愛心，是我們最大的動力。</p>
-        </label>
-    </div>
+                    <!-- 分頁標籤 -->
+                    <div class="donate-tabs">
+                        <div class="donate-tab donate-selected" id="tab-personal">定期定額</div>
+                        <div class="donate-tab" id="tab-company">單筆捐款</div>
+                    </div>
 
-<div class="mb-3">
-<label class="donate-option" for="donate-custom">
-    <input type="radio" id="donate-custom" th:field="*{donationIncome}" value="-1" onclick="hideContent('donationIncomeError')"/>
-    <strong>自訂金額</strong>
-    <input type="number" id="customAmountInput" name="donationIncome" class="form-control mt-2" placeholder="請輸入金額" onfocus="hideContent('donationIncomeError')"
-       oninput="hideContent('donationIncomeError')"/>
-</label>
-</div>
-<!-- 錯誤訊息區塊 -->
-<div th:if="${#fields.hasErrors('donationIncome')}"
-     th:errors="*{donationIncome}"
-     id="donationIncomeError"
-     class="text-danger fw-bold mb-2">
-</div>
-    <!-- 下一步按鈕 -->
-    <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary">下一步</button>
-    </div>
-</form>
-                    
+                    <!-- 定期定額捐款 -->
+                    <div class="df-panel" id="panel-personal" style="display: block;">
+                        <form th:action="@{donaAddB}" method="post" th:object="${donaReq}">
+                            <input type="hidden" name="companyDonor" value="false">
+                            <!-- 捐款選項 -->
+                            <div class="mb-3">
+                                <label class="donate-option" for="donate100">
+                                    <input type="radio" id="donate100" th:field="*{donationIncome}" value="100"
+                                        onclick="hideContent('donationIncomeError')" />
+                                    <strong>$500</strong>
+                                    <p class="mb-0 text-muted">捐款送愛心，和我們一起，用實際行動溫暖他人，用心點亮生活。</p>
+                                </label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="donate-option" for="donate500">
+                                    <input type="radio" id="donate500" th:field="*{donationIncome}" value="500"
+                                        onclick="hideContent('donationIncomeError')" />
+                                    <strong>$800</strong>
+                                    <p class="mb-0 text-muted">為社會貢獻一份力量，讓更多人感受到溫暖與希望。</p>
+                                </label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="donate-option" for="donate1000">
+                                    <input type="radio" id="donate1000" th:field="*{donationIncome}" value="1000"
+                                        onclick="hideContent('donationIncomeError')" />
+                                    <strong>$1000</strong>
+                                    <p class="mb-0 text-muted">每份心意，都將傳遞到需要的地方。</p>
+                                </label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="donate-option" for="donate-custom">
+                                    <input type="radio" id="donate-custom" th:field="*{donationIncome}" value="-1"
+                                        onclick="hideContent('donationIncomeError')" />
+                                    <strong>自訂金額</strong>
+                                    <input type="number" id="customAmountInput" name="donationIncome"
+                                        class="form-control mt-2" placeholder="請輸入金額"
+                                        onfocus="hideContent('donationIncomeError')"
+                                        oninput="hideContent('donationIncomeError')" />
+                                </label>
+                            </div>
+                            <!-- 錯誤訊息 -->
+                            <div th:if="${#fields.hasErrors('donationIncome')}" th:errors="*{donationIncome}"
+                                id="donationIncomeError" class="text-danger fw-bold mb-2"></div>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">下一步</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 單筆捐款 -->
+                    <div class="df-panel" id="panel-company" style="display: none;">
+                        <form th:action="@{donaAddB}" method="post" th:object="${donaReq}">
+                            <input type="hidden" name="companyDonor" value="true">
+                            <!-- 捐款選項 -->
+                            <div class="mb-3">
+                                <label class="donate-option" for="donate100-c">
+                                    <input type="radio" id="donate100-c" th:field="*{donationIncome}" value="100"
+                                        onclick="hideContent('donationIncomeError')" />
+                                    <strong>$1500</strong>
+                                    <p class="mb-0 text-muted">捐款送愛心，和我們一起，用實際行動溫暖他人。</p>
+                                </label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="donate-option" for="donate500-c">
+                                    <input type="radio" id="donate500-c" th:field="*{donationIncome}" value="500"
+                                        onclick="hideContent('donationIncomeError')" />
+                                    <strong>$3000</strong>
+                                    <p class="mb-0 text-muted">讓更多人感受到溫暖與希望。</p>
+                                </label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="donate-option" for="donate1000-c">
+                                    <input type="radio" id="donate1000-c" th:field="*{donationIncome}" value="1000"
+                                        onclick="hideContent('donationIncomeError')" />
+                                    <strong>$5000</strong>
+                                    <p class="mb-0 text-muted">您的愛心，是我們最大的動力。</p>
+                                </label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="donate-option" for="donate-custom-c">
+                                    <input type="radio" id="donate-custom-c" th:field="*{donationIncome}" value="-1"
+                                        onclick="hideContent('donationIncomeError')" />
+                                    <strong>自訂金額</strong>
+                                    <input type="number" id="customAmountInputCompany" name="donationIncome"
+                                        class="form-control mt-2" placeholder="請輸入金額"
+                                        onfocus="hideContent('donationIncomeError')"
+                                        oninput="hideContent('donationIncomeError')" />
+                                </label>
+                            </div>
+                            <!-- 錯誤訊息 -->
+                            <div th:if="${#fields.hasErrors('donationIncome')}" th:errors="*{donationIncome}"
+                                id="donationIncomeError" class="text-danger fw-bold mb-2"></div>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">下一步</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
+
+    <!-- JS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabPersonal = document.getElementById("tab-personal");
+            const tabCompany = document.getElementById("tab-company");
+            const panelPersonal = document.getElementById("panel-personal");
+            const panelCompany = document.getElementById("panel-company");
+
+            tabPersonal.addEventListener("click", function () {
+                tabPersonal.classList.add("donate-selected");
+                tabCompany.classList.remove("donate-selected");
+                panelPersonal.style.display = "block";
+                panelCompany.style.display = "none";
+            });
+
+            tabCompany.addEventListener("click", function () {
+                tabCompany.classList.add("donate-selected");
+                tabPersonal.classList.remove("donate-selected");
+                panelPersonal.style.display = "none";
+                panelCompany.style.display = "block";
+            });
+
+            const donationOptions = document.querySelectorAll('.donate-option');
+            donationOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    donationOptions.forEach(o => o.classList.remove('donate-active'));
+                    this.classList.add('donate-active');
+                });
+            });
+
+            const customInput = document.getElementById("customAmountInput");
+            const customRadio = document.getElementById("donate-custom");
+            if (customInput && customRadio) {
+                customInput.addEventListener("input", function () {
+                    customRadio.checked = true;
+                    customRadio.value = customInput.value || "-1";
+                });
+            }
+
+            const customInputCompany = document.getElementById("customAmountInputCompany");
+            const customRadioCompany = document.getElementById("donate-custom-c");
+            if (customInputCompany && customRadioCompany) {
+                customInputCompany.addEventListener("input", function () {
+                    customRadioCompany.checked = true;
+                    customRadioCompany.value = customInputCompany.value || "-1";
+                });
+            }
+        });
+    </script>
+
     <!-- Donation Content End -->
 
     <!-- Footer Start -->
@@ -295,10 +421,14 @@
                     <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">關注我們</h4>
                     <p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
                     <div class="d-flex justify-content-start">
-                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
+                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+                                class="fab fa-twitter"></i></a>
+                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+                                class="fab fa-linkedin-in"></i></a>
+                        <a class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i
+                                class="fab fa-instagram"></i></a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-5">
@@ -315,7 +445,8 @@
                     <p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
                     <div class="w-100">
                         <div class="input-group">
-                            <input type="text" class="form-control border-light" style="padding: 25px;" placeholder="輸入您的信箱">
+                            <input type="text" class="form-control border-light" style="padding: 25px;"
+                                placeholder="輸入您的信箱">
                             <div class="input-group-append">
                                 <button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
                             </div>
@@ -323,16 +454,18 @@
                     </div>
                 </div>
             </div>
-            <div class="container-fluid text-center text-white mt-4 py-4 px-sm-3 px-md-5" style="border-color: rgba(256, 256, 256, .1) !important;">
+            <div class="container-fluid text-center text-white mt-4 py-4 px-sm-3 px-md-5"
+                style="border-color: rgba(256, 256, 256, .1) !important;">
                 <p class="mb-2 text-white">版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>. 保留所有權利</p>
-                <p class="m-0 text-white">網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司 設計部 設計</a></p>
+                <p class="m-0 text-white">網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司 設計部
+                        設計</a></p>
             </div>
         </div>
     </section>
     <!-- Footer End -->
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
-     
+
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
@@ -342,20 +475,20 @@
     <script src="lib/tempusdominus/js/moment.min.js"></script>
     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-     
+
     <!-- Contact Javascript File -->
     <script src="mail/jqBootstrapValidation.min.js"></script>
     <script src="mail/contact.js"></script>
-     
+
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
     <script>
-    function hideContent(id) {
-        const el = document.getElementById(id);
-        if (el) {
-            el.style.display = "none";
+        function hideContent(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = "none";
+            }
         }
-    }
         // 定期定額與單筆捐款選擇
         document.addEventListener("DOMContentLoaded", function () {
             const recurringBtn = document.getElementById("recurringBtn");
@@ -371,11 +504,11 @@
                 oneTimeBtn.classList.add("donate-selected");
                 recurringBtn.classList.remove("donate-selected");
             });
-            
+
             // 捐款選項互斥功能
             const donationOptions = document.querySelectorAll('.donate-option');
             donationOptions.forEach(option => {
-                option.addEventListener('click', function() {
+                option.addEventListener('click', function () {
                     donationOptions.forEach(o => o.classList.remove('donate-active'));
                     this.classList.add('donate-active');
                 });
@@ -392,9 +525,124 @@
                 });
             }
         });
-        
-        
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // 切換定期/單筆捐款標籤
+            const tabPersonal = document.getElementById("tab-personal");
+            const tabCompany = document.getElementById("tab-company");
+            const panelPersonal = document.getElementById("panel-personal");
+            const panelCompany = document.getElementById("panel-company");
+
+            tabPersonal.addEventListener("click", function () {
+                tabPersonal.classList.add("donate-selected");
+                tabCompany.classList.remove("donate-selected");
+                panelPersonal.style.display = "block";
+                panelCompany.style.display = "none";
+            });
+
+            tabCompany.addEventListener("click", function () {
+                tabCompany.classList.add("donate-selected");
+                tabPersonal.classList.remove("donate-selected");
+                panelPersonal.style.display = "none";
+                panelCompany.style.display = "block";
+            });
+
+            // 捐款選項樣式切換
+            const donationOptions = document.querySelectorAll('.donate-option');
+            donationOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    donationOptions.forEach(o => o.classList.remove('donate-active'));
+                    this.classList.add('donate-active');
+                    hideContent('donationIncomeError');
+                });
+            });
+
+            // 自訂金額選項觸發
+            const customInput = document.getElementById("customAmountInput");
+            const customRadio = document.getElementById("donate-custom");
+            if (customInput && customRadio) {
+                customInput.addEventListener("input", function () {
+                    customRadio.checked = true;
+                    customRadio.value = customInput.value || "-1";
+                    hideContent('donationIncomeError');
+                });
+            }
+
+            const customInputCompany = document.getElementById("customAmountInputCompany");
+            const customRadioCompany = document.getElementById("donate-custom-c");
+            if (customInputCompany && customRadioCompany) {
+                customInputCompany.addEventListener("input", function () {
+                    customRadioCompany.checked = true;
+                    customRadioCompany.value = customInputCompany.value || "-1";
+                    hideContent('donationIncomeError');
+                });
+            }
+
+            // 隱藏錯誤訊息函數
+            function hideContent(id) {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.display = "none";
+                    el.textContent = "";
+                }
+            }
+
+            // 驗證金額是否選擇
+            function validateForm(form) {
+                const checkedInput = form.querySelector("input[name='donationIncome']:checked");
+                const customInput = form.querySelector("input[type='number']");
+                const errorDiv = form.querySelector("#donationIncomeError");
+
+                if (!checkedInput) {
+                    if (errorDiv) {
+                        errorDiv.style.display = "block";
+                        errorDiv.textContent = "請選擇或輸入捐款金額";
+                    }
+                    alert("請選擇或輸入捐款金額！");
+                    return false;
+                }
+
+                // 檢查是否為「自訂金額 radio」被選中（id 是 donate-custom 或 donate-custom-c）
+                if (checkedInput.id === "donate-custom" || checkedInput.id === "donate-custom-c") {
+                    const value = parseInt(customInput.value);
+                    if (isNaN(value) || value < 100) {
+                        if (errorDiv) {
+                            errorDiv.style.display = "block";
+                            errorDiv.textContent = "自訂金額需為至少 100 元";
+                        }
+                        alert("請輸入至少 100 元的自訂金額！");
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            // 綁定兩個表單的提交事件
+            const personalForm = document.querySelector("#panel-personal form");
+            const companyForm = document.querySelector("#panel-company form");
+
+            if (personalForm) {
+                personalForm.addEventListener("submit", function (e) {
+                    if (!validateForm(personalForm)) {
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            if (companyForm) {
+                companyForm.addEventListener("submit", function (e) {
+                    if (!validateForm(companyForm)) {
+                        e.preventDefault();
+                    }
+                });
+            }
+        });
+
+
+
 
     </script>
 </body>
+
 </html>

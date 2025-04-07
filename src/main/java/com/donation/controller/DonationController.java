@@ -1,10 +1,24 @@
 package com.donation.controller;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.util.Base64;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -14,22 +28,30 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.donation.model.DonationService;
+import com.donation.model.PaymentRequest;
 import com.entity.DonationVO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.Valid;
 
 
 
-@Controller
+@RestController
 @RequestMapping("/donation")
 public class DonationController {
 	
 	@Autowired
 	DonationService donationSvc;
+	private final String HASH_KEY = "59IVo9slHjyqrXGzKK56Bf2uOOsvdpBa";
+    private final String HASH_IV = "CN8TD5OVygqmdzgP";
+    private final String MERCHANT_ID = "MS155406184";
+    private final String donateUrl = "https://cdonate.newebpay.com/allieat";
 	
 	@GetMapping("/")
 	public String myMethod() {
@@ -172,5 +194,128 @@ public class DonationController {
 		model.addAttribute("donationListData", list); // for listAllDonation.html 第85行用
 		return "back-end/donation/listAllDonation";
 	}
+	
+	
+	/**
+	 * 
+	 */
+    // Step 1: 回傳金流參數給前端
+    @PostMapping("/donate-params")
+    public ResponseEntity<Map<String, String>> generateParams(@RequestBody PaymentRequest request) {
+        long timestamp = System.currentTimeMillis() / 1000;
+        String version = "1.1";
+
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("MerchantID", MERCHANT_ID);
+        params.put("RespondType", "JSON");
+        params.put("TimeStamp", String.valueOf(timestamp));
+        params.put("Version", version);
+        params.put("MerchantOrderNo", request.getOrderNo());
+        params.put("Amt", String.valueOf(request.getAmount()));
+        params.put("ItemDesc", request.getItemDesc());
+        params.put("CREDIT", "on");
+        params.put("NotifyURL", "https://localhost:8081/demo/donation/notify");
+        params.put("ReturnURL", "https://localhost:8081/demo/donation/thank");
+
+        params.put("CheckValue", generateCheckValue(params));
+        System.out.println(params);
+        return ResponseEntity.ok(params);
+    }
+
+    // Step 2: 接收金流背景通知
+    /*
+    @PostMapping("/notify")
+    public ResponseEntity<String> notifyPayment(@RequestParam Map<String, String> data) {
+        System.out.println("✅ 收到藍新金流背景通知");
+        System.out.println(data);
+        // 你可以在這裡更新訂單狀態到資料庫
+        return ResponseEntity.ok("OK");
+    }
+    */
+    
+    @PostMapping("/notify")
+    public ResponseEntity<String> receiveNotify(@RequestParam Map<String, String> data) {
+        try {
+            // Step 1：取得 TradeInfo
+            String tradeInfo = data.get("TradeInfo");
+            System.out.println(tradeInfo);
+            if (tradeInfo == null) return ResponseEntity.badRequest().body("Missing TradeInfo");
+
+            // Step 2：解密 TradeInfo
+            String decryptedJson;
+            try {
+                decryptedJson = decryptAES(tradeInfo); // 嘗試解密（正式）
+            } catch (Exception e) {
+                // 若解密失敗，就直接 base64 decode（測試用）
+                byte[] decoded = Base64.getDecoder().decode(tradeInfo);
+                decryptedJson = new String(decoded, StandardCharsets.UTF_8);
+            }
+            System.out.println("✅ 解密後內容：" + decryptedJson);
+
+            // Step 3：轉成 Map 或物件
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> infoMap = mapper.readValue(decryptedJson, Map.class);
+
+            // Step 4：處理訂單，例如記錄付款狀態
+            String orderNo = (String) infoMap.get("MerchantOrderNo");
+            String status = (String) infoMap.get("Status");
+            System.out.println("✅ 訂單：" + orderNo + " 付款狀態：" + status);
+
+            // TODO：你可以根據付款成功與否更新資料庫
+
+            return ResponseEntity.ok("SUCCESS");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("FAIL");
+        }
+    }
+
+    // 解密方法（AES/CBC/PKCS5Padding）
+    private String decryptAES(String tradeInfo) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        SecretKeySpec key = new SecretKeySpec(HASH_KEY.getBytes(StandardCharsets.UTF_8), "AES");
+        IvParameterSpec iv = new IvParameterSpec(HASH_IV.getBytes(StandardCharsets.UTF_8));
+
+        cipher.init(Cipher.DECRYPT_MODE, key, iv);
+        byte[] decoded = Base64.getDecoder().decode(tradeInfo);
+        byte[] decrypted = cipher.doFinal(decoded);
+        return new String(decrypted, StandardCharsets.UTF_8);
+    }
+    
+    private String generateCheckValue(Map<String, String> params) {
+        Map<String, String> checkValueParams = new TreeMap<>();
+        checkValueParams.put("Amt", params.get("Amt"));
+        checkValueParams.put("MerchantID", params.get("MerchantID"));
+        checkValueParams.put("MerchantOrderNo", params.get("MerchantOrderNo"));
+        checkValueParams.put("TimeStamp", params.get("TimeStamp"));
+        checkValueParams.put("Version", params.get("Version"));
+
+        String raw = checkValueParams.entrySet().stream()
+            .map(e -> e.getKey() + "=" + e.getValue())
+            .collect(Collectors.joining("&"));
+
+        String toHash = "HashKey=" + HASH_KEY + "&" + raw + "&HashIV=" + HASH_IV;
+
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(toHash.getBytes(StandardCharsets.UTF_8));
+            return bytesToHex(hash).toUpperCase();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 error", e);
+        }
+    }
+
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+    @GetMapping("/thank")
+    public String thank() {
+    	return "thank";
+    }
+
 	
 }
