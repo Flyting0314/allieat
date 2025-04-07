@@ -57,8 +57,8 @@ public class DonaReq {
 
 
     
-    @NotBlank(message = "姓名: 請勿空白",groups = StepTwo.class)
-    @Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z0-9_]{2,10}$", message = "姓名格式無效，需為 2~10 字的中英文及數字",groups = StepTwo.class)
+    @NotBlank(message = "姓名：請勿空白", groups = StepTwo.class)
+    @Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z]{2,10}$", message = "姓名：僅限輸入中文或英文，2~10字", groups = StepTwo.class)
     private String identityData;
     
     @NotBlank(message = "信箱: 請勿空白",groups = StepTwo.class)
