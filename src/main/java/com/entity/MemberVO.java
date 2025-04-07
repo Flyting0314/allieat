@@ -65,8 +65,9 @@ public class MemberVO implements Serializable {
     private Integer pointsBalance= 0;
     private Integer unclaimedMealCount= 1;
     private Integer accStat= 0;
-    private Integer reviewed= 0; 
+    private Integer reviewed= 3; 
 
+    private String verificationMail;
 
  
     public Integer getMemberId() {
@@ -207,5 +208,12 @@ public class MemberVO implements Serializable {
 				+ "accStat=" + accStat +"\n" 
 				+ "reviewed=" + reviewed;
 	}
+	public String getVerificationMail() {
+		return verificationMail;
+	}
+	public void setVerificationMail(String verificationMail) {
+		this.verificationMail = verificationMail;
+	}
+
     
 }

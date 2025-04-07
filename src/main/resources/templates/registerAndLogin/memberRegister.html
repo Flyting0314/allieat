@@ -329,7 +329,7 @@
             <p class="verification_subtitle">以下欄位皆為必填</p>
             
             <h2 class="verification_section_title">基本資料</h2>
-            <form th:action="@{/registerAndLogin/register/member/register}" th:object="${member}" method="post" enctype="multipart/form-data" onsubmit="return validateAgreement()">
+            <form th:action="@{/registerAndLogin/register/member/}" th:object="${member}" method="post" enctype="multipart/form-data" onsubmit="return validateAgreement()">
 
 <!-- ✅ 全局錯誤提示（例：帳號已存在、單位名稱重複等） -->
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>

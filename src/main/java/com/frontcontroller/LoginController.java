@@ -48,7 +48,7 @@ public class LoginController {
                         @RequestParam String account,
                         @RequestParam String password,
                         HttpSession session,
-                        Model model) {
+                        Model model,RedirectAttributes redirectAttrs,@RequestParam(value = "forceEdit", required = false) Boolean forceEdit) {
 
         if ("member".equals(userType)) {
             MemberVO member = memberLoginService.login(account, password);
@@ -56,10 +56,25 @@ public class LoginController {
                 model.addAttribute("error", "帳號或密碼錯誤！");
                 return "registerAndLogin/login";
             }
+            // ✅ 加入審核與啟用狀態檢查
+            if (member.getReviewed() == 3) {
+                model.addAttribute("error", "帳號審核中，請耐心等候審核通知信件！");
+                return "registerAndLogin/login";
+            } else if (member.getReviewed() == 2) {
+                model.addAttribute("error", "未通過審核，已將結果寄送至您的信箱");
+                return "registerAndLogin/login";
+            } else if (member.getReviewed() == 1 && member.getAccStat() == 0) {
+                model.addAttribute("error", "帳號已審核通過，請至信箱點擊啟用連結後再登入！");
+                return "registerAndLogin/login";
+            } else if (member.getAccStat() == 0) {
+                model.addAttribute("error", "店家資料補件通知已寄送，請依指示補齊相關資料");
+                return "registerAndLogin/login";
+            }
+            
             session.setAttribute("loggedInMember", member);
             List<MemberOrderRecordDTO> history = memberLoginService.getOrderRecords(member.getMemberId());
             model.addAttribute("member", member);
-            model.addAttribute("history", history);
+            model.addAttribute("payDetail", history); 
             return "registerAndLogin/memberInfo"; 
 
         }
@@ -69,12 +84,39 @@ public class LoginController {
                 model.addAttribute("error", "帳號或密碼錯誤！");
                 return "registerAndLogin/login";
             }
+            // ✅ 加入審核與啟用狀態檢查
+            if (store.getReviewed() == 3) {
+                model.addAttribute("error", "帳號審核中，請耐心等候審核通知信件！");
+                return "registerAndLogin/login";
+            } else if (store.getReviewed() == 2) {
+                model.addAttribute("error", "未通過審核，已將結果寄送至您的信箱");
+                return "registerAndLogin/login";
+            } else if (store.getReviewed() == 1 && store.getAccStat() == 0) {
+                model.addAttribute("error", "帳號已審核通過，請至信箱點擊啟用連結後再登入！");
+                return "registerAndLogin/login";
+            } else if (store.getAccStat() == 0) {
+                model.addAttribute("error", "店家資料補件通知已寄送，請依指示補齊相關資料");
+                return "registerAndLogin/login";
+            }
+            
             session.setAttribute("loggedInStore", store);
             model.addAttribute("store", store);
+            
+            // ✅ 檢查是否尚未設定營業資訊
+//            if (store.getOpTime() == null || store.getCloseTime() == null ||
+//                store.getLastOrder() == null || store.getPickTime() == null) {
+//                // ✅ 轉導到強制編輯頁面（或用參數控制進入編輯模式）
+//                return "redirect:/registerAndLogin/storeInfo?forceEdit=true";
+//            }
+            if (store.getAccStat() == 1 &&
+            	    storeLoginService.isStoreMissingOpeningInfo(store) &&
+            	    !Boolean.TRUE.equals(forceEdit)) {
+                redirectAttrs.addFlashAttribute("warning", "首次登入請設定營業時間！");
+                return "redirect:/registerAndLogin/storeInfo?forceEdit=true";
+            }
             return "redirect:/registerAndLogin/storeInfo";
-
-
         }
+        
 
         model.addAttribute("error", "請選擇有效的使用者類型");
         return "registerAndLogin/login";
@@ -87,43 +129,45 @@ public class LoginController {
         StoreVO sessionStore = (StoreVO) session.getAttribute("loggedInStore");
         if (sessionStore == null) {
             redirectAttrs.addFlashAttribute("error", "請先登入後再操作");
-            return "redirect:/login";
+            return "redirect:/registerAndLogin/login";
         }
-
-        boolean success = storeLoginService.updateStoreEditableFields(sessionStore, formInput);
-
-        if (success) {
-            redirectAttrs.addFlashAttribute("success", "資料更新成功！");
-        } else {
-            redirectAttrs.addFlashAttribute("error", "資料更新失敗，請確認欄位是否正確或重新登入");
-        }
-
-        return "redirect:/registerAndLogin/storeInfo"; // 頁面跳轉回店家首頁
-    }
-//    @GetMapping("/storeInfo")
-//    public String storeInfoPage(HttpSession session, Model model) {
-//        StoreVO store = (StoreVO) session.getAttribute("loggedInStore");
-//        if (store == null) 
-//        return "redirect:/registerAndLogin/login";
-//
-//        model.addAttribute("store", store);
-//
-//        // 店家照片（封面照）
-//        List<PhotoVO> photos = photoRepository.findByStoreOrderByUpdateTimeAsc(store);
-//        if (!photos.isEmpty()) {
-//            String base64Cover = Base64.getEncoder().encodeToString(photos.get(0).getPhotoSrc());
-//            model.addAttribute("coverPhoto", base64Cover);
+//     // ✅ 使用 service 方法來檢查營業時間是否缺漏
+//        if (storeLoginService.isStoreMissingOpeningInfo(formInput)) {
+//            redirectAttrs.addFlashAttribute("error", "所有營業時間欄位皆為必填，請完整填寫後再儲存！");
+//            return "redirect:/registerAndLogin/storeInfo?forceEdit=true";
 //        }
-//
-//        return "registerAndLogin/storeInfo";
-//    }
+        if (storeLoginService.isInvalidTimeOrder(formInput)) {
+            redirectAttrs.addFlashAttribute("error", "營業時間順序有誤，請確認後再儲存！");
+            return "redirect:/registerAndLogin/storeInfo?forceEdit=true";
+        }
+        try {
+            storeLoginService.updateStoreEditableFields(sessionStore, formInput);
+            System.out.println("收到更新請求：" + formInput.getOpTime() + ", " + formInput.getCloseTime());
+            redirectAttrs.addFlashAttribute("success", "資料更新成功！");
+        } catch (IllegalArgumentException e) {
+            redirectAttrs.addFlashAttribute("error", e.getMessage());
+            return "redirect:/registerAndLogin/storeInfo";
+        }
+
+        return "redirect:/registerAndLogin/storeInfo";
+    }
+
+
     @GetMapping("/storeInfo")
-    public String storeInfoPage(HttpSession session, Model model) {
+    public String storeInfoPage(@RequestParam(value = "forceEdit", required = false) Boolean forceEdit,HttpSession session, Model model,RedirectAttributes redirectAttrs) {
         StoreVO store = (StoreVO) session.getAttribute("loggedInStore");
         if (store == null) {
             System.out.println("使用者未登入，導向登入頁面");
             return "redirect:/registerAndLogin/login";
         }
+     // ✅ 檢查是否尚未填營業資訊，導向強制編輯模式
+        if (store.getAccStat() == 1 &&
+        	    storeLoginService.isStoreMissingOpeningInfo(store) &&
+        	    !Boolean.TRUE.equals(forceEdit)) {
+            redirectAttrs.addFlashAttribute("warning", "首次登入請設定營業時間");
+            return "redirect:/registerAndLogin/storeInfo?forceEdit=true";
+        }
+        model.addAttribute("forceEdit", forceEdit != null && forceEdit);
 
         model.addAttribute("store", store);
 
@@ -152,4 +196,25 @@ public class LoginController {
         return "redirect:/registerAndLogin/login"; //  重導回登入頁面
     }
     
+    @GetMapping("/resendMail")
+    public String showResendPage() {
+        return "registerAndLogin/resendMail"; // 對應上面那個 HTML 頁面
+    }
+//  @GetMapping("/storeInfo")
+//  public String storeInfoPage(HttpSession session, Model model) {
+//      StoreVO store = (StoreVO) session.getAttribute("loggedInStore");
+//      if (store == null) 
+//      return "redirect:/registerAndLogin/login";
+//
+//      model.addAttribute("store", store);
+//
+//      // 店家照片（封面照）
+//      List<PhotoVO> photos = photoRepository.findByStoreOrderByUpdateTimeAsc(store);
+//      if (!photos.isEmpty()) {
+//          String base64Cover = Base64.getEncoder().encodeToString(photos.get(0).getPhotoSrc());
+//          model.addAttribute("coverPhoto", base64Cover);
+//      }
+//
+//      return "registerAndLogin/storeInfo";
+//  }
 }

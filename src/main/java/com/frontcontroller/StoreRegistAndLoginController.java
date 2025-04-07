@@ -32,7 +32,7 @@ public class StoreRegistAndLoginController {
     @Autowired
     private StoreRegistAndLoginService storeService;
 
-    @GetMapping("/register")
+    @GetMapping("/")
     public String registerPage(Model model, HttpSession session) {
         StoreVO store = (StoreVO) session.getAttribute("storeForm");
 
@@ -57,7 +57,7 @@ public class StoreRegistAndLoginController {
         return "registerAndLogin/storeRegister";
     }
 
-    @PostMapping("/register")
+    @PostMapping("/")
     public String register(@Valid @ModelAttribute("store") StoreVO store,
                            BindingResult result,
                            @RequestParam("photoFiles") MultipartFile[] photoFiles,
@@ -66,7 +66,7 @@ public class StoreRegistAndLoginController {
         if (result.hasErrors()) {
             session.setAttribute("formErrors", result); // ✅ 保留錯誤訊息
             session.setAttribute("storeForm", store);   // ✅ 保留填寫的資料
-            return "redirect:/registerAndLogin/register/store/register";
+            return "redirect:/registerAndLogin/register/store/";
         }
 
         long validPhotoCount = Arrays.stream(photoFiles)
@@ -76,7 +76,7 @@ public class StoreRegistAndLoginController {
         if (!"true".equals(agreedToTerms)) {
             session.setAttribute("agreeWarning", "請勾選同意使用須知"); // ✅ 存入 session
             session.setAttribute("storeForm", store);  // ✅ 保留填寫的資料
-            return "redirect:/registerAndLogin/register/store/register";
+            return "redirect:/registerAndLogin/register/store/";
         }
 
         
@@ -84,24 +84,24 @@ public class StoreRegistAndLoginController {
         if (validPhotoCount < 3) {
             session.setAttribute("photoError", "請上傳至少三張照片"); // ✅ 存入 session
             session.setAttribute("storeForm", store);  // ✅ 保留填寫的資料
-            return "redirect:/registerAndLogin/register/store/register";
+            return "redirect:/registerAndLogin/register/store/";
         }
 
         try {
             StoreVO preparedStore = storeService.prepareStoreForSession(store, photoFiles, agreedToTerms);
             session.setAttribute("storeForm", preparedStore);
-            return "redirect:/registerAndLogin/register/store/register/confirm";
+            return "redirect:/registerAndLogin/register/store/confirm";
         } catch (IllegalArgumentException | IOException e) {
             session.setAttribute("storeForm", store);  // ✅ 保留填寫的資料
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/registerAndLogin/register/store/register";
+            return "redirect:/registerAndLogin/register/store/";
         }
     }
-    @PostMapping("/register/submit")
+    @PostMapping("/submit")
     public String submitFinalRegister(HttpSession session, RedirectAttributes redirectAttributes) {
         StoreVO store = (StoreVO) session.getAttribute("storeForm");
         if (store == null || store.getStoreToPhoto().isEmpty()) {
-            return "redirect:/registerAndLogin/register/store/register";
+            return "redirect:/registerAndLogin/register/store/";
         }
 
         try {
@@ -110,19 +110,19 @@ public class StoreRegistAndLoginController {
 
             // ✅ 傳遞 FlashAttribute 給 /register/confirm
             redirectAttributes.addFlashAttribute("showModal", true);
-            return "redirect:/registerAndLogin/register/store/register/confirm";
+            return "redirect:/registerAndLogin/register/store/confirm";
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/registerAndLogin/register/store/register/confirm";
+            return "redirect:/registerAndLogin/register/store/confirm";
         }
     }
     
-    @GetMapping("/register/confirm")
+    @GetMapping("/confirm")
     public String confirmPage(HttpSession session, Model model) {
         StoreVO store = (StoreVO) session.getAttribute("storeForm");
         if (store == null) {
-            return "redirect:/registerAndLogin/register/store/register";
+            return "redirect:/registerAndLogin/register/store/";
         }
 
         // 改成 List<Map<String, String>> 結合 base64 + photoType
@@ -147,32 +147,34 @@ public class StoreRegistAndLoginController {
 
         return "registerAndLogin/storeRegisterConF";
     }
+    @GetMapping("/activate")
+    public String activateAccount(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
+        boolean activated = storeService.activateAccountByToken(token);
+        if (activated) {
+            redirectAttributes.addFlashAttribute("success", "帳號啟用成功，請登入設定營業資訊！");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "啟用連結無效或已過期！");
+        }
+        return "redirect:/registerAndLogin/login";
 
-
-//    @GetMapping("/register/confirm")
-//    public String confirmPage(HttpSession session, Model model) {
-//        StoreVO store = (StoreVO) session.getAttribute("storeForm");
-//        if (store == null) {
-//            return "redirect:/store/register";
-//        }
-//
-//        List<String> base64List = store.getStoreToPhoto().stream()
-//            .map(photo -> {
-//                byte[] bytes = photo.getPhotoSrc();
-//                return (bytes != null && bytes.length > 0) ?
-//                        "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes) : "";
-//            })
-//            .toList();
-//
-//        model.addAttribute("store", store);
-//        model.addAttribute("photoBase64List", base64List);
-//
-//        // ✅ 從 FlashAttribute 讀取 showModal
-//        if (model.containsAttribute("showModal")) {
-//            model.addAttribute("showModal", true);
-//        }
-
-       
-//        return "store/storeRegisterConF";
-//    }
+    }
+    @PostMapping("/admin/review")
+    public String reviewStore(@RequestParam("storeId") Integer storeId,
+                              @RequestParam("approved") boolean approved,
+                              RedirectAttributes redirectAttributes) {
+        if (approved) {
+            storeService.approveStoreAndSendEmail(storeId);
+            redirectAttributes.addFlashAttribute("success", "已審核通過並寄送啟用信");
+        } else {
+            StoreVO store = storeService.getOneStore(storeId);
+            if (store != null) {
+                store.setReviewed(2); // 審核未通過
+                storeService.finalizeRegistration(store);
+            }
+            redirectAttributes.addFlashAttribute("error", "審核未通過");
+        }
+        return "redirect:/admin/review";
+    }
 }
+
+

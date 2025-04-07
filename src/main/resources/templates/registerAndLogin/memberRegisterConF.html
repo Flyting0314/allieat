@@ -359,7 +359,7 @@
         <h1 class="verification_title">確認註冊資訊</h1>
         <p class="verification_subtitle">請確認以下資訊是否正確</p>
 
-        <form id="registerConfirmForm" th:action="@{/member/register/submit}" method="post">
+        <form id="registerConfirmForm" th:action="@{/registerAndLogin/register/member/submit}" method="post">
             <h2 class="verification_section_title">基本資料</h2>
 
             <div th:if="${session.memberForm.organization != null}">
@@ -426,7 +426,7 @@
             </div>
 
             <div class="verification_button_container">
-                <button type="button" class="verification_back_btn" th:onclick="|location.href='@{/member/register}'|">返回修改</button>
+                <button type="button" class="verification_back_btn" th:onclick="|location.href='@{/registerAndLogin/register/member/}'|">返回修改</button>
                 <button type="submit" class="verification_next_btn">送出註冊</button>
             </div>
         </form>

@@ -358,7 +358,7 @@
         <h1 class="partner_reg_title">合作店家註冊</h1>
         <p class="partner_reg_subtitle">以下欄位皆為必填</p>
 
-        <form th:action="@{/registerAndLogin/register/store/register}" th:object="${store}" method="post" enctype="multipart/form-data" >
+        <form th:action="@{/registerAndLogin/register/store/}" th:object="${store}" method="post" enctype="multipart/form-data" >
             <!-- ✅ 全域錯誤提示 -->
 <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 <div class="text-danger" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>

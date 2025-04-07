@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.backstage.backstagrepository.MemberRepository;
 import com.backstage.backstagrepository.OrderDetailRepository;
 import com.backstage.backstagrepository.OrderFoodRepository;
+import com.backstage.backstagrepository.PayDetailRepository;
 import com.entity.MemberOrderRecordDTO;
 import com.entity.MemberVO;
 import com.entity.OrderDetailVO;
@@ -25,6 +26,9 @@ public class MemberLoginService {
 
     @Autowired
     private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private PayDetailRepository payDetailRepository;
+
 
     public MemberVO login(String account, String password) {
         return memberRepository.findByAccountAndPassword(account, password);
@@ -43,8 +47,19 @@ public class MemberLoginService {
                 result.add(new MemberOrderRecordDTO(storeName, date, point));
             }
         }
+
         return result;
     }
+
     
+//    public int calculateDisplayPoints(MemberVO member) {
+//        List<OrderDetailVO> orderDetails = orderDetailRepository.findByMember_MemberId(member.getMemberId());
+//
+//        int usedPoints = orderDetails.stream()
+//            .mapToInt(OrderDetailVO::getPointsCost) // 這邊使用 orderDetail 裡的 pointsCost
+//            .sum();
+//
+//        return member.getPointsBalance() + usedPoints; // 加回使用過的點數顯示原本擁有的
+//    }
 
 }

@@ -4,6 +4,7 @@ package com.backstage.backstagrepository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.entity.MemberVO;
+import com.entity.StoreVO;
 
 
 @Repository
@@ -28,4 +30,17 @@ public interface MemberRepository extends JpaRepository<MemberVO, Integer> {
 	MemberVO findByAccountAndPassword(String account, String password);
 	
 	boolean existsByAccount(String account); //  檢查帳號是否已存在
+
+	Optional<MemberVO> findByVerificationMail(String verificationMail);
+
+	Optional<MemberVO> findByAccount(String account);
+
+	List<MemberVO> findByReviewed(int reviewed);
+
+	Optional<MemberVO> findByEmail(String email);
+
+	List<MemberVO> findByReviewedIn(List<Integer> reviewedList);
+
+
 }
+
