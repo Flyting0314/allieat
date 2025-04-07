@@ -1,21 +1,26 @@
 package com.frontservice;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backstage.backstagrepository.MemberRepository;
 import com.backstage.backstagrepository.OrganizationRepository;
 import com.entity.MemberVO;
 import com.entity.OrganizationVO;
-
+@SessionAttributes("member") // ✅ 新增
 @Service("memberService")
 public class MemberRegistAndLoginService {
     @Autowired
@@ -24,28 +29,40 @@ public class MemberRegistAndLoginService {
     @Autowired
     private OrganizationRepository organizationRepository;
 
-    @Value("${upload.dir}")
-    private String uploadDir;
-
-    public MemberVO prepareMemberForSession(MemberVO member, MultipartFile kycFile,String agreedToTerms) throws IOException {
-    	if (!"true".equals(agreedToTerms)) {
+    private final String uploadDir = "upload/member";
+    @ModelAttribute("member") // ✅ 新增，提供 Session 預設值
+    public MemberVO prepareMember() {
+        MemberVO member = new MemberVO();
+        member.setOrganization(new OrganizationVO());
+        return member;
+    }
+    public MemberVO prepareMemberForSession(MemberVO member, MultipartFile kycFile, String agreedToTerms) throws IOException {
+        if (!"true".equals(agreedToTerms)) {
             throw new IllegalArgumentException("請詳閱並同意使用須知");
         }
-    	
-    	// 驗證帳號是否已存在
+
         if (memberRepository.existsByAccount(member.getAccount())) {
             throw new IllegalArgumentException("帳號已被註冊，請選擇其他帳號");
         }
 
-        // 處理單位資料
         member.setOrganization(resolveOrganization(member.getOrganization()));
 
-        // 驗證與儲存身分檔案
-        String savedFilename = saveKycFile(kycFile);
-        member.setKycImage(savedFilename);
+        // ✅ 若使用者已有圖片（例如從確認頁回來），則保留
+        String oldImage = member.getKycImage();
+
+        if (kycFile != null && !kycFile.isEmpty()) {
+            // 有新上傳就覆蓋
+            String savedFilename = saveKycFile(kycFile);
+            member.setKycImage(savedFilename);
+        } else if (oldImage != null && !oldImage.isEmpty()) {
+            // 沒上傳新檔案就保留原圖
+            member.setKycImage(oldImage);
+        }
 
         return member;
     }
+
+
 
     public void finalizeRegistration(MemberVO member) {
         member.setRegTime(new Timestamp(System.currentTimeMillis()));
@@ -87,16 +104,19 @@ public class MemberRegistAndLoginService {
             throw new IllegalArgumentException("請上傳身分驗證檔案");
         }
 
-        File uploadPath = new File(uploadDir);
-        if (!uploadPath.exists()) {
-            uploadPath.mkdirs();
+        String originalFilename = kycFile.getOriginalFilename();
+        String extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+
+        if (!Arrays.asList(".pdf", ".jpg", ".jpeg", ".png").contains(extension)) {
+            throw new IllegalArgumentException("僅接受 PDF、JPG、JPEG、PNG 格式的檔案");
         }
 
-        String originalFilename = kycFile.getOriginalFilename();
-        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String savedFilename = UUID.randomUUID().toString() + extension;
-        File destFile = new File(uploadPath, savedFilename);
-        kycFile.transferTo(destFile);
+        Path uploadPath = Paths.get(uploadDir);
+        Files.createDirectories(uploadPath);
+
+        Path filePath = uploadPath.resolve(savedFilename);
+        Files.copy(kycFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
         return savedFilename;
     }

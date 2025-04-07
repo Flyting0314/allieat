@@ -19,6 +19,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -64,7 +66,11 @@ public class MemberVO implements Serializable {
 
     private Integer pointsBalance= 0;
     private Integer unclaimedMealCount= 1;
+	@Min(value = 0, message = "啟用狀態填寫數字:0=未啟用; 1=啟用; 2=停用")
+    @Max(value = 2, message = "啟用狀態填寫數字:0=未啟用; 1=啟用; 2=停用")
     private Integer accStat= 0;
+	@Min(value = 0, message = "審核狀態填寫數字:0=審核中; 1=已通過; 2=未通過; 3=未審核")
+    @Max(value = 3, message = "審核狀態填寫數字:0=審核中; 1=已通過; 2=未通過; 3=未審核")
     private Integer reviewed= 3; 
 
     private String verificationMail;

@@ -170,7 +170,8 @@
 </div>
 
         <div class="confirm-buttons">
-            <a href="javascript:history.back();"><button type="button">返回修改</button></a>
+            
+            <button type="button" class="verification_back_btn" th:onclick="|location.href='@{/registerAndLogin/register/store}'|">返回修改</button>
             <button type="submit">確認送出</button>
         </div>
     </form>

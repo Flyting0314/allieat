@@ -329,7 +329,7 @@
             <p class="verification_subtitle">以下欄位皆為必填</p>
             
             <h2 class="verification_section_title">基本資料</h2>
-            <form th:action="@{/registerAndLogin/register/member/}" th:object="${member}" method="post" enctype="multipart/form-data" onsubmit="return validateAgreement()">
+            <form th:action="@{/registerAndLogin/register/member}" th:object="${member}" method="post" enctype="multipart/form-data" onsubmit="return validateAgreement()">
 
 <!-- ✅ 全局錯誤提示（例：帳號已存在、單位名稱重複等） -->
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
@@ -394,14 +394,26 @@
                 </div>
             </div>
 
-            <div class="verification_form_group">
-                <label class="verification_form_label">上傳證明文件</label>
-                <div class="verification_form_controls">
-                    <input type="file" name="kycFile" class="form-control" />
-                    <div class="text-danger" th:if="${error != null and error.contains('檔案')}" th:text="${error}"></div>
+            <!-- 上傳文件欄位 -->
+    <div class="verification_form_group">
+        <label class="verification_form_label">上傳證明文件</label>
+        <div class="verification_form_controls">
+            <input type="file" name="kycFile" class="form-control" />
+            <div class="kyc-preview-container">
+                <div th:if="${member.kycImage != null}">
+                    <a th:href="@{'/member/' + ${member.kycImage}}" target="_blank">點此預覽上傳檔案</a>
+                    <img th:if="${#strings.contains(member.kycImage, '.png') or #strings.contains(member.kycImage, '.jpg') or #strings.contains(member.kycImage, '.jpeg')}"
+                         th:src="@{'/member/' + ${member.kycImage}}" 
+                         style="max-width: 200px; margin-top: 10px;">
                 </div>
             </div>
+            <div class="text-danger" th:if="${error != null and error.contains('檔案')}" th:text="${error}"></div>
+        </div>
+    </div>
 
+        
+             
+             
             <div class="verification_form_group">
                 <label class="verification_form_label">電子信箱</label>
                 <div class="verification_form_controls">
@@ -538,106 +550,209 @@
     <script src="js/main.js"></script>
     
     <!-- Form Script -->
+    
+    
+    
+    
+    
     <script>
-    function handleOrgChange(selectElement) {
-        const selectedValue = selectElement.value;
-        const hiddenField = document.getElementById("organizationIdField");
-        const otherInput = document.getElementById("otherOrganizationInput");
+    document.addEventListener('DOMContentLoaded', function () {
+        // ✅ 上傳檔案預覽（保持預覽區塊）
+        const fileInput = document.querySelector('input[name="kycFile"]');
+        const previewContainer = document.querySelector('.kyc-preview-container');
 
-        hiddenField.value = selectedValue;
+        if (fileInput && previewContainer) {
+            fileInput.addEventListener('change', function () {
+                previewContainer.innerHTML = ''; // 清除原有預覽
 
-        if (selectedValue === "-1") {
-            otherInput.style.display = "block";
-        } else {
-            otherInput.style.display = "none";
-        }
-    }
-        document.addEventListener('DOMContentLoaded', function() {
-            // 檢查同地址功能
-            const sameAddressCheck = document.getElementById('same_address');
-            const homeCitySelect = document.getElementById('home_city');
-            const homeDistrictSelect = document.getElementById('home_district');
-            const homeZipcode = document.getElementById('home_zipcode');
-            const homeAddress = document.getElementById('home_address');
-            const mailingCitySelect = document.getElementById('mailing_city');
-            const mailingDistrictSelect = document.getElementById('mailing_district');
-            const mailingZipcode = document.getElementById('mailing_zipcode');
-            const mailingAddress = document.getElementById('mailing_address');
-            
-            // 表單驗證
-            const form = document.querySelector('.verification_container');
-            const nextButton = document.querySelector('.verification_next_btn');
-            
-            nextButton.addEventListener('click', function(e) {
-                const requiredFields = form.querySelectorAll('input.verification_input');
-                let isValid = true;
-                
-                requiredFields.forEach(function(field) {
-                    if (field.value.trim() === '') {
-                        isValid = false;
-                        field.style.borderColor = '#dc3545';
-                    } else {
-                        field.style.borderColor = '#ddd';
-                    }
-                });
-                
-//                 if (isValid) {
-//                     // 提交表單或進入下一步
-//                     alert('資料已送出，審核結果會以電子郵件通知');
-//                     // window.location.href = 'set-password.html'; // 取消註解以啟用實際跳轉
-//                 } else {
-//                     alert('請填寫所有必填欄位');
-//                     e.preventDefault();
-//                 }
+                const file = fileInput.files[0];
+                if (!file) return;
+
+                const fileURL = URL.createObjectURL(file);
+                const extension = file.name.split('.').pop().toLowerCase();
+
+                const link = document.createElement('a');
+                link.href = fileURL;
+                link.target = '_blank';
+                link.textContent = '點此預覽上傳檔案';
+                previewContainer.appendChild(link);
+
+                if (['png', 'jpg', 'jpeg'].includes(extension)) {
+                    const img = document.createElement('img');
+                    img.src = fileURL;
+                    img.alt = '預覽圖';
+                    img.style.maxWidth = '200px';
+                    img.style.marginTop = '10px';
+                    previewContainer.appendChild(img);
+                }
             });
-        });
-        
-        document.addEventListener('DOMContentLoaded', function () {
-            const agreeCheck = document.getElementById('agreeCheck');
-            const viewNotice = document.getElementById('viewNotice');
-            const noticeModal = document.getElementById('noticeModal');
-            const noticeAgree = document.getElementById('noticeAgree');
-            const agreeNotice = document.getElementById('agreeNotice');
-            const closeNotice = document.getElementById('closeNotice');
-            const agreedToTerms = document.getElementById('agreedToTerms');
+        }
 
-            // ✅ 控制燈箱顯示與勾選回傳
-            if (viewNotice) {
-                viewNotice.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    noticeAgree.checked = false; // ✅ 每次開啟都重設勾選狀態
-                    noticeModal.style.display = 'flex';
-                });
-            }
+        // ✅ 須知燈箱同步
+        const agreeCheck = document.getElementById('agreeCheck');
+        const viewNotice = document.getElementById('viewNotice');
+        const noticeModal = document.getElementById('noticeModal');
+        const noticeAgree = document.getElementById('noticeAgree');
+        const agreeNotice = document.getElementById('agreeNotice');
+        const closeNotice = document.getElementById('closeNotice');
+        const agreedToTerms = document.getElementById('agreedToTerms');
 
-            if (agreeNotice) {
-                agreeNotice.addEventListener('click', function () {
-                    if (noticeAgree.checked) {
-                        agreeCheck.checked = true;
-                        agreedToTerms.value = 'true'; // ✅ 更新 hidden 欄位值
-                        noticeModal.style.display = 'none';
-                    } else {
-                        alert('請勾選同意使用須知');
-                    }
-                });
-            }
+        if (viewNotice) {
+            viewNotice.addEventListener('click', function (e) {
+                e.preventDefault();
+                noticeAgree.checked = agreeCheck.checked;
+                noticeModal.style.display = 'flex';
+            });
+        }
 
-            if (closeNotice) {
-                closeNotice.addEventListener('click', function () {
-                	noticeModal.style.display = 'none';
-                    noticeAgree.checked = false; // ✅ 回首頁時也重設狀態
-                });
-            }
-        });
+        if (agreeNotice) {
+            agreeNotice.addEventListener('click', function () {
+                if (noticeAgree.checked) {
+                    agreeCheck.checked = true;
+                    agreedToTerms.value = 'true';
+                    noticeModal.style.display = 'none';
+                } else {
+                    alert('請勾選同意使用須知');
+                }
+            });
+        }
 
-//         function validateAgreement() {
-//             const agreeCheck = document.getElementById('agreeCheck');
-//             if (!agreeCheck.checked) {
-//                 alert('請詳閱並同意使用須知後再送出');
-//                 return false;
+        if (closeNotice) {
+            closeNotice.addEventListener('click', function () {
+                noticeModal.style.display = 'none';
+                noticeAgree.checked = false;
+            });
+        }
+    });
+
+function handleOrgChange(selectElement) {
+ const selectedValue = selectElement.value;
+ const hiddenField = document.getElementById("organizationIdField");
+ const otherInput = document.getElementById("otherOrganizationInput");
+
+ hiddenField.value = selectedValue;
+
+ if (selectedValue === "-1") {
+     otherInput.style.display = "block";
+ } else {
+     otherInput.style.display = "none";
+ }
+}
+</script>
+    
+    <script>
+    
+    
+//     
+//         document.addEventListener('DOMContentLoaded', function() {
+//             // 檢查同地址功能
+//             const sameAddressCheck = document.getElementById('same_address');
+//             const homeCitySelect = document.getElementById('home_city');
+//             const homeDistrictSelect = document.getElementById('home_district');
+//             const homeZipcode = document.getElementById('home_zipcode');
+//             const homeAddress = document.getElementById('home_address');
+//             const mailingCitySelect = document.getElementById('mailing_city');
+//             const mailingDistrictSelect = document.getElementById('mailing_district');
+//             const mailingZipcode = document.getElementById('mailing_zipcode');
+//             const mailingAddress = document.getElementById('mailing_address');
+//             const fileInput = document.querySelector('input[name="kycFile"]');
+//             const previewContainer = document.querySelector('.kyc-preview-container');
+//          // ✅ 若 Session 有圖片，初始化預覽（Thymeleaf 已印出 <a> 和 <img>，不需額外處理）
+//             // ✅ 若重新選圖片，清除舊預覽並顯示新圖
+//             if (fileInput && previewContainer) {
+//                 fileInput.addEventListener('change', function () {
+//                     previewContainer.innerHTML = ''; // 清空原有預覽
+
+//                     const file = fileInput.files[0];
+//                     if (!file) return;
+
+//                     const fileURL = URL.createObjectURL(file);
+//                     const extension = file.name.split('.').pop().toLowerCase();
+
+//                     const link = document.createElement('a');
+//                     link.href = fileURL;
+//                     link.target = '_blank';
+//                     link.textContent = '點此預覽上傳檔案';
+
+//                     previewContainer.appendChild(link);
+
+//                     if (['png', 'jpg', 'jpeg'].includes(extension)) {
+//                         const img = document.createElement('img');
+//                         img.src = fileURL;
+//                         img.alt = '預覽圖';
+//                         img.style.maxWidth = '200px';
+//                         img.style.marginTop = '10px';
+//                         previewContainer.appendChild(img);
+//                     }
+//                 });
 //             }
-//             return true;
-//         }
+//             // 表單驗證
+//             const form = document.querySelector('.verification_container');
+//             const nextButton = document.querySelector('.verification_next_btn');
+            
+//             nextButton.addEventListener('click', function(e) {
+//                 const requiredFields = form.querySelectorAll('input.verification_input');
+//                 let isValid = true;
+                
+//                 requiredFields.forEach(function(field) {
+//                     if (field.value.trim() === '') {
+//                         isValid = false;
+//                         field.style.borderColor = '#dc3545';
+//                     } else {
+//                         field.style.borderColor = '#ddd';
+//                     }
+//                 });
+                
+// //                 if (isValid) {
+// //                     // 提交表單或進入下一步
+// //                     alert('資料已送出，審核結果會以電子郵件通知');
+// //                     // window.location.href = 'set-password.html'; // 取消註解以啟用實際跳轉
+// //                 } else {
+// //                     alert('請填寫所有必填欄位');
+// //                     e.preventDefault();
+// //                 }
+//             });
+//         });
+        
+//         document.addEventListener('DOMContentLoaded', function () {
+//             const agreeCheck = document.getElementById('agreeCheck');
+//             const viewNotice = document.getElementById('viewNotice');
+//             const noticeModal = document.getElementById('noticeModal');
+//             const noticeAgree = document.getElementById('noticeAgree');
+//             const agreeNotice = document.getElementById('agreeNotice');
+//             const closeNotice = document.getElementById('closeNotice');
+//             const agreedToTerms = document.getElementById('agreedToTerms');
+
+//             // ✅ 控制燈箱顯示與勾選回傳
+//             if (viewNotice) {
+//                 viewNotice.addEventListener('click', function (e) {
+//                     e.preventDefault();
+//                     noticeAgree.checked = false; // ✅ 每次開啟都重設勾選狀態
+//                     noticeModal.style.display = 'flex';
+//                 });
+//             }
+
+//             if (agreeNotice) {
+//                 agreeNotice.addEventListener('click', function () {
+//                     if (noticeAgree.checked) {
+//                         agreeCheck.checked = true;
+//                         agreedToTerms.value = 'true'; // ✅ 更新 hidden 欄位值
+//                         noticeModal.style.display = 'none';
+//                     } else {
+//                         alert('請勾選同意使用須知');
+//                     }
+//                 });
+//             }
+
+//             if (closeNotice) {
+//                 closeNotice.addEventListener('click', function () {
+//                 	noticeModal.style.display = 'none';
+//                     noticeAgree.checked = false; // ✅ 回首頁時也重設狀態
+//                 });
+//             }
+//         });
+
+
     </script>
 </body>
 

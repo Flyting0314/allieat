@@ -286,6 +286,27 @@
                 max-width: 250px;
             }
         }
+        .preview-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+        .custom-upload-btn {
+    display: inline-block;
+    background-color: #000;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.file-name-text {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #555;
+}
     </style>
 </head>
 
@@ -357,12 +378,24 @@
     <div class="partner_reg_container">
         <h1 class="partner_reg_title">合作店家註冊</h1>
         <p class="partner_reg_subtitle">以下欄位皆為必填</p>
+<th:block th:with="hasSubmitted=${hasSubmitted}">
+        <form th:action="@{/registerAndLogin/register/store}" th:object="${store}" method="post" enctype="multipart/form-data" >
+<!--             ✅ 全域錯誤提示（後端訊息，如：信箱重複） -->
+<!--     <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div> -->
 
-        <form th:action="@{/registerAndLogin/register/store/}" th:object="${store}" method="post" enctype="multipart/form-data" >
-            <!-- ✅ 全域錯誤提示 -->
-<div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
-<div class="text-danger" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+<!--     ✅ Global error 提示（通常是手動 reject 值） -->
+<!--     <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}"> -->
+<!--         <ul class="mb-0"> -->
+<!--             <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li> -->
+<!--         </ul> -->
+<!--     </div> -->
 
+<!--     ✅ 所有欄位錯誤集中顯示（如：密碼長度、Email格式等） -->
+<!--     <div class="alert alert-danger" th:if="${#fields.hasErrors()}"> -->
+<!--         <ul class="mb-0"> -->
+<!--             <li th:each="err : ${#fields.errors()}" th:text="${err}"></li> -->
+<!--         </ul> -->
+<!--     </div> -->
             <!-- 店家名稱 -->
             <div class="partner_form_group">
                 <label class="partner_form_label">店家名稱</label>
@@ -456,31 +489,84 @@
                 <div class="partner_photos_section">
                     <h2 class="partner_photo_upload_title">請上傳照片</h2>
                     <div class="partner_photo_grid">
-                        <div class="partner_photo_item">
-                            <div class="partner_photo_label">店家封面照</div>
-                            <div class="partner_photo_preview" id="coverPhotoPreview"></div>
-                            <input type="file" name="photoFiles" id="file_upload_cover" accept="image/*" data-phototype="COVER">
-                        </div>
-                        <div class="partner_photo_item">
-                            <div class="partner_photo_label">廚房環境照</div>
-                            <div class="partner_photo_preview" id="kitchenPhotoPreview"></div>
-                            <input type="file" name="photoFiles" id="file_upload_kitchen" accept="image/*" data-phototype="KITCHEN">
-                        </div>
-                        <div class="partner_photo_item">
-                            <div class="partner_photo_label">店面環境照</div>
-                            <div class="partner_photo_preview" id="storePhotoPreview"></div>
-                            <input type="file" name="photoFiles" id="file_upload_store" accept="image/*" data-phototype="STORE">
+<div class="partner_photo_item">
+    <div class="partner_photo_label">店家封面照</div>
+
+    <!-- 預覽圖：有 session 資料就自動顯示 -->
+    <div class="partner_photo_preview" id="coverPhotoPreview">
+        <img th:each="photo : ${photoList}"
+             th:if="${photo.photoType == 'COVER'}"
+             th:src="${photo.src}"
+             class="preview-img"
+             alt="封面預覽圖"/>
+    </div>
+
+    <!-- ✅ 修改提示語句 -->
+    <p th:if="${hasSubmitted} and ${photoList.?[photoType == 'COVER'].size() > 0}"
+   class="text-muted small">若您不想更換圖片，無需重新選擇檔案。</p>
+
+    <!-- 上傳欄位 -->
+    <div class="partner_photo_upload_field">
+    <label class="custom-upload-btn">
+        選擇檔案
+        <input type="file" name="photoFiles" id="file_upload_cover" accept="image/*" hidden>
+    </label>
+    <span id="coverFileName" class="file-name-text">選擇檔案</span>
+</div>
+</div>
+
+<div class="partner_photo_item">
+    <div class="partner_photo_label">廚房環境照</div>
+    <div class="partner_photo_preview" id="kitchenPhotoPreview">
+        <img th:each="photo : ${photoList}"
+             th:if="${photo.photoType == 'KITCHEN'}"
+             th:src="${photo.src}"
+             class="preview-img"
+             alt="廚房預覽圖"/>
+    </div>
+    <p th:if="${hasSubmitted} and ${photoList.?[photoType == 'KITCHEN'].size() > 0}"
+   class="text-muted small">若您不想更換圖片，無需重新選擇檔案。</p>
+    <div class="partner_photo_upload_field">
+    <label class="custom-upload-btn">
+        選擇檔案
+        <input type="file" name="photoFiles" id="file_upload_kitchen" accept="image/*" hidden>
+    </label>
+    <span id="kitchenFileName" class="file-name-text">選擇檔案</span>
+</div>
+</div>
+
+                       
+<div class="partner_photo_item">
+    <div class="partner_photo_label">店面環境照</div>
+    <div class="partner_photo_preview" id="storePhotoPreview">
+        <img th:each="photo : ${photoList}"
+             th:if="${photo.photoType == 'STORE'}"
+             th:src="${photo.src}"
+             class="preview-img"
+             alt="店面預覽圖"/>
+    </div>
+    <p th:if="${hasSubmitted} and ${photoList.?[photoType == 'STORE'].size() > 0}"
+   class="text-muted small">若您不想更換圖片，無需重新選擇檔案。</p>
+    <div class="partner_photo_upload_field">
+    <label class="custom-upload-btn">
+        選擇檔案
+        <input type="file" name="photoFiles" id="file_upload_store" accept="image/*" hidden>
+    </label>
+    <span id="storeFileName" class="file-name-text">選擇檔案</span>
+</div>
+</div>
+
+                          
                         </div>
                     </div>
                 </div>
-                <!-- ✅ 照片欄位錯誤提示（如未上傳） -->
-<!--                 <div class="text-danger" th:if="${#fields.hasErrors('storeToPhoto')}" th:errors="*{storeToPhoto}"></div> -->
-<!--                 <div class="text-danger" th:if="${photoError}" th:text="${photoError}"></div> -->
-                <div id="photoError" class="text-danger" th:if="${photoError}" th:text="${photoError}"></div>
-                
-                
-                
-            </div>
+
+  <!-- 全部照片區的錯誤提示（例如沒上傳滿3張） -->
+<div id="photoError" class="text-danger mt-2" 
+     th:if="${photoError} and ${hasSubmitted}" 
+     th:text="${photoError}">
+</div>  
+      
 
             <!-- 同意使用須知區塊 -->
 <div class="partner_form_group">
@@ -491,10 +577,11 @@
 </div>
 
 <!-- ✅ 須知錯誤訊息顯示 -->
-<!-- <div class="text-danger" id="agreeError" th:if="${error}" th:text="${error}"></div> -->
-<!-- <div class="text-danger" id="agreeWarning" th:if="${agreeWarning}" th:text="${agreeWarning}"></div> -->
+
 <input type="hidden" name="agreedToTerms" id="agreedToTerms" value="false">
-<div id="agreeWarning" class="text-danger" th:if="${agreeWarning}" th:text="${agreeWarning}"></div>
+<div id="agreeWarning" class="text-danger" 
+     th:if="${agreeWarning} and ${hasSubmitted}" 
+     th:text="${agreeWarning}"></div>
 
 
 
@@ -504,6 +591,7 @@
     <button type="submit" class="partner_next_btn" id="submitBtn">下一步</button>
 </div>
         </form>
+        </th:block>
     </div>
 </div>
 
@@ -515,7 +603,7 @@
             例如：請上傳真實店家資料，並確保資訊無誤，否則無法通過審核。
         </p>
         <label><input type="checkbox" id="noticeAgree"> 已閱讀且同意上述須知內容</label>
-<!--         <div id="agreeWarning" class="text-danger" style="display: none;">請勾選「已閱讀且同意」才能繼續</div> -->
+
 
         <div style="margin-top: 20px; display: flex; justify-content: center;">
             <button id="exitNotice" style="padding: 6px 12px;">離開燈箱</button>
@@ -609,7 +697,35 @@ document.addEventListener('DOMContentLoaded', function () {
 //     const agreeWarning = document.getElementById('agreeWarning');
     const submitBtn = document.getElementById('submitBtn');
     const exitNotice = document.getElementById('exitNotice');
-
+    const coverInput = document.getElementById('file_upload_cover');
+    const coverHint = document.getElementById('coverHint');
+    const kitchenInput = document.getElementById('file_upload_kitchen');
+    const kitchenHint = document.getElementById('kitchenHint');
+    const storeInput = document.getElementById('file_upload_store');
+    const storeHint = document.getElementById('storeHint');
+    
+    //上傳圖片後請重新輸入消失
+    if (coverInput && coverHint) {
+    	coverInput.addEventListener('change', function () {
+            if (coverInput.files.length > 0) {
+            	coverHint.style.display = 'none'; // 隱藏提示文字
+            }
+        });
+    }
+    if (kitchenInput && kitchenHint) {
+        kitchenInput.addEventListener('change', function () {
+            if (kitchenInput.files.length > 0) {
+                kitchenHint.style.display = 'none'; // 隱藏提示文字
+            }
+        });
+    }
+    if (storeInput && storeHint) {
+    	storeInput.addEventListener('change', function () {
+            if (storeInput.files.length > 0) {
+            	storeHint.style.display = 'none'; // 隱藏提示文字
+            }
+        });
+    }
  // ✅ 確保燈箱開啟時，checkbox 狀態與外部同步
     viewNotice.addEventListener('click', function (e) {
         e.preventDefault();
@@ -662,22 +778,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
  // ✅ 照片區錯誤訊息顯示
-    submitBtn.addEventListener('click', function () {
-        const photoInputs = document.querySelectorAll('input[name="photoFiles"]');
-        let hasPhoto = false;
+//     submitBtn.addEventListener('click', function () {
+//     	sessionStorage.setItem("hasSubmitted", "true");
+//         const photoInputs = document.querySelectorAll('input[name="photoFiles"]');
+//         let hasPhoto = false;
 
-        photoInputs.forEach(input => {
-            if (input.files.length > 0) {
-                hasPhoto = true;
-            }
-        });
+//         photoInputs.forEach(input => {
+//             if (input.files.length > 0) {
+//                 hasPhoto = true;
+//             }
+//         });
 
-        if (!hasPhoto) {
-            document.getElementById('photoError').style.display = 'block';
-        } else {
-            document.getElementById('photoError').style.display = 'none';
-        }
-    });
+//         if (!hasPhoto) {
+//             document.getElementById('photoError').style.display = 'block';
+//         } else {
+//             document.getElementById('photoError').style.display = 'none';
+//         }
+//     });
 	    // ✅ 圖片預覽功能
 	    function previewImage(inputId, previewId) {
 	        const input = document.getElementById(inputId);
@@ -714,6 +831,22 @@ document.addEventListener('DOMContentLoaded', function () {
 // 	            agreeWarning.style.display = 'block'; // ✅ 確保須知錯誤能顯示
 // 	        }
 	    };
+	    function bindFileName(inputId, labelId) {
+	        const input = document.getElementById(inputId);
+	        const label = document.getElementById(labelId);
+
+	        input.addEventListener('change', function () {
+	            if (input.files.length > 0) {
+	                label.textContent = input.files[0].name;
+	            } else {
+	                label.textContent = "尚未選擇檔案";
+	            }
+	        });
+	    }
+
+	    bindFileName('file_upload_cover', 'coverFileName');
+	    bindFileName('file_upload_kitchen', 'kitchenFileName');
+	    bindFileName('file_upload_store', 'storeFileName');
 	});
 // window.onload = function () {
 //     document.querySelectorAll('.text-danger').forEach(function(errorDiv) {

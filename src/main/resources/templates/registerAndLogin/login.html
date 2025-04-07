@@ -262,8 +262,8 @@
             <!-- 使用者類型 -->
             <div class="merchant_form_group">
                 <label class="merchant_form_label">使用者類型</label>
-                <label><input type="radio" name="userType" value="member" checked> 受助者</label>
-                <label class="ml-3"><input type="radio" name="userType" value="store"> 合作店家</label>
+                <label><input type="radio" name="userType" value="member" th:checked="${userType} == null or userType == 'member'"> 受助者</label>
+                <label class="ml-3"><input type="radio" name="userType" value="store" th:checked="${userType} == 'store'"> 合作店家</label>
             </div>
             
             <!-- 帳號 or Email -->

@@ -34,12 +34,15 @@ public class LoginController {
 
     @Autowired
     private StoreLoginService storeLoginService;
+    
 	@GetMapping("/register")
 	public String index() {
 		return "registerAndLogin/registerAndLogin";
 	}
+	
     @GetMapping("/login")
     public String showLoginPage() {
+    	
         return "registerAndLogin/login"; // 對應 login.html
     }
 
@@ -75,6 +78,7 @@ public class LoginController {
             List<MemberOrderRecordDTO> history = memberLoginService.getOrderRecords(member.getMemberId());
             model.addAttribute("member", member);
             model.addAttribute("payDetail", history); 
+            model.addAttribute("userType", userType);
             return "registerAndLogin/memberInfo"; 
 
         }
@@ -82,6 +86,7 @@ public class LoginController {
             StoreVO store = storeLoginService.login(account, password); // 用 email 查
             if (store == null) {
                 model.addAttribute("error", "帳號或密碼錯誤！");
+                model.addAttribute("userType", userType);
                 return "registerAndLogin/login";
             }
             // ✅ 加入審核與啟用狀態檢查
@@ -100,6 +105,7 @@ public class LoginController {
             }
             
             session.setAttribute("loggedInStore", store);
+            model.addAttribute("userType", userType);
             model.addAttribute("store", store);
             
             // ✅ 檢查是否尚未設定營業資訊
@@ -119,6 +125,7 @@ public class LoginController {
         
 
         model.addAttribute("error", "請選擇有效的使用者類型");
+        model.addAttribute("userType", userType);
         return "registerAndLogin/login";
     }
     @PostMapping("/store/update")
