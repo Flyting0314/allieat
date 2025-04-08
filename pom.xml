@@ -185,7 +185,13 @@
             <!-- <version>9.1.0</version> -->         <!-- spring-boot(3.4.1) 已內建依賴9.1.0，但預設未下載 -->
         </dependency>
 
-		
+		<dependency>
+    <groupId>jakarta.servlet</groupId>
+    <artifactId>jakarta.servlet-api</artifactId>
+    <version>6.0.0</version> <!-- 或依你 Spring Boot 版本調整 -->
+    <scope>provided</scope>
+</dependency>
+
 		
 		
 		
