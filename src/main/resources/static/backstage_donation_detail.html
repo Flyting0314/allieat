@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>捐款明細</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/style_backstage.css">
+    <style>
+        .fill-height {
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row fill-height">
+        <!-- 側邊欄 -->
+        <div class="col-md-2 side-bar">
+            <h4>操作管理</h4>
+            <a href="./backstage_homepage.html">後台首頁</a>
+            <a href="#">合作店家管理</a>
+            <a href="#">受助者管理</a>
+            <a href="./backstage_unit_management.html">在冊單位管理</a>
+            <a href="./backstage_donation_management.html">捐款管理</a>
+            <a href="#">未領餐紀錄</a>
+        </div>
+
+        <!-- 主內容 -->
+        <div class="col-md-10 fill-height d-flex flex-column justify-content-between">
+            <div class="card my-4 w-100 flex-grow-1 d-flex flex-column">
+                <div class="card-header">捐款記錄</div>
+                <div class="card-body">
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="donorName">名稱</label>
+                            <input type="text" class="form-control" id="donorName" readonly />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="identityType">身分別</label>
+                            <input type="text" class="form-control" id="identityType" readonly />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="identityNumber">統一編號／身分證字號</label>
+                            <input type="text" class="form-control" id="identityNumber" readonly />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="contactEmail">聯絡信箱</label>
+                            <input type="email" class="form-control" id="contactEmail" readonly />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="contactPhone">聯絡電話</label>
+                            <input type="text" class="form-control" id="contactPhone" readonly />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="address">地址</label>
+                            <textarea class="form-control" id="address" rows="3" readonly></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="donationAmount">捐款金額</label>
+                            <input type="text" class="form-control" id="donationAmount" readonly />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="donationTime">捐款時間</label>
+                            <input type="text" class="form-control" id="donationTime" readonly />
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="./backstage_donation_management.html" class="btn btn-link">返回</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- JWT 驗證 -->
+<script src="./js/backstage_auth_js.js"></script>
+<script src="./js/backstage_donation_details_js.js"></script>
+
+</body>
+</html>
