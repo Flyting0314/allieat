@@ -6,9 +6,11 @@ import com.menuEdit.dto.MenuEditDemo;
 
 public interface MenuEditService {
 
-	List<MenuEditDemo> getSimpleFoods();
+	List<MenuEditDemo> getSimpleFoodsByStoreId(Integer storeId);
+//	List<MenuEditDemo> getSimpleFoods();
 
 	void updateMenuItem(MenuEditDemo item);
+
 
 	
 }

@@ -8,6 +8,9 @@ import jakarta.validation.constraints.NotNull;
 public class FoodRequest {
 	
 	@NotNull
+	private Integer storeId;
+	
+	@NotNull
 	private String foodName;
 
 	@NotNull
@@ -18,6 +21,18 @@ public class FoodRequest {
 	
 	private List<String> sideDish;
 	
+	
+	
+	public Integer getStoreId() {
+		return storeId;
+	}
+
+
+	public void setStoreId(Integer storeId) {
+		this.storeId = storeId;
+	}
+
+
 	public String getPhotoPath() {
 		return photoPath;
 	}

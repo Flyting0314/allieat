@@ -21,37 +21,60 @@ import com.food.service.FoodService;
 
 @Component
 public class FoodServiceImpl implements FoodService {
-
+	
     @Autowired
     private FoodRepository foodRepository;
     
     @Autowired
     private AttachedRepository attachedRepository;
-
+    
     @Override
     public Integer createFood(FoodRequest foodRequest) {
-
         // 建立 food 實體
         FoodVO foodVO = new FoodVO();
 
-        // 設定 store（這裡是暫時寫死 storeId=1）
+        // ✅ 改成動態 storeId
         StoreVO storeVO = new StoreVO();
-        storeVO.setStoreId(1);  // TODO: 登入完成後改成從 session 抓
+        storeVO.setStoreId(foodRequest.getStoreId()); // ✅ 根據前端傳入 storeId
         foodVO.setStore(storeVO);
 
-        // 設定主餐基本欄位
+        // 主餐基本欄位
         foodVO.setName(foodRequest.getFoodName());
         foodVO.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-        foodVO.setStatus(1); // 預設上架狀態
-        foodVO.setAmount(10); // 預設庫存數量
+        foodVO.setStatus(1); // 預設上架
+        foodVO.setAmount(10); // 預設庫存
         foodVO.setPhoto(foodRequest.getPhotoPath());
         foodVO.setCost(foodRequest.getPointCost());
 
-        // 儲存主餐，會一併儲存副餐（因為有設定 cascade）
         foodRepository.save(foodVO);
 
-        return foodVO.getFoodId(); // 回傳主鍵
+        return foodVO.getFoodId();
     }
+
+//    @Override
+//    public Integer createFood(FoodRequest foodRequest) {
+//
+//        // 建立 food 實體
+//        FoodVO foodVO = new FoodVO();
+//
+//        // 設定 store（這裡是暫時寫死 storeId=1）
+//        StoreVO storeVO = new StoreVO();
+//        storeVO.setStoreId(1);  // TODO: 登入完成後改成從 session 抓
+//        foodVO.setStore(storeVO);
+//
+//        // 設定主餐基本欄位
+//        foodVO.setName(foodRequest.getFoodName());
+//        foodVO.setCreatedTime(new Timestamp(System.currentTimeMillis()));
+//        foodVO.setStatus(1); // 預設上架狀態
+//        foodVO.setAmount(10); // 預設庫存數量
+//        foodVO.setPhoto(foodRequest.getPhotoPath());
+//        foodVO.setCost(foodRequest.getPointCost());
+//
+//        // 儲存主餐，會一併儲存副餐（因為有設定 cascade）
+//        foodRepository.save(foodVO);
+//
+//        return foodVO.getFoodId(); // 回傳主鍵
+//    }
 
     @Override
     public FoodVO getFoodById(Integer foodId) {
@@ -59,21 +82,37 @@ public class FoodServiceImpl implements FoodService {
     }
     
     @Override
-    public List<FoodDemo> getSimpleFoods() {
+    public List<FoodDemo> getSimpleFoodsByStoreId(Integer storeId) {
         List<FoodVO> foodList = foodRepository
-        		.findAll()
-        		.stream()
-        		.filter(f -> f.getStatus() == 1 || f.getStatus() == 0)
-        		.toList(); // 可加條件 storeId = 1
+            .findAll()
+            .stream()
+            .filter(f -> f.getStatus() == 1 || f.getStatus() == 0) // 上架或下架
+            .filter(f -> f.getStore() != null && f.getStore().getStoreId().equals(storeId)) // ✅ 過濾出指定店家
+            .toList();
+
         List<FoodDemo> result = new ArrayList<>();
-
         for (FoodVO foodVO : foodList) {
-        	result.add(new FoodDemo(foodVO.getFoodId(), foodVO.getName(), foodVO.getPhoto(), foodVO.getCost()));
+            result.add(new FoodDemo(foodVO.getFoodId(), foodVO.getName(), foodVO.getPhoto(), foodVO.getCost()));
         }
-        
-
         return result;
     }
+
+//    @Override
+//    public List<FoodDemo> getSimpleFoods() {
+//        List<FoodVO> foodList = foodRepository
+//        		.findAll()
+//        		.stream()
+//        		.filter(f -> f.getStatus() == 1 || f.getStatus() == 0)
+//        		.toList(); // 可加條件 storeId = 1
+//        List<FoodDemo> result = new ArrayList<>();
+//
+//        for (FoodVO foodVO : foodList) {
+//        	result.add(new FoodDemo(foodVO.getFoodId(), foodVO.getName(), foodVO.getPhoto(), foodVO.getCost()));
+//        }
+//        
+//
+//        return result;
+//    }
     
     @Override
     @Transactional
