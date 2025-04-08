@@ -18,6 +18,14 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/backStage/**")
                 .excludePathPatterns("/backStage/login",
                                      "/backStage");
+        
+        
+    }
+    
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/member/**")
+                .addResourceLocations("file:upload/member/");
     }
 }
     

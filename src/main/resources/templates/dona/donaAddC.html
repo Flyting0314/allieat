@@ -298,6 +298,38 @@
             cursor: pointer;
         }
     </style>
+    <script>
+    async function pay() {
+      const response = await fetch('http://localhost:8081/demo/donation/donate-params', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: 300,
+          orderNo: 'ORDER_' + Date.now(),
+          itemDesc: '支持公益捐款'
+        })
+      });
+		console.log("TESTESTESTESTESTESTSTe");
+      const params = await response.json();
+      const form = document.createElement('form');
+      console.log(params);
+      form.method = 'POST';
+      form.action = 'https://cdonate.newebpay.com/allieat/tibame';
+
+      for (const key in params) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = params[key];
+        form.appendChild(input);
+      }
+		
+      document.body.appendChild(form);
+      
+      form.submit();
+    }
+  </script>
+    </script>
 </head>
 <body>
 <!-- Navbar Start -->
@@ -375,6 +407,7 @@
                 <div class="col-md-6">
                     <img src="img/all i eat.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
                     <h5 class="text-danger fw-bold">人人溫飽，生活才美好。</h5>
+                    <button onclick="pay()">前往捐款</button>
                     <p>
                         我們傳遞的不僅僅是食物，更是一份深深的關愛與陪伴。每一份餐點都是無數人的愛心與付出。您的捐款帶來持續地穩定的經費，讓我們有能力將愛傳遞給最有需要的人，讓世界更美好，形成一個善的循環。
                     </p>
@@ -457,6 +490,7 @@
                 </div>
                 <div class="col-lg-3 col-md-6 mb-5">
                     <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">關注我們</h4>
+                    
                     <p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
                     <div class="d-flex justify-content-start">
                         <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>

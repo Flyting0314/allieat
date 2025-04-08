@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-TW">
+<head>
+    <meta charset="utf-8">
+    <title>合作店家註冊 - 攏呷霸 ALLiEAT</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="愛心代用餐,公益餐飲,合作店家,會員註冊" name="keywords">
+    <meta content="攏呷霸愛心代用餐平台合作店家註冊" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        /* 基本重置樣式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
+        }
+        
+        /* 註冊頁面主體樣式 */
+        .partner_reg_wrapper {
+            background-color: #f5f5f9;
+            padding: 50px 0;
+            min-height: 60vh;
+        }
+        
+        /* 主容器樣式 */
+        .partner_reg_container {
+            background-color: white;
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin: 0 auto;
+        }
+        
+        /* 主標題樣式 */
+        .partner_reg_title {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        /* 副標題樣式 */
+        .partner_reg_subtitle {
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #666;
+        }
+        
+        /* 表單群組樣式 */
+        .partner_form_group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        /* 表單標籤樣式 */
+        .partner_form_label {
+            width: 120px;
+            padding-top: 8px;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        /* 表單控制項容器樣式 */
+        .partner_form_controls {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        /* 文字輸入欄位樣式 */
+        .partner_input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #495057;
+        }
+        
+        /* 下拉選單樣式 */
+        .partner_select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #495057;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+        }
+        
+        /* 地址欄位組合樣式 */
+        .partner_address_group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* 地址欄位樣式 */
+        .partner_address_field {
+            flex: 1;
+        }
+        
+        /* 地址提示文字樣式 */
+        .partner_address_hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        /* 照片上傳區域 */
+        .partner_photos_section {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .partner_photo_upload_title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #002366;
+            text-align: center;
+        }
+        
+        .partner_photo_grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .partner_photo_item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .partner_photo_label {
+            min-width: 100px;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .partner_photo_preview {
+            width: 150px;
+            height: 150px;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .partner_photo_preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        
+        .partner_photo_upload_controls {
+            flex: 1;
+        }
+        
+        .partner_photo_hint {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .partner_upload_photo_btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        
+        .partner_upload_status {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        /* 預覽圖示樣式 */
+        .partner_preview_icon {
+            font-size: 40px;
+            color: #adb5bd;
+        }
+        
+        /* 按鈕容器樣式 */
+        .partner_button_container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        /* 返回按鈕樣式 */
+        .partner_back_btn {
+            padding: 10px 20px;
+            background-color: white;
+            color: #666;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        
+        /* 繼續按鈕樣式 */
+        .partner_next_btn {
+            padding: 10px 20px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* 錯誤提示樣式 */
+        .partner_error_text {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        /* 錯誤邊框樣式 */
+        .partner_input_error {
+            border-color: #dc3545 !important;
+        }
+        
+        /* 響應式調整 */
+        @media (max-width: 767px) {
+            .partner_form_group {
+                flex-direction: column;
+            }
+            
+            .partner_form_label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .partner_address_group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .partner_photo_item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .partner_photo_preview {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+        .preview-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+        .custom-upload-btn {
+    display: inline-block;
+    background-color: #000;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.file-name-text {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #555;
+}
+    </style>
+</head>
+
+<body>
+   <!-- Navbar Start -->
+   <section id="header">
+    <div class="container-fluid p-0 nav-bar">
+        <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+            <a href="index.html" class="navbar-brand px-lg-4 m-0">
+                <h1 class="m-0 display-4 text-uppercase text-white" style="display: inline-block;">
+                    <img src="img/logo3.png" width="80px" height="80px" alt="" 
+                    style="vertical-align: middle; margin-right: 0px; margin-top: -10px; 
+                            border-radius: 50%; object-fit: cover;">
+                    <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+                </h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                <div class="navbar-nav ml-auto p-4">
+                    <a href="index.html" class="nav-item nav-link active">關於我們</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">我要捐款</a>
+                        <div class="dropdown-menu text-capitalize">
+                            <a href="reservation.html" class="dropdown-item">我要捐款</a>
+                            <a href="testimonial.html" class="dropdown-item">捐款查詢</a>
+                        </div>
+                    </div>
+                    <a href="service.html" class="nav-item nav-link">受助者取餐</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊/登入</a>
+                        <div class="dropdown-menu text-capitalize">
+                            <a href="registration.html" class="dropdown-item">註冊</a>
+                            <a href="login.html" class="dropdown-item">登入</a>
+                        </div>
+                    </div>
+                    <a href="contact.html" class="nav-item nav-link">會員專區</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</section>
+<!-- Navbar End -->
+
+<!-- Hero Section Start -->
+<section id="hero">
+    <div class="container-fluid p-0 mb-5">
+        <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="background-image: url('img/圖片3.png');
+                background-size: 110% auto;
+                background-position: center -300px;
+                height: 570px;
+                filter: brightness(200%);">
+                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                        <h2 class="text-primary font-weight-medium m-0"></h2>
+                        <h1 class="display-1 text-white m-0"></h1>
+                        <h2 class="text-white m-0"></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Hero Section End -->
+<!-- Registration Form Start -->
+<div class="partner_reg_wrapper">
+    <div class="partner_reg_container">
+        <h1 class="partner_reg_title">合作店家註冊</h1>
+        <p class="partner_reg_subtitle">以下欄位皆為必填</p>
+<th:block th:with="hasSubmitted=${hasSubmitted}">
+        <form th:action="@{/registerAndLogin/register/store}" th:object="${store}" method="post" enctype="multipart/form-data" >
+<!--             ✅ 全域錯誤提示（後端訊息，如：信箱重複） -->
+<!--     <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div> -->
+
+<!--     ✅ Global error 提示（通常是手動 reject 值） -->
+<!--     <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}"> -->
+<!--         <ul class="mb-0"> -->
+<!--             <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li> -->
+<!--         </ul> -->
+<!--     </div> -->
+
+<!--     ✅ 所有欄位錯誤集中顯示（如：密碼長度、Email格式等） -->
+<!--     <div class="alert alert-danger" th:if="${#fields.hasErrors()}"> -->
+<!--         <ul class="mb-0"> -->
+<!--             <li th:each="err : ${#fields.errors()}" th:text="${err}"></li> -->
+<!--         </ul> -->
+<!--     </div> -->
+            <!-- 店家名稱 -->
+            <div class="partner_form_group">
+                <label class="partner_form_label">店家名稱</label>
+                <div class="partner_form_controls">
+                    <input type="text" th:field="*{name}" class="partner_input">
+                    <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+            </div>
+
+            <!-- 負責人姓名 -->
+            <div class="partner_form_group">
+                <label class="partner_form_label">負責人姓名</label>
+                <div class="partner_form_controls">
+                    <input type="text" th:field="*{managerName}" class="partner_input">
+                    <div class="text-danger" th:if="${#fields.hasErrors('managerName')}" th:errors="*{managerName}"></div>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="partner_form_group">
+                <label class="partner_form_label">Email</label>
+                <div class="partner_form_controls">
+                    <input type="email" th:field="*{email}" class="partner_input">
+                    <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+            </div>
+
+            <!-- 行動電話 -->
+            <div class="partner_form_group">
+                <label class="partner_form_label">行動電話</label>
+                <div class="partner_form_controls">
+                    <input type="text" th:field="*{phoneNum}" class="partner_input">
+                    <div class="text-danger" th:if="${#fields.hasErrors('phoneNum')}" th:errors="*{phoneNum}"></div>
+                </div>
+            </div>
+
+            <!-- 統一編號 -->
+            <div class="partner_form_group">
+                <label class="partner_form_label">統一編號</label>
+                <div class="partner_form_controls">
+                    <input type="text" th:field="*{guiNum}" class="partner_input">
+                    <div class="text-danger" th:if="${#fields.hasErrors('guiNum')}" th:errors="*{guiNum}"></div>
+                </div>
+            </div>
+
+            <!-- 食品業者登錄字號 -->
+            <div class="partner_form_group">
+                <label class="partner_form_label">食品業者登錄字號</label>
+                <div class="partner_form_controls">
+                    <input type="text" th:field="*{businessRegNum}" class="partner_input">
+                    <div class="text-danger" th:if="${#fields.hasErrors('businessRegNum')}" th:errors="*{businessRegNum}"></div>
+                </div>
+            </div>
+
+            <!-- 地址 -->
+            <div class="partner_form_group">
+                <label class="partner_form_label">店家地址</label>
+                <div class="partner_form_controls">
+                    <select class="partner_select" th:field="*{county}" id="citySelect">
+                        <option value="">請選擇縣市</option>
+                        <option value="台北市">台北市</option>
+                        <option value="新北市">新北市</option>
+                        <option value="台中市">台中市</option>
+                    </select>
+                    <div class="text-danger" th:if="${#fields.hasErrors('county')}" th:errors="*{county}"></div>
+                    <select class="partner_select" th:field="*{district}" id="districtSelect">
+                        <option value="">請選擇鄉鎮市區</option>
+                        <option value="大安區">大安區</option>
+                        <option value="中壢區">中壢區</option>
+                        <option value="桃園區">桃園區</option>
+                    </select>
+                    <div class="text-danger" th:if="${#fields.hasErrors('district')}" th:errors="*{district}"></div>
+                    <input type="text" th:field="*{postalCode}" class="partner_input" placeholder="郵遞區號">
+                    <div class="text-danger" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></div>
+                    <input type="text" th:field="*{address}" class="partner_input" placeholder="詳細地址">
+                    <div class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                </div>
+            </div>
+
+            <!-- 密碼 -->
+            <div class="partner_form_group">
+                <label class="partner_form_label">密碼</label>
+                <div class="partner_form_controls">
+                    <input type="password" th:field="*{password}" class="partner_input">
+                    <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+            </div>
+
+            <!-- 照片上傳區域 -->
+            <div class="partner_form_group">
+                <div class="partner_photos_section">
+                    <h2 class="partner_photo_upload_title">請上傳照片</h2>
+                    <div class="partner_photo_grid">
+<div class="partner_photo_item">
+    <div class="partner_photo_label">店家封面照</div>
+
+    <!-- 預覽圖：有 session 資料就自動顯示 -->
+    <div class="partner_photo_preview" id="coverPhotoPreview">
+        <img th:each="photo : ${photoList}"
+             th:if="${photo.photoType == 'COVER'}"
+             th:src="${photo.src}"
+             class="preview-img"
+             alt="封面預覽圖"/>
+    </div>
+
+    <!-- ✅ 修改提示語句 -->
+    <p th:if="${hasSubmitted} and ${photoList.?[photoType == 'COVER'].size() > 0}"
+   class="text-muted small">若您不想更換圖片，無需重新選擇檔案。</p>
+
+    <!-- 上傳欄位 -->
+    <div class="partner_photo_upload_field">
+    <label class="custom-upload-btn">
+        選擇檔案
+        <input type="file" name="photoFiles" id="file_upload_cover" accept="image/*" hidden>
+    </label>
+    <span id="coverFileName" class="file-name-text">選擇檔案</span>
+</div>
+</div>
+
+<div class="partner_photo_item">
+    <div class="partner_photo_label">廚房環境照</div>
+    <div class="partner_photo_preview" id="kitchenPhotoPreview">
+        <img th:each="photo : ${photoList}"
+             th:if="${photo.photoType == 'KITCHEN'}"
+             th:src="${photo.src}"
+             class="preview-img"
+             alt="廚房預覽圖"/>
+    </div>
+    <p th:if="${hasSubmitted} and ${photoList.?[photoType == 'KITCHEN'].size() > 0}"
+   class="text-muted small">若您不想更換圖片，無需重新選擇檔案。</p>
+    <div class="partner_photo_upload_field">
+    <label class="custom-upload-btn">
+        選擇檔案
+        <input type="file" name="photoFiles" id="file_upload_kitchen" accept="image/*" hidden>
+    </label>
+    <span id="kitchenFileName" class="file-name-text">選擇檔案</span>
+</div>
+</div>
+
+                       
+<div class="partner_photo_item">
+    <div class="partner_photo_label">店面環境照</div>
+    <div class="partner_photo_preview" id="storePhotoPreview">
+        <img th:each="photo : ${photoList}"
+             th:if="${photo.photoType == 'STORE'}"
+             th:src="${photo.src}"
+             class="preview-img"
+             alt="店面預覽圖"/>
+    </div>
+    <p th:if="${hasSubmitted} and ${photoList.?[photoType == 'STORE'].size() > 0}"
+   class="text-muted small">若您不想更換圖片，無需重新選擇檔案。</p>
+    <div class="partner_photo_upload_field">
+    <label class="custom-upload-btn">
+        選擇檔案
+        <input type="file" name="photoFiles" id="file_upload_store" accept="image/*" hidden>
+    </label>
+    <span id="storeFileName" class="file-name-text">選擇檔案</span>
+</div>
+</div>
+
+                          
+                        </div>
+                    </div>
+                </div>
+
+  <!-- 全部照片區的錯誤提示（例如沒上傳滿3張） -->
+<div id="photoError" class="text-danger mt-2" 
+     th:if="${photoError} and ${hasSubmitted}" 
+     th:text="${photoError}">
+</div>  
+      
+
+            <!-- 同意使用須知區塊 -->
+<div class="partner_form_group">
+    <label class="partner_form_label">
+        <input type="checkbox" id="agreeCheck" disabled onclick="return false"> 我已閱讀並同意 
+        <a href="#" id="viewNotice" style="color: blue; text-decoration: underline; cursor: pointer;">使用須知</a>
+    </label>
+</div>
+
+<!-- ✅ 須知錯誤訊息顯示 -->
+
+<input type="hidden" name="agreedToTerms" id="agreedToTerms" value="false">
+<div id="agreeWarning" class="text-danger" 
+     th:if="${agreeWarning} and ${hasSubmitted}" 
+     th:text="${agreeWarning}"></div>
+
+
+
+
+<div class="partner_button_container">
+    <button type="button" class="partner_back_btn" th:onclick="|location.href='@{/registerAndLogin/register}'|">上一頁</button>
+    <button type="submit" class="partner_next_btn" id="submitBtn">下一步</button>
+</div>
+        </form>
+        </th:block>
+    </div>
+</div>
+
+<!-- ✅ 使用須知燈箱 Modal -->
+<div id="noticeModal" class="modal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center;">
+    <div class="modal-content" style="background: white; padding: 20px; border-radius: 10px; width: 80%; max-height: 80%; overflow-y: auto;">
+        <h3>使用須知</h3>
+        <p style="white-space: pre-wrap; font-size: 14px; line-height: 1.8;">
+            例如：請上傳真實店家資料，並確保資訊無誤，否則無法通過審核。
+        </p>
+        <label><input type="checkbox" id="noticeAgree"> 已閱讀且同意上述須知內容</label>
+
+
+        <div style="margin-top: 20px; display: flex; justify-content: center;">
+            <button id="exitNotice" style="padding: 6px 12px;">離開燈箱</button>
+        </div>
+    </div>
+</div>
+
+
+  <!-- Footer Start -->
+   <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
+    <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+        <div class="col-lg-3 col-md-6 mb-5">
+            <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">聯絡我們</h4>
+            <p><i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號</p>
+            <p><i class="fa fa-phone-alt mr-2"></i>02-2222-5252</p>
+            <p class="m-0"><i class="fa fa-envelope mr-2"></i>allieat105@gmail.com</p>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-5">
+            <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">關注我們</h4>
+            <p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
+            <div class="d-flex justify-content-start">
+                <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-5">
+            <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">客服時間</h4>
+            <div>
+                <h6 class="text-white text-uppercase">周一 - 週五</h6>
+                <p>早上10:00 - 晚上21:00</p>
+                <h6 class="text-white text-uppercase">週六 - 週日</h6>
+                <p>早上11:00 - 晚上19:00</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-5">
+            <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">訂閱電子報</h4>
+            <p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
+            <div class="w-100">
+                <div class="input-group">
+                    <input type="text" class="form-control border-light" style="padding: 25px;" placeholder="輸入您的信箱">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid text-center text-white mt-4 py-4 px-sm-3 px-md-5" style="border-color: rgba(256, 256, 256, .1) !important;">
+        <p class="mb-2 text-white">版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>. 保留所有權利</p>
+        <p class="m-0 text-white">網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司 設計部 設計</a></p>
+    </div>
+</div>
+<!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- Contact Javascript File -->
+    <script src="mail/jqBootstrapValidation.min.js"></script>
+    <script src="mail/contact.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+    
+    <!-- Custom Javascript -->
+ 
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+	
+	const viewNotice = document.getElementById('viewNotice');
+    const noticeModal = document.getElementById('noticeModal');
+    const noticeAgree = document.getElementById('noticeAgree');
+    const agreeNotice = document.getElementById('agreeNotice');
+    const closeNotice = document.getElementById('closeNotice');
+    const agreeCheck = document.getElementById('agreeCheck');
+//     const agreeWarning = document.getElementById('agreeWarning');
+    const submitBtn = document.getElementById('submitBtn');
+    const exitNotice = document.getElementById('exitNotice');
+    const coverInput = document.getElementById('file_upload_cover');
+    const coverHint = document.getElementById('coverHint');
+    const kitchenInput = document.getElementById('file_upload_kitchen');
+    const kitchenHint = document.getElementById('kitchenHint');
+    const storeInput = document.getElementById('file_upload_store');
+    const storeHint = document.getElementById('storeHint');
+    
+    //上傳圖片後請重新輸入消失
+    if (coverInput && coverHint) {
+    	coverInput.addEventListener('change', function () {
+            if (coverInput.files.length > 0) {
+            	coverHint.style.display = 'none'; // 隱藏提示文字
+            }
+        });
+    }
+    if (kitchenInput && kitchenHint) {
+        kitchenInput.addEventListener('change', function () {
+            if (kitchenInput.files.length > 0) {
+                kitchenHint.style.display = 'none'; // 隱藏提示文字
+            }
+        });
+    }
+    if (storeInput && storeHint) {
+    	storeInput.addEventListener('change', function () {
+            if (storeInput.files.length > 0) {
+            	storeHint.style.display = 'none'; // 隱藏提示文字
+            }
+        });
+    }
+ // ✅ 確保燈箱開啟時，checkbox 狀態與外部同步
+    viewNotice.addEventListener('click', function (e) {
+        e.preventDefault();
+        noticeModal.style.display = 'flex';
+
+        // ✅ 如果外部須知已選取，燈箱內的 checkbox 也應該是選取狀態
+        noticeAgree.checked = agreeCheck.checked;
+    });
+ 
+ // ✅ 當使用者按「離開燈箱」，更新須知狀態
+    exitNotice.addEventListener('click', function () {
+        noticeModal.style.display = 'none';
+
+        if (noticeAgree.checked) {
+            agreeCheck.checked = true;
+            document.getElementById('agreedToTerms').value = 'true';
+            sessionStorage.setItem("noticeAgreed", "true"); // ✅ 記錄選取狀態
+//             agreeWarning.style.display = 'none'; // ✅ 清除錯誤訊息
+        } else {
+            agreeCheck.checked = false;
+            document.getElementById('agreedToTerms').value = 'false';
+            sessionStorage.removeItem("noticeAgreed"); // ✅ 清除選取狀態
+//             agreeWarning.style.display = 'block'; // ✅ 顯示錯誤訊息
+        }
+    });
+ 
+    
+ // ✅ 當使用者在燈箱內取消 checkbox，讓外部須知同步取消
+    noticeAgree.addEventListener('change', function () {
+        if (!noticeAgree.checked) {
+            agreeCheck.checked = false;
+            document.getElementById('agreedToTerms').value = 'false';
+            sessionStorage.removeItem("noticeAgreed");
+        }
+    });
+ // ✅ 地址區錯誤訊息隱藏
+    document.querySelectorAll('.partner_select, .partner_input').forEach(function(field) {
+        field.addEventListener('change', function () {
+            const errorDiv = field.nextElementSibling; // ✅ 修正選取錯誤訊息方式
+            if (errorDiv && errorDiv.classList.contains('text-danger')) {
+                errorDiv.style.display = 'none';
+            }
+        });
+
+        field.addEventListener('input', function () {
+            const errorDiv = field.nextElementSibling; // ✅ 修正選取錯誤訊息方式
+            if (errorDiv && errorDiv.classList.contains('text-danger')) {
+                errorDiv.style.display = 'none';
+            }
+        });
+    });
+ // ✅ 照片區錯誤訊息顯示
+//     submitBtn.addEventListener('click', function () {
+//     	sessionStorage.setItem("hasSubmitted", "true");
+//         const photoInputs = document.querySelectorAll('input[name="photoFiles"]');
+//         let hasPhoto = false;
+
+//         photoInputs.forEach(input => {
+//             if (input.files.length > 0) {
+//                 hasPhoto = true;
+//             }
+//         });
+
+//         if (!hasPhoto) {
+//             document.getElementById('photoError').style.display = 'block';
+//         } else {
+//             document.getElementById('photoError').style.display = 'none';
+//         }
+//     });
+	    // ✅ 圖片預覽功能
+	    function previewImage(inputId, previewId) {
+	        const input = document.getElementById(inputId);
+	        const preview = document.getElementById(previewId);
+	        if (input && preview) {
+	            input.addEventListener('change', function () {
+	                const file = input.files[0];
+	                if (file && file.type.startsWith('image/')) {
+	                    const reader = new FileReader();
+	                    reader.onload = function (e) {
+	                        preview.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+	                    };
+	                    reader.readAsDataURL(file);
+	                } else {
+	                    preview.innerHTML = '';
+	                }
+	            });
+	        }
+	    }
+
+	    previewImage('file_upload_cover', 'coverPhotoPreview');
+	    previewImage('file_upload_kitchen', 'kitchenPhotoPreview');
+	    previewImage('file_upload_store', 'storePhotoPreview');
+	    
+	    // ✅ 修正須知錯誤訊息渲染問題
+	    window.onload = function () {
+	    	const photoError = document.getElementById('photoError');
+	        if (photoError && photoError.textContent.trim() !== "") {
+	            photoError.style.display = 'block'; // ✅ 確保照片錯誤能顯示
+	        }
+
+// 	        const agreeWarning = document.getElementById('agreeWarning');
+// 	        if (agreeWarning && agreeWarning.textContent.trim() !== "") {
+// 	            agreeWarning.style.display = 'block'; // ✅ 確保須知錯誤能顯示
+// 	        }
+	    };
+	    function bindFileName(inputId, labelId) {
+	        const input = document.getElementById(inputId);
+	        const label = document.getElementById(labelId);
+
+	        input.addEventListener('change', function () {
+	            if (input.files.length > 0) {
+	                label.textContent = input.files[0].name;
+	            } else {
+	                label.textContent = "尚未選擇檔案";
+	            }
+	        });
+	    }
+
+	    bindFileName('file_upload_cover', 'coverFileName');
+	    bindFileName('file_upload_kitchen', 'kitchenFileName');
+	    bindFileName('file_upload_store', 'storeFileName');
+	});
+// window.onload = function () {
+//     document.querySelectorAll('.text-danger').forEach(function(errorDiv) {
+//         errorDiv.style.display = 'none'; // ✅ 確保返回時清空錯誤
+//     });
+// };
+
+</script>
+
+
+<!--  <script> -->
+ 
+ 
+
+
+// document.getElementById('submitBtn').addEventListener('click', function () {
+//     const agreeCheck = document.getElementById('agreeCheck');
+//     const agreeWarning = document.getElementById('agreeWarning');
+//     const agreedToTerms = document.getElementById('agreedToTerms'); // ✅ 定義 `agreedToTerms`
+
+//     if (!agreeCheck.checked) {
+//         agreeWarning.style.display = 'block';
+//     } else {
+//         agreeWarning.style.display = 'none';
+//         agreedToTerms.value = 'true'; // ✅ 確保 `agreedToTerms` 正確更新
+//     }
+// });
+
+// function clearError(input) {
+//     const errorDiv = input.parentElement.querySelector('.text-danger');
+//     if (errorDiv) {
+//         errorDiv.style.display = 'none';
+//     }
+//     // 若為 agreeCheck 則額外處理同意錯誤提示
+//     if (input.id === 'agreeCheck') {
+//         const agreeWarning = document.getElementById('agreeWarning');
+//         if (agreeWarning) agreeWarning.style.display = 'none';
+//         const agreeError = document.getElementById('agreeError');
+//         if (agreeError) agreeError.style.display = 'none';
+//     }
+// }
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     const viewNotice = document.getElementById('viewNotice');
+//     const noticeModal = document.getElementById('noticeModal');
+//     const noticeAgree = document.getElementById('noticeAgree');
+//     const agreeCheck = document.getElementById('agreeCheck');
+//     const agreeNotice = document.getElementById('agreeNotice');
+//     const closeNotice = document.getElementById('closeNotice');
+//     const agreeWarning = document.getElementById('agreeWarning');
+
+//     if (viewNotice) {
+//         viewNotice.addEventListener('click', function (e) {
+//             e.preventDefault();
+//             noticeAgree.checked = false;
+//             noticeModal.style.display = 'flex';
+//         });
+//     }
+
+
+// if (agreeNotice) {
+//         agreeNotice.addEventListener('click', function () {
+//             if (noticeAgree.checked) {
+//                 agreeCheck.checked = true;
+//                 agreeCheck.disabled = false;
+//                 agreeCheck.readOnly = true; // 防止事後取消
+//                 document.getElementById('agreedToTerms').value = 'true';
+
+//                 if (agreeWarning) {
+//                     agreeWarning.style.display = 'none';  // ✅ 確保 `agreeWarning` 存在才隱藏
+//                 }
+
+//                 if (noticeModal) {
+//                     noticeModal.style.display = 'none';  // ✅ 確保 `noticeModal` 存在才關閉
+//                 }
+//             } else {
+//                 if (agreeWarning) {
+//                     agreeWarning.textContent = '請勾選「已閱讀且同意」才能繼續';
+//                     agreeWarning.style.display = 'block';
+//                 }
+//             }
+//         });
+//     }
+
+// if (closeNotice) {
+//     closeNotice.addEventListener('click', function () {
+//         if (noticeModal) {
+//             noticeModal.style.display = 'none';
+//         }
+//     });
+// }
+
+//     // ✅ 圖片預覽功能
+//     function previewImage(inputId, previewId) {
+//         const input = document.getElementById(inputId);
+//         const preview = document.getElementById(previewId);
+//         if (input && preview) {
+//             input.addEventListener('change', function () {
+//                 const file = input.files[0];
+//                 if (file && file.type.startsWith('image/')) {
+//                     const reader = new FileReader();
+//                     reader.onload = function (e) {
+//                         preview.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+//                     };
+//                     reader.readAsDataURL(file);
+//                 } else {
+//                     preview.innerHTML = '';
+//                 }
+//             });
+//         }
+//     }
+
+//     previewImage('file_upload_cover', 'coverPhotoPreview');
+//     previewImage('file_upload_kitchen', 'kitchenPhotoPreview');
+//     previewImage('file_upload_store', 'storePhotoPreview');
+    
+//     agreeNotice.addEventListener('click', function () {
+//         if (noticeAgree.checked) {
+//             agreeCheck.checked = true;
+//             agreeCheck.disabled = false;
+//             document.getElementById('agreedToTerms').value = 'true';
+//             document.getElementById('agreeWarning').style.display = 'none';
+//             noticeModal.style.display = 'none';
+//         } else {
+//             document.getElementById('agreeWarning').textContent = '請勾選「已閱讀且同意」才能繼續';
+//             document.getElementById('agreeWarning').style.display = 'block';
+//         }
+//     });
+//     document.querySelectorAll('.partner_input').forEach(function(input) {
+//         input.addEventListener('input', function () {
+//             const errorDiv = input.parentElement.querySelector('.text-danger');
+//             if (errorDiv) {
+//                 errorDiv.style.display = 'none';
+//             }
+//         });
+
+//         // ✅ 確保 `Thymeleaf` 錯誤訊息也能消失
+//         const globalError = document.querySelector(".alert-danger");
+//         if (globalError) {
+//             globalError.style.display = 'none';
+//         }
+//     });
+    
+
+// });
+// document.addEventListener('DOMContentLoaded', function () {
+//     // ✅ 監聽地址欄位（`select`）以隱藏錯誤
+//     document.querySelectorAll('.partner_select').forEach(function(select) {
+//         select.addEventListener('change', function () {
+//             const errorDiv = select.parentElement.querySelector('.text-danger');
+//             if (errorDiv) {
+//                 errorDiv.style.display = 'none';
+//             }
+//         });
+//     });
+
+//     // ✅ 監聽輸入框 `input` 以隱藏錯誤
+//     document.querySelectorAll('.partner_input').forEach(function(input) {
+//         input.addEventListener('input', function () {
+//             const errorDiv = input.parentElement.querySelector('.text-danger');
+//             if (errorDiv) {
+//                 errorDiv.style.display = 'none';
+//             }
+//         });
+//     });
+
+//     // ✅ 須知錯誤清除
+//     document.getElementById('submitBtn').addEventListener('click', function () {
+//         const agreeWarning = document.getElementById('agreeWarning');
+//         const agreeCheck = document.getElementById('agreeCheck');
+
+//         if (!agreeCheck.checked) {
+//             agreeWarning.style.display = 'block';
+//         } else {
+//             agreeWarning.style.display = 'none';
+//             document.getElementById('agreedToTerms').value = 'true';
+//         }
+//     });
+// });
+<!-- </script> -->
+ 
+ 
+    
+
+
+</body>
+</html>

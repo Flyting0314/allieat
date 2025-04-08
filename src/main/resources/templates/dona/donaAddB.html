@@ -13,7 +13,9 @@
 
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -34,13 +36,13 @@
             box-sizing: border-box;
             font-family: "Microsoft JhengHei", Arial, sans-serif;
         }
-        
+
         body {
             margin: 0;
             padding: 0;
             background-color: #f5f5f5;
         }
-        
+
         .df-wrapper {
             margin-top: 20px;
             background-color: white;
@@ -56,24 +58,25 @@
             border: 2px solid #ddd;
             cursor: pointer;
         }
-        
-        .df-option:hover, .df-option.df-active {
+
+        .df-option:hover,
+        .df-option.df-active {
             border-color: red;
             background: #ffe5e5;
         }
-        
+
         .df-progress {
             display: flex;
             justify-content: flex-start;
             margin-bottom: 20px;
         }
-        
+
         .df-stage {
             display: flex;
             align-items: center;
             margin: 0 10px;
         }
-        
+
         .df-circle {
             width: 24px;
             height: 24px;
@@ -85,27 +88,27 @@
             margin-right: 5px;
             font-size: 12px;
         }
-        
+
         .df-circle.df-current {
             background-color: #ff0000;
             color: white;
         }
-        
+
         .df-circle.df-done {
             background-color: #e0e0e0;
             color: black;
         }
-        
+
         .df-circle.df-done::after {
             content: "✓";
         }
-        
+
         .df-nav {
             display: flex;
             border-bottom: 1px solid #ddd;
             margin-bottom: 20px;
         }
-        
+
         .df-tab {
             flex: 1;
             text-align: center;
@@ -115,29 +118,29 @@
             border: 1px solid #ddd;
             border-bottom: none;
         }
-        
+
         .df-tab.df-active {
             background-color: white;
         }
-        
+
         .df-panel {
             display: none;
         }
-        
+
         .df-panel.df-visible {
             display: block;
         }
-        
+
         .df-input-group {
             margin-bottom: 15px;
         }
-        
+
         .df-input-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-        
+
         .df-input {
             width: 100%;
             padding: 10px;
@@ -145,7 +148,7 @@
             border-radius: 4px;
             background-color: #f1f1f1;
         }
-        
+
         .df-select {
             width: 100%;
             padding: 10px;
@@ -157,22 +160,22 @@
             background-repeat: no-repeat;
             background-position: right 10px center;
         }
-        
+
         .df-date-row {
             display: flex;
             gap: 10px;
         }
-        
+
         .df-date-row select {
             flex: 1;
         }
-        
+
         .df-gender-row {
             display: flex;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-        
+
         .df-gender-option {
             flex: 1;
             padding: 10px;
@@ -181,42 +184,43 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .df-radio-row {
             display: flex;
             align-items: flex-start;
             margin-bottom: 10px;
         }
-        
+
         .df-radio-row input[type="radio"] {
             margin-top: 3px;
             margin-right: 8px;
         }
-        
+
         .df-section-title {
-            font-weight: bold; 
-            margin: 20px 0 5px 0; 
+            font-weight: bold;
+            margin: 20px 0 5px 0;
             padding-top: 15px;
             border-top: 1px solid #ddd;
             text-align: left;
         }
-        
-        .df-receipt-block, .df-privacy-block {
+
+        .df-receipt-block,
+        .df-privacy-block {
             margin-bottom: 20px;
         }
-        
+
         .df-hint {
             font-size: 14px;
             color: #666;
             margin: 5px 0;
         }
-        
+
         .df-actions {
             display: flex;
             justify-content: space-between;
             margin-top: 10px;
         }
-        
+
         .df-button {
             padding: 6px 12px;
             border-radius: 4px;
@@ -224,32 +228,32 @@
             font-weight: bold;
             border: none;
         }
-        
+
         .df-button-prev {
             background-color: #e0e0e0;
             color: #333;
         }
-        
+
         .df-button-next {
             background-color: #DA9F5B;
             color: black;
         }
-        
+
         .df-required::after {
             content: "*";
             color: red;
         }
-        
+
         .df-address-row {
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
         }
-        
-        .df-address-row > * {
+
+        .df-address-row>* {
             flex: 1;
         }
-        
+
         .df-example {
             font-size: 12px;
             color: #666;
@@ -269,11 +273,11 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .df-modal.df-visible {
             display: flex;
         }
-        
+
         .df-modal-content {
             background-color: white;
             padding: 20px;
@@ -283,7 +287,7 @@
             overflow-y: auto;
             position: relative;
         }
-        
+
         .df-modal-close {
             position: absolute;
             top: 10px;
@@ -292,11 +296,18 @@
             cursor: pointer;
             color: #333;
         }
-        
+
         .df-privacy-link {
             color: #1a73e8;
             text-decoration: underline;
             cursor: pointer;
+        }
+
+        .btn-check:checked+.btn-outline-secondary {
+            background-color: #e9ecef;
+            /* 淺灰色，跟上方 tab 類似 */
+            color: #000;
+            border-color: #ccc;
         }
     </style>
 </head>
@@ -308,8 +319,7 @@
             <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
                 <a href="index.html" class="navbar-brand px-lg-4 m-0">
                     <h1 class="m-0 display-4 text-uppercase text-white" style="display: inline-block;">
-                        <img src="/img/logo3.png" width="80px" height="80px" alt="" 
-                         style="vertical-align: middle; margin-right: 0px; margin-top: -10px; 
+                        <img src="/img/logo3.png" width="80px" height="80px" alt="" style="vertical-align: middle; margin-right: 0px; margin-top: -10px; 
                                 border-radius: 50%; object-fit: cover;">
                         <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
                     </h1>
@@ -349,7 +359,7 @@
             <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active" style="
-                        background-image: url('img/圖片3.png');
+                        background-image: url('/img/圖片3.png');
                         background-size: 110% auto;
                         background-position: center 50px;
                         height: 300px;
@@ -372,18 +382,18 @@
             <div class="row">
                 <!-- 左側圖片與說明 -->
                 <div class="col-md-6">
-                    <img src="img/all_i_eat.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
+                    <img src="/img/001.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
                     <h5 class="text-danger fw-bold">人人溫飽，生活才美好。</h5>
                     <p>
                         我們傳遞的不僅僅是食物，更是一份深深的關愛與陪伴。每一份餐點都是無數人的愛心與付出。您的捐款帶來持續地穩定的經費，讓我們有能力將愛傳遞給最有需要的人，讓世界更美好，形成一個善的循環。
                     </p>
                 </div>
-        
-                <!-- 右側捐款流程 -->   
+
+                <!-- 右側捐款流程 -->
                 <div class="col-md-6">
                     <h3>信用卡捐款</h3>
                     <p>支援 VISA、MasterCard、JCB</p>
-    
+
                     <!-- 步驟指示器 -->
                     <div class="df-progress">
                         <div class="df-stage">
@@ -399,331 +409,304 @@
                             <div>線上付款</div>
                         </div>
                     </div>
-                
+
                     <!-- 分頁標籤 -->
                     <div class="df-nav">
-                        <div class="df-tab [[${activeTab} == 'personal' ? 'df-active' : '']]" id="personal-tab">個人捐款</div>
-    <div class="df-tab [[${activeTab} == 'company' ? 'df-active' : '']]" id="company-tab">公司/機構捐款</div>
+                        <div class="df-tab [[${activeTab} == 'personal' ? 'df-active' : '']]" id="personal-tab">個人捐款
+                        </div>
+                        <div class="df-tab [[${activeTab} == 'company' ? 'df-active' : '']]" id="company-tab">公司/機構捐款
+                        </div>
                     </div>
-                
+
                     <!-- 個人捐款表單 -->
                     <div class="df-panel df-visible" id="personal-form">
                         <form th:action="@{donaAddB}" method="post" th:object="${donaReq}">
-                        <input type="hidden" name="companyDonor" value="false">
+                            <input type="hidden" name="companyDonor" value="false">
                             <!-- 基本資料區塊 -->
                             <div class="df-input-group">
-                                  <label for="identityData">捐款人姓名:</label>
-           <input th:field="*{identityData}" id="identityData" placeholder="請輸入真實姓名" onfocus="hideContent('identityDataError')"
-       oninput="hideContent('identityDataError')">
-           
-<!-- 錯誤訊息區塊 -->
-<div th:if="${#fields.hasErrors('identityData')}"
-     th:errors="*{identityData}"
-     id="identityDataError"
-     class="text-danger fw-bold mb-2">
-</div>
+                                <label for="identityData">捐款人姓名<span style="color: red;">*</span></label>
+                                <input th:field="*{identityData}" id="identityData" placeholder="請輸入真實姓名"
+                                    onfocus="hideContent('identityDataError')"
+                                    oninput="hideContent('identityDataError')">
+
+                                <!-- 錯誤訊息區塊 -->
+                                <div th:if="${#fields.hasErrors('identityData')}" th:errors="*{identityData}"
+                                    id="identityDataError" class="text-danger fw-bold mb-2">
+                                </div>
                             </div>
-                            
+
                             <div class="df-input-group">
-                                   <label class="df-required" for="email">Email</label>
-           <input type="email" class="df-input" placeholder="請填寫有效的聯絡信箱,範例：abc@gmail.com" th:field="*{email}" id="email" onfocus="hideContent('emailError')"
-       oninput="hideContent('emailError')">
-           <!-- 錯誤訊息區塊 -->
-<div th:if="${#fields.hasErrors('email')}"
-     th:errors="*{email}"
-     id="emailError"
-     class="text-danger fw-bold mb-2">
-</div>
-           <div class="df-example"></div>
+                                <label class="df-required" for="email">Email</label>
+                                <input type="email" class="df-input" placeholder="請填寫有效的聯絡信箱,範例：abc@gmail.com"
+                                    th:field="*{email}" id="email" onfocus="hideContent('emailError')"
+                                    oninput="hideContent('emailError')">
+                                <!-- 錯誤訊息區塊 -->
+                                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" id="emailError"
+                                    class="text-danger fw-bold mb-2">
+                                </div>
+                                <div class="df-example"></div>
                             </div>
-                            
+
                             <div class="df-input-group">
-                                 <label class="df-required" for="phone">聯絡電話</label>
-           <input type="tel" class="df-input" placeholder="範例：0901234567" th:field="*{phone}" id="phone" onfocus="hideContent('phoneError')"
-       oninput="hideContent('phoneError')">
-                      <!-- 錯誤訊息區塊 -->
-<div th:if="${#fields.hasErrors('phone')}"
-     th:errors="*{phone}"
-     id="phoneError"
-     class="text-danger fw-bold mb-2">
-</div>
+                                <label class="df-required" for="phone">聯絡電話</label>
+                                <input type="tel" class="df-input" placeholder="範例：0901234567" th:field="*{phone}"
+                                    id="phone" onfocus="hideContent('phoneError')" oninput="hideContent('phoneError')">
+                                <!-- 錯誤訊息區塊 -->
+                                <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" id="phoneError"
+                                    class="text-danger fw-bold mb-2">
+                                </div>
 
                             </div>
-                            
+
                             <div class="df-input-group">
                                 <label class="df-required" for="bthDate">生日</label>
-    <div class="df-date-row">
-
-        <!-- 日期選擇 -->
-        <select id="year" class="df-select" onchange="updateBthDate()">
-                                    <option value="">年</option>
-                                    <option value="1990">1990</option>
-                                    <option value="1991">1991</option>
-                                </select>
-                                <select id="month" class="df-select" onchange="updateBthDate()">
-                                    <option value="">月</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                </select>
-                                <select id="day" class="df-select" onchange="updateBthDate()">
-                                    <option value="">日</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                </select>
-    </div>
-    <!-- 隱藏的字段，直接與 bthDate 綁定 -->
-    <input type="hidden" th:field="*{bthDate}" id="bthDate">
-    <span th:if="${#fields.hasErrors('bthDate')}" th:errors="*{bthDate}" class="error"></span>
-    </div>
-                            
-                            
-                            <div class="df-input-group">
-                                <label>性別</label>
-                                <div class="df-gender-row">
-    <div class="df-gender-option">
-                                    <input type="radio" th:field="*{gender}" value="0" id="male">
-                                    <label for="male">男</label>
-                                </div>
-                                <div class="df-gender-option">
-                                    <input type="radio" th:field="*{gender}" value="1" id="female">
-                                    <label for="female">女</label>
-                                </div>
-<div class="df-gender-option">
-                                    <input type="radio" th:field="*{gender}" value="2" id="other">
-                                    <label for="other">其他</label>
-                                </div>
-    </div>
-    <span th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="error"></span>
+                                <input type="date" class="df-input" id="bthDate" name="bthDate" th:field="*{bthDate}"
+                                    min="1900-01-01" max="2025-12-31">
+                                <span th:if="${#fields.hasErrors('bthDate')}" th:errors="*{bthDate}"
+                                    class="error"></span>
                             </div>
-                            
+
+
+
+
                             <div class="df-input-group">
-                                 <label class="df-required">地址</label>
-    <div class="df-address-row">
-        <!-- 都市選擇 -->
-        <select class="df-select" th:field="*{county}" id="county">
-            <option value="" selected>縣市</option>
-            <option value="taipei" th:text="'台北市'">台北市</option>
-            <option value="newtaipei" th:text="'新北市'">新北市</option>
-            <!-- 其他都市選項... -->
-        </select>
-        <span th:if="${#fields.hasErrors('county')}" th:errors="*{county}" class="error" id="county.errors"></span>
+                                <label class="df-required">性別</label>
+                                <div class="btn-group w-100" role="group" aria-label="性別選擇">
+                                    <input type="radio" class="btn-check" id="gender-male" value="0"
+                                        th:field="*{gender}" autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="gender-male">男</label>
 
-        <!-- 鄉鎮市區選擇 -->
-        <select class="df-select" th:field="*{district}" id="district">
-            <option value="" selected>鄉鎮市區</option>
-            <option value="daan" th:text="'大安區'">大安區</option>
-            <option value="xinyi" th:text="'信義區'">信義區</option>
-            <!-- 其他鄉鎮市區選項... -->
-        </select>
-        <span th:if="${#fields.hasErrors('district')}" th:errors="*{district}" class="error" id="district.errors"></span>
+                                    <input type="radio" class="btn-check" id="gender-female" value="1"
+                                        th:field="*{gender}" autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="gender-female">女</label>
 
-        <!-- 郵遞區號選擇 -->
-        <select class="df-select" th:field="*{postalCode}" id="postalCode">
-            <option value="" selected>郵遞區號</option>
-            <option value="100" th:text="'100'">100</option>
-            <option value="110" th:text="'110'">110</option>
-            <!-- 其他郵遞區號選項... -->
-        </select>
-        <span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="error" id="postalCode.errors"></span>
-    </div>
-
-    <!-- 詳細地址輸入 -->
-    <input type="text" class="df-input" th:field="*{address}" placeholder="請輸入詳細地址" id="address">
-    <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error" id="address.errors"></span>
+                                    <input type="radio" class="btn-check" id="gender-other" value="2"
+                                        th:field="*{gender}" autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="gender-other">多元性別</label>
+                                </div>
+                                <span th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"
+                                    class="text-danger"></span>
                             </div>
-                            
+
+
+                            <!-- 個人地址欄位 -->
+                            <div class="df-input-group">
+                                <label class="df-required">地址</label>
+                                <div class="df-address-row">
+                                    <input type="text" id="zipcode-personal" class="df-input" name="postalCode"
+                                        th:field="*{postalCode}" placeholder="郵遞區號" readonly>
+                                    <select class="df-select" id="city-personal" name="county" th:field="*{county}">
+                                        <option value="" selected>縣市</option>
+                                    </select>
+                                    <select class="df-select" id="area-personal" name="district" th:field="*{district}">
+                                        <option value="" selected>鄉鎮市區</option>
+                                    </select>
+                                </div>
+                                <input type="text" class="df-input" name="address" th:field="*{address}"
+                                    placeholder="請輸入詳細地址" id="address-personal">
+                                <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error"
+                                    id="address.errors"></span>
+                            </div>
+
+
                             <!-- 捐款收據區塊 -->
                             <div class="df-section-title">捐款收據</div>
-                            
+
                             <div class="df-receipt-block">
-                                 <label class="df-required">是否寄發捐款收據</label>
-   <div>
-       <input type="radio" th:field="*{mailMtd}" value="0" id="personal-receipt-yes" >
-       <label for="personal-receipt-yes">需要(僅紙本寄發方式,單筆捐款每次寄發，定期捐款年度寄發)</label>
-       <input type="radio" th:field="*{mailMtd}" value="1" id="personal-receipt-no">
-       <label for="personal-receipt-no">不需要</label>
-   </div>
-   <span th:if="${#fields.hasErrors('mailMtd')}" th:errors="*{mailMtd}" class="error" id="mailMtd.errors"></span>
+                                <label class="df-required">是否寄發捐款收據</label>
+                                <div>
+                                    <input type="radio" th:field="*{mailMtd}" value="0" id="personal-receipt-yes">
+                                    <label for="personal-receipt-yes">需要(僅紙本寄發方式,單筆捐款每次寄發，定期捐款年度寄發)</label><br>
+                                    <input type="radio" th:field="*{mailMtd}" value="1" id="personal-receipt-no">
+                                    <label for="personal-receipt-no">不需要(無抵稅需求、不想要收據)</label>
+                                </div>
+                                <span th:if="${#fields.hasErrors('mailMtd')}" th:errors="*{mailMtd}" class="error"
+                                    id="mailMtd.errors"></span>
 
                             </div>
-                    
+
                             <div class="receipt-target">
-<!--                                 <div class="df-hint">收據抬頭</div> -->
-<!--                                 <div class="df-hint">請具身分證姓名一致，抬頭同捐款人姓名。</div> -->
-                                
+                                <!--                                 <div class="df-hint">收據抬頭</div> -->
+                                <!--                                 <div class="df-hint">請具身分證姓名一致，抬頭同捐款人姓名。</div> -->
+
                                 <div class="df-input-group">
-                                      <label class="df-required" for="salutation">捐款人抬頭</label>
-       <input type="text" class="df-input" placeholder="抬頭同捐款人姓名" th:field="*{salutation}" id="salutation">
-       <span th:if="${#fields.hasErrors('salutation')}" th:errors="*{salutation}" class="error" id="salutation.errors"></span>
+                                    <label class="df-required" for="salutation">捐款人抬頭</label>
+                                    <input type="text" class="df-input" placeholder="抬頭同捐款人姓名" th:field="*{salutation}"
+                                        id="salutation">
+                                    <span th:if="${#fields.hasErrors('salutation')}" th:errors="*{salutation}"
+                                        class="error" id="salutation.errors"></span>
 
                                 </div>
-                                
+
                                 <div class="df-input-group">
-                                   <label class="df-required" for="idNum">捐款人身分證</label>
-       <input type="text" class="df-input" placeholder="請具身分證姓名一致" th:field="*{idNum}" id="idNum">
-       <span th:if="${#fields.hasErrors('idNum')}" th:errors="*{idNum}" class="error" id="idNum.errors"></span>
+                                    <label class="df-required" for="idNum">捐款人身分證</label>
+                                    <input type="text" class="df-input" placeholder="請具身分證姓名一致" th:field="*{idNum}"
+                                        id="idNum">
+                                    <span th:if="${#fields.hasErrors('idNum')}" th:errors="*{idNum}" class="error"
+                                        id="idNum.errors"></span>
 
                                 </div>
                             </div>
-                    
-                            <!-- 隱私權選項 -->
-                            <div class="df-privacy-block">
-                                <div class="df-radio-row">
-    <!-- 公開徵信 (預設選項，值為 0) -->
-    <input type="radio" th:field="*{anonymous}" value="0" id="anonymous-public" >
-    <label for="anonymous-public">公開徵信(我同意將全名公開於捐款與受助者芳名錄)</label>
 
-    <!-- 徵信匿名 (值為 1) -->
-    <input type="radio" th:field="*{anonymous}" value="1" id="anonymous-private">
-    <label for="anonymous-private">徵信匿名(我不同意將全名公開於捐款與受助者芳名錄)</label>
-</div>
-<span th:if="${#fields.hasErrors('anonymous')}" th:errors="*{anonymous}" class="error"></span>
+                            <!-- 隱私權選項 -->
+                            <div class="df-privacy-block" style="margin-top: 20px;">
+                                <label>是否公開徵信<span style="color: red;">*</span></label>
+
+                                <div class="df-radio-row">
+                                    <!-- 公開徵信 (預設選項，值為 0) -->
+                                    <input type="radio" th:field="*{anonymous}" value="0" id="anonymous-public">
+                                    <label for="anonymous-public">公開徵信(我同意將全名公開於捐款與受助者芳名錄)</label><br>
+
+                                    <!-- 徵信匿名 (值為 1) -->
+                                    <input type="radio" th:field="*{anonymous}" value="1" id="anonymous-private">
+                                    <label for="anonymous-private">徵信匿名(我不同意將全名公開於捐款與受助者芳名錄)</label>
+                                </div>
+                                <span th:if="${#fields.hasErrors('anonymous')}" th:errors="*{anonymous}"
+                                    class="error"></span>
                                 <div class="df-radio-row">
                                     <input type="checkbox" th:field="*{agreePrivacy}" id="privacy-agreement-personal">
-<label for="privacy-agreement-personal">
-    您已了解並同意本平台蒐集、處理及使用您的個人資料。
-    請閱讀「<span class="df-privacy-link" onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
-</label>
-<span th:if="${#fields.hasErrors('agreePrivacy')}" th:errors="*{agreePrivacy}" class="text-danger"></span>
+                                    <label for="privacy-agreement-personal">
+                                        您已了解並同意本平台蒐集、處理及使用您的個人資料。
+                                        請閱讀「<span class="df-privacy-link"
+                                            onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
+                                    </label>
+                                    <span th:if="${#fields.hasErrors('agreePrivacy')}" th:errors="*{agreePrivacy}"
+                                        class="text-danger"></span>
                                 </div>
                             </div>
-                            
+
                             <!-- 按鈕 -->
                             <div class="df-actions">
-                                <button type="button" class="df-button df-button-prev" th:onclick="|location.href='@{/dona/donaAddA}'|">上一步</button>
-                                
+                                <button type="button" class="df-button df-button-prev"
+                                    th:onclick="|location.href='@{/dona/donaAddA}'|">上一步</button>
+
                                 <button type="submit" class="df-button df-button-next">下一步</button>
                             </div>
                         </form>
                     </div>
-            
+
                     <!-- 公司/機構捐款表單 -->
                     <div class="df-panel" id="company-form">
                         <form th:action="@{donaAddB}" method="post" th:object="${donaReq}">
-                        <input type="hidden" name="companyDonor" value="true">
+                            <input type="hidden" name="companyDonor" value="true">
                             <!-- 基本資料區塊 -->
                             <div class="df-input-group">
                                 <label for="identityData">公司/機構:</label>
-           <input th:field="*{identityData}" id="identityData" placeholder="請輸入公司/機構名" onfocus="hideContent('identityDataError')"
-       oninput="hideContent('identityDataError')">
-           <!-- 錯誤訊息區塊 -->
-           <div th:if="${#fields.hasErrors('identityData')}"
-     th:errors="*{identityData}"
-     id="identityDataError"
-     class="text-danger fw-bold mb-2">
-</div>
+                                <input th:field="*{identityData}" id="identityData" placeholder="請輸入公司/機構名"
+                                    onfocus="hideContent('identityDataError')"
+                                    oninput="hideContent('identityDataError')">
+                                <!-- 錯誤訊息區塊 -->
+                                <div th:if="${#fields.hasErrors('identityData')}" th:errors="*{identityData}"
+                                    id="identityDataError" class="text-danger fw-bold mb-2">
+                                </div>
                             </div>
-                            
+
                             <div class="df-input-group">
                                 <label class="df-required" for="email">Email</label>
-           <input type="email" class="df-input" placeholder="請填寫有效的聯絡信箱,範例：abc@gmail.com" th:field="*{email}" id="email" onfocus="hideContent('emailError')"
-       oninput="hideContent('emailError')">
-                      <!-- 錯誤訊息區塊 -->
-<div th:if="${#fields.hasErrors('email')}"
-     th:errors="*{email}"
-     id="emailError"
-     class="text-danger fw-bold mb-2">
-</div>
-           <div class="df-example"></div>
+                                <input type="email" class="df-input" placeholder="請填寫有效的聯絡信箱,範例：abc@gmail.com"
+                                    th:field="*{email}" id="email" onfocus="hideContent('emailError')"
+                                    oninput="hideContent('emailError')">
+                                <!-- 錯誤訊息區塊 -->
+                                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" id="emailError"
+                                    class="text-danger fw-bold mb-2">
+                                </div>
+                                <div class="df-example"></div>
                             </div>
-                            
+
                             <div class="df-input-group">
                                 <label class="df-required" for="phone">聯絡電話</label>
-           <input type="tel" class="df-input" placeholder="範例：0901234567" th:field="*{phone}" id="phone">
-           <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error" id="phone.errors"></span>
+                                <input type="tel" class="df-input" placeholder="範例：0901234567" th:field="*{phone}"
+                                    id="phone">
+                                <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error"
+                                    id="phone.errors"></span>
 
                             </div>
-                            
+
+                            <!-- 公司地址欄位 -->
                             <div class="df-input-group">
-                               <label class="df-required">地址</label>
-    <div class="df-address-row">
-        <!-- 都市選擇 -->
-        <select class="df-select" th:field="*{county}" id="county">
-            <option value="" selected>縣市</option>
-            <option value="taipei" th:text="'台北市'">台北市</option>
-            <option value="newtaipei" th:text="'新北市'">新北市</option>
-            <!-- 其他都市選項... -->
-        </select>
-        <span th:if="${#fields.hasErrors('county')}" th:errors="*{county}" class="error" id="county.errors"></span>
-
-        <!-- 鄉鎮市區選擇 -->
-        <select class="df-select" th:field="*{district}" id="district">
-            <option value="" selected>鄉鎮市區</option>
-            <option value="daan" th:text="'大安區'">大安區</option>
-            <option value="xinyi" th:text="'信義區'">信義區</option>
-            <!-- 其他鄉鎮市區選項... -->
-        </select>
-        <span th:if="${#fields.hasErrors('district')}" th:errors="*{district}" class="error" id="district.errors"></span>
-
-        <!-- 郵遞區號選擇 -->
-        <select class="df-select" th:field="*{postalCode}" id="postalCode">
-            <option value="" selected>郵遞區號</option>
-            <option value="100" th:text="'100'">100</option>
-            <option value="110" th:text="'110'">110</option>
-            <!-- 其他郵遞區號選項... -->
-        </select>
-        <span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="error" id="postalCode.errors"></span>
-    </div>
-
-    <!-- 詳細地址輸入 -->
-    <input type="text" class="df-input" th:field="*{address}" placeholder="請輸入詳細地址" id="address">
-    <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error" id="address.errors"></span>
+                                <label class="df-required">地址</label>
+                                <div class="df-address-row">
+                                    <input type="text" id="zipcode-company" class="df-input" name="postalCode"
+                                        th:field="*{postalCode}" placeholder="郵遞區號" readonly>
+                                    <select class="df-select" id="city-company" name="county" th:field="*{county}">
+                                        <option value="" selected>縣市</option>
+                                    </select>
+                                    <select class="df-select" id="area-company" name="district" th:field="*{district}">
+                                        <option value="" selected>鄉鎮市區</option>
+                                    </select>
+                                </div>
+                                <input type="text" class="df-input" name="address" th:field="*{address}"
+                                    placeholder="請輸入詳細地址" id="address-company">
+                                <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error"
+                                    id="address.errors"></span>
                             </div>
-                            
+
+
                             <!-- 捐款收據區塊 -->
                             <div class="df-section-title">捐款收據</div>
-                            
+
                             <div class="df-receipt-block">
-                               <label class="df-required">是否寄發捐款收據</label>
-   <div>
-       <input type="radio" th:field="*{mailMtd}" value="0" id="personal-receipt-yes" >
-       <label for="personal-receipt-yes">需要(僅紙本寄發方式,單筆捐款每次寄發，定期捐款年度寄發)</label>
-       <input type="radio" th:field="*{mailMtd}" value="1" id="personal-receipt-no">
-       <label for="personal-receipt-no">不需要</label>
-   </div>
-   <span th:if="${#fields.hasErrors('mailMtd')}" th:errors="*{mailMtd}" class="error" id="mailMtd.errors"></span>
+                                <label class="df-required">是否寄發捐款收據</label>
+                                <div>
+                                    <input type="radio" th:field="*{mailMtd}" value="0" id="company-receipt-yes">
+                                    <label for="company-receipt-yes">需要(僅紙本寄發方式,單筆捐款每次寄發，定期捐款年度寄發)</label><br>
+                                    <input type="radio" th:field="*{mailMtd}" value="1" id="company-receipt-no">
+                                    <label for="company-receipt-no">不需要(無抵稅需求、不想要收據)</label>
+                                </div>
+                                <span th:if="${#fields.hasErrors('mailMtd')}" th:errors="*{mailMtd}" class="error"
+                                    id="mailMtd.errors"></span>
                             </div>
-                            
+
                             <div class="receipt-target">
                                 <div class="df-input-group">
                                     <label class="df-required" for="salutation">公司/機構抬頭</label>
-       <input type="text" class="df-input" placeholder="略" th:field="*{salutation}" id="salutation">
-       <span th:if="${#fields.hasErrors('salutation')}" th:errors="*{salutation}" class="error" id="salutation.errors"></span>
+                                    <input type="text" class="df-input" placeholder="略" th:field="*{salutation}"
+                                        id="salutation">
+                                    <span th:if="${#fields.hasErrors('salutation')}" th:errors="*{salutation}"
+                                        class="error" id="salutation.errors"></span>
                                 </div>
-                                
+
                                 <div class="df-input-group">
-                                   <label class="df-required" for="guiNum">統一編號</label>
-       <input type="text" class="df-input" placeholder="略" th:field="*{guiNum}" id="guiNum">
-       <span th:if="${#fields.hasErrors('guiNum')}" th:errors="*{guiNum}" class="error" id="guiNum.errors"></span>
+                                    <label class="df-required" for="guiNum">統一編號</label>
+                                    <input type="text" class="df-input" placeholder="略" th:field="*{guiNum}"
+                                        id="guiNum">
+                                    <span th:if="${#fields.hasErrors('guiNum')}" th:errors="*{guiNum}" class="error"
+                                        id="guiNum.errors"></span>
                                 </div>
                             </div>
-                            
-                            <!-- 隱私權選項 -->
-                            <div class="df-privacy-block">
-                                <div class="df-radio-row">
-    <!-- 公開徵信 (預設選項，值為 0) -->
-    <input type="radio" th:field="*{anonymous}" value="0" id="anonymous-public" >
-    <label for="anonymous-public">公開徵信(我同意將全名公開於捐款與受助者芳名錄)</label>
 
-    <!-- 徵信匿名 (值為 1) -->
-    <input type="radio" th:field="*{anonymous}" value="1" id="anonymous-private">
-    <label for="anonymous-private">徵信匿名(我不同意將全名公開於捐款與受助者芳名錄)</label>
-</div>
-<span th:if="${#fields.hasErrors('anonymous')}" th:errors="*{anonymous}" class="error"></span>
+                            <!-- 隱私權選項 -->
+                            <div class="df-privacy-block" style="margin-top: 20px;">
+                                <label>是否公開徵信<span style="color: red;">*</span></label>
+
+                                <div class="df-radio-row">
+                                    <!-- 公開徵信 (預設選項，值為 0) -->
+                                    <input type="radio" th:field="*{anonymous}" value="0" id="anonymous-public">
+                                    <label for="anonymous-public">公開徵信(我同意將全名公開於捐款與受助者芳名錄)</label><br>
+
+                                    <!-- 徵信匿名 (值為 1) -->
+                                    <input type="radio" th:field="*{anonymous}" value="1" id="anonymous-private">
+                                    <label for="anonymous-private">徵信匿名(我不同意將全名公開於捐款與受助者芳名錄)</label>
+                                </div>
+                                <span th:if="${#fields.hasErrors('anonymous')}" th:errors="*{anonymous}"
+                                    class="error"></span>
                                 <div class="df-radio-row">
                                     <input type="checkbox" th:field="*{agreePrivacy}" id="privacy-agreement-company">
-<label for="privacy-agreement-company">
-    您已了解並同意本平台蒐集、處理及使用您的個人資料。
-    請閱讀「<span class="df-privacy-link" onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
-</label>
-<span th:if="${#fields.hasErrors('agreePrivacy')}" th:errors="*{agreePrivacy}" class="text-danger"></span>
+                                    <label for="privacy-agreement-company">
+                                        您已了解並同意本平台蒐集、處理及使用您的個人資料。
+                                        請閱讀「<span class="df-privacy-link"
+                                            onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
+                                    </label>
+                                    <span th:if="${#fields.hasErrors('agreePrivacy')}" th:errors="*{agreePrivacy}"
+                                        class="text-danger"></span>
 
                                 </div>
                             </div>
-                            
+
                             <!-- 按鈕 -->
                             <div class="df-actions">
-                                <button type="button" class="df-button df-button-prev" th:onclick="|location.href='@{/dona/donaAddA}'|">上一步</button>
+                                <button type="button" class="df-button df-button-prev"
+                                    th:onclick="|location.href='@{/dona/donaAddA}'|">上一步</button>
                                 <button type="submit" class="df-button df-button-next">下一步</button>
                             </div>
                         </form>
@@ -739,296 +722,844 @@
             <span class="df-modal-close" onclick="closePrivacyLightbox()">&times;</span>
             <h4>個資使用說明</h4>
             <p>感謝您的支持與捐款，為了保障您的權益，請詳細閱讀以下說明：</p>
-            
+
             <p>一、蒐集、處理及利用之目的：
-            <br>攏呷霸愛心平台(以下稱本平台)收集您的個人資料，用於處理捐款、寄送收據、聯絡捐款相關事宜，以及提供本平台活動資訊。</p>
-            
+                <br>攏呷霸愛心平台(以下稱本平台)收集您的個人資料，用於處理捐款、寄送收據、聯絡捐款相關事宜，以及提供本平台活動資訊。
+            </p>
+
             <p>二、蒐集、處理及利用之個人資料類別：
-            <br>包括：姓名、身分證字號/統一編號、電子郵件、聯絡電話、出生日期、性別、通訊地址等。</p>
-            
+                <br>包括：姓名、身分證字號/統一編號、電子郵件、聯絡電話、出生日期、性別、通訊地址等。
+            </p>
+
             <p>三、個人資料利用之期間、地區、對象及方式：
-            <br>(一)期間：個人資料蒐集之特定目的存續期間，依相關法令之保存所訂保存年限或本平台因執行行政相關業務所必須之保存期間。
-            <br>(二)地區：本國及與本平台有業務往來之國內外機構營業處所所在地。
-            <br>(三)對象：本平台、依法有調查權機關及主管行政機關。
-            <br>(四)方式：以自動化機器或其他非自動化之方式，依誠實及信用方法利用。</p>
-            
+                <br>(一)期間：個人資料蒐集之特定目的存續期間，依相關法令之保存所訂保存年限或本平台因執行行政相關業務所必須之保存期間。
+                <br>(二)地區：本國及與本平台有業務往來之國內外機構營業處所所在地。
+                <br>(三)對象：本平台、依法有調查權機關及主管行政機關。
+                <br>(四)方式：以自動化機器或其他非自動化之方式，依誠實及信用方法利用。
+            </p>
+
             <p>四、資料利用對象及範圍：
-                <br>您的個人資料僅供本平台內部使用，除法律另有規定外，不會提供給第三方或做其他用途。</p>
-                
-                <p>五、當事人權利：
-                <br>依據個人資料保護法，您有權查詢、閱覽、複製、補充、更正、刪除您的個人資料，或要求停止蒐集、處理或利用。如欲行使上述權利，請與本平台聯繫。</p>
-                
-                <p>六、拒絕提供個人資料之權利及影響：
-                <br>您可以自由選擇是否提供完整的個人資料，但若您拒絕提供或提供不完整的個人資料，本平台將無法為您完成捐款程序、開立收據或提供相關服務。</p>
-                
-                <p>七、資料安全維護措施：
-                <br>本平台將依據相關法令及內部規範，採取適當的安全措施保護您的個人資料。</p>
-                
-                <div style="margin-top: 20px; text-align: center;">
-                    <button onclick="closePrivacyLightbox()" class="df-button df-button-next" style="width: 150px;">關閉</button>
-                </div>
+                <br>您的個人資料僅供本平台內部使用，除法律另有規定外，不會提供給第三方或做其他用途。
+            </p>
+
+            <p>五、當事人權利：
+                <br>依據個人資料保護法，您有權查詢、閱覽、複製、補充、更正、刪除您的個人資料，或要求停止蒐集、處理或利用。如欲行使上述權利，請與本平台聯繫。
+            </p>
+
+            <p>六、拒絕提供個人資料之權利及影響：
+                <br>您可以自由選擇是否提供完整的個人資料，但若您拒絕提供或提供不完整的個人資料，本平台將無法為您完成捐款程序、開立收據或提供相關服務。
+            </p>
+
+            <p>七、資料安全維護措施：
+                <br>本平台將依據相關法令及內部規範，採取適當的安全措施保護您的個人資料。
+            </p>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <button onclick="closePrivacyLightbox()" class="df-button df-button-next"
+                    style="width: 150px;">關閉</button>
             </div>
         </div>
-        <!-- Donation Form End -->
-    
-        <!-- Footer Start -->
-        <section id="footer">
-            <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
-                <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
-                    <div class="col-lg-3 col-md-6 mb-5">
-                        <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">聯絡我們</h4>
-                        <p><i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號</p>
-                        <p><i class="fa fa-phone-alt mr-2"></i>02-2222-5252</p>
-                        <p class="m-0"><i class="fa fa-envelope mr-2"></i>allieat105@gmail.com</p>
+    </div>
+    <!-- Donation Form End -->
+
+    <!-- Footer Start -->
+    <section id="footer">
+        <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
+            <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">聯絡我們</h4>
+                    <p><i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號</p>
+                    <p><i class="fa fa-phone-alt mr-2"></i>02-2222-5252</p>
+                    <p class="m-0"><i class="fa fa-envelope mr-2"></i>allieat105@gmail.com</p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">關注我們</h4>
+                    <p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
+                    <div class="d-flex justify-content-start">
+                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+                                class="fab fa-twitter"></i></a>
+                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+                                class="fab fa-linkedin-in"></i></a>
+                        <a class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i
+                                class="fab fa-instagram"></i></a>
                     </div>
-                    <div class="col-lg-3 col-md-6 mb-5">
-                        <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">關注我們</h4>
-                        <p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
-                        <div class="d-flex justify-content-start">
-                            <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">客服時間</h4>
+                    <div>
+                        <h6 class="text-white text-uppercase">周一 - 週五</h6>
+                        <p>早上10:00 - 晚上21:00</p>
+                        <h6 class="text-white text-uppercase">週六 - 週日</h6>
+                        <p>早上11:00 - 晚上19:00</p>
                     </div>
-                    <div class="col-lg-3 col-md-6 mb-5">
-                        <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">客服時間</h4>
-                        <div>
-                            <h6 class="text-white text-uppercase">周一 - 週五</h6>
-                            <p>早上10:00 - 晚上21:00</p>
-                            <h6 class="text-white text-uppercase">週六 - 週日</h6>
-                            <p>早上11:00 - 晚上19:00</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-5">
-                        <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">訂閱電子報</h4>
-                        <p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
-                        <div class="w-100">
-                            <div class="input-group">
-                                <input type="text" class="form-control border-light" style="padding: 25px;" placeholder="輸入您的信箱">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
-                                </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">訂閱電子報</h4>
+                    <p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
+                    <div class="w-100">
+                        <div class="input-group">
+                            <input type="text" class="form-control border-light" style="padding: 25px;"
+                                placeholder="輸入您的信箱">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid text-center text-white mt-4 py-4 px-sm-3 px-md-5" style="border-color: rgba(256, 256, 256, .1) !important;">
-                    <p class="mb-2 text-white">版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>. 保留所有權利</p>
-                    <p class="m-0 text-white">網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司 設計部 設計</a></p>
-                </div>
             </div>
-        </section>
-        <!-- Footer End -->
-         
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
-         
-        <!-- JavaScript Libraries -->
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-        <script src="lib/easing/easing.min.js"></script>
-        <script src="lib/waypoints/waypoints.min.js"></script>
-        <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-        <script src="lib/tempusdominus/js/moment.min.js"></script>
-        <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-        <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-         
-        <!-- Contact Javascript File -->
-        <script src="mail/jqBootstrapValidation.min.js"></script>
-        <script src="mail/contact.js"></script>
-         
-        <!-- Template Javascript -->
-        <script src="js/main.js"></script>
-        
-        <script>
+            <div class="container-fluid text-center text-white mt-4 py-4 px-sm-3 px-md-5"
+                style="border-color: rgba(256, 256, 256, .1) !important;">
+                <p class="mb-2 text-white">版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>. 保留所有權利</p>
+                <p class="m-0 text-white">網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司 設計部
+                        設計</a></p>
+            </div>
+        </div>
+    </section>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- Contact Javascript File -->
+    <script src="mail/jqBootstrapValidation.min.js"></script>
+    <script src="mail/contact.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+
+    <script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
+
+    <script>
         function hideContent(id) {
             const el = document.getElementById(id);
             if (el) {
                 el.style.display = "none";
             }
         }
-            // 切換個人/公司捐款標籤的腳本
-            document.addEventListener('DOMContentLoaded', function() {
+        // 切換個人/公司捐款標籤的腳本
+        document.addEventListener('DOMContentLoaded', function () {
 
-            	
-                const personalTab = document.getElementById('personal-tab');
-                const companyTab = document.getElementById('company-tab');
-                const personalForm = document.getElementById('personal-form');
-                const companyForm = document.getElementById('company-form');
-                
-    
-                personalTab.addEventListener('click', function() {
-                    personalTab.classList.add('df-active');
-                    companyTab.classList.remove('df-active');
-                    personalForm.classList.add('df-visible');
-                    companyForm.classList.remove('df-visible');
-                });
-    
-                companyTab.addEventListener('click', function() {
-                    companyTab.classList.add('df-active');
-                    personalTab.classList.remove('df-active');
-                    companyForm.classList.add('df-visible');
-                    personalForm.classList.remove('df-visible');
-                });
+
+            const personalTab = document.getElementById('personal-tab');
+            const companyTab = document.getElementById('company-tab');
+            const personalForm = document.getElementById('personal-form');
+            const companyForm = document.getElementById('company-form');
+
+
+            personalTab.addEventListener('click', function () {
+                personalTab.classList.add('df-active');
+                companyTab.classList.remove('df-active');
+                personalForm.classList.add('df-visible');
+                companyForm.classList.remove('df-visible');
             });
 
-            // 燈箱功能
-            function openPrivacyLightbox() {
-                document.getElementById('privacy-lightbox').classList.add('df-visible');
-                document.body.style.overflow = 'hidden'; // 防止背景滾動
-            }
-            
-            function closePrivacyLightbox() {
-                document.getElementById('privacy-lightbox').classList.remove('df-visible');
-                document.body.style.overflow = ''; // 恢復背景滾動
-            }
-            
-            // 點擊燈箱外部區域關閉燈箱
-            document.getElementById('privacy-lightbox').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closePrivacyLightbox();
-                }
-                
-                
-                
+            companyTab.addEventListener('click', function () {
+                companyTab.classList.add('df-active');
+                personalTab.classList.remove('df-active');
+                companyForm.classList.add('df-visible');
+                personalForm.classList.remove('df-visible');
             });
-            function updateBthDate() {
-                const day = document.getElementById('day').value;
-                const month = document.getElementById('month').value;
-                const year = document.getElementById('year').value;
+        });
 
-                const bthDateField = document.getElementById('bthDate');
-                if (day && month && year) {
-                    // 組合成 YYYY-MM-DD 格式
-                    bthDateField.value = `${year}-${month}-${day}`;
-                } else {
-                    bthDateField.value = ""; // 若任意值缺失，清空字段
-                }
+        // 燈箱功能
+        function openPrivacyLightbox() {
+            document.getElementById('privacy-lightbox').classList.add('df-visible');
+            document.body.style.overflow = 'hidden'; // 防止背景滾動
+        }
+
+        function closePrivacyLightbox() {
+            document.getElementById('privacy-lightbox').classList.remove('df-visible');
+            document.body.style.overflow = ''; // 恢復背景滾動
+        }
+
+        // 點擊燈箱外部區域關閉燈箱
+        document.getElementById('privacy-lightbox').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closePrivacyLightbox();
             }
-            document.addEventListener('DOMContentLoaded', function () {
-                const personalForm = document.getElementById('personal-form');
-                const companyForm = document.getElementById('company-form');
 
-                function toggleReceiptFields(form) {
-                    const mailMtd = form.querySelector('input[name="mailMtd"]:checked')?.value;
 
-                    const isNeedReceipt = mailMtd === "0"; // 寄送 = 顯示欄位；不寄送 = 隱藏欄位
 
-                    const personalFields = ['salutation', 'idNum', 'county', 'district', 'postalCode', 'address'];
-                    const companyFields = ['salutation', 'guiNum', 'county', 'district', 'postalCode', 'address'];
+        });
 
-                    const fields = form.id === 'personal-form' ? personalFields : companyFields;
+        document.addEventListener('DOMContentLoaded', function () {
+            const personalForm = document.getElementById('personal-form');
+            const companyForm = document.getElementById('company-form');
 
-                    fields.forEach(id => {
-                        const el = form.querySelector(`#${id}`);
-                        const group = el?.closest('.df-input-group') || el?.closest('.df-address-row') || el?.closest('.receipt-target');
-                        if (group) {
-                            group.style.display = isNeedReceipt ? '' : 'none';
-                        }
-                    });
-                }
+            function toggleReceiptFields(form) {
+                const mailMtd = form.querySelector('input[name="mailMtd"]:checked')?.value;
 
-                function bindMailMtdListener(form) {
-                    const radios = form.querySelectorAll('input[name="mailMtd"]');
-                    radios.forEach(r => {
-                        r.addEventListener('change', () => toggleReceiptFields(form));
-                    });
-                }
+                const isNeedReceipt = mailMtd === "0"; // 寄送 = 顯示欄位；不寄送 = 隱藏欄位
 
-                // 初始執行 + 綁定事件
-                if (personalForm) {
-                    toggleReceiptFields(personalForm);
-                    bindMailMtdListener(personalForm);
-                }
-                if (companyForm) {
-                    toggleReceiptFields(companyForm);
-                    bindMailMtdListener(companyForm);
-                }
-            });
-            
-            document.addEventListener('DOMContentLoaded', function () {
-                const personalTab = document.getElementById('personal-tab');
-                const companyTab = document.getElementById('company-tab');
-                const personalForm = document.getElementById('personal-form');
-                const companyForm = document.getElementById('company-form');
+                const personalFields = ['salutation', 'idNum', 'county', 'district', 'postalCode', 'address'];
+                const companyFields = ['salutation', 'guiNum', 'county', 'district', 'postalCode', 'address'];
 
-                // 預設載入時：以 sessionStorage 為優先，若無則使用 Thymeleaf activeTab
-                const sessionTab = sessionStorage.getItem('activeTab');
-                const thymeleafActiveTab = /*[[${activeTab}]]*/ 'personal';
+                const fields = form.id === 'personal-form' ? personalFields : companyFields;
 
-                const initTab = sessionTab || thymeleafActiveTab;
-                if (initTab === 'company') {
-                    companyTab.classList.add('df-active');
-                    personalTab.classList.remove('df-active');
-                    companyForm.classList.add('df-visible');
-                    personalForm.classList.remove('df-visible');
-                } else {
-                    personalTab.classList.add('df-active');
-                    companyTab.classList.remove('df-active');
-                    personalForm.classList.add('df-visible');
-                    companyForm.classList.remove('df-visible');
-                }
-
-                // 切換 tab 儲存狀態
-                personalTab.addEventListener('click', function () {
-                    personalTab.classList.add('df-active');
-                    companyTab.classList.remove('df-active');
-                    personalForm.classList.add('df-visible');
-                    companyForm.classList.remove('df-visible');
-                    sessionStorage.setItem('activeTab', 'personal');
-                });
-
-                companyTab.addEventListener('click', function () {
-                    companyTab.classList.add('df-active');
-                    personalTab.classList.remove('df-active');
-                    companyForm.classList.add('df-visible');
-                    personalForm.classList.remove('df-visible');
-                    sessionStorage.setItem('activeTab', 'company');
-                });
-
-                // 顯示/隱藏收據欄位（需/不需收據）
-                function toggleReceiptFields(form) {
-                    const mailMtd = form.querySelector('input[name="mailMtd"]:checked')?.value;
-                    const isNeedReceipt = mailMtd === "0";
-
-                    const personalFields = ['salutation', 'idNum', 'county', 'district', 'postalCode', 'address'];
-                    const companyFields = ['salutation', 'guiNum', 'county', 'district', 'postalCode', 'address'];
-
-                    const fields = form.id === 'personal-form' ? personalFields : companyFields;
-
-                    fields.forEach(id => {
-                        const el = form.querySelector(`#${id}`);
-                        const group = el?.closest('.df-input-group') || el?.closest('.df-address-row') || el?.closest('.receipt-target');
-                        if (group) {
-                            group.style.display = isNeedReceipt ? '' : 'none';
-                        }
-                    });
-                }
-
-                function bindMailMtdListener(form) {
-                    const radios = form.querySelectorAll('input[name="mailMtd"]');
-                    radios.forEach(r => {
-                        r.addEventListener('change', () => toggleReceiptFields(form));
-                    });
-                }
-
-                // 初始執行收據欄位顯示控制與綁定
-                [personalForm, companyForm].forEach(form => {
-                    if (form) {
-                        toggleReceiptFields(form);
-                        bindMailMtdListener(form);
+                fields.forEach(id => {
+                    const el = form.querySelector(`#${id}`);
+                    let group;
+                    if (['postalCode', 'county', 'district', 'address'].includes(id)) {
+                        group = form.querySelector('.df-address-row')?.parentElement;
+                    } else {
+                        group = el?.closest('.df-input-group') || el?.closest('.receipt-target');
+                    }
+                    if (group) {
+                        group.style.display = isNeedReceipt ? '' : 'none';
                     }
                 });
+            }
 
-                // 修正驗證失敗後頁面重整時收據欄位會重現的問題
-                [personalForm, companyForm].forEach(form => {
-                    const radio = form.querySelector('input[name="mailMtd"]:checked');
-                    if (radio) {
-                        radio.dispatchEvent(new Event('change'));
+            function bindMailMtdListener(form) {
+                const radios = form.querySelectorAll('input[name="mailMtd"]');
+                radios.forEach(r => {
+                    r.addEventListener('change', () => toggleReceiptFields(form));
+                });
+            }
+
+            // 初始執行 + 綁定事件
+            if (personalForm) {
+                toggleReceiptFields(personalForm);
+                bindMailMtdListener(personalForm);
+            }
+            if (companyForm) {
+                toggleReceiptFields(companyForm);
+                bindMailMtdListener(companyForm);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const personalTab = document.getElementById('personal-tab');
+            const companyTab = document.getElementById('company-tab');
+            const personalForm = document.getElementById('personal-form');
+            const companyForm = document.getElementById('company-form');
+
+            // 預設載入時：以 sessionStorage 為優先，若無則使用 Thymeleaf activeTab
+            const sessionTab = sessionStorage.getItem('activeTab');
+            const thymeleafActiveTab = /*[[${activeTab}]]*/ 'personal';
+
+            const initTab = sessionTab || thymeleafActiveTab;
+            if (initTab === 'company') {
+                companyTab.classList.add('df-active');
+                personalTab.classList.remove('df-active');
+                companyForm.classList.add('df-visible');
+                personalForm.classList.remove('df-visible');
+            } else {
+                personalTab.classList.add('df-active');
+                companyTab.classList.remove('df-active');
+                personalForm.classList.add('df-visible');
+                companyForm.classList.remove('df-visible');
+            }
+
+            // 切換 tab 儲存狀態
+            personalTab.addEventListener('click', function () {
+                personalTab.classList.add('df-active');
+                companyTab.classList.remove('df-active');
+                personalForm.classList.add('df-visible');
+                companyForm.classList.remove('df-visible');
+                sessionStorage.setItem('activeTab', 'personal');
+            });
+
+            companyTab.addEventListener('click', function () {
+                companyTab.classList.add('df-active');
+                personalTab.classList.remove('df-active');
+                companyForm.classList.add('df-visible');
+                personalForm.classList.remove('df-visible');
+                sessionStorage.setItem('activeTab', 'company');
+            });
+
+            // 顯示/隱藏收據欄位（需/不需收據）
+            function toggleReceiptFields(form) {
+                const mailMtd = form.querySelector('input[name="mailMtd"]:checked')?.value;
+                const isNeedReceipt = mailMtd === "0";
+
+                const personalFields = ['salutation', 'idNum', 'county', 'district', 'postalCode', 'address'];
+                const companyFields = ['salutation', 'guiNum', 'county', 'district', 'postalCode', 'address'];
+
+                const fields = form.id === 'personal-form' ? personalFields : companyFields;
+
+                fields.forEach(id => {
+                    const el = form.querySelector(`#${id}`);
+                    let group;
+                    if (['postalCode', 'county', 'district', 'address'].includes(id)) {
+                        group = form.querySelector('.df-address-row')?.parentElement;
+                    } else {
+                        group = el?.closest('.df-input-group') || el?.closest('.receipt-target');
+                    }
+                    if (group) {
+                        group.style.display = isNeedReceipt ? '' : 'none';
                     }
                 });
+            }
+
+            function bindMailMtdListener(form) {
+                const radios = form.querySelectorAll('input[name="mailMtd"]');
+                radios.forEach(r => {
+                    r.addEventListener('change', () => toggleReceiptFields(form));
+                });
+            }
+
+            // 初始執行收據欄位顯示控制與綁定
+            [personalForm, companyForm].forEach(form => {
+                if (form) {
+                    toggleReceiptFields(form);
+                    bindMailMtdListener(form);
+                }
             });
-        </script>
-    </body>
-    </html>
+
+            // 修正驗證失敗後頁面重整時收據欄位會重現的問題
+            [personalForm, companyForm].forEach(form => {
+                const radio = form.querySelector('input[name="mailMtd"]:checked');
+                if (radio) {
+                    radio.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+
+        // JavaScript 更新區域與郵遞區號
+        const addrData = [
+            {
+                "city": "臺北市",
+                "area": [
+                    { "name": "中正區", "zipcode": "100" },
+                    { "name": "大同區", "zipcode": "103" },
+                    { "name": "中山區", "zipcode": "104" },
+                    { "name": "松山區", "zipcode": "105" },
+                    { "name": "大安區", "zipcode": "106" },
+                    { "name": "萬華區", "zipcode": "108" },
+                    { "name": "信義區", "zipcode": "110" },
+                    { "name": "士林區", "zipcode": "111" },
+                    { "name": "北投區", "zipcode": "112" },
+                    { "name": "內湖區", "zipcode": "114" },
+                    { "name": "南港區", "zipcode": "115" },
+                    { "name": "文山區", "zipcode": "116" }
+                ]
+            },
+            {
+                "city": "基隆市",
+                "area": [
+                    { "name": "仁愛區", "zipcode": "200" },
+                    { "name": "信義區", "zipcode": "201" },
+                    { "name": "中正區", "zipcode": "202" },
+                    { "name": "中山區", "zipcode": "203" },
+                    { "name": "安樂區", "zipcode": "204" },
+                    { "name": "暖暖區", "zipcode": "205" },
+                    { "name": "七堵區", "zipcode": "206" }
+                ]
+            },
+            {
+                "city": "新北市",
+                "area": [
+                    { "name": "萬里區", "zipcode": "207" },
+                    { "name": "金山區", "zipcode": "208" },
+                    { "name": "板橋區", "zipcode": "220" },
+                    { "name": "汐止區", "zipcode": "221" },
+                    { "name": "深坑區", "zipcode": "222" },
+                    { "name": "石碇區", "zipcode": "223" },
+                    { "name": "瑞芳區", "zipcode": "224" },
+                    { "name": "平溪區", "zipcode": "226" },
+                    { "name": "雙溪區", "zipcode": "227" },
+                    { "name": "貢寮區", "zipcode": "228" },
+                    { "name": "新店區", "zipcode": "231" },
+                    { "name": "坪林區", "zipcode": "232" },
+                    { "name": "烏來區", "zipcode": "233" },
+                    { "name": "永和區", "zipcode": "234" },
+                    { "name": "中和區", "zipcode": "235" },
+                    { "name": "土城區", "zipcode": "236" },
+                    { "name": "三峽區", "zipcode": "237" },
+                    { "name": "樹林區", "zipcode": "238" },
+                    { "name": "鶯歌區", "zipcode": "239" },
+                    { "name": "三重區", "zipcode": "241" },
+                    { "name": "新莊區", "zipcode": "242" },
+                    { "name": "泰山區", "zipcode": "243" },
+                    { "name": "林口區", "zipcode": "244" },
+                    { "name": "蘆洲區", "zipcode": "247" },
+                    { "name": "五股區", "zipcode": "248" },
+                    { "name": "八里區", "zipcode": "249" },
+                    { "name": "淡水區", "zipcode": "251" },
+                    { "name": "三芝區", "zipcode": "252" },
+                    { "name": "石門區", "zipcode": "253" }
+                ]
+            },
+            {
+                "city": "宜蘭縣",
+                "area": [
+                    { "name": "宜蘭", "zipcode": "260" },
+                    { "name": "頭城", "zipcode": "261" },
+                    { "name": "礁溪", "zipcode": "262" },
+                    { "name": "壯圍", "zipcode": "263" },
+                    { "name": "員山", "zipcode": "264" },
+                    { "name": "羅東", "zipcode": "265" },
+                    { "name": "三星", "zipcode": "266" },
+                    { "name": "大同", "zipcode": "267" },
+                    { "name": "五結", "zipcode": "268" },
+                    { "name": "冬山", "zipcode": "269" },
+                    { "name": "蘇澳", "zipcode": "270" },
+                    { "name": "南澳", "zipcode": "272" },
+                    { "name": "釣魚臺列嶼", "zipcode": "290" }
+                ]
+            },
+            {
+                "city": "新竹市",
+                "area": [
+                    { "name": "", "zipcode": "300" }
+                ]
+            },
+            {
+                "city": "新竹縣",
+                "area": [
+                    { "name": "竹北", "zipcode": "302" },
+                    { "name": "湖口", "zipcode": "303" },
+                    { "name": "新豐", "zipcode": "304" },
+                    { "name": "新埔", "zipcode": "305" },
+                    { "name": "關西", "zipcode": "306" },
+                    { "name": "芎林", "zipcode": "307" },
+                    { "name": "寶山", "zipcode": "308" },
+                    { "name": "竹東", "zipcode": "310" },
+                    { "name": "五峰", "zipcode": "311" },
+                    { "name": "橫山", "zipcode": "312" },
+                    { "name": "尖石", "zipcode": "313" },
+                    { "name": "北埔", "zipcode": "314" },
+                    { "name": "峨眉", "zipcode": "315" }
+                ]
+            },
+            {
+                "city": "桃園市",
+                "area": [
+                    { "name": "中壢區", "zipcode": "320" },
+                    { "name": "平鎮區", "zipcode": "324" },
+                    { "name": "龍潭區", "zipcode": "325" },
+                    { "name": "楊梅區", "zipcode": "326" },
+                    { "name": "新屋區", "zipcode": "327" },
+                    { "name": "觀音區", "zipcode": "328" },
+                    { "name": "桃園區", "zipcode": "330" },
+                    { "name": "龜山區", "zipcode": "333" },
+                    { "name": "八德區", "zipcode": "334" },
+                    { "name": "大溪區", "zipcode": "335" },
+                    { "name": "復興區", "zipcode": "336" },
+                    { "name": "大園區", "zipcode": "337" },
+                    { "name": "蘆竹區", "zipcode": "338" }
+                ]
+            },
+            {
+                "city": "苗栗縣",
+                "area": [
+                    { "name": "竹南", "zipcode": "350" },
+                    { "name": "頭份", "zipcode": "351" },
+                    { "name": "三灣", "zipcode": "352" },
+                    { "name": "南庄", "zipcode": "353" },
+                    { "name": "獅潭", "zipcode": "354" },
+                    { "name": "後龍", "zipcode": "356" },
+                    { "name": "通霄", "zipcode": "357" },
+                    { "name": "苑裡", "zipcode": "358" },
+                    { "name": "苗栗", "zipcode": "360" },
+                    { "name": "造橋", "zipcode": "361" },
+                    { "name": "頭屋", "zipcode": "362" },
+                    { "name": "公館", "zipcode": "363" },
+                    { "name": "大湖", "zipcode": "364" },
+                    { "name": "泰安", "zipcode": "365" },
+                    { "name": "銅鑼", "zipcode": "366" },
+                    { "name": "三義", "zipcode": "367" },
+                    { "name": "西湖", "zipcode": "368" },
+                    { "name": "卓蘭", "zipcode": "369" }
+                ]
+            },
+            {
+                "city": "臺中市",
+                "area": [
+                    { "name": "中區", "zipcode": "400" },
+                    { "name": "東區", "zipcode": "401" },
+                    { "name": "南區", "zipcode": "402" },
+                    { "name": "西區", "zipcode": "403" },
+                    { "name": "北區", "zipcode": "404" },
+                    { "name": "北屯區", "zipcode": "406" },
+                    { "name": "西屯區", "zipcode": "407" },
+                    { "name": "南屯區", "zipcode": "408" },
+                    { "name": "太平區", "zipcode": "411" },
+                    { "name": "大里區", "zipcode": "412" },
+                    { "name": "霧峰區", "zipcode": "413" },
+                    { "name": "烏日區", "zipcode": "414" },
+                    { "name": "豐原區", "zipcode": "420" },
+                    { "name": "后里區", "zipcode": "421" },
+                    { "name": "石岡區", "zipcode": "422" },
+                    { "name": "東勢區", "zipcode": "423" },
+                    { "name": "和平區", "zipcode": "424" },
+                    { "name": "新社區", "zipcode": "426" },
+                    { "name": "潭子區", "zipcode": "427" },
+                    { "name": "大雅區", "zipcode": "428" },
+                    { "name": "神岡區", "zipcode": "429" },
+                    { "name": "大肚區", "zipcode": "432" },
+                    { "name": "沙鹿區", "zipcode": "433" },
+                    { "name": "龍井區", "zipcode": "434" },
+                    { "name": "梧棲區", "zipcode": "435" },
+                    { "name": "清水區", "zipcode": "436" },
+                    { "name": "大甲區", "zipcode": "437" },
+                    { "name": "外埔區", "zipcode": "438" },
+                    { "name": "大安區", "zipcode": "439" }
+                ]
+            },
+            {
+                "city": "彰化縣",
+                "area": [
+                    { "name": "彰化", "zipcode": "500" },
+                    { "name": "芬園", "zipcode": "502" },
+                    { "name": "花壇", "zipcode": "503" },
+                    { "name": "秀水", "zipcode": "504" },
+                    { "name": "鹿港", "zipcode": "505" },
+                    { "name": "福興", "zipcode": "506" },
+                    { "name": "線西", "zipcode": "507" },
+                    { "name": "和美", "zipcode": "508" },
+                    { "name": "伸港", "zipcode": "509" },
+                    { "name": "員林", "zipcode": "510" },
+                    { "name": "社頭", "zipcode": "511" },
+                    { "name": "永靖", "zipcode": "512" },
+                    { "name": "埔心", "zipcode": "513" },
+                    { "name": "溪湖", "zipcode": "514" },
+                    { "name": "大村", "zipcode": "515" },
+                    { "name": "埔鹽", "zipcode": "516" },
+                    { "name": "田中", "zipcode": "520" },
+                    { "name": "北斗", "zipcode": "521" },
+                    { "name": "田尾", "zipcode": "522" },
+                    { "name": "埤頭", "zipcode": "523" },
+                    { "name": "溪州", "zipcode": "524" },
+                    { "name": "竹塘", "zipcode": "525" },
+                    { "name": "二林", "zipcode": "526" },
+                    { "name": "大城", "zipcode": "527" },
+                    { "name": "芳苑", "zipcode": "528" },
+                    { "name": "二水", "zipcode": "530" }
+                ]
+            },
+            {
+                "city": "南投縣",
+                "area": [
+                    { "name": "南投", "zipcode": "540" },
+                    { "name": "中寮", "zipcode": "541" },
+                    { "name": "草屯", "zipcode": "542" },
+                    { "name": "國姓", "zipcode": "544" },
+                    { "name": "埔里", "zipcode": "545" },
+                    { "name": "仁愛", "zipcode": "546" },
+                    { "name": "名間", "zipcode": "551" },
+                    { "name": "集集", "zipcode": "552" },
+                    { "name": "水里", "zipcode": "553" },
+                    { "name": "魚池", "zipcode": "555" },
+                    { "name": "信義", "zipcode": "556" },
+                    { "name": "竹山", "zipcode": "557" },
+                    { "name": "鹿谷", "zipcode": "558" }
+                ]
+            },
+            {
+                "city": "嘉義市",
+                "area": [
+                    { "name": "", "zipcode": "600" }
+                ]
+            },
+            {
+                "city": "嘉義縣",
+                "area": [
+                    { "name": "番路", "zipcode": "602" },
+                    { "name": "梅山", "zipcode": "603" },
+                    { "name": "竹崎", "zipcode": "604" },
+                    { "name": "阿里山", "zipcode": "605" },
+                    { "name": "中埔", "zipcode": "606" },
+                    { "name": "大埔", "zipcode": "607" },
+                    { "name": "水上", "zipcode": "608" },
+                    { "name": "鹿草", "zipcode": "611" },
+                    { "name": "太保", "zipcode": "612" },
+                    { "name": "朴子", "zipcode": "613" },
+                    { "name": "東石", "zipcode": "614" },
+                    { "name": "六腳", "zipcode": "615" },
+                    { "name": "新港", "zipcode": "616" },
+                    { "name": "民雄", "zipcode": "621" },
+                    { "name": "大林", "zipcode": "622" },
+                    { "name": "溪口", "zipcode": "623" },
+                    { "name": "義竹", "zipcode": "624" },
+                    { "name": "布袋", "zipcode": "625" }
+                ]
+            },
+            {
+                "city": "雲林縣",
+                "area": [
+                    { "name": "斗南", "zipcode": "630" },
+                    { "name": "大埤", "zipcode": "631" },
+                    { "name": "虎尾", "zipcode": "632" },
+                    { "name": "土庫", "zipcode": "633" },
+                    { "name": "褒忠", "zipcode": "634" },
+                    { "name": "東勢", "zipcode": "635" },
+                    { "name": "臺西", "zipcode": "636" },
+                    { "name": "崙背", "zipcode": "637" },
+                    { "name": "麥寮", "zipcode": "638" },
+                    { "name": "斗六", "zipcode": "640" },
+                    { "name": "林內", "zipcode": "643" },
+                    { "name": "古坑", "zipcode": "646" },
+                    { "name": "莿桐", "zipcode": "647" },
+                    { "name": "西螺", "zipcode": "648" },
+                    { "name": "二崙", "zipcode": "649" },
+                    { "name": "北港", "zipcode": "651" },
+                    { "name": "水林", "zipcode": "652" },
+                    { "name": "口湖", "zipcode": "653" },
+                    { "name": "四湖", "zipcode": "654" },
+                    { "name": "元長", "zipcode": "655" }
+                ]
+            },
+            {
+                "city": "臺南市",
+                "area": [
+                    { "name": "中西區", "zipcode": "700" },
+                    { "name": "東區", "zipcode": "701" },
+                    { "name": "南區", "zipcode": "702" },
+                    { "name": "北區", "zipcode": "704" },
+                    { "name": "安平區", "zipcode": "708" },
+                    { "name": "安南區", "zipcode": "709" },
+                    { "name": "永康區", "zipcode": "710" },
+                    { "name": "歸仁區", "zipcode": "711" },
+                    { "name": "新化區", "zipcode": "712" },
+                    { "name": "左鎮區", "zipcode": "713" },
+                    { "name": "玉井區", "zipcode": "714" },
+                    { "name": "楠西區", "zipcode": "715" },
+                    { "name": "南化區", "zipcode": "716" },
+                    { "name": "仁德區", "zipcode": "717" },
+                    { "name": "關廟區", "zipcode": "718" },
+                    { "name": "龍崎區", "zipcode": "719" },
+                    { "name": "官田區", "zipcode": "720" },
+                    { "name": "麻豆區", "zipcode": "721" },
+                    { "name": "佳里區", "zipcode": "722" },
+                    { "name": "西港區", "zipcode": "723" },
+                    { "name": "七股區", "zipcode": "724" },
+                    { "name": "將軍區", "zipcode": "725" },
+                    { "name": "學甲區", "zipcode": "726" },
+                    { "name": "北門區", "zipcode": "727" },
+                    { "name": "新營區", "zipcode": "730" },
+                    { "name": "後壁區", "zipcode": "731" },
+                    { "name": "白河區", "zipcode": "732" },
+                    { "name": "東山區", "zipcode": "733" },
+                    { "name": "六甲區", "zipcode": "734" },
+                    { "name": "下營區", "zipcode": "735" },
+                    { "name": "柳營區", "zipcode": "736" },
+                    { "name": "鹽水區", "zipcode": "737" },
+                    { "name": "善化區", "zipcode": "741" },
+                    { "name": "大內區", "zipcode": "742" },
+                    { "name": "山上區", "zipcode": "743" },
+                    { "name": "新市區", "zipcode": "744" },
+                    { "name": "安定區", "zipcode": "745" }
+                ]
+            },
+            {
+                "city": "高雄市",
+                "area": [
+                    { "name": "新興區", "zipcode": "800" },
+                    { "name": "前金區", "zipcode": "801" },
+                    { "name": "苓雅區", "zipcode": "802" },
+                    { "name": "鹽埕區", "zipcode": "803" },
+                    { "name": "鼓山區", "zipcode": "804" },
+                    { "name": "旗津區", "zipcode": "805" },
+                    { "name": "前鎮區", "zipcode": "806" },
+                    { "name": "三民區", "zipcode": "807" },
+                    { "name": "楠梓區", "zipcode": "811" },
+                    { "name": "小港區", "zipcode": "812" },
+                    { "name": "左營區", "zipcode": "813" },
+                    { "name": "仁武區", "zipcode": "814" },
+                    { "name": "大社區", "zipcode": "815" },
+                    { "name": "岡山區", "zipcode": "820" },
+                    { "name": "路竹區", "zipcode": "821" },
+                    { "name": "阿蓮區", "zipcode": "822" },
+                    { "name": "田寮區", "zipcode": "823" },
+                    { "name": "燕巢區", "zipcode": "824" },
+                    { "name": "橋頭區", "zipcode": "825" },
+                    { "name": "梓官區", "zipcode": "826" },
+                    { "name": "彌陀區", "zipcode": "827" },
+                    { "name": "永安區", "zipcode": "828" },
+                    { "name": "湖內區", "zipcode": "829" },
+                    { "name": "鳳山區", "zipcode": "830" },
+                    { "name": "大寮區", "zipcode": "831" },
+                    { "name": "林園區", "zipcode": "832" },
+                    { "name": "鳥松區", "zipcode": "833" },
+                    { "name": "大樹區", "zipcode": "840" },
+                    { "name": "旗山區", "zipcode": "842" },
+                    { "name": "美濃區", "zipcode": "843" },
+                    { "name": "六龜區", "zipcode": "844" },
+                    { "name": "內門區", "zipcode": "845" },
+                    { "name": "杉林區", "zipcode": "846" },
+                    { "name": "甲仙區", "zipcode": "847" },
+                    { "name": "桃源區", "zipcode": "848" },
+                    { "name": "那瑪夏區", "zipcode": "849" },
+                    { "name": "茂林區", "zipcode": "851" },
+                    { "name": "茄萣區", "zipcode": "852" }
+                ]
+            },
+            {
+                "city": "南海諸島",
+                "area": [
+                    { "name": "東沙", "zipcode": "817" },
+                    { "name": "南沙", "zipcode": "819" }
+                ]
+            },
+            {
+                "city": "澎湖縣",
+                "area": [
+                    { "name": "馬公", "zipcode": "880" },
+                    { "name": "西嶼", "zipcode": "881" },
+                    { "name": "望安", "zipcode": "882" },
+                    { "name": "七美", "zipcode": "883" },
+                    { "name": "白沙", "zipcode": "884" },
+                    { "name": "湖西", "zipcode": "885" }
+                ]
+            },
+            {
+                "city": "屏東縣",
+                "area": [
+                    { "name": "屏東", "zipcode": "900" },
+                    { "name": "三地門", "zipcode": "901" },
+                    { "name": "霧臺", "zipcode": "902" },
+                    { "name": "瑪家", "zipcode": "903" },
+                    { "name": "九如", "zipcode": "904" },
+                    { "name": "里港", "zipcode": "905" },
+                    { "name": "高樹", "zipcode": "906" },
+                    { "name": "鹽埔", "zipcode": "907" },
+                    { "name": "長治", "zipcode": "908" },
+                    { "name": "麟洛", "zipcode": "909" },
+                    { "name": "竹田", "zipcode": "911" },
+                    { "name": "內埔", "zipcode": "912" },
+                    { "name": "萬丹", "zipcode": "913" },
+                    { "name": "潮州", "zipcode": "920" },
+                    { "name": "泰武", "zipcode": "921" },
+                    { "name": "來義", "zipcode": "922" },
+                    { "name": "萬巒", "zipcode": "923" },
+                    { "name": "崁頂", "zipcode": "924" },
+                    { "name": "新埤", "zipcode": "925" },
+                    { "name": "南州", "zipcode": "926" },
+                    { "name": "林邊", "zipcode": "927" },
+                    { "name": "東港", "zipcode": "928" },
+                    { "name": "琉球", "zipcode": "929" },
+                    { "name": "佳冬", "zipcode": "931" },
+                    { "name": "新園", "zipcode": "932" },
+                    { "name": "枋寮", "zipcode": "940" },
+                    { "name": "枋山", "zipcode": "941" },
+                    { "name": "春日", "zipcode": "942" },
+                    { "name": "獅子", "zipcode": "943" },
+                    { "name": "車城", "zipcode": "944" },
+                    { "name": "牡丹", "zipcode": "945" },
+                    { "name": "恆春", "zipcode": "946" },
+                    { "name": "滿州", "zipcode": "947" }
+                ]
+            },
+            {
+                "city": "臺東縣",
+                "area": [
+                    { "name": "臺東", "zipcode": "950" },
+                    { "name": "綠島", "zipcode": "951" },
+                    { "name": "蘭嶼", "zipcode": "952" },
+                    { "name": "延平", "zipcode": "953" },
+                    { "name": "卑南", "zipcode": "954" },
+                    { "name": "鹿野", "zipcode": "955" },
+                    { "name": "關山", "zipcode": "956" },
+                    { "name": "海端", "zipcode": "957" },
+                    { "name": "池上", "zipcode": "958" },
+                    { "name": "東河", "zipcode": "959" },
+                    { "name": "成功", "zipcode": "961" },
+                    { "name": "長濱", "zipcode": "962" },
+                    { "name": "太麻里", "zipcode": "963" },
+                    { "name": "金峰", "zipcode": "964" },
+                    { "name": "大武", "zipcode": "965" },
+                    { "name": "達仁", "zipcode": "966" }
+                ]
+            },
+            {
+                "city": "花蓮縣",
+                "area": [
+                    { "name": "花蓮", "zipcode": "970" },
+                    { "name": "新城", "zipcode": "971" },
+                    { "name": "秀林", "zipcode": "972" },
+                    { "name": "吉安", "zipcode": "973" },
+                    { "name": "壽豐", "zipcode": "974" },
+                    { "name": "鳳林", "zipcode": "975" },
+                    { "name": "光復", "zipcode": "976" },
+                    { "name": "豐濱", "zipcode": "977" },
+                    { "name": "瑞穗", "zipcode": "978" },
+                    { "name": "萬榮", "zipcode": "979" },
+                    { "name": "玉里", "zipcode": "981" },
+                    { "name": "卓溪", "zipcode": "982" },
+                    { "name": "富里", "zipcode": "983" }
+                ]
+            },
+            {
+                "city": "金門縣",
+                "area": [
+                    { "name": "金沙", "zipcode": "890" },
+                    { "name": "金湖", "zipcode": "891" },
+                    { "name": "金寧", "zipcode": "892" },
+                    { "name": "金城", "zipcode": "893" },
+                    { "name": "烈嶼", "zipcode": "894" },
+                    { "name": "烏坵", "zipcode": "896" }
+                ]
+            },
+            {
+                "city": "連江縣",
+                "area": [
+                    { "name": "南竿", "zipcode": "209" },
+                    { "name": "北竿", "zipcode": "210" },
+                    { "name": "莒光", "zipcode": "211" },
+                    { "name": "東引", "zipcode": "212" }
+                ]
+            }
+        ];
+
+        function setupAddressDropdown(prefix) {
+            const citySel = $(`#city-${prefix}`);
+            const areaSel = $(`#area-${prefix}`);
+            const zipInput = $(`#zipcode-${prefix}`);
+
+            function initCity() {
+                citySel.empty().append('<option value="">縣市</option>');
+                addrData.forEach((item, i) => {
+                    citySel.append(`<option value="${item.city}">${item.city}</option>`);
+                    if (i === 0) initArea(item.area);
+                });
+            }
+
+            function initArea(areas) {
+                areaSel.empty();
+                areas.forEach((area, i) => {
+                    areaSel.append(`<option value="${area.name}" data-zipcode="${area.zipcode}">${area.name}</option>`);
+                    if (i === 0) zipInput.val(area.zipcode);
+                });
+            }
+
+            initCity();
+
+            citySel.on("change", function () {
+                const city = $(this).val();
+                const cityObj = addrData.find(d => d.city === city);
+                if (cityObj) {
+                    initArea(cityObj.area);
+                } else {
+                    areaSel.empty();
+                    zipInput.val("");
+                }
+            });
+
+            areaSel.on("change", function () {
+                const zip = $(this).find('option:selected').data('zipcode');
+                zipInput.val(zip);
+            });
+        }
+
+        $(document).ready(function () {
+            setupAddressDropdown('personal');
+            setupAddressDropdown('company');
+        });
+    </script>
+</body>
+
+</html>

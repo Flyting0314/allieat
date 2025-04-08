@@ -54,9 +54,8 @@ public class BackStageLoginServiceImpl implements BackStageLoginService {
     }
 
     //用於回傳狀態創建
-    Map<String, Object> result = new HashMap<>();
-
     private Map<String, Object> createResult(String message,String uri) {
+    	Map<String, Object> result = new HashMap<>();
         result.put("loginState", message);
         result.put("redirectUrl", uri);
         return result;

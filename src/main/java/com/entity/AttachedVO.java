@@ -40,8 +40,6 @@ public class AttachedVO {
         this.attachedId = attachedId;
     }
 
-    
-
     public FoodVO getFood() {
 		return food;
 	}
