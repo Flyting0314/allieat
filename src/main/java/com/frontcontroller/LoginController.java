@@ -1,8 +1,12 @@
 package com.frontcontroller;
 
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.backstage.backstagrepository.PhotoRepository;
@@ -21,6 +26,7 @@ import com.entity.PhotoVO;
 import com.entity.StoreVO;
 import com.frontservice.MemberLoginService;
 import com.frontservice.StoreLoginService;
+import com.frontservice.StoreRegistAndLoginService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -31,7 +37,8 @@ public class LoginController {
 	private PhotoRepository photoRepository;
     @Autowired
     private MemberLoginService memberLoginService;
-
+    @Autowired
+    private StoreRegistAndLoginService storeRegistAndLoginService;
     @Autowired
     private StoreLoginService storeLoginService;
     
@@ -64,8 +71,8 @@ public class LoginController {
                 model.addAttribute("error", "帳號審核中，請耐心等候審核通知信件！");
                 return "registerAndLogin/login";
             } else if (member.getReviewed() == 2) {
-                model.addAttribute("error", "未通過審核，已將結果寄送至您的信箱");
-                return "registerAndLogin/login";
+            	session.setAttribute("reuploadMember", member); // ✅ 設定補件 session
+                return "redirect:/registerAndLogin/reupload";  // ✅ 導向補件頁面
             } else if (member.getReviewed() == 1 && member.getAccStat() == 0) {
                 model.addAttribute("error", "帳號已審核通過，請至信箱點擊啟用連結後再登入！");
                 return "registerAndLogin/login";
@@ -94,8 +101,8 @@ public class LoginController {
                 model.addAttribute("error", "帳號審核中，請耐心等候審核通知信件！");
                 return "registerAndLogin/login";
             } else if (store.getReviewed() == 2) {
-                model.addAttribute("error", "未通過審核，已將結果寄送至您的信箱");
-                return "registerAndLogin/login";
+                session.setAttribute("reuploadStore", store); // 補件 session
+                return "redirect:/registerAndLogin/reuploadStore"; // 導向補件頁
             } else if (store.getReviewed() == 1 && store.getAccStat() == 0) {
                 model.addAttribute("error", "帳號已審核通過，請至信箱點擊啟用連結後再登入！");
                 return "registerAndLogin/login";
@@ -199,16 +206,27 @@ public class LoginController {
         System.out.println("查詢封面照: storeId=" + store.getStoreId());
         Optional<PhotoVO> coverPhotoOpt = photoRepository.findFirstByStoreStoreIdAndPhotoTypeOrderByUpdateTimeDesc(store.getStoreId(), "COVER");
 
-        if (coverPhotoOpt.isPresent()) {
-            System.out.println("封面照，photoId=" + coverPhotoOpt.get().getPhotoId());
-            String base64Cover = Base64.getEncoder().encodeToString(coverPhotoOpt.get().getPhotoSrc());
-            String coverPhotoUrl = "data:image/jpeg;base64," + base64Cover;
-            model.addAttribute("coverPhotoUrl", coverPhotoUrl);
-            System.out.println("已成功載入");
-        } else {
-            System.out.println("使用預設圖片");
-            model.addAttribute("coverPhotoUrl", "/img/default-cover.png");
+//        if (coverPhotoOpt.isPresent()) {
+//            System.out.println("封面照，photoId=" + coverPhotoOpt.get().getPhotoId());
+//            String base64Cover = Base64.getEncoder().encodeToString(coverPhotoOpt.get().getPhotoSrc());
+//            String coverPhotoUrl = "data:image/jpeg;base64," + base64Cover;
+//            model.addAttribute("coverPhotoUrl", coverPhotoUrl);
+//            System.out.println("已成功載入");
+//        } else {
+//            System.out.println("使用預設圖片");
+//            model.addAttribute("coverPhotoUrl", "/img/default-cover.png");
+//        }
+        List<PhotoVO> photos = photoRepository.findByStoreStoreId(store.getStoreId());
+        List<Map<String, String>> photoList = new ArrayList<>();
+
+        for (PhotoVO photo : photos) {
+            Map<String, String> map = new HashMap<>();
+            map.put("photoType", photo.getPhotoType());
+            map.put("src", "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(photo.getPhotoSrc()));
+            photoList.add(map);
         }
+
+        model.addAttribute("photoList", photoList);
 
         return "registerAndLogin/storeInfo"; //  保留 return，確保視圖正確渲染
     }
@@ -235,6 +253,73 @@ public class LoginController {
             return "redirect:/registerAndLogin/login";
         }
     }
+    @GetMapping("/reupload")
+    public String showReuploadPage(HttpSession session, Model model) {
+        MemberVO member = (MemberVO) session.getAttribute("reuploadMember");
+        if (member == null) {
+            return "redirect:/registerAndLogin/login";
+        }
+        model.addAttribute("member", member);
+        return "registerAndLogin/registerReupload"; // 對應 Thymeleaf reupload.html
+    }
+
+    @PostMapping("/reupload")
+    public String handleReupload(@RequestParam("memberId") Integer memberId,
+                                 @RequestParam("file") MultipartFile file,
+                                 RedirectAttributes redirectAttributes) {
+        String result = memberLoginService.handleReupload(memberId, file);
+        if ("success".equals(result)) {
+            redirectAttributes.addFlashAttribute("success", "補件成功，請等待審核！");
+            return "redirect:/registerAndLogin/login";
+        } else {
+            redirectAttributes.addFlashAttribute("error", result);
+        }
+        return "redirect:/registerAndLogin/reupload";
+    }
+    
+    @GetMapping("/reuploadStore")
+    public String showStoreReuploadPage(HttpSession session, Model model) {
+        StoreVO store = (StoreVO) session.getAttribute("reuploadStore");
+        if (store == null) return "redirect:/registerAndLogin/login";
+        
+        // ✅ 這段記得加
+        List<PhotoVO> photos = photoRepository.findByStoreStoreId(store.getStoreId());
+        List<Map<String, String>> photoList = new ArrayList<>();
+        for (PhotoVO photo : photos) {
+            Map<String, String> map = new HashMap<>();
+            map.put("photoType", photo.getPhotoType());
+            map.put("src", "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(photo.getPhotoSrc()));
+            photoList.add(map);
+        }
+        model.addAttribute("photoList", photoList);
+
+        model.addAttribute("store", store);
+        return "registerAndLogin/registerReupload"; // 共用畫面
+    }
+
+    @PostMapping("/reuploadStore")
+    public String handleStoreReupload(@RequestParam("storeId") Integer storeId,
+                                      @RequestParam("photoFiles") MultipartFile[] photoFiles,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            StoreVO store = storeRegistAndLoginService.getOneStore(storeId);
+            if (store == null || store.getReviewed() != 2) {
+                redirectAttributes.addFlashAttribute("error", "店家狀態錯誤或無需補件");
+                return "redirect:/registerAndLogin/reuploadStore";
+            }
+
+            Set<PhotoVO> updatedPhotos = storeRegistAndLoginService.mergePhotos(store, photoFiles);
+            store.setStoreToPhoto(updatedPhotos);
+            store.setReviewed(3); // 補件後重新審核
+            storeRegistAndLoginService.finalizeRegistration(store);
+            redirectAttributes.addFlashAttribute("success", "補件成功，請等待審核！");
+            return "redirect:/registerAndLogin/login";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "補件失敗：" + e.getMessage());
+            return "redirect:/registerAndLogin/reuploadStore";
+        }
+    }
+}
 //  @GetMapping("/storeInfo")
 //  public String storeInfoPage(HttpSession session, Model model) {
 //      StoreVO store = (StoreVO) session.getAttribute("loggedInStore");
@@ -252,4 +337,3 @@ public class LoginController {
 //
 //      return "registerAndLogin/storeInfo";
 //  }
-}

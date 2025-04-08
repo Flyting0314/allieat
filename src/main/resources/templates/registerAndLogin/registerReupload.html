@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <style>
+    
+    /* 基本重置樣式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 登入頁面主體樣式 */
+        .merchant_login_wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 0;
+            margin-top: 20px;
+        }
+        
+        /* 登入容器樣式 */
+        .merchant_login_container {
+            background-color: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 登入標題樣式 */
+        .merchant_login_title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #333;
+            text-align: center;
+        }
+        
+        /* 表單組樣式 */
+        .merchant_form_group {
+            margin-bottom: 20px;
+        }
+        
+        /* 表單標籤樣式 */
+        .merchant_form_label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        /* 表單輸入欄位樣式 */
+        .merchant_form_input {
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: #f5f5f9;
+            color: #333;
+            transition: border-color 0.3s;
+        }
+        
+        .merchant_form_input:focus {
+            border-color: #4285f4;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+        }
+        
+        /* 登入按鈕樣式 */
+        .merchant_login_btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .merchant_login_btn:hover {
+            background-color: #3367d6;
+        }
+        
+        /* 記住我選項樣式 */
+        .merchant_remember_container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .merchant_remember_checkbox {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        .merchant_remember_label {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        /* 忘記密碼連結樣式 */
+        .merchant_forgot_link {
+            font-size: 14px;
+            color: #4285f4;
+            text-decoration: none;
+            float: right;
+        }
+        
+        .merchant_forgot_link:hover {
+            text-decoration: underline;
+        }
+        
+        /* 分隔線樣式 */
+        .merchant_divider {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 30px 0;
+        }
+        
+        /* 註冊連結容器 */
+        .merchant_register_container {
+            text-align: center;
+        }
+        
+        .merchant_register_text {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .merchant_register_link {
+            color: #4285f4;
+            text-decoration: none;
+            font-weight: 500;
+            
+        }
+        
+        .merchant_register_link:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        /* 登入選項區塊樣式 */
+        .merchant_login_options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+        
+        /* 響應式調整 */
+        @media (max-width: 576px) {
+            .merchant_login_container {
+                padding: 30px 20px;
+                margin: 0 15px;
+            }
+        }
+    
+        .reupload-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .reupload-container h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+        .form-group, .partner_photo_item {
+            margin-bottom: 20px;
+        }
+        label, .partner_photo_label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        .success {
+            color: green;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        .btn-submit {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+        .preview-img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+        #pdfPreview {
+            width: 100%;
+            height: 500px;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+        }
+        .custom-upload-btn {
+            display: inline-block;
+            background-color: #eee;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: normal;
+            border: 1px solid #ccc;
+        }
+        .custom-upload-btn:hover {
+            background-color: #ddd;
+        }
+        .file-name-text {
+            margin-left: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+
+</head>
+<body>
+<th:block th:replace="fragments/bodySection :: bodySection"></th:block>
+<div class="reupload-container" th:if="${member} != null">
+    <h2>補件資料上傳</h2>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <div th:if="${success}" class="success" th:text="${success}"></div>
+
+    <form th:action="@{/registerAndLogin/reupload}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="memberId" th:value="${member.memberId}" />
+
+        <div class="form-group">
+            <label for="file">請上傳補充資料（PDF、JPG、JPEG、PNG）：</label>
+            <input type="file" id="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required onchange="previewFile()">
+        </div>
+
+        <div class="form-group" th:if="${member.kycImage != null}">
+            <label>目前上傳檔案</label>
+            <a th:href="@{'/member/' + ${member.kycImage}}" target="_blank">點此預覽上傳檔案</a>
+            <img th:if="${#strings.contains(member.kycImage, '.png') or #strings.contains(member.kycImage, '.jpg') or #strings.contains(member.kycImage, '.jpeg')}"
+                 th:src="@{'/member/' + ${member.kycImage}}" style="max-width: 200px; display: block; margin-top: 10px;">
+        </div>
+
+        <div id="imagePreview"></div>
+        <iframe id="pdfPreview" style="display:none;"></iframe>
+
+        <button type="submit" class="btn-submit">送出補件</button>
+    </form>
+</div>
+
+<!-- 店家補件表單 -->
+<div class="reupload-container" th:if="${store} != null">
+    <h2>店家補件資料上傳</h2>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <div th:if="${success}" class="success" th:text="${success}"></div>
+
+    <form th:action="@{/registerAndLogin/reuploadStore}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="storeId" th:value="${store.storeId}" />
+
+        <!-- 封面照 -->
+<div class="partner_photo_item">
+    <label class="partner_photo_label">店家封面照</label>
+    <div class="partner_photo_preview">
+        <th:block th:each="photo : ${photoList}">
+            <img th:if="${photo.photoType == 'COVER'}" th:src="${photo.src}" class="preview-img" alt="封面預覽圖" data-type="COVER" />
+        </th:block>
+    </div>
+    <label class="custom-upload-btn">
+        選擇檔案
+        <input type="file" name="photoFiles" accept="image/*" onchange="previewStoreImage(this, 'COVER')" hidden>
+    </label>
+</div>
+
+<!-- 廚房照 -->
+<div class="partner_photo_item">
+    <label class="partner_photo_label">廚房環境照</label>
+    <div class="partner_photo_preview">
+        <th:block th:each="photo : ${photoList}">
+            <img th:if="${photo.photoType == 'KITCHEN'}" th:src="${photo.src}" class="preview-img" alt="廚房預覽圖" data-type="KITCHEN" />
+        </th:block>
+    </div>
+    <label class="custom-upload-btn">
+        選擇檔案
+        <input type="file" name="photoFiles" accept="image/*" onchange="previewStoreImage(this, 'KITCHEN')" hidden>
+    </label>
+</div>
+
+<!-- 店面照 -->
+<div class="partner_photo_item">
+    <label class="partner_photo_label">店面環境照</label>
+    <div class="partner_photo_preview">
+        <th:block th:each="photo : ${photoList}">
+            <img th:if="${photo.photoType == 'STORE'}" th:src="${photo.src}" class="preview-img" alt="店面預覽圖" data-type="STORE" />
+        </th:block>
+    </div>
+    <label class="custom-upload-btn">
+        選擇檔案
+        <input type="file" name="photoFiles" accept="image/*" onchange="previewStoreImage(this, 'STORE')" hidden>
+    </label>
+</div>
+
+        <div id="photoError" class="text-danger mt-2" th:if="${photoError} and ${hasSubmitted}" th:text="${photoError}"></div>
+
+        <button type="submit" class="btn-submit">店家補件上傳</button>
+    </form>
+</div>
+<th:block th:replace="fragments/footer :: footer"></th:block>
+
+ <!-- Footer End -->
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="lib/easing/easing.min.js"></script>
+<script src="lib/waypoints/waypoints.min.js"></script>
+<script src="lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="lib/tempusdominus/js/moment.min.js"></script>
+<script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<!-- Contact Javascript File -->
+<script src="mail/jqBootstrapValidation.min.js"></script>
+<script src="mail/contact.js"></script>
+
+<!-- Template Javascript -->
+<script src="js/main.js"></script>
+
+<!-- Login JavaScript -->
+<!-- ✅ JS & 用戶類型切換 -->
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script>
+    function previewFile() {
+        const fileInput = document.getElementById("file");
+        const file = fileInput.files[0];
+        const fileNameText = document.getElementById("fileNameDisplay");
+        const previewImg = document.getElementById("imagePreview");
+        const previewPdf = document.getElementById("pdfPreview");
+
+        if (fileNameText) fileNameText.textContent = file.name;
+        previewImg.innerHTML = "";
+        previewPdf.style.display = "none";
+
+        if (file) {
+            const fileType = file.type;
+            const reader = new FileReader();
+
+            if (fileType.includes("image")) {
+                reader.onload = function (e) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.classList.add("preview-img");
+                    previewImg.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            } else if (fileType === "application/pdf") {
+                const url = URL.createObjectURL(file);
+                previewPdf.src = url;
+                previewPdf.style.display = "block";
+            }
+        }
+    }
+    
+    function previewStoreImage(input, type) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            // 找對應的預覽圖 img（使用 data-type）
+            const img = document.querySelector(`img[data-type="${type}"]`);
+            if (img) {
+                img.src = e.target.result;
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+</script>
+</body>
+</html>

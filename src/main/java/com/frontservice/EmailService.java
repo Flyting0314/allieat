@@ -42,14 +42,15 @@ public class EmailService {
         mailSender.send(message);
     }
     
-  //店家不通過=2
+  //店家未通過=2
     public void sendRejectionEmail(StoreVO store) {
         SimpleMailMessage message = new SimpleMailMessage();
+        String verifyUrl = "http://localhost:8080/registerAndLogin/login";
         message.setTo(store.getEmail());
         message.setSubject("【攏呷霸 ALLiEAT】店家帳號審核未通過通知");
         message.setText("親愛的 " + store.getName() + " 店家您好：\n\n"
-                + "很遺憾通知您，您的帳號審核未通過，請確認資料正確後重新註冊。\n\n"
-                + "-- 攏呷霸 ALLiEAT 團隊");
+        		 + "很遺憾通知您，您的帳號審核未通過，若需補件請點擊以下連結，輸入註冊時的帳號及密碼進入重新提交頁面。\n\n"
+                 + verifyUrl + "\n\n-- 攏呷霸 ALLiEAT 團隊");
         mailSender.send(message);
     }
     
@@ -96,14 +97,15 @@ public class EmailService {
 
         mailSender.send(message);
     }
-    //受助者不通過=2
+    //受助者未通過=2
     public void sendRejectionEmail(MemberVO member) {
         SimpleMailMessage message = new SimpleMailMessage();
+        String verifyUrl = "http://localhost:8080/registerAndLogin/login";
         message.setTo(member.getEmail());
         message.setSubject("【攏呷霸 ALLiEAT】會員帳號審核未通過通知");
         message.setText("親愛的 " + member.getName() + " 您好：\n\n"
-                + "很遺憾通知您，您的帳號審核未通過，請確認資料正確後重新註冊。\n\n"
-                + "-- 攏呷霸 ALLiEAT 團隊");
+                + "很遺憾通知您，您的帳號審核未通過，若需補件請點擊以下連結，輸入註冊時的帳號及密碼進入重新提交頁面。\n\n"
+                + verifyUrl + "\n\n-- 攏呷霸 ALLiEAT 團隊");
         mailSender.send(message);
     }
     
