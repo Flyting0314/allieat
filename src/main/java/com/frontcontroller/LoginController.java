@@ -74,12 +74,12 @@ public class LoginController {
                 return "registerAndLogin/login";
             }
             
-            session.setAttribute("loggedInMember", member);
+            session.setAttribute("member", member);
             List<MemberOrderRecordDTO> history = memberLoginService.getOrderRecords(member.getMemberId());
             model.addAttribute("member", member);
             model.addAttribute("payDetail", history); 
             model.addAttribute("userType", userType);
-            return "registerAndLogin/memberInfo"; 
+            return "redirect:/registerAndLogin/memberInfo";  
 
         }
         if ("store".equals(userType)) {
@@ -104,7 +104,7 @@ public class LoginController {
                 return "registerAndLogin/login";
             }
             
-            session.setAttribute("loggedInStore", store);
+            session.setAttribute("store", store);
             model.addAttribute("userType", userType);
             model.addAttribute("store", store);
             
@@ -128,12 +128,29 @@ public class LoginController {
         model.addAttribute("userType", userType);
         return "registerAndLogin/login";
     }
+    @GetMapping("/memberInfo")
+    public String showMemberInfo(HttpSession session, Model model) {
+        MemberVO member = (MemberVO) session.getAttribute("member"); // 或 session.getAttribute("member")，看你用哪個名稱
+
+        if (member == null) {
+            return "redirect:/registerAndLogin/login";
+        }
+
+        model.addAttribute("member", member);
+
+        // 如果你要顯示歷史訂單或其他資料，可以加這些：
+//        List<MemberOrderRecordDTO> history = memberLoginService.getOrderRecords(member.getMemberId());
+//        model.addAttribute("payDetail", history);
+
+        return "registerAndLogin/memberInfo"; // 這裡對應到你的 HTML 模板名稱
+    }
+    
     @PostMapping("/store/update")
     public String updateStoreInfo(@ModelAttribute StoreVO formInput,
                                   HttpSession session,
                                   RedirectAttributes redirectAttrs) {
 
-        StoreVO sessionStore = (StoreVO) session.getAttribute("loggedInStore");
+        StoreVO sessionStore = (StoreVO) session.getAttribute("store");
         if (sessionStore == null) {
             redirectAttrs.addFlashAttribute("error", "請先登入後再操作");
             return "redirect:/registerAndLogin/login";
@@ -162,7 +179,7 @@ public class LoginController {
 
     @GetMapping("/storeInfo")
     public String storeInfoPage(@RequestParam(value = "forceEdit", required = false) Boolean forceEdit,HttpSession session, Model model,RedirectAttributes redirectAttrs) {
-        StoreVO store = (StoreVO) session.getAttribute("loggedInStore");
+        StoreVO store = (StoreVO) session.getAttribute("store");
         if (store == null) {
             System.out.println("使用者未登入，導向登入頁面");
             return "redirect:/registerAndLogin/login";
@@ -206,6 +223,17 @@ public class LoginController {
     @GetMapping("/resendMail")
     public String showResendPage() {
         return "registerAndLogin/resendMail"; // 對應上面那個 HTML 頁面
+    }
+ // ✅ 加在這邊就對了！
+    @GetMapping("/redirectAfterLogin")
+    public String redirectAfterLogin(HttpSession session) {
+        if (session.getAttribute("member") != null) {
+            return "redirect:/registerAndLogin/memberInfo";
+        } else if (session.getAttribute("store") != null) {
+            return "redirect:/registerAndLogin/storeInfo";
+        } else {
+            return "redirect:/registerAndLogin/login";
+        }
     }
 //  @GetMapping("/storeInfo")
 //  public String storeInfoPage(HttpSession session, Model model) {
