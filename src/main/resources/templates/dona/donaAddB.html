@@ -307,7 +307,7 @@
             background-color: #e9ecef;
             /* 淺灰色，跟上方 tab 類似 */
             color: #000;
-            border-color: #ccc;
+            border-color: #ccc; 
         }
     </style>
 </head>
@@ -459,7 +459,7 @@
                             </div>
 
                             <div class="df-input-group">
-                                <label class="df-required" for="bthDate">生日</label>
+                                <label for="bthDate">生日</label>
                                 <input type="date" class="df-input" id="bthDate" name="bthDate" th:field="*{bthDate}"
                                     min="1900-01-01" max="2025-12-31">
                                 <span th:if="${#fields.hasErrors('bthDate')}" th:errors="*{bthDate}"
@@ -470,7 +470,7 @@
 
 
                             <div class="df-input-group">
-                                <label class="df-required">性別</label>
+                                <label>性別</label>
                                 <div class="btn-group w-100" role="group" aria-label="性別選擇">
                                     <input type="radio" class="btn-check" id="gender-male" value="0"
                                         th:field="*{gender}" autocomplete="off">
@@ -491,7 +491,7 @@
 
                             <!-- 個人地址欄位 -->
                             <div class="df-input-group">
-                                <label class="df-required">地址</label>
+                                <label>地址</label>
                                 <div class="df-address-row">
                                     <input type="text" id="zipcode-personal" class="df-input" name="postalCode"
                                         th:field="*{postalCode}" placeholder="郵遞區號" readonly>
@@ -531,7 +531,7 @@
 
                                 <div class="df-input-group">
                                     <label class="df-required" for="salutation">捐款人抬頭</label>
-                                    <input type="text" class="df-input" placeholder="抬頭同捐款人姓名" th:field="*{salutation}"
+                                    <input type="text" class="df-input" placeholder="請填寫身分證姓名" th:field="*{salutation}"
                                         id="salutation">
                                     <span th:if="${#fields.hasErrors('salutation')}" th:errors="*{salutation}"
                                         class="error" id="salutation.errors"></span>
@@ -540,7 +540,7 @@
 
                                 <div class="df-input-group">
                                     <label class="df-required" for="idNum">捐款人身分證</label>
-                                    <input type="text" class="df-input" placeholder="請具身分證姓名一致" th:field="*{idNum}"
+                                    <input type="text" class="df-input" placeholder="A123456789" th:field="*{idNum}"
                                         id="idNum">
                                     <span th:if="${#fields.hasErrors('idNum')}" th:errors="*{idNum}" class="error"
                                         id="idNum.errors"></span>
@@ -552,7 +552,7 @@
                             <div class="df-privacy-block" style="margin-top: 20px;">
                                 <label>是否公開徵信<span style="color: red;">*</span></label>
 
-                                <div class="df-radio-row">
+                                <div>
                                     <!-- 公開徵信 (預設選項，值為 0) -->
                                     <input type="radio" th:field="*{anonymous}" value="0" id="anonymous-public">
                                     <label for="anonymous-public">公開徵信(我同意將全名公開於捐款與受助者芳名錄)</label><br>
@@ -561,17 +561,16 @@
                                     <input type="radio" th:field="*{anonymous}" value="1" id="anonymous-private">
                                     <label for="anonymous-private">徵信匿名(我不同意將全名公開於捐款與受助者芳名錄)</label>
                                 </div>
-                                <span th:if="${#fields.hasErrors('anonymous')}" th:errors="*{anonymous}"
-                                    class="error"></span>
-                                <div class="df-radio-row">
+
+                                <span th:if="${#fields.hasErrors('anonymous')}" th:errors="*{anonymous}" class="error"></span>
+
+                                <div style="margin-top: 12px;">
                                     <input type="checkbox" th:field="*{agreePrivacy}" id="privacy-agreement-personal">
                                     <label for="privacy-agreement-personal">
                                         您已了解並同意本平台蒐集、處理及使用您的個人資料。
-                                        請閱讀「<span class="df-privacy-link"
-                                            onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
+                                        請閱讀「<span class="df-privacy-link" onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
                                     </label>
-                                    <span th:if="${#fields.hasErrors('agreePrivacy')}" th:errors="*{agreePrivacy}"
-                                        class="text-danger"></span>
+                                    <span th:if="${#fields.hasErrors('agreePrivacy')}" th:errors="*{agreePrivacy}" class="text-danger"></span>
                                 </div>
                             </div>
 
@@ -591,7 +590,7 @@
                             <input type="hidden" name="companyDonor" value="true">
                             <!-- 基本資料區塊 -->
                             <div class="df-input-group">
-                                <label for="identityData">公司/機構:</label>
+                                <label class="df-required" for="identityData">公司/機構</label>
                                 <input th:field="*{identityData}" id="identityData" placeholder="請輸入公司/機構名"
                                     onfocus="hideContent('identityDataError')"
                                     oninput="hideContent('identityDataError')">
@@ -624,7 +623,7 @@
 
                             <!-- 公司地址欄位 -->
                             <div class="df-input-group">
-                                <label class="df-required">地址</label>
+                                <label>地址</label>
                                 <div class="df-address-row">
                                     <input type="text" id="zipcode-company" class="df-input" name="postalCode"
                                         th:field="*{postalCode}" placeholder="郵遞區號" readonly>
@@ -660,7 +659,7 @@
                             <div class="receipt-target">
                                 <div class="df-input-group">
                                     <label class="df-required" for="salutation">公司/機構抬頭</label>
-                                    <input type="text" class="df-input" placeholder="略" th:field="*{salutation}"
+                                    <input type="text" class="df-input" placeholder="抬頭同公司/機構名稱" th:field="*{salutation}"
                                         id="salutation">
                                     <span th:if="${#fields.hasErrors('salutation')}" th:errors="*{salutation}"
                                         class="error" id="salutation.errors"></span>
@@ -668,7 +667,7 @@
 
                                 <div class="df-input-group">
                                     <label class="df-required" for="guiNum">統一編號</label>
-                                    <input type="text" class="df-input" placeholder="略" th:field="*{guiNum}"
+                                    <input type="text" class="df-input" placeholder="12345678" th:field="*{guiNum}"
                                         id="guiNum">
                                     <span th:if="${#fields.hasErrors('guiNum')}" th:errors="*{guiNum}" class="error"
                                         id="guiNum.errors"></span>
@@ -679,7 +678,7 @@
                             <div class="df-privacy-block" style="margin-top: 20px;">
                                 <label>是否公開徵信<span style="color: red;">*</span></label>
 
-                                <div class="df-radio-row">
+                                <div>
                                     <!-- 公開徵信 (預設選項，值為 0) -->
                                     <input type="radio" th:field="*{anonymous}" value="0" id="anonymous-public">
                                     <label for="anonymous-public">公開徵信(我同意將全名公開於捐款與受助者芳名錄)</label><br>
@@ -688,18 +687,16 @@
                                     <input type="radio" th:field="*{anonymous}" value="1" id="anonymous-private">
                                     <label for="anonymous-private">徵信匿名(我不同意將全名公開於捐款與受助者芳名錄)</label>
                                 </div>
-                                <span th:if="${#fields.hasErrors('anonymous')}" th:errors="*{anonymous}"
-                                    class="error"></span>
-                                <div class="df-radio-row">
-                                    <input type="checkbox" th:field="*{agreePrivacy}" id="privacy-agreement-company">
-                                    <label for="privacy-agreement-company">
-                                        您已了解並同意本平台蒐集、處理及使用您的個人資料。
-                                        請閱讀「<span class="df-privacy-link"
-                                            onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
-                                    </label>
-                                    <span th:if="${#fields.hasErrors('agreePrivacy')}" th:errors="*{agreePrivacy}"
-                                        class="text-danger"></span>
 
+                                <span th:if="${#fields.hasErrors('anonymous')}" th:errors="*{anonymous}" class="error"></span>
+
+                                <div style="margin-top: 12px;">
+                                    <input type="checkbox" th:field="*{agreePrivacy}" id="privacy-agreement-personal">
+                                    <label for="privacy-agreement-personal">
+                                        您已了解並同意本平台蒐集、處理及使用您的個人資料。
+                                        請閱讀「<span class="df-privacy-link" onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
+                                    </label>
+                                    <span th:if="${#fields.hasErrors('agreePrivacy')}" th:errors="*{agreePrivacy}" class="text-danger"></span>
                                 </div>
                             </div>
 
