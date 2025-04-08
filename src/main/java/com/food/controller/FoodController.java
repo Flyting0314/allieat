@@ -29,20 +29,22 @@ import com.food.dto.FoodRequest;
 import com.food.service.FoodService;
 
 @Controller
-@RequestMapping("store/1/food")
+@RequestMapping("registerAndLogin/storeInfo/{storeId}/food")
 public class FoodController {
 
     @Autowired
     private FoodService foodService;
-
+    
     @GetMapping
-    public String foodPage(Model model) {
+    public String foodPage(@PathVariable Integer storeId, Model model) {
+        model.addAttribute("storeId", storeId);
         return "food/food";
     }
-    
+
     @PostMapping("/createFood")
     @ResponseBody
     public ResponseEntity<?> createFoodWithImage(
+    	@PathVariable Integer storeId,
         @RequestParam("foodName") String foodName,
         @RequestParam("pointCost") Integer pointCost,
         @RequestParam(value = "sideDish", required = false) List<String> sideDish,
@@ -66,6 +68,7 @@ public class FoodController {
 
             // 建立 DTO
             FoodRequest foodRequest = new FoodRequest();
+            foodRequest.setStoreId(storeId);
             foodRequest.setFoodName(foodName);
             foodRequest.setPointCost(pointCost);
             foodRequest.setPhotoPath("/img/upload/" + fileName);
@@ -89,7 +92,10 @@ public class FoodController {
     
     @PutMapping("/delete/{id}")
     @ResponseBody
-    public ResponseEntity<String> deleteFood(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteFood(
+								    		 @PathVariable Integer storeId,
+								    		 @PathVariable Integer id
+								    		 ) {
         FoodVO foodVO = foodService.getFoodById(id);
         if (foodVO == null) {
             return ResponseEntity.notFound().build();
@@ -103,14 +109,15 @@ public class FoodController {
     
     @GetMapping("/findAll")
     @ResponseBody
-    public ResponseEntity<List<FoodDemo>> getAllFoods() {
-        List<FoodDemo> foodList = foodService.getSimpleFoods();
+    public ResponseEntity<List<FoodDemo>> getAllFoods(@PathVariable Integer storeId) {
+        List<FoodDemo> foodList = foodService.getSimpleFoodsByStoreId(storeId); // ✅ 傳入 storeId
         return ResponseEntity.ok(foodList);
     }
     
     @PostMapping("/updateFood/{id}")
     @ResponseBody
     public ResponseEntity<?> updateFood(
+    	@PathVariable Integer storeId,
         @PathVariable Integer id,
         @RequestParam("foodName") String foodName,
         @RequestParam("pointCost") Integer pointCost,

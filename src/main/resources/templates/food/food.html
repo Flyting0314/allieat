@@ -287,183 +287,180 @@
 		</div>
 	</div>
 
+	
+	<script th:inline="javascript">
+	const storeId = [[${storeId}]];
 
-	<script>
-        function openAddMenuModal() {
-            $('#addMenuModal').modal('show');
-        }
-    
-        function closeAddMenuModal() {
-            $('#addMenuModal').modal('hide');
-        }
-    
-        function addSubMenu() {
-            $('#subMenuContainer').append(`
-                <div class="input-group mb-2">
-                    <input type="text" class="form-control" name="sideDish[]" placeholder="輸入副餐名稱">
-                    <button class="btn btn-danger" onclick="removeSubMenu(this)">刪除</button>
-                </div>
-            `);
-        }
+	function openAddMenuModal() {
+		$('#addMenuModal').modal('show');
+	}
 
-        function removeSubMenu(element) {
-            $(element).parent().remove();
-        }
-        
-        // 新增餐點
-        function saveMenuWithImage() {
-            const formData = new FormData();
+	function closeAddMenuModal() {
+		$('#addMenuModal').modal('hide');
+	}
 
-            const file = $('#menuImage')[0].files[0];
-            const menuName = $('#menuName').val();
-            const menuPoints = $('#menuPoints').val();
+	function addSubMenu() {
+		$('#subMenuContainer').append(`
+			<div class="input-group mb-2">
+				<input type="text" class="form-control" name="sideDish[]" placeholder="輸入副餐名稱">
+				<button class="btn btn-danger" onclick="removeSubMenu(this)">刪除</button>
+			</div>
+		`);
+	}
 
-            if (!file || !menuName || !menuPoints) {
-                Swal.fire('錯誤', '請填寫完整資料與選擇圖片', 'error');
-                return;
-            }
+	function removeSubMenu(element) {
+		$(element).parent().remove();
+	}
 
-            formData.append("foodName", menuName);
-            formData.append("pointCost", menuPoints);
-            formData.append("photo", file);
+	// 新增餐點
+	function saveMenuWithImage() {
+		const formData = new FormData();
+		const file = $('#menuImage')[0].files[0];
+		const menuName = $('#menuName').val();
+		const menuPoints = $('#menuPoints').val();
 
-            // 加入副餐（支援多個副餐輸入框）
-            $('#subMenuContainer input').each(function () {
-                const val = $(this).val();
-                if (val) {
-                    formData.append("sideDish[]", val); // ← 讓 Spring 能解析成 List<String>
-                }
-            });
-
-            $.ajax({
-                url: "/store/1/food/createFood",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function () {
-                    $('#addMenuModal').modal('hide');
-                    Swal.fire('成功', '菜單已新增', 'success').then(() => location.reload());
-                },
-                error: function () {
-                    Swal.fire('失敗', '新增失敗', 'error');
-                }
-            });
-        }
-        
-        // 頁面移除餐點
-        function deleteMenuById(foodId, buttonElement) {
-		    Swal.fire({
-		        title: '確定要刪除嗎？',
-		        text: '刪除後將無法顯示於菜單中！',
-		        icon: 'warning',
-		        showCancelButton: true,
-		        confirmButtonText: '確定',
-		        cancelButtonText: '取消'
-		    }).then((result) => {
-		        if (result.isConfirmed) {
-		            fetch(`/store/1/food/delete/${foodId}`, {
-		                method: 'PUT'
-		            })
-		            .then(response => {
-		                if (response.ok) {
-		                    const card = buttonElement.closest(".menu-item");
-		                    card.remove();
-		                    Swal.fire('已刪除', '餐點已被移除。', 'success');
-		                } else {
-		                    Swal.fire('錯誤', '刪除失敗', 'error');
-		                }
-		            })
-		            .catch(() => {
-		                Swal.fire('錯誤', '伺服器錯誤', 'error');
-		            });
-		        }
-		    });
+		if (!file || !menuName || !menuPoints) {
+			Swal.fire('錯誤', '請填寫完整資料與選擇圖片', 'error');
+			return;
 		}
-		
-        // 頁面顯示已有餐點+可編輯
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch('/store/1/food/findAll')
-              .then(response => response.json())
-              .then(data => {
-                const container = document.getElementById("menuContainer");
-                data.forEach(food => {
-                  const card = document.createElement('div');
-                  card.classList.add('menu-item');
-                  card.setAttribute('data-food-id', food.foodId);
-                  card.setAttribute('data-food-name', food.foodName);
-                  card.setAttribute('data-photo-path', food.photoPath);
-                  card.setAttribute('data-point-cost', food.pointCost);
-                  card.innerHTML = `
-                    <button class="delete-btn" onclick="deleteMenuById(${food.foodId}, this)" type="button">&times;</button>
-                    <img src="${food.photoPath}" alt="${food.foodName}">
-                    <div class="menu-name">${food.foodName}</div>
-                  `;
 
-                  card.addEventListener('click', function (e) {
-				        if (e.target.classList.contains('delete-btn')) return;
-				        document.getElementById('editFoodId').value = card.getAttribute('data-food-id');
-				        document.getElementById('editFoodName').value = card.getAttribute('data-food-name');
-				        document.getElementById('editPointCost').value = parseInt(card.getAttribute('data-point-cost')) || 0;
-				        document.getElementById('originalPhotoPath').value = card.getAttribute('data-photo-path');
-				        document.getElementById('editPreviewImage').src = card.getAttribute('data-photo-path');
-				        $('#editMenuModal').modal('show');
-				      });
+		formData.append("foodName", menuName);
+		formData.append("pointCost", menuPoints);
+		formData.append("photo", file);
 
-                  container.appendChild(card);
-                });
-              });
+		$('#subMenuContainer input').each(function () {
+			const val = $(this).val();
+			if (val) {
+				formData.append("sideDish[]", val);
+			}
+		});
 
-            // 預覽新圖
-            document.getElementById('editPhotoInput').addEventListener('change', function () {
-              const file = this.files[0];
-              if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                  document.getElementById('editPreviewImage').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-              }
-            });
+		$.ajax({
+			url: `/registerAndLogin/storeInfo/${storeId}/food/createFood`,
+			type: "POST",
+			data: formData,
+			processData: false,
+			contentType: false,
+			success: function () {
+				$('#addMenuModal').modal('hide');
+				Swal.fire('成功', '菜單已新增', 'success').then(() => location.reload());
+			},
+			error: function () {
+				Swal.fire('失敗', '新增失敗', 'error');
+			}
+		});
+	}
 
-            document.getElementById('editMenuForm').addEventListener('submit', function (e) {
-              e.preventDefault();
+	// 移除餐點
+	function deleteMenuById(foodId, buttonElement) {
+		Swal.fire({
+			title: '確定要刪除嗎？',
+			text: '刪除後將無法顯示於菜單中！',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '確定',
+			cancelButtonText: '取消'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				fetch(`/registerAndLogin/storeInfo/${storeId}/food/delete/${foodId}`, {
+					method: 'PUT'
+				})
+				.then(response => {
+					if (response.ok) {
+						const card = buttonElement.closest(".menu-item");
+						card.remove();
+						Swal.fire('已刪除', '餐點已被移除。', 'success');
+					} else {
+						Swal.fire('錯誤', '刪除失敗', 'error');
+					}
+				})
+				.catch(() => {
+					Swal.fire('錯誤', '伺服器錯誤', 'error');
+				});
+			}
+		});
+	}
 
-              const formData = new FormData();
-              const foodId = document.getElementById('editFoodId').value;
-              const foodName = document.getElementById('editFoodName').value;
-              const pointCost = document.getElementById('editPointCost').value;
-              const originalPhotoPath = document.getElementById('originalPhotoPath').value;
-              const newPhotoFile = document.getElementById('editPhotoInput').files[0];
+	// 初始化頁面時載入餐點
+	document.addEventListener("DOMContentLoaded", function () {
+		fetch(`/registerAndLogin/storeInfo/${storeId}/food/findAll`)
+			.then(response => response.json())
+			.then(data => {
+				const container = document.getElementById("menuContainer");
+				data.forEach(food => {
+					const card = document.createElement('div');
+					card.classList.add('menu-item');
+					card.setAttribute('data-food-id', food.foodId);
+					card.setAttribute('data-food-name', food.foodName);
+					card.setAttribute('data-photo-path', food.photoPath);
+					card.setAttribute('data-point-cost', food.pointCost);
+					card.innerHTML = `
+						<button class="delete-btn" onclick="deleteMenuById(${food.foodId}, this)" type="button">&times;</button>
+						<img src="${food.photoPath}" alt="${food.foodName}">
+						<div class="menu-name">${food.foodName}</div>
+					`;
 
-              formData.append('foodName', foodName);
-              formData.append('pointCost', pointCost);
-              formData.append('originalPhotoPath', originalPhotoPath);
-              if (newPhotoFile) {
-                formData.append('photo', newPhotoFile);
-              }
+					card.addEventListener('click', function (e) {
+						if (e.target.classList.contains('delete-btn')) return;
+						document.getElementById('editFoodId').value = card.getAttribute('data-food-id');
+						document.getElementById('editFoodName').value = card.getAttribute('data-food-name');
+						document.getElementById('editPointCost').value = parseInt(card.getAttribute('data-point-cost')) || 0;
+						document.getElementById('originalPhotoPath').value = card.getAttribute('data-photo-path');
+						document.getElementById('editPreviewImage').src = card.getAttribute('data-photo-path');
+						$('#editMenuModal').modal('show');
+					});
 
-              fetch(`/store/1/food/updateFood/${foodId}`, {
-                method: 'POST',
-                body: formData
-              })
-                .then(res => res.json())
-                .then(result => {
-                  if (result.success) {
-                    Swal.fire('成功', '資料已更新', 'success').then(() => location.reload());
-                  } else {
-                    Swal.fire('失敗', '更新失敗', 'error');
-                  }
-                })
-                .catch(() => Swal.fire('錯誤', '伺服器錯誤', 'error'));
-            });
-          });
+					container.appendChild(card);
+				});
+			});
 
+		// 預覽更換圖片
+		document.getElementById('editPhotoInput').addEventListener('change', function () {
+			const file = this.files[0];
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = function (e) {
+					document.getElementById('editPreviewImage').src = e.target.result;
+				};
+				reader.readAsDataURL(file);
+			}
+		});
 
+		// 編輯菜單送出
+		document.getElementById('editMenuForm').addEventListener('submit', function (e) {
+			e.preventDefault();
 
+			const formData = new FormData();
+			const foodId = document.getElementById('editFoodId').value;
+			const foodName = document.getElementById('editFoodName').value;
+			const pointCost = document.getElementById('editPointCost').value;
+			const originalPhotoPath = document.getElementById('originalPhotoPath').value;
+			const newPhotoFile = document.getElementById('editPhotoInput').files[0];
 
+			formData.append('foodName', foodName);
+			formData.append('pointCost', pointCost);
+			formData.append('originalPhotoPath', originalPhotoPath);
+			if (newPhotoFile) {
+				formData.append('photo', newPhotoFile);
+			}
 
-    </script>
+			fetch(`/registerAndLogin/storeInfo/${storeId}/food/updateFood/${foodId}`, {
+				method: 'POST',
+				body: formData
+			})
+			.then(res => res.json())
+			.then(result => {
+				if (result.success) {
+					Swal.fire('成功', '資料已更新', 'success').then(() => location.reload());
+				} else {
+					Swal.fire('失敗', '更新失敗', 'error');
+				}
+			})
+			.catch(() => Swal.fire('錯誤', '伺服器錯誤', 'error'));
+		});
+	});
+</script>
+	
 
 	<!-- Footer Start -->
 	<section id="footer">

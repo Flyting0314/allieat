@@ -16,25 +16,48 @@ public class MenuEditServiceImpl implements MenuEditService{
 	
 	@Autowired
 	private FoodRepository foodRepository;
-
+	
 	@Override
-	public List<MenuEditDemo> getSimpleFoods() {
-		
-		List<FoodVO> foodList = foodRepository
-				.findAll()
-				.stream()
-				.filter(f ->f.getStatus() == 0 || f.getStatus() == 1)
-				.toList();
-		
-		List<MenuEditDemo> result = new ArrayList<>();
-		
-		for (FoodVO foodVO : foodList) {
-			result.add(new MenuEditDemo(foodVO.getFoodId(), foodVO.getName(), foodVO.getPhoto()
-					, foodVO.getAmount(), foodVO.getStatus()));
-		}
-				
-		return result;
+	public List<MenuEditDemo> getSimpleFoodsByStoreId(Integer storeId) {
+	    List<FoodVO> foodList = foodRepository
+	    		.findAll()
+	    		.stream()
+	            .filter(f -> (f.getStatus() == 0 || f.getStatus() == 1))
+	            .filter(f -> f.getStore().getStoreId().equals(storeId)) // ✅ 這裡只用 Java 過濾
+	            .toList();
+
+	    List<MenuEditDemo> result = new ArrayList<>();
+	    for (FoodVO foodVO : foodList) {
+	        result.add(new MenuEditDemo(
+	            foodVO.getFoodId(),
+	            foodVO.getName(),
+	            foodVO.getPhoto(),
+	            foodVO.getAmount(),
+	            foodVO.getStatus()
+	        ));
+	    }
+	    return result;
 	}
+
+
+//	@Override
+//	public List<MenuEditDemo> getSimpleFoods() {
+//		
+//		List<FoodVO> foodList = foodRepository
+//				.findAll()
+//				.stream()
+//				.filter(f ->f.getStatus() == 0 || f.getStatus() == 1)
+//				.toList();
+//		
+//		List<MenuEditDemo> result = new ArrayList<>();
+//		
+//		for (FoodVO foodVO : foodList) {
+//			result.add(new MenuEditDemo(foodVO.getFoodId(), foodVO.getName(), foodVO.getPhoto()
+//					, foodVO.getAmount(), foodVO.getStatus()));
+//		}
+//				
+//		return result;
+//	}
 	
 	@Override
 	public void updateMenuItem(MenuEditDemo item) {

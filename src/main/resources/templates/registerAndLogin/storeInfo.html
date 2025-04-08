@@ -42,6 +42,19 @@
 	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
 
 <style>
+.dropdown-item {
+    display: block;
+    color: #333;
+    font-size: 14px;
+    padding: 6px 0;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    color: #2196F3;
+}
+
 /* 基本重置樣式 */
 * {
 	margin: 0;
@@ -531,10 +544,26 @@ body {
 			<div class="vendor_sidebar">
 				<a href="#" class="vendor_sidebar_item vendor_active"> <i
 					class="fas fa-store vendor_sidebar_icon"></i> 店家資訊管理
-				</a> <a href="#" class="vendor_sidebar_item"> <i
+				</a>
+
+				<!-- 餐點管理 Dropdown 開始 -->
+				<a href="javascript:void(0);" class="vendor_sidebar_item"
+					onclick="toggleDropdown(this)"> <i
 					class="fas fa-utensils vendor_sidebar_icon"></i> 餐點管理 <i
 					class="fas fa-chevron-down vendor_dropdown_icon"></i>
-				</a> <a href="#" class="vendor_sidebar_item"> <i
+				</a>
+				<div class="vendor_dropdown_menu"
+					style="display: none; margin-left: 40px; padding-top: 5px;">
+					<a
+						th:href="@{/registerAndLogin/storeInfo/{storeId}/menuEdit(storeId=${store.storeId})}"
+						class="dropdown-item">菜單</a> 
+					<a 
+						th:href="@{/registerAndLogin/storeInfo/{storeId}/food(storeId=${store.storeId})}" 
+						class="dropdown-item">編輯菜單</a>
+				</div>
+				<!-- 餐點管理 Dropdown 結束 -->
+
+				<a href="#" class="vendor_sidebar_item"> <i
 					class="fas fa-dollar-sign vendor_sidebar_icon"></i> 核銷點數管理
 				</a> <a href="#" class="vendor_sidebar_item"> <i
 					class="fas fa-clipboard-list vendor_sidebar_icon"></i> 訂單管理
@@ -646,6 +675,14 @@ body {
 	<!-- Store Profile Content End -->
 
 	<script>
+	function toggleDropdown(triggerElement) {
+	    const dropdown = triggerElement.nextElementSibling;
+	    if (dropdown && dropdown.classList.contains('vendor_dropdown_menu')) {
+	        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+	    }
+	}
+
+	
 document.addEventListener('DOMContentLoaded', function() {
     const sidebarItems = document.querySelectorAll('.vendor_sidebar_item');
     const profileContent = document.getElementById('profileContent');

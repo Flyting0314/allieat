@@ -14,11 +14,13 @@ public interface FoodService {
 
 	FoodVO getFoodById(Integer foodId);
 	
-	List<FoodDemo> getSimpleFoods();
+	List<FoodDemo> getSimpleFoodsByStoreId(Integer storeId);
+//	List<FoodDemo> getSimpleFoods();
 
 	void createAttachedList(Integer foodId, List<String> sideDishList);
 	
 	void deleteFood(FoodVO foodVO);
 
 	void updateFood(FoodVO foodVO);
+
 }

@@ -310,101 +310,190 @@ input:checked+.slider:before {
 		</div>
 	</div>
 	<script>
-	  document.addEventListener("DOMContentLoaded", function () {
-	    fetch('/store/1/menuEdit/findAll')
-	      .then(response => response.json())
-	      .then(data => {
-	        const container = document.getElementById("mealContainer");
-	        container.innerHTML = ""; // 清空舊資料
+	const storeId = [[${storeId}]];
+	document.addEventListener("DOMContentLoaded", function () {
+	    fetch(`/registerAndLogin/storeInfo/${storeId}/menuEdit/findAll`)
+	        .then(response => response.json())
+	        .then(data => {
+	            const container = document.getElementById("mealContainer");
+	            container.innerHTML = "";
 
-	        data.forEach(item => {
-	          const mealDiv = document.createElement("div");
-	          mealDiv.classList.add("meal-item");
+	            data.forEach(item => {
+	                const mealDiv = document.createElement("div");
+	                mealDiv.classList.add("meal-item");
 
-	          const resolvedPhotoPath = item.photoPath
-	            ? `${item.photoPath}`
-	            : '/img/default.png';
+	                const resolvedPhotoPath = item.photoPath
+	                    ? `${item.photoPath}`
+	                    : '/img/default.png';
 
-	          mealDiv.innerHTML = `
-	            <img src="${resolvedPhotoPath}" alt="${item.foodName}">
-	            <span class="meal-name">${item.foodName}</span>
-	            <div class="switch-container">
-	              <label class="switch">
-	                <input type="checkbox" class="toggle-alternate" ${item.status == 1 ? "checked" : ""}>
-	                <span class="slider"></span>
-	              </label>
-	            </div>
-	            <div class="meal-quantity-container">
-	              <input type="number" class="meal-quantity" value="${item.amount}">
-	            </div>
-	            <div class="action-buttons">
-	              <button class="btn btn-primary btn-sm save-btn" disabled>儲存</button>
-	            </div>
-	          `;
+	                mealDiv.innerHTML = `
+	                    <img src="${resolvedPhotoPath}" alt="${item.foodName}">
+	                    <span class="meal-name">${item.foodName}</span>
+	                    <div class="switch-container">
+	                        <label class="switch">
+	                            <input type="checkbox" class="toggle-alternate" ${item.status == 1 ? "checked" : ""}>
+	                            <span class="slider"></span>
+	                        </label>
+	                    </div>
+	                    <div class="meal-quantity-container">
+	                        <input type="number" class="meal-quantity" value="${item.amount}">
+	                    </div>
+	                    <div class="action-buttons">
+	                        <button class="btn btn-primary btn-sm save-btn" disabled>儲存</button>
+	                    </div>
+	                `;
 
-	          const amountInput = mealDiv.querySelector(".meal-quantity");
-	          const toggleCheckbox = mealDiv.querySelector(".toggle-alternate");
-	          const saveBtn = mealDiv.querySelector(".save-btn");
+	                const amountInput = mealDiv.querySelector(".meal-quantity");
+	                const toggleCheckbox = mealDiv.querySelector(".toggle-alternate");
+	                const saveBtn = mealDiv.querySelector(".save-btn");
 
-	          // 記錄原始值
-	          amountInput.setAttribute("data-original", item.amount);
-	          toggleCheckbox.setAttribute("data-original", item.status);
-	          saveBtn.setAttribute("data-food-id", item.foodId);
+	                amountInput.setAttribute("data-original", item.amount);
+	                toggleCheckbox.setAttribute("data-original", item.status);
+	                saveBtn.setAttribute("data-food-id", item.foodId);
 
-	          // 髒污檢查
-	          function checkIfDirty() {
-	            const originalAmount = amountInput.getAttribute("data-original");
-	            const originalStatus = toggleCheckbox.getAttribute("data-original");
+	                function checkIfDirty() {
+	                    const originalAmount = amountInput.getAttribute("data-original");
+	                    const originalStatus = toggleCheckbox.getAttribute("data-original");
 
-	            const currentAmount = amountInput.value;
-	            const currentStatus = toggleCheckbox.checked ? "1" : "0";
+	                    const currentAmount = amountInput.value;
+	                    const currentStatus = toggleCheckbox.checked ? "1" : "0";
 
-	            if (currentAmount !== originalAmount || currentStatus !== originalStatus) {
-	              saveBtn.disabled = false;
-	            } else {
-	              saveBtn.disabled = true;
-	            }
-	          }
+	                    saveBtn.disabled = !(currentAmount !== originalAmount || currentStatus !== originalStatus);
+	                }
 
-	          amountInput.addEventListener("input", checkIfDirty);
-	          toggleCheckbox.addEventListener("change", checkIfDirty);
+	                amountInput.addEventListener("input", checkIfDirty);
+	                toggleCheckbox.addEventListener("change", checkIfDirty);
 
-	          // 儲存按鈕點擊事件
-	          saveBtn.addEventListener("click", () => {
-	            const updatedData = {
-	              foodId: item.foodId,
-	              amount: parseInt(amountInput.value),
-	              status: toggleCheckbox.checked ? 1 : 0
-	            };
+	                saveBtn.addEventListener("click", () => {
+	                    const updatedData = {
+	                        foodId: item.foodId,
+	                        amount: parseInt(amountInput.value),
+	                        status: toggleCheckbox.checked ? 1 : 0
+	                    };
 
-	            fetch('/store/1/menuEdit/update', {
-	              method: 'POST', // 或 'PUT'，依你後端 API 設計
-	              headers: {
-	                'Content-Type': 'application/json'
-	              },
-	              body: JSON.stringify(updatedData)
-	            })
-	              .then(res => {
-	                if (!res.ok) throw new Error("更新失敗");
-	                return res.json();
-	              })
-	              .then(response => {
-	                alert("更新成功！");
-	                // 更新原始值
-	                amountInput.setAttribute("data-original", updatedData.amount);
-	                toggleCheckbox.setAttribute("data-original", updatedData.status);
-	                saveBtn.disabled = true;
-	              })
-	              .catch(err => {
-	                console.error(err);
-	                alert("更新失敗！");
-	              });
-	          });
+	                    fetch(`/registerAndLogin/storeInfo/${storeId}/menuEdit/update`, {
+	                        method: 'POST',
+	                        headers: {
+	                            'Content-Type': 'application/json'
+	                        },
+	                        body: JSON.stringify(updatedData)
+	                    })
+	                        .then(res => {
+	                            if (!res.ok) throw new Error("更新失敗");
+	                            return res.json();
+	                        })
+	                        .then(response => {
+	                            alert("更新成功！");
+	                            amountInput.setAttribute("data-original", updatedData.amount);
+	                            toggleCheckbox.setAttribute("data-original", updatedData.status);
+	                            saveBtn.disabled = true;
+	                        })
+	                        .catch(err => {
+	                            console.error(err);
+	                            alert("更新失敗！");
+	                        });
+	                });
 
-	          container.appendChild(mealDiv);
+	                container.appendChild(mealDiv);
+	            });
 	        });
-	      });
-	  });
+	});
+
+// 	  document.addEventListener("DOMContentLoaded", function () {
+// 	    fetch('/store/1/menuEdit/findAll')
+// 	      .then(response => response.json())
+// 	      .then(data => {
+// 	        const container = document.getElementById("mealContainer");
+// 	        container.innerHTML = ""; // 清空舊資料
+
+// 	        data.forEach(item => {
+// 	          const mealDiv = document.createElement("div");
+// 	          mealDiv.classList.add("meal-item");
+
+// 	          const resolvedPhotoPath = item.photoPath
+// 	            ? `${item.photoPath}`
+// 	            : '/img/default.png';
+
+// 	          mealDiv.innerHTML = `
+// 	            <img src="${resolvedPhotoPath}" alt="${item.foodName}">
+// 	            <span class="meal-name">${item.foodName}</span>
+// 	            <div class="switch-container">
+// 	              <label class="switch">
+// 	                <input type="checkbox" class="toggle-alternate" ${item.status == 1 ? "checked" : ""}>
+// 	                <span class="slider"></span>
+// 	              </label>
+// 	            </div>
+// 	            <div class="meal-quantity-container">
+// 	              <input type="number" class="meal-quantity" value="${item.amount}">
+// 	            </div>
+// 	            <div class="action-buttons">
+// 	              <button class="btn btn-primary btn-sm save-btn" disabled>儲存</button>
+// 	            </div>
+// 	          `;
+
+// 	          const amountInput = mealDiv.querySelector(".meal-quantity");
+// 	          const toggleCheckbox = mealDiv.querySelector(".toggle-alternate");
+// 	          const saveBtn = mealDiv.querySelector(".save-btn");
+
+// 	          // 記錄原始值
+// 	          amountInput.setAttribute("data-original", item.amount);
+// 	          toggleCheckbox.setAttribute("data-original", item.status);
+// 	          saveBtn.setAttribute("data-food-id", item.foodId);
+
+// 	          // 髒污檢查
+// 	          function checkIfDirty() {
+// 	            const originalAmount = amountInput.getAttribute("data-original");
+// 	            const originalStatus = toggleCheckbox.getAttribute("data-original");
+
+// 	            const currentAmount = amountInput.value;
+// 	            const currentStatus = toggleCheckbox.checked ? "1" : "0";
+
+// 	            if (currentAmount !== originalAmount || currentStatus !== originalStatus) {
+// 	              saveBtn.disabled = false;
+// 	            } else {
+// 	              saveBtn.disabled = true;
+// 	            }
+// 	          }
+
+// 	          amountInput.addEventListener("input", checkIfDirty);
+// 	          toggleCheckbox.addEventListener("change", checkIfDirty);
+
+// 	          // 儲存按鈕點擊事件
+// 	          saveBtn.addEventListener("click", () => {
+// 	            const updatedData = {
+// 	              foodId: item.foodId,
+// 	              amount: parseInt(amountInput.value),
+// 	              status: toggleCheckbox.checked ? 1 : 0
+// 	            };
+
+// 	            fetch('/store/1/menuEdit/update', {
+// 	              method: 'POST', // 或 'PUT'，依你後端 API 設計
+// 	              headers: {
+// 	                'Content-Type': 'application/json'
+// 	              },
+// 	              body: JSON.stringify(updatedData)
+// 	            })
+// 	              .then(res => {
+// 	                if (!res.ok) throw new Error("更新失敗");
+// 	                return res.json();
+// 	              })
+// 	              .then(response => {
+// 	                alert("更新成功！");
+// 	                // 更新原始值
+// 	                amountInput.setAttribute("data-original", updatedData.amount);
+// 	                toggleCheckbox.setAttribute("data-original", updatedData.status);
+// 	                saveBtn.disabled = true;
+// 	              })
+// 	              .catch(err => {
+// 	                console.error(err);
+// 	                alert("更新失敗！");
+// 	              });
+// 	          });
+
+// 	          container.appendChild(mealDiv);
+// 	        });
+// 	      });
+// 	  });
 
 // 	  document.addEventListener("DOMContentLoaded", function () {
 // 	    fetch('/store/1/menuEdit/findAll')
