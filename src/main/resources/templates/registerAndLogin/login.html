@@ -184,7 +184,7 @@
 <div class="merchant_login_wrapper">
     <div class="merchant_login_container">
         <h1 class="merchant_login_title">登入</h1>
-        
+        <div th:if="${success}" style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 6px; margin-bottom: 20px;" th:text="${success}"></div>
          <form th:action="@{/registerAndLogin/login}" method="post">
             <!-- 使用者類型 -->
             <div class="merchant_form_group">

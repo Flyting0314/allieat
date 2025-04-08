@@ -74,6 +74,7 @@ public class StoreRegistAndLoginService {
 
                 if (existingPhoto.isPresent()) {
                     existingPhoto.get().setPhotoSrc(file.getBytes()); // 直接更新現有圖片
+                    existingPhoto.get().setUpdateTime(new Timestamp(System.currentTimeMillis()));
                 } else {
                     PhotoVO photo = new PhotoVO();
                     photo.setPhotoSrc(file.getBytes());
