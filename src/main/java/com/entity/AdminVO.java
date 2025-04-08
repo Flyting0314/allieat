@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient; // ← 要加這個 import
 
 @Entity
 @Table(name = "administrator")
@@ -54,6 +55,39 @@ public class AdminVO {
 				+ "account=" + account +"\n"
 				+ "password=" + password +"\n"
 				+ "createdTime="+ createdTime;
+	}
+	
+	@Transient
+	private Integer point = 0;
+
+	@Transient
+	private Integer quantity = 1;
+
+	@Transient
+	private Integer subtotal;
+
+	public Integer getPoint() {
+	    return point;
+	}
+
+	public void setPoint(Integer point) {
+	    this.point = point;
+	}
+
+	public Integer getQuantity() {
+	    return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+	    this.quantity = quantity;
+	}
+
+	public Integer getSubtotal() {
+	    return subtotal != null ? subtotal : (point != null && quantity != null ? point * quantity : 0);
+	}
+
+	public void setSubtotal(Integer subtotal) {
+	    this.subtotal = subtotal;
 	}
 	
 }

@@ -1,116 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-<meta charset="utf-8">
-<title>攏呷霸 ALLiEAT - 愛心代用餐平台</title>
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<meta content="愛心代用餐, 公益, 餐飲捐贈" name="keywords">
-<meta content="攏呷霸愛心代用餐平台，連結善心人士與需要溫飽的人" name="description">
-<!-- Favicon -->
-<!--     <link href="/img/favicon.ico" rel="icon"> -->
-
-<!-- Google Font -->
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link
-	href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap"
-	rel="stylesheet">
-
-<!-- Font Awesome -->
-<link
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
-	rel="stylesheet">
-
-<!-- Libraries Stylesheet -->
-<!--     <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet"> -->
-<!--     <link href="/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" /> -->
-
-<!-- Customized Bootstrap Stylesheet -->
-<link rel="stylesheet" href="/css/style.css">
-
-
-<!-- <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> -->
-<!-- <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> -->
-<!-- <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> -->
-<link
-	href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap"
-	rel="stylesheet">
-<style>
-.menu-container {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-	gap: 20px;
-	max-width: 800px;
-	margin: auto;
-}
-
-.menu-item {
-	background: #f8f9fa;
-	border-radius: 10px;
-	padding: 10px;
-	text-align: center;
-	position: relative;
-	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-	transition: transform 0.2s;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	position: relative;
-	justify-content: space-between;
-	height: 100%;
-}
-
-.menu-item:hover {
-	transform: scale(1.05);
-}
-
-.menu-item img {
-	width: 100%;
-	border-radius: 8px;
-}
-
-.menu-name {
-	width: 100%;
-	text-align: center;
-	margin-top: auto;
-	align-self: stretch;
-}
-
-.delete-btn {
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	background: red;
-	color: white;
-	border: none;
-	border-radius: 50%;
-	width: 24px;
-	height: 24px;
-	font-size: 14px;
-	cursor: pointer;
-}
-
-.add-menu {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	background: #e0e0e0;
-	border-radius: 10px;
-	padding: 20px;
-	cursor: pointer;
-	transition: background 0.2s;
-}
-
-.add-menu:hover {
-	background: #d6d6d6;
-}
-</style>
-</head>
-
-<body>
-	<!-- Navbar Start -->
+<html lang="zh-Hant">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Pizza King 披薩王 永和店 - 攏呷霸 ALLiEAT
+  </title>
+  <meta content="愛心代用餐, 公益, 餐飲捐贈" name="keywords"/>
+  <meta content="攏呷霸愛心代用餐平台，連結善心人士與需要溫飽的人" name="description"/>
+  <!-- Favicon -->
+  <link href="img/favicon.ico" rel="icon"/>
+  <!-- Google Font -->
+  <link href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Satisfy&amp;display=swap" rel="stylesheet"/>
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet"/>
+  <!-- Customized Bootstrap Stylesheet -->
+  
+  <!-- 自定義樣式表 - 放在外部文件中 -->
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+  
+  
+  
+ </head>
+ <body>
+  <!-- Navbar Start -->
 	<section id="header">
 		<div class="container-fluid p-0 nav-bar">
 			<nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
@@ -120,11 +35,7 @@
 						<img src="/img/logo3.png" width="80px" height="80px" alt=""
 							style="vertical-align: middle; margin-right: 0px; margin-top: -10px; border-radius: 50%; object-fit: cover;">
 						<span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
-
-
-
 					</h1>
-
 				</a>
 				<button type="button" class="navbar-toggler" data-toggle="collapse"
 					data-target="#navbarCollapse">
@@ -142,8 +53,7 @@
 									href="testimonial.html" class="dropdown-item">捐款查詢</a>
 							</div>
 						</div>
-						<a href="service.html" class="nav-item nav-link">受助者取餐</a> <a
-							href="menu.html" class="nav-item nav-link">加入合作店家</a>
+						<a href="service.html" class="nav-item nav-link">受助者取餐</a>
 						<div class="nav-item dropdown">
 							<a href="#" class="nav-link dropdown-toggle"
 								data-toggle="dropdown">註冊/登入</a>
@@ -158,7 +68,6 @@
 			</nav>
 		</div>
 	</section>
-	<!-- Navbar End -->
 
 	<!-- Hero Section Start -->
 	<section id="hero">
@@ -167,7 +76,7 @@
 				data-ride="carousel">
 				<div class="carousel-inner">
 					<div class="carousel-item active"
-						style="background-image: url('/img/圖片3.png'); background-size: 110% auto; background-position: center -300px; height: 300px; filter: brightness(225%);">
+						style="background-image: url('img/圖片3.png'); background-size: 110% auto; background-position: center -300px; height: 570px; filter: brightness(200%);">
 						<div
 							class="carousel-caption d-flex flex-column align-items-center justify-content-center">
 							<h2 class="text-primary font-weight-medium m-0"></h2>
@@ -179,290 +88,42 @@
 			</div>
 		</div>
 	</section>
-	<!-- Hero Section End -->
-
-	<div class="container text-center mt-4">
-		<h2 class="mb-4">修改菜單</h2>
-		<div class="menu-container" id="menuContainer">
-			<div class="menu-item add-menu" onclick="openAddMenuModal()">
-				<img src="/img/4601618.png" width="50" alt="新增"> <span>新增菜單</span>
-			</div>
-
-			<!--             <div class="menu-item"> -->
-			<!--                 <button class="delete-btn" onclick="deleteMenu(this)">&times;</button> -->
-			<!--                 <img src="img/GetImg.png" alt="A5和王套餐"> -->
-			<!--                 <input type="text" class="form-control menu-name" value="A5和王套餐"> -->
-			<!--             </div> -->
-			<!--             <div class="menu-item"> -->
-			<!--                 <button class="delete-btn" onclick="deleteMenu(this)">&times;</button> -->
-			<!--                 <img src="img/800x.jpg" alt="三寶飯菜單"> -->
-			<!--                 <input type="text" class="form-control menu-name" value="三寶飯菜單"> -->
-			<!--             </div> -->
-		</div>
-	</div>
-
-	<!-- 新增菜單 Modal -->
-	<div class="modal fade" id="addMenuModal" tabindex="-1"
-		aria-labelledby="addMenuLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">新增菜單</h5>
-					<button type="button" class="btn-close"
-						onclick="closeAddMenuModal()" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<label>主餐照片</label> <input type="file" class="form-control mb-3"
-						id="menuImage" accept="image/*"> <label>主餐名稱</label> <input
-						type="text" class="form-control mb-3" id="menuName"
-						placeholder="輸入主餐名稱"> <label>消耗點數</label> <input
-						type="number" class="form-control mb-3" id="menuPoints"
-						placeholder="輸入消耗點數"> <label>副餐</label>
-					<div id="subMenuContainer">
-						<div class="input-group mb-2">
-							<input type="text" class="form-control" placeholder="輸入副餐名稱">
-							<button class="btn btn-danger" onclick="removeSubMenu(this)">刪除</button>
-						</div>
-					</div>
-					<button class="btn btn-primary" onclick="addSubMenu()">+</button>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						onclick="closeAddMenuModal()">取消</button>
-					<button type="button" class="btn btn-success"
-						onclick="saveMenuWithImage()">儲存</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- 編輯菜單 Modal -->
-	<div class="modal fade" id="editMenuModal" tabindex="-1"
-		aria-labelledby="editMenuModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form id="editMenuForm" enctype="multipart/form-data">
-					<div class="modal-header">
-						<h5 class="modal-title">編輯菜單</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close" title="取消"
-							onclick="$('#editMenuModal').modal('hide')"></button>
-					</div>
-					<div class="modal-body">
-						<input type="hidden" id="editFoodId"> <input type="hidden"
-							id="originalPhotoPath">
-
-						<!-- 預覽圖片 -->
-						<div class="mb-3 text-center">
-							<img id="editPreviewImage" src="" alt="預覽圖片"
-								style="width: 100%; border-radius: 10px; object-fit: cover;">
-						</div>
-
-						<!-- 上傳圖片 -->
-						<div class="mb-3">
-							<label class="form-label">更換照片</label> <input type="file"
-								class="form-control" id="editPhotoInput" accept="image/*">
-						</div>
-
-						<!-- 名稱欄位 -->
-						<div class="mb-3">
-							<label for="editFoodName" class="form-label">名稱</label> <input
-								type="text" class="form-control" id="editFoodName" required>
-						</div>
-
-						<!-- 點數欄位 -->
-						<div class="mb-3">
-							<label for="editPointCost" class="form-label">消耗點數</label> <input
-								type="number" class="form-control" id="editPointCost" required>
-						</div>
-					</div>
-
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary"
-							data-bs-dismiss="modal"
-							onclick="$('#editMenuModal').modal('hide')">取消</button>
-						<button type="submit" class="btn btn-primary">儲存變更</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-
+	<!--  Navbar end -->
 	
-	<script th:inline="javascript">
-	const storeId = [[${storeId}]];
+		<!-- 菜單內容（動態載入） -->
+<div class="pizza-menu-container">
+    <div class="pizza-menu-item" th:each="food : ${menuItems}">
+        <img class="pizza-menu-image" th:src="@{'/images/food/' + ${food.photo}}" th:alt="${food.name}" />
+        <div class="pizza-menu-details">
+            <h3 class="pizza-menu-title" th:text="${food.name}">餐點名稱</h3>
 
-	function openAddMenuModal() {
-		$('#addMenuModal').modal('show');
-	}
+            <!-- 飲食標籤（依照 status 顯示） -->
+            <div class="pizza-menu-item-dietary">
+                <span class="pizza-dietary-icon" th:if="${food.status == 2}">素食</span>
+                <span class="pizza-dietary-icon" th:if="${food.status == 1}">葷食</span>
+                <span class="pizza-dietary-icon" th:if="${food.status == 3}">清真認證</span>
+            </div>
 
-	function closeAddMenuModal() {
-		$('#addMenuModal').modal('hide');
-	}
+            <p class="pizza-menu-points" th:text="${food.cost + ' 點'}">100點</p>
 
-	function addSubMenu() {
-		$('#subMenuContainer').append(`
-			<div class="input-group mb-2">
-				<input type="text" class="form-control" name="sideDish[]" placeholder="輸入副餐名稱">
-				<button class="btn btn-danger" onclick="removeSubMenu(this)">刪除</button>
-			</div>
-		`);
-	}
+            <div class="pizza-menu-stock">
+                <div class="pizza-stock-indicator-container">
+                    <span class="pizza-stock-indicator"
+                          th:classappend="${food.amount > 20} ? 'pizza-stock-high' :
+                                          (${food.amount > 5} ? 'pizza-stock-medium' : 'pizza-stock-low')">
+                    </span>
+                    <span th:text="'庫存：' + ${food.amount} + '個'">庫存：0個</span>
+                </div>
+            </div>
 
-	function removeSubMenu(element) {
-		$(element).parent().remove();
-	}
-
-	// 新增餐點
-	function saveMenuWithImage() {
-		const formData = new FormData();
-		const file = $('#menuImage')[0].files[0];
-		const menuName = $('#menuName').val();
-		const menuPoints = $('#menuPoints').val();
-
-		if (!file || !menuName || !menuPoints) {
-			Swal.fire('錯誤', '請填寫完整資料與選擇圖片', 'error');
-			return;
-		}
-
-		formData.append("foodName", menuName);
-		formData.append("pointCost", menuPoints);
-		formData.append("photo", file);
-
-		$('#subMenuContainer input').each(function () {
-			const val = $(this).val();
-			if (val) {
-				formData.append("sideDish[]", val);
-			}
-		});
-
-		$.ajax({
-			url: `/registerAndLogin/storeInfo/${storeId}/food/createFood`,
-			type: "POST",
-			data: formData,
-			processData: false,
-			contentType: false,
-			success: function () {
-				$('#addMenuModal').modal('hide');
-				Swal.fire('成功', '菜單已新增', 'success').then(() => location.reload());
-			},
-			error: function () {
-				Swal.fire('失敗', '新增失敗', 'error');
-			}
-		});
-	}
-
-	// 移除餐點
-	function deleteMenuById(foodId, buttonElement) {
-		Swal.fire({
-			title: '確定要刪除嗎？',
-			text: '刪除後將無法顯示於菜單中！',
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: '確定',
-			cancelButtonText: '取消'
-		}).then((result) => {
-			if (result.isConfirmed) {
-				fetch(`/registerAndLogin/storeInfo/${storeId}/food/delete/${foodId}`, {
-					method: 'PUT'
-				})
-				.then(response => {
-					if (response.ok) {
-						const card = buttonElement.closest(".menu-item");
-						card.remove();
-						Swal.fire('已刪除', '餐點已被移除。', 'success');
-					} else {
-						Swal.fire('錯誤', '刪除失敗', 'error');
-					}
-				})
-				.catch(() => {
-					Swal.fire('錯誤', '伺服器錯誤', 'error');
-				});
-			}
-		});
-	}
-
-	// 初始化頁面時載入餐點
-	document.addEventListener("DOMContentLoaded", function () {
-		fetch(`/registerAndLogin/storeInfo/${storeId}/food/findAll`)
-			.then(response => response.json())
-			.then(data => {
-				const container = document.getElementById("menuContainer");
-				data.forEach(food => {
-					const card = document.createElement('div');
-					card.classList.add('menu-item');
-					card.setAttribute('data-food-id', food.foodId);
-					card.setAttribute('data-food-name', food.foodName);
-					card.setAttribute('data-photo-path', food.photoPath);
-					card.setAttribute('data-point-cost', food.pointCost);
-					card.innerHTML = `
-						<button class="delete-btn" onclick="deleteMenuById(${food.foodId}, this)" type="button">&times;</button>
-						<img src="${food.photoPath}" alt="${food.foodName}">
-						<div class="menu-name">${food.foodName}</div>
-					`;
-
-					card.addEventListener('click', function (e) {
-						if (e.target.classList.contains('delete-btn')) return;
-						document.getElementById('editFoodId').value = card.getAttribute('data-food-id');
-						document.getElementById('editFoodName').value = card.getAttribute('data-food-name');
-						document.getElementById('editPointCost').value = parseInt(card.getAttribute('data-point-cost')) || 0;
-						document.getElementById('originalPhotoPath').value = card.getAttribute('data-photo-path');
-						document.getElementById('editPreviewImage').src = card.getAttribute('data-photo-path');
-						$('#editMenuModal').modal('show');
-					});
-
-					container.appendChild(card);
-				});
-			});
-
-		// 預覽更換圖片
-		document.getElementById('editPhotoInput').addEventListener('change', function () {
-			const file = this.files[0];
-			if (file) {
-				const reader = new FileReader();
-				reader.onload = function (e) {
-					document.getElementById('editPreviewImage').src = e.target.result;
-				};
-				reader.readAsDataURL(file);
-			}
-		});
-
-		// 編輯菜單送出
-		document.getElementById('editMenuForm').addEventListener('submit', function (e) {
-			e.preventDefault();
-
-			const formData = new FormData();
-			const foodId = document.getElementById('editFoodId').value;
-			const foodName = document.getElementById('editFoodName').value;
-			const pointCost = document.getElementById('editPointCost').value;
-			const originalPhotoPath = document.getElementById('originalPhotoPath').value;
-			const newPhotoFile = document.getElementById('editPhotoInput').files[0];
-
-			formData.append('foodName', foodName);
-			formData.append('pointCost', pointCost);
-			formData.append('originalPhotoPath', originalPhotoPath);
-			if (newPhotoFile) {
-				formData.append('photo', newPhotoFile);
-			}
-
-			fetch(`/registerAndLogin/storeInfo/${storeId}/food/updateFood/${foodId}`, {
-				method: 'POST',
-				body: formData
-			})
-			.then(res => res.json())
-			.then(result => {
-				if (result.success) {
-					Swal.fire('成功', '資料已更新', 'success').then(() => location.reload());
-				} else {
-					Swal.fire('失敗', '更新失敗', 'error');
-				}
-			})
-			.catch(() => Swal.fire('錯誤', '伺服器錯誤', 'error'));
-		});
-	});
-</script>
+            <button class="pizza-select-meal">選取餐點</button>
+        </div>
+    </div>
+</div>
 	
 
-	<!-- Footer Start -->
+  
+  <!-- Footer Start -->
 	<section id="footer">
 		<div
 			class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
@@ -535,33 +196,18 @@
 		</div>
 	</section>
 	<!-- Footer End -->
+	
 
-
-	<!-- Back to Top -->
-	<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
-		class="fa fa-angle-double-up"></i></a>
-
-
-	<!--     JavaScript Libraries -->
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script
-		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-	<!--     <script src="/lib/easing/easing.min.js"></script> -->
-	<!--     <script src="/lib/waypoints/waypoints.min.js"></script> -->
-	<!--     <script src="/lib/owlcarousel/owl.carousel.min.js"></script> -->
-	<!--     <script src="/lib/tempusdominus/js/moment.min.js"></script> -->
-	<!--     <script src="/lib/tempusdominus/js/moment-timezone.min.js"></script> -->
-	<!--     <script src="/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script> -->
-
-	<!--     Contact Javascript File -->
-	<!--     <script src="/mail/jqBootstrapValidation.min.js"></script> -->
-	<!--     <script src="/mail/contact.js"></script> -->
-
-	<!--     Template Javascript -->
-	<!--     <script src="/js/main.js"></script> -->
-
-
-</body>
-
+	
+	
+  <!-- Back to Top -->
+  <!-- <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a> -->
+  <!-- JavaScript Libraries -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js">
+  </script>
+  <!-- 使用 Google Maps API 替代 iframe -->
+ 
+ </body>
 </html>

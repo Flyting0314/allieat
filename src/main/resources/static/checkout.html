@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>確認訂單 - 攏呷霸 ALLiEAT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+body {
+	font-family: Arial, sans-serif;
+	background: #f8f9fa;
+	padding: 30px;
+}
+
+.checkout-container {
+	max-width: 800px;
+	margin: 0 auto;
+	background: #fff;
+	padding: 30px;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+	text-align: center;
+	margin-bottom: 20px;
+	color: #da9f5b;
+}
+
+.cart-item {
+	display: flex;
+	justify-content: space-between;
+	border-bottom: 1px solid #ddd;
+	padding: 10px 0;
+}
+
+.cart-total {
+	text-align: right;
+	font-weight: bold;
+	font-size: 18px;
+	margin-top: 20px;
+}
+
+.btn-checkout, .btn-back {
+	background-color: #da9f5b;
+	border: none;
+	padding: 12px 20px;
+	color: white;
+	font-weight: bold;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.btn-checkout:disabled {
+	background-color: #ccc;
+	cursor: not-allowed;
+}
+
+.btn-checkout:hover:not(:disabled), .btn-back:hover {
+	background-color: #c88c4a;
+}
+
+.actions {
+	margin-top: 30px;
+	display: flex;
+	justify-content: space-between;
+}
+
+#countdown {
+	text-align: center;
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 15px;
+}
+
+.alert {
+	background-color: #ffc107;
+	color: #000;
+	padding: 10px;
+	border-radius: 5px;
+	margin-top: 10px;
+	text-align: center;
+}
+</style>
+</head>
+<body>
+	<!-- Navbar Start -->
+	<section id="header">
+		<div class="container-fluid p-0 nav-bar">
+			<nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+				<a href="index.html" class="navbar-brand px-lg-4 m-0">
+					<h1 class="m-0 display-4 text-uppercase text-white"
+						style="display: inline-block;">
+						<img src="/img/logo3.png" width="80px" height="80px" alt=""
+							style="vertical-align: middle; margin-right: 0px; margin-top: -10px; border-radius: 50%; object-fit: cover;">
+						<span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+					</h1>
+				</a>
+				<button type="button" class="navbar-toggler" data-toggle="collapse"
+					data-target="#navbarCollapse">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse justify-content-between"
+					id="navbarCollapse">
+					<div class="navbar-nav ml-auto p-4">
+						<a href="index.html" class="nav-item nav-link active">關於我們</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-toggle="dropdown">我要捐款</a>
+							<div class="dropdown-menu text-capitalize">
+								<a href="reservation.html" class="dropdown-item">我要捐款</a> <a
+									href="testimonial.html" class="dropdown-item">捐款查詢</a>
+							</div>
+						</div>
+						<a href="service.html" class="nav-item nav-link">受助者取餐</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-toggle="dropdown">註冊/登入</a>
+							<div class="dropdown-menu text-capitalize">
+								<a href="reservation.html" class="dropdown-item">註冊</a> <a
+									href="testimonial.html" class="dropdown-item">登入</a>
+							</div>
+						</div>
+						<a href="contact.html" class="nav-item nav-link">會員專區</a>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</section>
+
+	<!-- Hero Section Start -->
+	<section id="hero">
+		<div class="container-fluid p-0 mb-5">
+			<div id="hero-carousel" class="carousel slide overlay-bottom"
+				data-ride="carousel">
+				<div class="carousel-inner">
+					<div class="carousel-item active"
+						style="background-image: url('img/圖片3.png'); background-size: 110% auto; background-position: center -300px; height: 570px; filter: brightness(200%);">
+						<div
+							class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+							<h2 class="text-primary font-weight-medium m-0"></h2>
+							<h1 class="display-1 text-white m-0"></h1>
+							<h2 class="text-white m-0"></h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Hero Section End -->
+	<div class="checkout-container">
+		<h2>確認您的訂單</h2>
+		<div id="countdown">剩餘時間：180 秒</div>
+		<div id="cartItems"></div>
+		<div class="cart-total" id="cartTotal">總計：0 點</div>
+		<div class="alert" id="statusMessage" style="display: none;"></div>
+		<div class="actions">
+			<button class="btn-back" onclick="goBackToOrder()">⬅ 返回點餐</button>
+			<button class="btn-checkout" id="checkoutBtn"
+				onclick="confirmCheckout()">✅ 確認結帳</button>
+		</div>
+	</div>
+
+	<script>
+let cartData = [];
+let timer = 20;
+let countdownInterval;
+let stockCheckInterval;
+let storeCheckInterval;
+
+function startCountdown() {
+    updateCountdownDisplay();
+    countdownInterval = setInterval(() => {
+        timer--;
+        updateCountdownDisplay();
+        if (timer <= 0) {
+            clearInterval(countdownInterval);
+            clearInterval(stockCheckInterval);
+            clearInterval(storeCheckInterval);
+
+            // 時間到自動清空購物車
+            fetch('/api/cart/clear', { method: 'POST' })
+                .then(() => {
+                    console.log("⏰ 購物車已自動清空");
+                    disableCheckout("⏰ 時間已到，購物車已清空，請重新點餐");
+
+                    // 2 秒後自動跳回點餐頁
+                    setTimeout(goBackToOrder, 2000);
+                })
+                .catch(err => {
+                    console.error("清空購物車失敗：", err);
+                    disableCheckout("❌ 清空失敗，請手動返回點餐頁");
+                });
+        }
+    }, 1000);
+}
+
+function updateCountdownDisplay() {
+    document.getElementById('countdown').textContent = `剩餘時間：${timer} 秒`;
+}
+
+function loadCart() {
+    fetch('/api/cart')
+        .then(res => res.json())
+        .then(cart => {
+            if (!cart || cart.length === 0) {
+                disableCheckout("🛒 購物車是空的，請返回點餐");
+                return;
+            }
+            return fetch('/meal/cart/details', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cart)
+            });
+        })
+        .then(res => res?.json())
+        .then(details => {
+            if (!details) return;
+            cartData = details;
+            renderCart();
+        })
+        .catch(err => {
+            console.error("載入購物車失敗：", err);
+            disableCheckout("❌ 系統異常，請稍後再試");
+        });
+}
+
+function renderCart() {
+    const cartItems = document.getElementById('cartItems');
+    cartItems.innerHTML = '';
+    let total = 0;
+
+    cartData.forEach(item => {
+        total += item.cost * item.quantity;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+            <div>主餐：${item.foodName}</div>
+            <div>附餐：${item.attachedName}</div>
+            <div>數量：${item.quantity}</div>
+            <div>點數：${item.cost * item.quantity}</div>
+        `;
+        cartItems.appendChild(div);
+    });
+
+    document.getElementById('cartTotal').textContent = `總計：${total} 點`;
+}
+
+function confirmCheckout() {
+    alert("✅ 訂單已提交！(此處應連接後端)");
+    clearInterval(countdownInterval);
+    clearInterval(stockCheckInterval);
+    clearInterval(storeCheckInterval);
+}
+
+function disableCheckout(msg) {
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    checkoutBtn.disabled = true;
+    checkoutBtn.style.backgroundColor = "#ccc";
+    document.getElementById('statusMessage').textContent = msg;
+    document.getElementById('statusMessage').style.display = 'block';
+
+    document.querySelectorAll('.cart-item').forEach(item => {
+        item.style.opacity = "0.5";
+    });
+
+    clearInterval(stockCheckInterval);
+    clearInterval(storeCheckInterval);
+}
+
+function checkStock() {
+    if (!cartData.length) return;
+    fetch('/meal/cart/stock-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cartData)
+    })
+    .then(res => res.json())
+    .then(stockList => {
+        if (stockList.some(item => item.available === false)) {
+            disableCheckout("❌ 有商品已售完，請重新點餐");
+        }
+    })
+    .catch(err => console.error("檢查庫存失敗", err));
+}
+
+function checkStoreStatus() {
+    const selectedFood = JSON.parse(localStorage.getItem('selectedFood'));
+    if (!selectedFood || !selectedFood.storeId) return;
+
+    fetch(`/meal/store/status/${selectedFood.storeId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.accepting === false) {
+                disableCheckout("🚫 店家目前無法接單");
+            }
+        })
+        .catch(err => console.error("檢查店家狀態失敗", err));
+}
+
+function goBackToOrder() {
+    const selectedFood = JSON.parse(localStorage.getItem('selectedFood'));
+    if (selectedFood && selectedFood.storeId && selectedFood.storeName) {
+        const storeId = selectedFood.storeId;
+        const storeName = encodeURIComponent(selectedFood.storeName);
+        window.location.href = `/orderfood.html?id=${storeId}&name=${storeName}`;
+    } else {
+        window.location.href = '/map2';
+    }
+}
+
+window.onload = () => {
+    loadCart();
+    startCountdown();
+    stockCheckInterval = setInterval(checkStock, 10000);
+    storeCheckInterval = setInterval(checkStoreStatus, 15000);
+};
+
+
+</script>
+
+	<!-- Footer Start -->
+	<div
+		class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
+		<div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">聯絡我們</h4>
+				<p>
+					<i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號
+				</p>
+				<p>
+					<i class="fa fa-phone-alt mr-2"></i>02-2222-5252
+				</p>
+				<p class="m-0">
+					<i class="fa fa-envelope mr-2"></i>allieat105@gmail.com
+				</p>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">關注我們</h4>
+				<p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
+				<div class="d-flex justify-content-start">
+					<a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+						class="fab fa-twitter"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+						class="fab fa-facebook-f"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+						class="fab fa-linkedin-in"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i
+						class="fab fa-instagram"></i></a>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">客服時間</h4>
+				<div>
+					<h6 class="text-white text-uppercase">周一 - 週五</h6>
+					<p>早上10:00 - 晚上21:00</p>
+					<h6 class="text-white text-uppercase">週六 - 週日</h6>
+					<p>早上11:00 - 晚上19:00</p>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">訂閱電子報</h4>
+				<p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
+				<div class="w-100">
+					<div class="input-group">
+						<input type="text" class="form-control border-light"
+							style="padding: 25px;" placeholder="輸入您的信箱">
+						<div class="input-group-append">
+							<button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div
+			class="container-fluid text-center text-white border-top mt-4 py-4 px-sm-3 px-md-5"
+			style="border-color: rgba(256, 256, 256, .1) !important;">
+			<p class="mb-2 text-white">
+				版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>.
+				保留所有權利
+			</p>
+			<p class="m-0 text-white">
+				網站設計由 <a class="font-weight-bold" href="#">攏呷霸股份有限公司 設計部 設計</a>
+			</p>
+		</div>
+	</div>
+	<!-- Footer End -->
+</body>
+</html>

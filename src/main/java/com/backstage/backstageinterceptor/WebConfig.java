@@ -28,3 +28,5 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:upload/member/");
     }
 }
+    
+ 

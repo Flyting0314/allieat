@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>購物車 - ALLiEAT</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap">
+<!-- Customized Bootstrap Stylesheet -->
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+<style>
+:root {
+    --primary: #da9f5b;
+    --primary-dark: #c88c4a;
+    --secondary: #6c757d;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --success: #28a745;
+    --border: #dee2e6;
+    --shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+}
+
+body {
+    font-family: 'Noto Sans TC', Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    color: var(--dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Content Styles */
+main {
+    flex: 1;
+    padding: 30px 0;
+}
+
+.cart-container {
+    max-width: 800px;
+    margin: 0 auto 50px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 25px;
+}
+
+.cart-container h2 {
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary);
+    font-weight: 600;
+}
+
+.cart-header {
+    display: grid;
+    grid-template-columns: 3fr 3fr 2fr 2fr 2fr;
+    font-weight: bold;
+    background-color: var(--light);
+    padding: 12px 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: 3fr 3fr 2fr 2fr 2fr;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+.cart-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item > div {
+    padding: 0 10px;
+    text-align: center;
+}
+
+.cart-total {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--light);
+    border-radius: 5px;
+}
+
+.cart-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.cart-actions button {
+    padding: 12px 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+}
+
+.cart-container .btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.cart-container .btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.cart-container .btn-secondary {
+    background-color: var(--secondary);
+    color: white;
+}
+
+.cart-container .btn-secondary:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+}
+
+.cart-container .btn-success {
+    background-color: var(--success);
+    color: white;
+}
+
+.cart-container .btn-success:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.btn-sm.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-sm.btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .cart-header {
+        display: none;
+    }
+    
+    .cart-item {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        gap: 10px;
+    }
+    
+    .cart-item > div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        text-align: right;
+        border-bottom: 1px solid #eee;
+        padding: 8px 5px;
+    }
+    
+    .cart-item > div:last-child {
+        border-bottom: none;
+    }
+    
+    .cart-item > div:nth-child(1)::before {
+        content: "主餐";
+        font-weight: bold;
+    }
+    
+    .cart-item > div:nth-child(2)::before {
+        content: "附餐";
+        font-weight: bold;
+    }
+    
+    .cart-item > div:nth-child(3)::before {
+        content: "數量";
+        font-weight: bold;
+    }
+    
+    .cart-item > div:nth-child(4)::before {
+        content: "單價";
+        font-weight: bold;
+    }
+    
+    .cart-item > div:nth-child(5)::before {
+        content: "小計";
+        font-weight: bold;
+    }
+    
+    .cart-total {
+        font-size: 16px;
+    }
+    
+    .cart-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .cart-actions button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+</head>
+<body>
+	<!-- Navbar Start -->
+	<section id="header">
+		<div class="container-fluid p-0 nav-bar">
+			<nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+				<a href="index.html" class="navbar-brand px-lg-4 m-0">
+					<h1 class="m-0 display-4 text-uppercase text-white"
+						style="display: inline-block;">
+						<img src="/img/logo3.png" width="80px" height="80px" alt=""
+							style="vertical-align: middle; margin-right: 0px; margin-top: -10px; border-radius: 50%; object-fit: cover;">
+						<span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+					</h1>
+				</a>
+				<button type="button" class="navbar-toggler" data-toggle="collapse"
+					data-target="#navbarCollapse">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse justify-content-between"
+					id="navbarCollapse">
+					<div class="navbar-nav ml-auto p-4">
+						<a href="index.html" class="nav-item nav-link active">關於我們</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-toggle="dropdown">我要捐款</a>
+							<div class="dropdown-menu text-capitalize">
+								<a href="reservation.html" class="dropdown-item">我要捐款</a> <a
+									href="testimonial.html" class="dropdown-item">捐款查詢</a>
+							</div>
+						</div>
+						<a href="service.html" class="nav-item nav-link">受助者取餐</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-toggle="dropdown">註冊/登入</a>
+							<div class="dropdown-menu text-capitalize">
+								<a href="reservation.html" class="dropdown-item">註冊</a> <a
+									href="testimonial.html" class="dropdown-item">登入</a>
+							</div>
+						</div>
+						<a href="contact.html" class="nav-item nav-link">會員專區</a>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</section>
+
+	<!-- Hero Section Start -->
+	<section id="hero">
+		<div class="container-fluid p-0 mb-5">
+			<div id="hero-carousel" class="carousel slide overlay-bottom"
+				data-ride="carousel">
+				<div class="carousel-inner">
+					<div class="carousel-item active"
+						style="background-image: url('img/圖片3.png'); background-size: 110% auto; background-position: center -300px; height: 570px; filter: brightness(200%);">
+						<div
+							class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+							<h2 class="text-primary font-weight-medium m-0"></h2>
+							<h1 class="display-1 text-white m-0"></h1>
+							<h2 class="text-white m-0"></h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Hero Section End -->
+
+	<!-- Main Content -->
+	<main>
+		<div class="cart-container">
+			<h2>您的購物車</h2>
+
+			<div class="cart-header">
+				<div>主餐</div>
+				<div>附餐</div>
+				<div>數量</div>
+				<div>單價</div>
+				<div>小計</div>
+			</div>
+
+			<div id="cartItems"></div>
+
+			<div class="cart-total" id="cartTotal">總計：0 點</div>
+
+			<div class="cart-actions">
+				<div>
+					<button class="btn-primary" onclick="goBackToOrder()">
+						<i class="fas fa-arrow-left"></i> 繼續點餐
+					</button>
+				</div>
+				<div>
+					<button class="btn-secondary" onclick="clearCart()">
+						<i class="fas fa-trash"></i> 清空購物車
+					</button>
+				</div>
+				<div>
+					<button class="btn-success" onclick="confirmOrder()">
+						<i class="fas fa-check"></i> 確認訂單
+					</button>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- Main Content End -->
+
+	<!-- Footer Start -->
+	<div
+		class="container-fluid footer text-white pt-5 px-0 position-relative overlay-top">
+		<div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">聯絡我們</h4>
+				<p>
+					<i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號
+				</p>
+				<p>
+					<i class="fa fa-phone-alt mr-2"></i>02-2222-5252
+				</p>
+				<p class="m-0">
+					<i class="fa fa-envelope mr-2"></i>allieat105@gmail.com
+				</p>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">關注我們</h4>
+				<p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
+				<div class="d-flex justify-content-start">
+					<a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+						class="fab fa-twitter"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+						class="fab fa-facebook-f"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+						class="fab fa-linkedin-in"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i
+						class="fab fa-instagram"></i></a>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">客服時間</h4>
+				<div>
+					<h6 class="text-white text-uppercase">周一 - 週五</h6>
+					<p>早上10:00 - 晚上21:00</p>
+					<h6 class="text-white text-uppercase">週六 - 週日</h6>
+					<p>早上11:00 - 晚上19:00</p>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">訂閱電子報</h4>
+				<p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
+				<div class="w-100">
+					<div class="input-group">
+						<input type="text" class="form-control border-light"
+							style="padding: 25px;" placeholder="輸入您的信箱">
+						<div class="input-group-append">
+							<button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div
+			class="container-fluid text-center text-white border-top mt-4 py-4 px-sm-3 px-md-5"
+			style="border-color: rgba(256, 256, 256, .1) !important;">
+			<p class="mb-2 text-white">
+				版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>.
+				保留所有權利
+			</p>
+			<p class="m-0 text-white">
+				網站設計由 <a class="font-weight-bold" href="#">攏呷霸股份有限公司 設計部 設計</a>
+			</p>
+		</div>
+	</div>
+	<!-- Footer End -->
+
+	<!-- JavaScript Libraries -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+
+	<script>
+        let cartData = [];
+
+        function loadCart() {
+            fetch('/api/cart')
+                .then(response => response.json())
+                .then(cart => {
+                    if (!cart || cart.length === 0) {
+                        document.getElementById('cartItems').innerHTML = '<div class="text-center text-muted mt-4">購物車是空的。</div>';
+                        document.getElementById('cartTotal').textContent = '總計：0 點';
+                        return;
+                    }
+
+                    fetch('/meal/cart/details', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(cart)
+                    })
+                    .then(res => res.json())
+                    .then(details => {
+                    	 console.log("API 回傳 cart details：", details); // ← 加這一行
+                    	
+                    	
+                        cartData = details;
+
+                        // ✅ 儲存 storeId / storeName 供返回使用
+                        if (details.length > 0) {
+    localStorage.setItem('selectedFood', JSON.stringify({
+        storeId: details[0].storeId,
+        storeName: details[0].storeName
+    }));
+}
+
+
+                        renderCart();
+                    })
+                    .catch(err => {
+                        console.error('獲取購物車詳情失敗：', err);
+                        document.getElementById('cartItems').innerHTML = '<div class="text-center text-danger">載入購物車失敗，請稍後再試。</div>';
+                    });
+                })
+                .catch(err => {
+                    console.error('獲取購物車失敗：', err);
+                    document.getElementById('cartItems').innerHTML = '<div class="text-center text-danger">載入購物車失敗，請稍後再試。</div>';
+                });
+        }
+
+        function renderCart() {
+            const cartItems = document.getElementById('cartItems');
+            let total = 0;
+            cartItems.innerHTML = '';
+
+            cartData.forEach((item, index) => {
+                const itemTotal = item.cost * item.quantity;
+                total += itemTotal;
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cart-item d-grid mb-3';
+                itemDiv.style.gridTemplateColumns = '3fr 3fr 2fr 2fr 2fr';
+                itemDiv.style.alignItems = 'center';
+                itemDiv.innerHTML = `
+                    <div>${item.foodName}</div>
+                    <div>${item.attachedName}</div>
+                    <div>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <button class="btn btn-sm btn-outline-primary" onclick="updateQuantity(${index}, -1)">-</button>
+                            <span class="mx-2">${item.quantity}</span>
+                            <button class="btn btn-sm btn-outline-primary" onclick="updateQuantity(${index}, 1)">+</button>
+                        </div>
+                    </div>
+                    <div>${item.cost} 點</div>
+                    <div>${itemTotal} 點</div>
+                `;
+                cartItems.appendChild(itemDiv);
+            });
+
+            document.getElementById('cartTotal').textContent = `總計：${total} 點`;
+        }
+
+        function updateQuantity(index, change) {
+            if (cartData[index].quantity + change < 1) return;
+
+            cartData[index].quantity += change;
+            renderCart();
+
+            const item = cartData[index];
+            fetch('/api/cart/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    foodId: item.foodId,
+                    attachedId: item.attachedId,
+                    quantity: item.quantity
+                })
+
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (!result.success) {
+                    alert('更新失敗：' + result.message);
+                    loadCart();
+                }
+            })
+            .catch(err => {
+                console.error('更新失敗:', err);
+                loadCart();
+            });
+        }
+
+        function clearCart() {
+            if (confirm('確定要清空購物車嗎？')) {
+                fetch('/api/cart/clear', { method: 'POST' })
+                    .then(() => {
+                        cartData = [];
+                        document.getElementById('cartItems').innerHTML = '<div class="text-center text-muted mt-4">購物車是空的。</div>';
+                        document.getElementById('cartTotal').textContent = '總計：0 點';
+                    });
+            }
+        }
+
+        function goBackToOrder() {
+            const selectedFood = JSON.parse(localStorage.getItem('selectedFood'));
+            if (selectedFood && selectedFood.storeId && selectedFood.storeName) {
+                const storeId = selectedFood.storeId;
+                const storeName = encodeURIComponent(selectedFood.storeName);
+                window.location.href = `/orderfood.html?id=${storeId}&name=${storeName}`;
+            } else {
+                alert('未能找到有效的餐廳資料，請稍後再試。');
+            }
+        }
+
+
+        function confirmOrder() {
+            if (cartData.length === 0) {
+                alert('購物車是空的，請先添加商品');
+                return;
+            }
+            window.location.href = '/checkout.html';
+        }
+
+        window.onload = loadCart;
+    </script>
+</body>
+</html>
+</body>
+</html>

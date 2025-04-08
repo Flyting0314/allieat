@@ -5,7 +5,14 @@ import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+
+import com.entity.AttachedVO;
+import com.entity.OrderDetailVO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.entity.StoreVO;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -180,3 +187,4 @@ public class FoodVO {
     
     
 }
+
