@@ -2,6 +2,7 @@ package com.backstage.backstageservice;
 
 import com.backstage.backstagedto.DonateDTO;
 import com.backstage.backstagedto.DonateInitResponse;
+import com.backstage.backstagedto.DonationDetailsDTO;
 import com.backstage.backstagrepository.DonorRepository;
 import com.entity.DonaVO;
 import org.springframework.beans.BeanUtils;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BackStageDonateManageServiceImpl implements BackStageDonateManageService {
@@ -44,5 +46,38 @@ public class BackStageDonateManageServiceImpl implements BackStageDonateManageSe
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new DonateInitResponse("服務異常請稍後再試"));
         }
+    }
+
+    public ResponseEntity<DonationDetailsDTO> getDonateRecord(Integer id) {
+        Optional<DonaVO> data = donorRepository.findById(id);
+        DonationDetailsDTO donationDetailsDTO = new DonationDetailsDTO();
+        if (data.isPresent()) {
+            DonaVO donaVO = data.get();
+            donationDetailsDTO.setDonorName(donaVO.getIdentityData());
+            donationDetailsDTO.setDonationAmount(donaVO.getDonationIncome());
+            donationDetailsDTO.setDonationTime(donaVO.getCreatedTime());
+            donationDetailsDTO.setContactEmail(donaVO.getEmail());
+            donationDetailsDTO.setContactPhone(donaVO.getPhone());
+            //存入身分證字號或統一編號
+            donationDetailsDTO.setIdentityNumber(donaVO.getGuiNum()!=null ? donaVO.getGuiNum():donaVO.getIdNum());
+            //判斷身分為法人還自然人
+            donationDetailsDTO.setIdentityType(donaVO.getGuiNum()!=null ? Boolean.FALSE:Boolean.TRUE);
+            //設定地址
+            String address = detailsAddress(donaVO.getCounty(),
+                    donaVO.getDistrict(),
+                    donaVO.getAddress());
+            donationDetailsDTO.setAddress(address);
+            System.out.println(donationDetailsDTO);
+
+        } else {
+            donationDetailsDTO.setErrorMsg("查無資料，請重新確認");
+        }
+        return ResponseEntity.ok(donationDetailsDTO);
+    }
+
+    private String detailsAddress(String county, String district, String address) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(county).append("-").append(district).append("-").append(address);
+        return sb.toString();
     }
 }
