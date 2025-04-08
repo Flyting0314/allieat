@@ -359,7 +359,7 @@
             <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active" style="
-                        background-image: url('img/圖片3.png');
+                        background-image: url('/img/圖片3.png');
                         background-size: 110% auto;
                         background-position: center 50px;
                         height: 300px;
@@ -382,7 +382,7 @@
             <div class="row">
                 <!-- 左側圖片與說明 -->
                 <div class="col-md-6">
-                    <img src="img/all_i_eat.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
+                    <img src="/img/001.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
                     <h5 class="text-danger fw-bold">人人溫飽，生活才美好。</h5>
                     <p>
                         我們傳遞的不僅僅是食物，更是一份深深的關愛與陪伴。每一份餐點都是無數人的愛心與付出。您的捐款帶來持續地穩定的經費，讓我們有能力將愛傳遞給最有需要的人，讓世界更美好，形成一個善的循環。
@@ -549,11 +549,13 @@
                             </div>
 
                             <!-- 隱私權選項 -->
-                            <div class="df-privacy-block">
+                            <div class="df-privacy-block" style="margin-top: 20px;">
+                                <label>是否公開徵信<span style="color: red;">*</span></label>
+
                                 <div class="df-radio-row">
                                     <!-- 公開徵信 (預設選項，值為 0) -->
                                     <input type="radio" th:field="*{anonymous}" value="0" id="anonymous-public">
-                                    <label for="anonymous-public">公開徵信(我同意將全名公開於捐款與受助者芳名錄)</label>
+                                    <label for="anonymous-public">公開徵信(我同意將全名公開於捐款與受助者芳名錄)</label><br>
 
                                     <!-- 徵信匿名 (值為 1) -->
                                     <input type="radio" th:field="*{anonymous}" value="1" id="anonymous-private">
@@ -646,10 +648,10 @@
                             <div class="df-receipt-block">
                                 <label class="df-required">是否寄發捐款收據</label>
                                 <div>
-                                    <input type="radio" th:field="*{mailMtd}" value="0" id="personal-receipt-yes">
-                                    <label for="personal-receipt-yes">需要(僅紙本寄發方式,單筆捐款每次寄發，定期捐款年度寄發)</label><br>
-                                    <input type="radio" th:field="*{mailMtd}" value="1" id="personal-receipt-no">
-                                    <label for="personal-receipt-no">不需要(無抵稅需求、不想要收據)</label>
+                                    <input type="radio" th:field="*{mailMtd}" value="0" id="company-receipt-yes">
+                                    <label for="company-receipt-yes">需要(僅紙本寄發方式,單筆捐款每次寄發，定期捐款年度寄發)</label><br>
+                                    <input type="radio" th:field="*{mailMtd}" value="1" id="company-receipt-no">
+                                    <label for="company-receipt-no">不需要(無抵稅需求、不想要收據)</label>
                                 </div>
                                 <span th:if="${#fields.hasErrors('mailMtd')}" th:errors="*{mailMtd}" class="error"
                                     id="mailMtd.errors"></span>
@@ -674,11 +676,13 @@
                             </div>
 
                             <!-- 隱私權選項 -->
-                            <div class="df-privacy-block">
+                            <div class="df-privacy-block" style="margin-top: 20px;">
+                                <label>是否公開徵信<span style="color: red;">*</span></label>
+
                                 <div class="df-radio-row">
                                     <!-- 公開徵信 (預設選項，值為 0) -->
                                     <input type="radio" th:field="*{anonymous}" value="0" id="anonymous-public">
-                                    <label for="anonymous-public">公開徵信(我同意將全名公開於捐款與受助者芳名錄)</label>
+                                    <label for="anonymous-public">公開徵信(我同意將全名公開於捐款與受助者芳名錄)</label><br>
 
                                     <!-- 徵信匿名 (值為 1) -->
                                     <input type="radio" th:field="*{anonymous}" value="1" id="anonymous-private">
@@ -906,7 +910,12 @@
 
                 fields.forEach(id => {
                     const el = form.querySelector(`#${id}`);
-                    const group = el?.closest('.df-input-group') || el?.closest('.df-address-row') || el?.closest('.receipt-target');
+                    let group;
+                    if (['postalCode', 'county', 'district', 'address'].includes(id)) {
+                        group = form.querySelector('.df-address-row')?.parentElement;
+                    } else {
+                        group = el?.closest('.df-input-group') || el?.closest('.receipt-target');
+                    }
                     if (group) {
                         group.style.display = isNeedReceipt ? '' : 'none';
                     }
@@ -983,7 +992,12 @@
 
                 fields.forEach(id => {
                     const el = form.querySelector(`#${id}`);
-                    const group = el?.closest('.df-input-group') || el?.closest('.df-address-row') || el?.closest('.receipt-target');
+                    let group;
+                    if (['postalCode', 'county', 'district', 'address'].includes(id)) {
+                        group = form.querySelector('.df-address-row')?.parentElement;
+                    } else {
+                        group = el?.closest('.df-input-group') || el?.closest('.receipt-target');
+                    }
                     if (group) {
                         group.style.display = isNeedReceipt ? '' : 'none';
                     }
