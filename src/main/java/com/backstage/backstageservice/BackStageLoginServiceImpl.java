@@ -4,7 +4,6 @@ package com.backstage.backstageservice;
 import com.backstage.backstagrepository.BackStageLoginDao;
 
 import com.jwtUtil.JwtUtil;
-import com.jwtUtil.TokenStorage;
 import com.entity.AdminVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +21,7 @@ public class BackStageLoginServiceImpl implements BackStageLoginService {
     private BackStageLoginDao backStageLogin;
     @Autowired
     private JwtUtil jwtUtil;
-    @Autowired
-    private TokenStorage tokenStorage;
+
 
 
     @Override
@@ -36,8 +34,6 @@ public class BackStageLoginServiceImpl implements BackStageLoginService {
                 if (foundAdmin.getPassword() != null && foundAdmin.getPassword().equals(admin.getPassword())) {
                     //產生Token
                     String token = jwtUtil.generateToken(foundAdmin.getAccount());
-                    //存Token
-                    tokenStorage.saveToken(foundAdmin.getAccount(), token);
                     //回傳值設定
                     Map<String,Object> result = createResult("login ok","/backstage_homepage.html");
                     result.put("token", token);
