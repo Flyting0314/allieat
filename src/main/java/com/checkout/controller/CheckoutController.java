@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.util.*;
 
-import com.food.model.FoodService;
+import com.cartfood.model.CartFoodService;
 import com.entity.FoodVO;
 import com.store.model.StoreService;
 
@@ -17,7 +17,7 @@ import com.store.model.StoreService;
 public class CheckoutController {
 
     @Autowired
-    private FoodService foodService;
+    private CartFoodService foodService;
 
     @Autowired
     private StoreService storeService;

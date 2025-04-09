@@ -1,4 +1,4 @@
-package com.food.model;
+package com.cartfood.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import java.util.Optional;
 import com.entity.FoodVO;
 
 @Service
-public class FoodService {
+public class CartFoodService {
 
     @Autowired
     private FoodRepository foodRepository;

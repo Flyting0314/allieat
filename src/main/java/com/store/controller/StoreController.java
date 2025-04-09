@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.store.model.StoreService;
 import com.entity.StoreVO;
-import com.food.model.FoodService;
+import com.cartfood.model.CartFoodService;
 import com.entity.FoodVO;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class StoreController {
     private StoreService storeService;
 
     @Autowired
-    private FoodService foodService;
+    private CartFoodService foodService;
 
     // 取得特定 storeId 的餐廳資訊
     @GetMapping("/{storeId}")
