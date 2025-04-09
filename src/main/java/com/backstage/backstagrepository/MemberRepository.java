@@ -41,6 +41,9 @@ public interface MemberRepository extends JpaRepository<MemberVO, Integer> {
 
 	List<MemberVO> findByReviewedIn(List<Integer> reviewedList);
 
+	MemberVO findByIdNum(String idNum);
+
+
 
 }
 

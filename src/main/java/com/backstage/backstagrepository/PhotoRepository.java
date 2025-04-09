@@ -19,6 +19,8 @@ public interface PhotoRepository extends JpaRepository<PhotoVO, Integer> {
 	Optional<PhotoVO> findTopByStoreAndPhotoType(StoreVO store, String photoType);
 	
 	    Optional<PhotoVO> findFirstByStoreStoreIdAndPhotoTypeOrderByUpdateTimeDesc(Integer storeId, String photoType);
+		List<PhotoVO> findByStoreStoreId(Integer storeId);
+		
 	
 
 }
