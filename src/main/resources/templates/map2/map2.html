@@ -185,7 +185,7 @@
 	animation: spin 1s ease-in-out infinite;
 }
 
-keyframes spin {to { transform:rotate(360deg);
+@keyframes spin {to { transform:rotate(360deg);
 	
 }
 
@@ -520,9 +520,9 @@ keyframes spin {to { transform:rotate(360deg);
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
 						data-dismiss="modal">關閉</button>
-						<button type="button" class="btn btn-primary btn-restaurant">前往點餐</button>
+					<button type="button" class="btn btn-primary btn-restaurant">前往點餐</button>
 					<button type="button" class="btn btn-primary btn-navigation">前往導航</button>
-                    <!-- <button onclick="debugStore()">調試餐廳數據</button> -->
+					<!-- <button onclick="debugStore()">調試餐廳數據</button> -->
 				</div>
 			</div>
 		</div>
@@ -637,6 +637,9 @@ keyframes spin {to { transform:rotate(360deg);
     let infowindow;
     let markers = []; // 存儲所有標記
     let userMarker; // 用戶位置標記
+    let tempSearchMarker = null;  // 使用者搜尋位置的紅點
+    let tempRouteMarker = null;   // 導航目的地的橘點
+
     
     // 模擬 API 獲取熱門地點數據（實際使用時替換為真實 API）
     const restaurantApi = {
@@ -829,17 +832,17 @@ keyframes spin {to { transform:rotate(360deg);
         map.setZoom(17);
         
         // 更新標記
-        if (marker) marker.setMap(null);
-        marker = new google.maps.Marker({
-            map: map,
-            position: selectRestaurant.location,
-            animation: google.maps.Animation.DROP,
-            icon: {
-                url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                scaledSize: new google.maps.Size(40, 40)
-            },
-            title: selectRestaurant.name
-        });
+        if (tempSearchMarker) tempSearchMarker.setMap(null);
+tempSearchMarker = new google.maps.Marker({
+    map: map,
+    position: selectRestaurant.location,
+    animation: google.maps.Animation.DROP,
+    icon: {
+        url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+        scaledSize: new google.maps.Size(40, 40)
+    },
+    title: selectRestaurant.name
+});
         
         // 更新側邊欄資訊
         updateRestaurantInfo(selectRestaurant);
@@ -1367,8 +1370,8 @@ function showRestaurantModal(restaurant) {
                 // 添加起點和終點標記
                 // 起點已有用戶位置標記
                 // 添加終點標記
-                if (marker) marker.setMap(null);
-                marker = new google.maps.Marker({
+             // 添加終點標記（改為區域變數）
+                const destinationMarker = new google.maps.Marker({
                     position: new google.maps.LatLng(destination.lat, destination.lng),
                     map: map,
                     title: destinationName,
@@ -1378,6 +1381,7 @@ function showRestaurantModal(restaurant) {
                     },
                     zIndex: 900
                 });
+
             } else {
                 alert('無法規劃路線：' + status);
                 
@@ -1511,17 +1515,7 @@ function showRestaurantModal(restaurant) {
             });
 
                 //===========測試用================
-                function debugRestaurant(btn, id, name) {
-                console.log('準備跳轉,餐廳ID:', id, '餐廳名稱:', name);
-                console.log('按鈕元素:', btn);
-                console.log('找到相應店家:', stores.find(s => s.name === name));
-                
-                // 延遲跳轉，以便查看調試信息
-                setTimeout(() => {
-                    goToRestaurantPage(id, name);
-                }, 3000);
-            }
-             //===========測試用================
+      
 
             });
             
@@ -1589,24 +1583,15 @@ function showRestaurantModal(restaurant) {
     
     </script>
 
-	<!-- Contact Javascript File -->
-	<script src="mail/jqBootstrapValidation.min.js"></script>
-	<script src="mail/contact.js"></script>
-
-	<!-- Template Javascript -->
-	<script src="js/main.js"></script>
-</body>
-</html>
-
-<!-- Google Maps API -->
-<script async
-	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwk4bH6RdOWmqwmrpdYu7-NKZin0St0vQ&libraries=places&callback=initMap&region=TW&language=zh-TW">
+	<!-- Google Maps API -->
+	<script async
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwk4bH6RdOWmqwmrpdYu7-NKZin0St0vQ&libraries=places&callback=initMap&region=TW&language=zh-TW">
     </script>
 
-<!-- 初始化功能 -->
+	<!-- 初始化功能 -->
 
 
-<script>
+	<script>
 //當頁面完全載入後執行
 $(document).ready(function() {
     // 修改搜尋按鈕點擊事件 - 結合 Google Places API 和資料庫搜尋
@@ -1857,13 +1842,12 @@ $(document).on('click', '.restaurant-item', function(e) {
 
 
 </script>
-</script>
 
-<!-- Contact Javascript File -->
-<script src="mail/jqBootstrapValidation.min.js"></script>
-<script src="mail/contact.js"></script>
+	<!-- Contact Javascript File -->
+	<script src="mail/jqBootstrapValidation.min.js"></script>
+	<script src="mail/contact.js"></script>
 
-<!-- Template Javascript -->
-<script src="js/main.js"></script>
+	<!-- Template Javascript -->
+	<script src="js/main.js"></script>
 </body>
 </html>

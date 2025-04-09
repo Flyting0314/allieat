@@ -427,6 +427,7 @@ keyframes spin {to { transform:rotate(360deg);
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
 						data-dismiss="modal">關閉</button>
+						<a th:href="@{/food/store/{id}(id=${storeId})}" class="btn">前往點餐</a>
 					<button type="button" class="btn btn-primary">前往導航</button>
 				</div>
 			</div>
@@ -1402,6 +1403,9 @@ keyframes spin {to { transform:rotate(360deg);
     </script>
 
 <!-- 初始化功能 -->
+<!-- 初始化功能 -->
+<!-- 初始化功能 -->
+
 <script>
 //當頁面完全載入後執行
 $(document).ready(function() {
@@ -1416,12 +1420,6 @@ $(document).ready(function() {
         if (localResults.length > 0) {
             // 如果在本地資料庫中找到結果，顯示這些結果
             displaySearchResults(localResults);
-            
-            const storeLocation = { 
-            	    lat: parseFloat(store.latitude),
-            	    lng: parseFloat(store.longitude)
-            	};
-            
         } else {
             // 如果本地沒有找到結果，使用 Google Places API 搜尋
             if (typeof google !== 'undefined' && google.maps && google.maps.places) {
@@ -1499,79 +1497,150 @@ $(document).ready(function() {
         }
     });
     
-    // 🔍 自動完成建議 + 高亮關鍵字
-   // 🔍 自動完成建議 + 高亮關鍵字 + 自動導航
-$('#search-input').on('input', function () {
-    const keyword = $(this).val().trim().toLowerCase();
-    const suggestionBox = $('#autocomplete-suggestions');
-    suggestionBox.empty();
-    if (keyword.length === 0) {
-        suggestionBox.hide();
-        return;
-    }
-    const matched = stores.filter(store =>
-        store.name.toLowerCase().includes(keyword) ||
-        store.address.toLowerCase().includes(keyword)
-    );
-    if (matched.length === 0) {
-        suggestionBox.hide();
-        return;
-    }
-    matched.slice(0, 8).forEach(store => {
-        // 👉 高亮店名和地址中的關鍵字
-        const highlight = (text) => {
-            const regex = new RegExp(`(${keyword})`, 'gi');
-            return text.replace(regex, '<b>$1</b>');
-        };
-        const suggestionItem = $(`
-            <li class="list-group-item list-group-item-action">
-                ${highlight(store.name)} - ${highlight(store.address)}
-            </li>
-        `);
-        suggestionItem.on('click', function () {
-            $('#search-input').val(store.name);
+    // 🔍 自動完成建議 + 高亮關鍵字 + 只顯示餐廳位置（不導航）
+    $('#search-input').on('input', function () {
+        const keyword = $(this).val().trim().toLowerCase();
+        const suggestionBox = $('#autocomplete-suggestions');
+        suggestionBox.empty();
+        
+        if (keyword.length === 0) {
             suggestionBox.hide();
-            displaySearchResults([store]);
-
-            const destination = {
-                lat: parseFloat(store.latitude),
-                lng: parseFloat(store.longitude)
+            return;
+        }
+        
+        const matched = stores.filter(store =>
+            store.name.toLowerCase().includes(keyword) ||
+            store.address.toLowerCase().includes(keyword)
+        );
+        
+        if (matched.length === 0) {
+            suggestionBox.hide();
+            return;
+        }
+        
+        matched.slice(0, 8).forEach(store => {
+            // 高亮關鍵字
+            const highlight = (text) => {
+                const regex = new RegExp(`(${keyword})`, 'gi');
+                return text.replace(regex, '<b>$1</b>');
             };
-
-            // 更新 selectRestaurant，這樣右側餐廳資訊才能正確顯示
-            selectRestaurant = {
-                name: store.name,
-                address: store.address,
-                phoneNumber: store.phone || store.phoneNumber,
-                rating: store.rating || 4.5,
-                location: destination,
-                id: store.id,
-                category: store.category || '餐飲',
-                tags: store.tags || ['愛心合作店']
-            };
-
-            // 顯示側欄資訊
-            updateRestaurantInfo(selectRestaurant);
-
-            // 找到標記並觸發點擊
-            const marker = markers.find(m => m.storeId == store.id);
-            if (marker) {
-                map.setCenter(marker.getPosition());
-                map.setZoom(16);
-                google.maps.event.trigger(marker, 'click');
-            }
-
-            // 顯示導航
-            if (destination && currentPosition) {
-                showRouteInMap(destination, store.name);
-            }
+            
+            const suggestionItem = $(`
+                <li class="list-group-item list-group-item-action">
+                    ${highlight(store.name)} - ${highlight(store.address)}
+                </li>
+            `);
+            
+            suggestionItem.on('click', function() {
+                // 更新搜尋框值並隱藏建議框
+                $('#search-input').val(store.name);
+                suggestionBox.hide();
+                
+                console.log('點擊餐廳建議:', store);
+                
+                // 顯示搜尋結果
+                displaySearchResults([store]);
+                
+                // 1. 清除任何現有路線
+                if (directionsRenderer) {
+                    directionsRenderer.setMap(null);
+                }
+                
+                // 2. 找到對應的標記
+                const storeId = store.id;
+                const marker = markers.find(m => m.storeId == storeId);
+                
+                if (marker) {
+                    console.log('找到餐廳標記:', marker);
+                    
+                    // 直接使用現有標記
+                    marker.setVisible(true);
+                    map.setCenter(marker.getPosition());
+                    map.setZoom(16);
+                    
+                    // 觸發標記點擊事件顯示信息窗口
+                    google.maps.event.trigger(marker, 'click');
+                } else {
+                    console.log('未找到標記，手動創建:', store);
+                    
+                    // 直接從原始資料創建新標記
+                    try {
+                        // 嘗試獲取有效座標
+                        const validLat = parseFloat(store.latitude);
+                        const validLng = parseFloat(store.longitude);
+                        
+                        if (isNaN(validLat) || isNaN(validLng)) {
+                            console.error('餐廳座標無效:', store);
+                            return;
+                        }
+                        
+                        const position = {
+                            lat: validLat,
+                            lng: validLng
+                        };
+                        
+                        console.log('創建新標記於位置:', position);
+                        
+                        // 創建新標記
+                        if (window.tempMarker) {
+                            window.tempMarker.setMap(null);
+                        }
+                        
+                        window.tempMarker = new google.maps.Marker({
+                            position: position,
+                            map: map,
+                            title: store.name,
+                            icon: {
+                                url: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+                                scaledSize: new google.maps.Size(36, 36)
+                            },
+                            animation: google.maps.Animation.DROP,
+                            storeId: store.id
+                        });
+                        
+                        // 將標記添加到標記數組
+                        markers.push(window.tempMarker);
+                        
+                        // 移動地圖到標記位置
+                        map.setCenter(position);
+                        map.setZoom(16);
+                        
+                        // 創建信息窗口
+                        const infoContent = `
+                            <div class="info-window">
+                                <h3>${store.name}</h3>
+                                <div><strong>地址：</strong>${store.address}</div>
+                                <div><strong>電話：</strong>${store.phone || '無電話資訊'}</div>
+                                <div><strong>評分：</strong>${store.rating || 4.5} / 5</div>
+                            </div>
+                        `;
+                        
+                        // 顯示信息窗口
+                        infowindow.setContent(infoContent);
+                        infowindow.open(map, window.tempMarker);
+                        
+                        // 更新餐廳信息面板
+                        selectRestaurant = {
+                            name: store.name,
+                            address: store.address,
+                            phoneNumber: store.phone || '',
+                            rating: store.rating || 4.5,
+                            location: position,
+                            id: store.id
+                        };
+                        
+                        updateRestaurantInfo(selectRestaurant);
+                    } catch (error) {
+                        console.error('創建標記時出錯:', error);
+                    }
+                }
+            });
+            
+            suggestionBox.append(suggestionItem);
         });
-
-        suggestionBox.append(suggestionItem);
+        
+        suggestionBox.show();
     });
-    suggestionBox.show();
-});
-
     
     // 🔍 點擊其他地方時隱藏建議清單
     $(document).on('click', function (e) {
@@ -1581,6 +1650,7 @@ $('#search-input').on('input', function () {
         }
     });
 });
+</script>
 </script>
 
 <!-- Contact Javascript File -->

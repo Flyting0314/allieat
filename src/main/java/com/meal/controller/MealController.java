@@ -1,10 +1,10 @@
 package com.meal.controller;
 
-import com.food.model.FoodService;
 import com.entity.FoodVO;
 import com.store.model.StoreService;
 import com.entity.StoreVO;
 import com.attached.model.AttachedService;
+import com.cartfood.model.CartFoodService;
 import com.entity.AttachedVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.*;
 public class MealController {
 
     @Autowired
-    private FoodService foodService;
+    private CartFoodService foodService;
 
     @Autowired
     private AttachedService attachedService;
