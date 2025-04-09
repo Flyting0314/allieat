@@ -402,10 +402,13 @@ body {
 }
 
 .vendor_photo_display img {
-	max-width: 300px; /* ✅ 限制圖片大小，避免過大 */
-	max-height: 250px;
-	object-fit: cover;
-	border-radius: 10px;
+    max-width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+.vendor_photo_display p {
+    font-weight: bold;
+    margin-bottom: 8px;
 }
 
 .vendor_action_buttons {
@@ -483,15 +486,23 @@ body {
 			<div class="vendor_main_content" id="profileContent">
 				<h1 class="vendor_page_title">店家封面照</h1>
 
-				<!--  店家封面照 -->
-				<div class="vendor_photo_display">
-					<th:block th:if="${coverPhotoUrl}">
-						<img th:src="${coverPhotoUrl}" alt="店家封面照" class="store-cover">
-					</th:block>
-					<th:block th:unless="${coverPhotoUrl}">
-						<img src="/img/default-cover.png" alt="預設封面照" class="store-cover">
-					</th:block>
-				</div>
+<!-- 封面照區塊 -->
+<div class="vendor_photo_display" style="display: flex; gap: 20px;">
+    <div th:each="photo : ${photoList}" th:if="${photo.photoType == 'COVER'}" style="text-align: center;">
+        <p>封面照</p>
+        <img th:src="${photo.src}" alt="封面照片" style="max-width:200px; border-radius: 8px;" />
+    </div>
+
+    <div th:each="photo : ${photoList}" th:if="${photo.photoType == 'STORE'}" style="text-align: center;">
+        <p>店面環境照</p>
+        <img th:src="${photo.src}" alt="店面照片" style="max-width:200px; border-radius: 8px;" />
+    </div>
+
+    <div th:each="photo : ${photoList}" th:if="${photo.photoType == 'KITCHEN'}" style="text-align: center;">
+        <p>廚房環境照</p>
+        <img th:src="${photo.src}" alt="廚房照片" style="max-width:200px; border-radius: 8px;" />
+    </div>
+</div>
 
 				<a th:href="@{/registerAndLogin/logout}"
 					class="vendor_logout_btn logout-button">登出</a>
