@@ -117,9 +117,8 @@
         
         /* 照片上傳區域 */
         .partner_photos_section {
-            margin-top: 30px;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
         }
         
         .partner_photo_upload_title {
@@ -131,15 +130,19 @@
         }
         
         .partner_photo_grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
+            display: flex;
+    justify-content: space-between;
+    gap: 20px; /* 控制間距 */
+    flex-wrap: wrap;
         }
         
         .partner_photo_item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+             flex: 1 1 30%; /* 三等分寬度 */
+    max-width: 32%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
         }
         
         .partner_photo_label {
@@ -148,23 +151,19 @@
             color: #333;
         }
         
-        .partner_photo_preview {
-            width: 150px;
-            height: 150px;
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px dashed #ccc;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .partner_photo_preview img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: cover;
-        }
+       .partner_photo_preview {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+.partner_photo_preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
         
         .partner_photo_upload_controls {
             flex: 1;
@@ -305,21 +304,21 @@
 <th:block th:with="hasSubmitted=${hasSubmitted}">
         <form th:action="@{/registerAndLogin/register/store}" th:object="${store}" method="post" enctype="multipart/form-data" >
 <!--             ✅ 全域錯誤提示（後端訊息，如：信箱重複） -->
-<!--     <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div> -->
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
 <!--     ✅ Global error 提示（通常是手動 reject 值） -->
-<!--     <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}"> -->
-<!--         <ul class="mb-0"> -->
-<!--             <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li> -->
-<!--         </ul> -->
-<!--     </div> -->
+    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+        <ul class="mb-0">
+            <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+        </ul>
+    </div>
 
 <!--     ✅ 所有欄位錯誤集中顯示（如：密碼長度、Email格式等） -->
-<!--     <div class="alert alert-danger" th:if="${#fields.hasErrors()}"> -->
-<!--         <ul class="mb-0"> -->
-<!--             <li th:each="err : ${#fields.errors()}" th:text="${err}"></li> -->
-<!--         </ul> -->
-<!--     </div> -->
+    <div class="alert alert-danger" th:if="${#fields.hasErrors()}">
+        <ul class="mb-0">
+            <li th:each="err : ${#fields.errors()}" th:text="${err}"></li>
+        </ul>
+    </div>
             <!-- 店家名稱 -->
             <div class="partner_form_group">
                 <label class="partner_form_label">店家名稱</label>

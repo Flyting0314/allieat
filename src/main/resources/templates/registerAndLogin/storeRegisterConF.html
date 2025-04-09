@@ -49,6 +49,30 @@
             padding: 10px 20px;
             font-size: 16px;
         }
+        .confirm-photo-preview {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.confirm-photo-item {
+    flex: 1 1 30%;
+    max-width: 32%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.confirm-photo-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 8px;
+}
     </style>
 </head>
 <body>
@@ -85,9 +109,9 @@
 <!--     </span> -->
 <!--     <img th:attr="src=${base64}" alt="店家圖片" /> -->
 <span class="confirm-photo-label" th:switch="${photo.photoType}">
-            <span th:case="'COVER'">店家封面照：</span>
-            <span th:case="'KITCHEN'">廚房環境照：</span>
             <span th:case="'STORE'">店面環境照：</span>
+            <span th:case="'KITCHEN'">廚房環境照：</span>
+            <span th:case="'COVER'">店家封面照：</span>
             <span th:case="*">其他照片：</span>
         </span>
         <img th:src="${photo.src}" alt="店家圖片" />

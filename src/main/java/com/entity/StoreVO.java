@@ -106,8 +106,8 @@ public class StoreVO implements Serializable{
 	private Integer starNum=0;
 	private Integer visitorsNum=0;
 	@Column(name = "reviewed",columnDefinition = "TINYINT(1)")
-	@Min(value = 0, message = "審核狀態填寫數字:0=審核中; 1=已通過; 2=未通過; 3=未審核")
-    @Max(value = 3, message = "審核狀態填寫數字:0=審核中; 1=已通過; 2=未通過; 3=未審核")
+	@Min(value = 0, message = "審核狀態填寫數字:0=(備用); 1=已通過; 2=未通過/補件; 3=未審核")
+    @Max(value = 3, message = "審核狀態填寫數字:0=(備用); 1=已通過; 2=未通過/補件; 3=未審核")
 	private Integer reviewed=3;
 	
 	private String mapApi;
