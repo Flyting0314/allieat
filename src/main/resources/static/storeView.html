@@ -9,6 +9,26 @@
 </head>
 <body>
 
+<script>
+  // ✅ 驗證登入狀態
+  const token = localStorage.getItem("jwtToken");
+  if (!token) {
+    alert("請先登入");
+    window.location.href = "/backstage_login.html";
+  }
+
+  // ✅ 封裝 fetch，統一加上 JWT Token
+  function authFetch(url, options = {}) {
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...options.headers,
+        "Authorization": "Bearer " + token
+      }
+    });
+  }
+</script>
+
 <div class="container-fluid">
   <div class="row">
     <!-- 側邊欄 -->
@@ -112,7 +132,7 @@
   const storeId = urlParams.get("storeId");
 
   // 取得店家資料
-  fetch(`/admin/store/${storeId}`)
+  authFetch(`/backStage/store/${storeId}`)
     .then(res => res.json())
     .then(store => {
       document.getElementById("storeName").value = store.name;
@@ -128,10 +148,9 @@
     });
 
   // 取得圖片資料
-  fetch(`/admin/store/${storeId}/photos`)
+  authFetch(`/backStage/store/${storeId}/photos`)
     .then(res => res.json())
     .then(photos => {
-		console.log("照片資料", photos);
       document.getElementById("coverPhoto").src = photos.coverPhotoUrl || "img/default.jpg";
       document.getElementById("kitchenPhoto").src = photos.kitchenPhotoUrl || "img/default.jpg";
       document.getElementById("storePhoto").src = photos.storePhotoUrl || "img/default.jpg";
