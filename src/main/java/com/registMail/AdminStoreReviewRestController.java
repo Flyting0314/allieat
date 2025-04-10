@@ -7,12 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.backstage.backstagrepository.PhotoRepository;
 import com.backstage.backstagrepository.StoreRepository;
@@ -20,7 +15,7 @@ import com.entity.PhotoVO;
 import com.entity.StoreVO;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/backStage") // ✅ 改這一行，讓 Intercepter 能攔住
 public class AdminStoreReviewRestController {
 
     @Autowired
@@ -28,29 +23,29 @@ public class AdminStoreReviewRestController {
 
     @Autowired
     private EmailService emailService;
-    
+
     @Autowired
     private PhotoRepository photoRepository;
-    
- // ✅ 取得所有店家（不管 reviewed 或 accStat 狀態）
+
+    // ✅ 取得所有店家
     @GetMapping("/stores")
     public List<StoreVO> getAllStores() {
         return storeRepository.findAll();
     }
 
-    // ✅ 取得待審核的店家（reviewed = 0 或 3）
+    // ✅ 取得待審核的店家
     @GetMapping("/stores/reviewing")
     public List<StoreVO> getPendingStores() {
         return storeRepository.findByReviewedIn(List.of(0, 3));
     }
-    
- // ✅ 取得單一店家詳細資料
+
+    // ✅ 取得單一店家詳細資料
     @GetMapping("/store/{storeId}")
     public StoreVO getStoreById(@PathVariable int storeId) {
-        return storeRepository.findById(storeId)
-            .orElseThrow(() -> new RuntimeException("找不到店家資料"));
+        return storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("找不到店家資料"));
     }
-    
+
+    // ✅ 取得店家照片（轉 base64）
     @GetMapping("/store/{storeId}/photos")
     public Map<String, String> getStorePhotos(@PathVariable int storeId) {
         List<PhotoVO> photos = photoRepository.findByStoreStoreId(storeId);
@@ -59,7 +54,7 @@ public class AdminStoreReviewRestController {
         for (PhotoVO photo : photos) {
             if (photo.getPhotoSrc() != null) {
                 String base64 = Base64.getEncoder().encodeToString(photo.getPhotoSrc());
-                String dataUri = "data:image/jpeg;base64," + base64; // 假設是 JPEG，如果是 PNG 要改為 image/png
+                String dataUri = "data:image/jpeg;base64," + base64;
 
                 switch (photo.getPhotoType().toLowerCase()) {
                     case "cover" -> result.put("coverPhotoUrl", dataUri);
@@ -71,12 +66,10 @@ public class AdminStoreReviewRestController {
 
         return result;
     }
-    
-    // ✅ 審核單一店家
-    @PutMapping("/store/{storeId}/review")
-    public String reviewStore(@PathVariable int storeId,
-                              @RequestParam String approved) {
 
+    // ✅ 店家審核（通過/退件/補件）
+    @PutMapping("/store/{storeId}/review")
+    public String reviewStore(@PathVariable int storeId, @RequestParam String approved) {
         Optional<StoreVO> storeOpt = storeRepository.findById(storeId);
         if (storeOpt.isEmpty()) {
             return "店家不存在";
@@ -104,7 +97,7 @@ public class AdminStoreReviewRestController {
         return "店家審核完成";
     }
 
-    // ✅ 切換店家啟用狀態（1 ⇄ 2）
+    // ✅ 切換啟用/停用狀態
     @PutMapping("/store/{storeId}/toggleStatus")
     public String toggleStoreStatus(@PathVariable int storeId) {
         Optional<StoreVO> storeOpt = storeRepository.findById(storeId);
@@ -119,9 +112,9 @@ public class AdminStoreReviewRestController {
         }
 
         if (store.getAccStat() == 1) {
-            store.setAccStat(2); // 改為停用
+            store.setAccStat(2);
         } else if (store.getAccStat() == 2) {
-            store.setAccStat(1); // 改為啟用
+            store.setAccStat(1);
         } else {
             return "帳號狀態異常";
         }

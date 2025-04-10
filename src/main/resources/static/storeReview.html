@@ -9,6 +9,27 @@
 </head>
 <body>
 
+<script>
+  // ✅ 登入驗證：沒有 token 就跳回登入頁
+  const token = localStorage.getItem("jwtToken");
+  if (!token) {
+    alert("請先登入");
+    window.location.href = "/backstage_login.html";
+  }
+
+  // ✅ 統一封裝 fetch，加上 Authorization header
+  function authFetch(url, options = {}) {
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        "Authorization": "Bearer " + token
+      }
+    });
+  }
+</script>
+
+
 <div class="container-fluid">
   <div class="row">
     <!-- 側邊欄 -->
@@ -114,35 +135,56 @@
   const storeId = urlParams.get("storeId");
 
   // ✅ 載入店家資料
-  fetch(`/admin/store/${storeId}`)
-    .then(res => res.json())
-    .then(store => {
-      document.getElementById("storeName").value = store.name;
-      document.getElementById("managerName").value = store.managerName;
-      document.getElementById("email").value = store.email;
-      document.getElementById("phoneNum").value = store.phoneNum;
-      document.getElementById("guiNum").value = store.guiNum;
-      document.getElementById("businessRegNum").value = store.businessRegNum;
-      document.getElementById("county").value = store.county;
-      document.getElementById("district").value = store.district;
-      document.getElementById("postalCode").value = store.postalCode;
-      document.getElementById("address").value = store.address;
+  // 🔹 載入店家基本資料
+authFetch(`/backStage/store/${storeId}`)
+  .then(res => {
+    if (!res.ok) {
+      if (res.status === 401) {
+        alert("請先登入");
+        window.location.href = "/backstage_login.html";
+      }
+      throw new Error("無法載入店家資料");
+    }
+    return res.json();
+  })
+  .then(store => {
+    document.getElementById("storeName").value = store.name;
+    document.getElementById("managerName").value = store.managerName;
+    document.getElementById("email").value = store.email;
+    document.getElementById("phoneNum").value = store.phoneNum;
+    document.getElementById("guiNum").value = store.guiNum;
+    document.getElementById("businessRegNum").value = store.businessRegNum;
+    document.getElementById("county").value = store.county;
+    document.getElementById("district").value = store.district;
+    document.getElementById("postalCode").value = store.postalCode;
+    document.getElementById("address").value = store.address;
+  })
+  .catch(err => {
+    alert("載入店家資料失敗");
+    console.error(err);
+  });
 
-      // 如果你有圖片欄位像 store.coverPhotoUrl，請照實對應
-      document.getElementById("coverPhoto").src = store.coverPhotoUrl;
-      document.getElementById("kitchenPhoto").src = store.kitchenPhotoUrl;
-      document.getElementById("storePhoto").src = store.storePhotoUrl;
-    })
-    .catch(err => {
-      alert("載入店家資料失敗");
-      console.error(err);
-    });
+// 🔹 載入店家圖片資料（photo table）
+authFetch(`/backStage/store/${storeId}/photos`)
+  .then(res => {
+    if (!res.ok) throw new Error("圖片載入失敗");
+    return res.json();
+  })
+  .then(photos => {
+    document.getElementById("coverPhoto").src = photos.coverPhotoUrl || "img/default.jpg";
+    document.getElementById("kitchenPhoto").src = photos.kitchenPhotoUrl || "img/default.jpg";
+    document.getElementById("storePhoto").src = photos.storePhotoUrl || "img/default.jpg";
+  })
+  .catch(err => {
+    console.error("圖片載入失敗", err);
+  });
+
 
   // ✅ 提交審核
   function submitReview(status) {
     if (!confirm("確定要送出審核結果？")) return;
 
-    fetch(`/admin/store/${storeId}/review?approved=${status}`, {
+    authFetch(`/backStage/store/${storeId}/review?approved=${status}`, {
       method: "PUT"
     })
     .then(res => res.text())
