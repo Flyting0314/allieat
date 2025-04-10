@@ -308,9 +308,10 @@ input:checked+.slider:before {
 <!-- 				</div> -->
 <!-- 			</div> -->
 		</div>
-	</div>
 	<script>
+	
 	const storeId = [[${storeId}]];
+	
 	document.addEventListener("DOMContentLoaded", function () {
 	    fetch(`/registerAndLogin/storeInfo/${storeId}/menuEdit/findAll`)
 	        .then(response => response.json())
