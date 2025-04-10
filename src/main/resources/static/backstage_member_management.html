@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>受助者管理</title>
+    <!-- 驗證 -->
+    <script src="./js/backstage_auth_js.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
     <link rel="stylesheet" href="css/style_backstage.css">
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
     
     
     <style>
@@ -277,13 +279,15 @@
             height: 100%;
             overflow: auto;
             background-color: rgba(0,0,0,0.9);
+            text-align: center; /* 水平居中 */
         }
 
         .memberManagement-modal-content {
-            margin: auto;
-            display: block;
+            display: none; /* 初始隱藏，等 JS 處理完定位後顯示 */
+            margin: 0 auto; /* 水平居中 */
             max-width: 80%;
-            max-height: 80%;
+            max-height: 80vh; /* 使用視窗高度的百分比 */
+            object-fit: contain; /* 保持圖片比例 */
         }
 
         .memberManagement-close {
@@ -473,20 +477,32 @@
     <img class="memberManagement-modal-content" id="memberManagement-modalImage">
 </div>
 
+
+
 <script>
+
 // 頁面加載完成後執行
 const itemsPerPage = 7; // 每頁顯示的資料數量
-
 
 
 // 保存原始數據，以便返回
 let originalMemberData = [];
 let isSearchActive = false;
 
+// 全域變數，追蹤排序狀態
+let memberIdSortAscending = true;
+let currentSortedData = []; // 全域變數儲存排序後的完整資料
+
 // 頁面加載完成後執行
 document.addEventListener('DOMContentLoaded', function() {
+    //啟用登入檢查
+    backstageAuth.requireLogin();
+
     // 載入表格數據
     loadMemberData();
+    
+    // 載入在冊單位選項
+    loadOrganizatonOptions();
     
     // 搜尋按鈕事件處理
     document.getElementById('search-button').addEventListener('click', function() {
@@ -513,8 +529,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 重載原始資料
         if (originalMemberData.length > 0) {
-            renderTable(originalMemberData.slice(0, itemsPerPage));
-            renderPagination({
+            window.renderTable(originalMemberData.slice(0, itemsPerPage));
+            window.renderPagination({
                 total_items: originalMemberData.length,
                 total_pages: Math.ceil(originalMemberData.length / itemsPerPage),
                 current_page: 1,
@@ -524,11 +540,20 @@ document.addEventListener('DOMContentLoaded', function() {
             loadMemberData(); // 如果沒有原始數據，則重新加載
         }
     });
+    
+    // 移除審核狀態下拉選單中的"審核中"選項
+    const auditStatusFilter = document.getElementById('auditStatusFilter');
+    for (let i = 0; i < auditStatusFilter.options.length; i++) {
+        if (auditStatusFilter.options[i].value === "pending") {
+            auditStatusFilter.remove(i);
+            break;
+        }
+    }
 });
 
-// 載入在冊單位選項
+// ============== 載入在冊單位選項 =================
 function loadOrganizatonOptions() {
-    fetch('http://localhost:8080/memberManagement/organization')
+    backstageAuth.authFetch('http://localhost:8080/memberManagement/organization')
         .then(response => {
             if (!response.ok) {
                 throw new Error('網絡響應失敗');
@@ -550,31 +575,36 @@ function loadOrganizatonOptions() {
             console.error('載入在冊單位資料失敗:', error);
             alert('無法加載在冊單位列表，請稍後重試');
         });
-
-          // 載入在冊單位選項
-         loadOrganizatonOptions();
 }
-
-
 
 //=========== 載入會員資料 ===============
 function loadMemberData(page = 1) {
+    // 獲取選擇的狀態值
+    const activeStatusFilter = document.getElementById('activeStatusFilter').value;
+    const reviewedFilter = document.getElementById('auditStatusFilter').value;
+    
     // 構建搜索條件 DTO
     const searchDTO = {
         name: document.getElementById('memberName').value || null,
-        memberId: document.getElementById('memberId').value || null,
-        organizationId: document.getElementById('unitFilter').value || null,
-        reviewed: convertAuditStatusToValue(document.getElementById('auditStatusFilter').value) || null,
-        accStat: convertAccountStatusToValue(document.getElementById('activeStatusFilter').value) || null,
+        memberId: document.getElementById('memberId').value ? parseInt(document.getElementById('memberId').value) : null,
+        organizationId: document.getElementById('unitFilter').value ? parseInt(document.getElementById('unitFilter').value) : null,
+        // 關鍵修改：特別處理 reviewed 和 accStat，確保 0 值能正確傳遞
+        reviewed: reviewedFilter ? window.convertAuditStatusToValue(reviewedFilter) : null,
+        accStat: activeStatusFilter ? window.convertAccountStatusToValue(activeStatusFilter) : null,
         unclaimedMealCount: document.getElementById('missedMealsFilter').value || null
     };
+    
+    // 特別處理未啟用狀態
+    if (activeStatusFilter === "not-activated") {
+        searchDTO.accStat = 0;
+    }
 
-    fetch('http://localhost:8080/memberManagement/listAll', {
+    // 在發送請求前記錄發送的資料，幫助調試
+    console.log("Sending search DTO:", JSON.stringify(searchDTO));
+
+    backstageAuth.authFetch('http://localhost:8080/memberManagement/listAll', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(searchDTO)
+        body: searchDTO
     })
     .then(response => {
         if (!response.ok) {
@@ -583,6 +613,8 @@ function loadMemberData(page = 1) {
         return response.json();
     })
     .then(data => {
+        console.log("Received data:", data); // 記錄接收到的資料
+        
         // 如果不是搜索狀態，保存原始數據
         if (!isSearchActive) {
             originalMemberData = [...data];
@@ -598,8 +630,9 @@ function loadMemberData(page = 1) {
         const endIndex = startIndex + itemsPerPage;
         const itemsForCurrentPage = currentSortedData.slice(startIndex, endIndex);
         
-        renderTable(itemsForCurrentPage);
-        renderPagination({
+        // 使用 window.renderTable 確保函數可被全域訪問
+        window.renderTable(itemsForCurrentPage);
+        window.renderPagination({
             total_items: currentSortedData.length,
             total_pages: Math.ceil(currentSortedData.length / itemsPerPage),
             current_page: page,
@@ -612,11 +645,8 @@ function loadMemberData(page = 1) {
     });
 }
 
-
-
-
-
-function generateAuditOptions(reviewed, memberId) {
+// 審核操作選項生成
+window.generateAuditOptions = function(reviewed, memberId) {
     // 已通過(1)的帳號只能改為未通過
     if (reviewed === 1) {
         return `
@@ -657,10 +687,8 @@ function generateAuditOptions(reviewed, memberId) {
     return '<button class="btn btn-outline-secondary btn-sm" disabled>無法操作</button>';
 }
 
-
-
-
-function generateAccountActions(accStat, reviewed, memberId) {
+// 帳號操作選項生成
+window.generateAccountActions = function(accStat, reviewed, memberId) {
     // 僅審核通過(1)的會員才能操作帳號狀態
     if (reviewed !== 1) {
         return '<button class="btn btn-outline-secondary btn-sm" disabled>無法操作</button>';
@@ -698,47 +726,30 @@ function generateAccountActions(accStat, reviewed, memberId) {
     return '<button class="btn btn-outline-secondary btn-sm" disabled>無法操作</button>';
 }
 
-
-
 // 審核狀態轉換 (前端狀態名稱 -> 後端數值)
-function convertAuditStatusToValue(status) {
-    switch (status) {
-        case "pending": return 0; // 審核中
-        case "approved": return 1; // 已通過
-        case "rejected": return 2; // 未通過
-        case "waiting": return 3; // 待審核
-        default: return null;
-    }
+window.convertAuditStatusToValue = function(status) {
+    if (status === "pending") return 0; // 審核中
+    if (status === "approved") return 1; // 已通過
+    if (status === "rejected") return 2; // 未通過
+    if (status === "waiting") return 3; // 待審核
+    return null;
 }
 
 // 帳號狀態轉換 (前端狀態名稱 -> 後端數值)
-function convertAccountStatusToValue(status) {
-    switch (status) {
-        case "not-activated": return 0; // 未啟用
-        case "active": return 1; // 啟用
-        case "inactive": return 2; // 停用
-        default: return null;
-    }
+window.convertAccountStatusToValue = function(status) {
+    if (status === "not-activated") return 0; // 未啟用
+    if (status === "active") return 1; // 啟用
+    if (status === "inactive") return 2; // 停用
+    return null;
 }
 
-
-
-
-
-// 全域變數，追蹤排序狀態
-let memberIdSortAscending = true;
-let currentSortedData = []; // 全域變數儲存排序後的完整資料
-
-
 // 渲染表格數據
-function renderTable(members) {
-    
+window.renderTable = function(members) {
     const tableBody = document.getElementById('member-table');
     tableBody.innerHTML = '';
 
-     // 新增無搜尋結果的文字提示
+    // 新增無搜尋結果的文字提示
     if (members.length === 0) {
-      
         const noResultRow = document.createElement('tr');
         noResultRow.innerHTML = `
             <td colspan="11" class="text-center text-muted py-3">
@@ -764,32 +775,6 @@ function renderTable(members) {
     // 在表頭修改受助者ID欄位
     document.querySelector('thead tr th:first-child').innerHTML = createMemberIdSortButton();
 
-
-    function toggleMemberIdSort() {
-        memberIdSortAscending = !memberIdSortAscending;
-        
-        // 取得當前活躍的頁碼
-        let currentPage = 1;
-        const activePaginationItem = document.querySelector('.pagination .active a');
-        if (activePaginationItem && activePaginationItem.textContent) {
-            currentPage = parseInt(activePaginationItem.textContent);
-        }
-        
-        // 重新載入資料，保持當前頁碼
-        loadMemberData(currentPage);
-    }
-
-
-        // 新增全域函數，讓它可以被點擊呼叫
-        window.toggleMemberIdSort = function() {
-        memberIdSortAscending = !memberIdSortAscending;
-        loadMemberData(); // 重新載入並排序
-    }
-
-
-// 在表頭渲染時呼叫
-document.querySelector('thead tr th:first-child').innerHTML = createMemberIdSortButton();
-
     members.forEach(member => {
         const row = document.createElement('tr');
         
@@ -809,89 +794,24 @@ document.querySelector('thead tr th:first-child').innerHTML = createMemberIdSort
         };
 
         // 獲取狀態標籤和CSS類別
-       const auditStatus = auditStatusMap[member.reviewed] || {text: '未知', class: ''};
+        const auditStatus = auditStatusMap[member.reviewed] || {text: '未知', class: ''};
         const accountStatus = accountStatusMap[member.accStat] || {text: '未知', class: ''};
-        
-        // 構建審核操作下拉選單選項
-        let auditOptions = '';
-        if (member.audit_status === 'approved') {
-            auditOptions = `
-                <a class="dropdown-item" href="#" data-status="rejected" onclick="changeStatus(this, ${member.id})">未通過</a>
-                <a class="dropdown-item" href="#" data-status="pending" onclick="changeStatus(this, ${member.id})">退回審核</a>
-            `;
-        } else if (member.audit_status === 'rejected') {
-            auditOptions = `
-                <a class="dropdown-item" href="#" data-status="approved" onclick="changeStatus(this, ${member.id})">通過</a>
-                <a class="dropdown-item" href="#" data-status="pending" onclick="changeStatus(this, ${member.id})">退回審核</a>
-            `;
-        } else if (member.audit_status === 'pending') {
-            auditOptions = `
-                <a class="dropdown-item" href="#" data-status="approved" onclick="changeStatus(this, ${member.id})">通過</a>
-                <a class="dropdown-item" href="#" data-status="rejected" onclick="changeStatus(this, ${member.id})">未通過</a>
-                <a class="dropdown-item" href="#" data-status="waiting" onclick="changeStatus(this, ${member.id})">退回待審核</a>
-            `;
-        } else if (member.audit_status === 'waiting') {
-            auditOptions = `
-                <a class="dropdown-item" href="#" data-status="approved" onclick="changeStatus(this, ${member.id})">通過</a>
-                <a class="dropdown-item" href="#" data-status="rejected" onclick="changeStatus(this, ${member.id})">未通過</a>
-                <a class="dropdown-item" href="#" data-status="pending" onclick="changeStatus(this, ${member.id})">送審</a>
-            `;
-        }
-        
-        // 構建帳號操作下拉選單
-        let accountActionHtml = '';
-        if (member.account_status === 'active') {
-            accountActionHtml = `
-                <div class="dropdown">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">變更</button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" data-status="inactive" onclick="changeAccountStatus(this, ${member.id})">停用</a>
-                    </div>
-                </div>
-            `;
-        } else if (member.account_status === 'inactive') {
-            accountActionHtml = `
-                <div class="dropdown">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">變更</button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" data-status="active" onclick="changeAccountStatus(this, ${member.id})">啟用</a>
-                    </div>
-                </div>
-            `;
-        } else if (member.account_status === 'not-activated' && member.audit_status === 'approved') {
-            accountActionHtml = `
-                <div class="dropdown">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">變更</button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" data-status="active" onclick="changeAccountStatus(this, ${member.id})">啟用</a>
-                    </div>
-                </div>
-            `;
-        } else {
-            accountActionHtml = `<button class="btn btn-outline-secondary btn-sm" disabled>變更</button>`;
-        }
         
         // 設置證明照片（如果有）
         let proofImageHTML = '';
-            if (member.kycImage) {  //===========這個是測試用的圖片路徑！！！====================
+            if (member.kycImage) {
+                // 修正 - 使用與 Thymeleaf 相同的路徑格式
                 proofImageHTML = `    
                     <button class="btn btn-sm btn-outline-primary" 
-                            onclick="showImageModal('http://localhost:8080/upload/member/${member.kycImage}')"
+                            onclick="showImageModal('/member/${member.kycImage}')">
                         查看
                     </button>
                 `;
             } else {
                 proofImageHTML = '<span class="text-muted">無照片</span>';
             }
-        
-                    //===========這個是測試用的圖片路徑！！！====================
-                    //  onclick="showImageModal('http://localhost:8080/img/MemberUpload/${member.kycImage}')">
 
-
-
-
-
-       // 填充行數據
+        // 填充行數據
         row.innerHTML = `
             <td>${member.memberId}</td>
             <td>${member.name}</td>
@@ -901,17 +821,17 @@ document.querySelector('thead tr th:first-child').innerHTML = createMemberIdSort
             <td>${proofImageHTML}</td>
             <td>${member.unclaimedMealCount || 0}</td>
             <td><span class="memberManagement-status-badge ${auditStatus.class}">${auditStatus.text}</span></td>
-            <td>${generateAuditOptions(member.reviewed, member.memberId)}</td>
+            <td>${window.generateAuditOptions(member.reviewed, member.memberId)}</td>
             <td><span class="memberManagement-status-badge ${accountStatus.class}">${accountStatus.text}</span></td>
-            <td>${generateAccountActions(member.accStat, member.reviewed, member.memberId)}</td>
+            <td>${window.generateAccountActions(member.accStat, member.reviewed, member.memberId)}</td>
         `;
                 
-                tableBody.appendChild(row);
-            });
-        }
+        tableBody.appendChild(row);
+    });
+}
 
 // 渲染分頁
-function renderPagination(pagination) {
+window.renderPagination = function(pagination) {
     const paginationEl = document.getElementById('pagination');
     paginationEl.innerHTML = '';
     
@@ -936,21 +856,22 @@ function renderPagination(pagination) {
     paginationEl.appendChild(nextLi);
 }
 
+// 切換 ID 排序
+window.toggleMemberIdSort = function() {
+    memberIdSortAscending = !memberIdSortAscending;
+    loadMemberData(); // 重新載入並排序
+}
 
-
-// 變更會員審核狀態（包含發送驗證性）
-function changeStatus(element, memberId) {
+// 變更會員審核狀態
+window.changeStatus = function(element, memberId) {
     const newStatus = element.getAttribute('data-status');
     
     // 顯示確認視窗
-    if (confirm(`確定要將審核狀態變更為「${getStatusText(newStatus)}」嗎？`)) {
+    if (confirm(`確定要將審核狀態變更為「${window.getStatusText(newStatus)}」嗎？`)) {
         // 發送API請求
-        fetch(`http://localhost:8080/memberManagement/updateReviewStatus/${memberId}`, {
+        backstageAuth.authFetch(`http://localhost:8080/memberManagement/updateReviewStatus/${memberId}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ status: newStatus })
+            body: { status: newStatus }
         })
         .then(response => response.json())
         .then(data => {
@@ -977,21 +898,16 @@ function changeStatus(element, memberId) {
     }
 }
 
-
-
 // 變更帳號狀態
-function changeAccountStatus(element, memberId) {
+window.changeAccountStatus = function(element, memberId) {    
     const newStatus = element.getAttribute('data-status');
     
     // 顯示確認視窗
-    if (confirm(`確定要將帳號狀態變更為「${getAccountStatusText(newStatus)}」嗎？`)) {
+    if (confirm(`確定要將帳號狀態變更為「${window.getAccountStatusText(newStatus)}」嗎？`)) {
         // 發送API請求
-        fetch(`http://localhost:8080/memberManagement/updateAccountStatus/${memberId}`, {
+        backstageAuth.authFetch(`http://localhost:8080/memberManagement/updateAccountStatus/${memberId}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ status: newStatus })
+            body: { status: newStatus }
         })
         .then(response => response.json())
         .then(data => {
@@ -1019,16 +935,42 @@ function changeAccountStatus(element, memberId) {
     }
 }
 
-
-
-
 // 顯示照片預覽模態框
-function showImageModal(imageUrl) {
+window.showImageModal = function(imageUrl) {
     const modal = document.getElementById('memberManagement-imageModal');
     const modalImg = document.getElementById('memberManagement-modalImage');
     
+    // 確保使用完整的 URL (包含域名)
+    if (!imageUrl.startsWith('http')) {
+        // 使用當前域名作為基礎
+        const base = window.location.origin;
+        imageUrl = base + imageUrl;
+    }
+    
+    console.log("顯示圖片:", imageUrl); // 添加日誌以便調試
+    
+    // 先隱藏圖片，等加載完成後再顯示，避免位置閃爍
+    modalImg.style.display = 'none';
+    
+    // 顯示模態框
     modal.style.display = "block";
     modalImg.src = imageUrl;
+    
+    // 圖片加載完成後顯示並置中
+    modalImg.onload = function() {
+        modalImg.style.display = 'block';
+        
+        // 計算並設置圖片的垂直位置以達到居中效果
+        const windowHeight = window.innerHeight;
+        const imgHeight = modalImg.offsetHeight;
+        
+        if (imgHeight < windowHeight) {
+            const topMargin = Math.max(0, (windowHeight - imgHeight) / 2);
+            modalImg.style.marginTop = topMargin + 'px';
+        } else {
+            modalImg.style.marginTop = '30px'; // 如果圖片較大，保留上方空間
+        }
+    };
     
     // 關閉模態框的事件處理
     const closeBtn = document.getElementsByClassName('memberManagement-close')[0];
@@ -1044,8 +986,10 @@ function showImageModal(imageUrl) {
     }
 }
 
+
+
 // 獲取狀態文字描述
-function getStatusText(status) {
+window.getStatusText = function(status) {    
     const statusMap = {
         'approved': '已通過',
         'rejected': '未通過',
@@ -1056,7 +1000,7 @@ function getStatusText(status) {
 }
 
 // 獲取帳號狀態文字描述
-function getAccountStatusText(status) {
+window.getAccountStatusText = function(status) {    
     const statusMap = {
         'active': '啟用',
         'inactive': '停用',
@@ -1064,6 +1008,9 @@ function getAccountStatusText(status) {
     };
     return statusMap[status] || '未知狀態';
 }
+
+
+
 </script>
 </body>
 </html>

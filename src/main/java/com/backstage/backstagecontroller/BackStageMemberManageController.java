@@ -1,14 +1,16 @@
 package com.backstage.backstagecontroller;
 
 
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.backstage.backstagedto.MemberSearchDTO;
 import com.backstage.backstageservice.BackStageMemberManageService;
 import com.backstage.backstageservice.BackstageMemberEmailService;
+import com.backstage.backstagrepository.MemberRepository;
 import com.entity.MemberVO;
 import com.entity.OrganizationVO;
 import com.frontservice.OrganizationService;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.Map;
+
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -31,6 +35,10 @@ public class BackStageMemberManageController {
     @Autowired
     private BackstageMemberEmailService memberEmailService;
     
+    @Autowired
+    private MemberRepository memberRepository;
+    
+    
     // ============ 獲取在冊單位列表 ===============
     @GetMapping("/organization")
     public ResponseEntity<List<UnitDTO>> getAllOrganizations() {
@@ -43,10 +51,13 @@ public class BackStageMemberManageController {
         return ResponseEntity.ok(unitDTOs);
     }
     
-    // =========== 會員列表獲取與動態過濾 ===============
+    // =========== 會員列表獲取與動態過濾搜尋功能 ===============
     @PostMapping("/listAll")
-    public ResponseEntity<List<MemberVO>> getAllMembers(@RequestBody(required = false) MemberSearchDTO searchDTO) {
-        // 獲取所有會員
+//    public ResponseEntity<List<MemberVO>> getAllMembers(@RequestBody(required = false) MemberSearchDTO searchDTO) {
+    public ResponseEntity<?> getAllMembers(@RequestBody(required = false) MemberSearchDTO searchDTO) {
+    
+    	
+    	// 獲取所有會員
         List<MemberVO> allMembers = memberManageService.getAllMembers();
 
         // 動態過濾
@@ -91,14 +102,17 @@ public class BackStageMemberManageController {
             })
             .collect(Collectors.toList());
 
-        return ResponseEntity.ok(filteredMembers);
+//        return ResponseEntity.ok(filteredMembers);
+        return ResponseEntity.ok().body(filteredMembers);
     }
     
     
     
     // ============== 更新會員審核狀態 =============== 
     @PutMapping("/updateReviewStatus/{memberId}")
-    public ResponseEntity<Map<String, Object>> updateReviewStatus(
+//    public ResponseEntity<Map<String, Object>> updateReviewStatus(
+      public ResponseEntity<?> updateReviewStatus(	
+    		  
             @PathVariable Integer memberId,
             @RequestBody Map<String, String> request
     ) {
@@ -141,7 +155,8 @@ public class BackStageMemberManageController {
             memberManageService.updateMember(member);
             
             response.put("success", true);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok().body(response);
+            
         } catch (Exception e) {
             e.printStackTrace();
             response.put("success", false);
@@ -151,64 +166,25 @@ public class BackStageMemberManageController {
     }
     
     
-    // ======驗證郵件中的令牌 =======
+    // ==============驗證郵件=================
     // 此端點需要與EmailService中生成的URL匹配
     @GetMapping("/verify")
-    public ResponseEntity<Map<String, Object>> verifyMember(@RequestParam String token) {
+    public ResponseEntity<?> verifyMember(@RequestParam String token) {
         Map<String, Object> response = new HashMap<>();
         
         boolean activated = memberEmailService.activateMemberByToken(token);
         
         if (activated) {
-            response.put("success", true);
-            response.put("message", "帳號已成功啟用，請登入系統");
+            // 使用 ResponseEntity 返回重定向
+            return ResponseEntity.status(HttpStatus.FOUND)
+                .header(HttpHeaders.LOCATION, "/registerAndLogin/login")
+                .build();
         } else {
             response.put("success", false);
             response.put("message", "驗證連結無效或已過期");
         }
         
-        return ResponseEntity.ok(response);
-    }
-    
-    
-    
-    
-    //================【補件用】會員補件後更新審核狀態為待審核（2 未通過 -----> 3 待審核）==================
-    
-    //==============！前端還沒做api串接！====================
-    
-    @PutMapping("/updateStatusAfterSupplement/{memberId}")
-    public ResponseEntity<Map<String, Object>> updateStatusAfterSupplement(
-            @PathVariable Integer memberId
-    ) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            MemberVO member = memberManageService.getMemberById(memberId);
-            if (member == null) {
-                response.put("success", false);
-                response.put("message", "找不到會員");
-                return ResponseEntity.badRequest().body(response);
-            }
-            
-            // 只有當前狀態為未通過(2)時，才能更新為待審核(3)
-            if (member.getReviewed() == 2) {
-                member.setReviewed(3); // 更新為待審核
-                memberManageService.updateMember(member);
-                
-                response.put("success", true);
-                response.put("message", "資料已更新，等待後台審核");
-                return ResponseEntity.ok(response);
-            } else {
-                response.put("success", false);
-                response.put("message", "目前狀態不允許更新");
-                return ResponseEntity.badRequest().body(response);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+        return ResponseEntity.ok().body(response);
     }
     
     
@@ -219,7 +195,7 @@ public class BackStageMemberManageController {
     
     // ============ 更新帳號啟用狀態 ==============
     @PutMapping("/updateAccountStatus/{memberId}")
-    public ResponseEntity<Map<String, Object>> updateAccountStatus(
+    public ResponseEntity<?> updateAccountStatus(
             @PathVariable Integer memberId,
             @RequestBody Map<String, String> request
     ) {
@@ -260,7 +236,7 @@ public class BackStageMemberManageController {
             
             response.put("success", true);
             response.put("message", "帳號狀態更新成功");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             e.printStackTrace();
             response.put("success", false);
