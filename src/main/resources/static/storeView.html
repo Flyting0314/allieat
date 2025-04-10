@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>合作店家查看</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style_backstage.css">
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- 側邊欄 -->
+    <div class="col-md-2 side-bar">
+      <h4>後台管理</h4>
+      <a href="./backstage_homepage.html">後台首頁</a>
+      <a href="./storeList.html" class="active">合作店家管理</a>
+      <a href="./backstage_unit_management.html">在冊單位管理</a>
+      <a href="./backstage_donation_management.html">捐款管理</a>
+      <a class="btn btn-logout">登出</a>
+    </div>
+
+    <!-- 主內容 -->
+    <div class="col-md-10">
+      <div class="header-container d-flex justify-content-between align-items-center mt-3">
+        <div class="title h4">合作店家資料查看</div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-body">
+          <form id="viewForm">
+            <!-- 基本資料 -->
+            <div class="form-group">
+              <label>店家名稱</label>
+              <input type="text" class="form-control" id="storeName" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>負責人姓名</label>
+              <input type="text" class="form-control" id="managerName" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-control" id="email" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>行動電話</label>
+              <input type="text" class="form-control" id="phoneNum" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>統一編號</label>
+              <input type="text" class="form-control" id="guiNum" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>食品業者登錄字號</label>
+              <input type="text" class="form-control" id="businessRegNum" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>地址</label>
+              <div class="form-row">
+                <div class="col">
+                  <input type="text" class="form-control" id="county" readonly>
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" id="district" readonly>
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" id="postalCode" readonly>
+                </div>
+              </div>
+              <input type="text" class="form-control mt-2" id="address" readonly>
+            </div>
+
+            <!-- 圖片區 -->
+            <div class="form-group">
+              <label>店家照片</label>
+              <div class="row">
+                <div class="col-md-4 text-center">
+                  <p>封面照</p>
+                  <img id="coverPhoto" class="img-thumbnail" style="width:100%; height:200px; object-fit:cover;">
+                </div>
+                <div class="col-md-4 text-center">
+                  <p>廚房照</p>
+                  <img id="kitchenPhoto" class="img-thumbnail" style="width:100%; height:200px; object-fit:cover;">
+                </div>
+                <div class="col-md-4 text-center">
+                  <p>店面照</p>
+                  <img id="storePhoto" class="img-thumbnail" style="width:100%; height:200px; object-fit:cover;">
+                </div>
+              </div>
+            </div>
+
+            <!-- 返回按鈕 -->
+            <div class="text-center mt-4">
+              <a href="storeList.html" class="btn btn-secondary">返回店家列表</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const storeId = urlParams.get("storeId");
+
+  // 取得店家資料
+  fetch(`/admin/store/${storeId}`)
+    .then(res => res.json())
+    .then(store => {
+      document.getElementById("storeName").value = store.name;
+      document.getElementById("managerName").value = store.managerName;
+      document.getElementById("email").value = store.email;
+      document.getElementById("phoneNum").value = store.phoneNum;
+      document.getElementById("guiNum").value = store.guiNum;
+      document.getElementById("businessRegNum").value = store.businessRegNum;
+      document.getElementById("county").value = store.county;
+      document.getElementById("district").value = store.district;
+      document.getElementById("postalCode").value = store.postalCode;
+      document.getElementById("address").value = store.address;
+    });
+
+  // 取得圖片資料
+  fetch(`/admin/store/${storeId}/photos`)
+    .then(res => res.json())
+    .then(photos => {
+		console.log("照片資料", photos);
+      document.getElementById("coverPhoto").src = photos.coverPhotoUrl || "img/default.jpg";
+      document.getElementById("kitchenPhoto").src = photos.kitchenPhotoUrl || "img/default.jpg";
+      document.getElementById("storePhoto").src = photos.storePhotoUrl || "img/default.jpg";
+    });
+</script>
+
+</body>
+</html>
