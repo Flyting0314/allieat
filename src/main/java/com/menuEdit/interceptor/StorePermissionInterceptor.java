@@ -23,7 +23,7 @@ public class StorePermissionInterceptor implements HandlerInterceptor {
             Integer pathStoreId = Integer.parseInt(matcher.group(1));
 
             // 從 session 中取得登入的 StoreVO
-            StoreVO loginStore = (StoreVO) request.getSession().getAttribute("loggedInStore");
+            StoreVO loginStore = (StoreVO) request.getSession().getAttribute("store");
 
             if (loginStore == null) {
                 System.out.println("未登入，導向登入頁面");
