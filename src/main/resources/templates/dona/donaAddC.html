@@ -270,6 +270,33 @@
             text-decoration: underline;
             cursor: pointer;
         }
+
+        /* 按鈕 */
+
+        .df-button {
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+        }
+
+        .df-button-prev {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .df-button-next {
+            background-color: #DA9F5B;
+            color: black;
+        }
+
+        .df-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
     </style>
     <script>
     async function pay() {
@@ -375,6 +402,7 @@
         <input type="text" name="cardCvv" placeholder="3-4位安全碼" />
     </div>
     
+    <!-- 按鈕 -->
     <div class="df-actions">
         <button type="button" class="df-button df-button-prev" th:onclick="|location.href='@{/dona/donaAddB}'|">上一步</button>
         <button type="submit" class="df-button df-button-next">送出</button>

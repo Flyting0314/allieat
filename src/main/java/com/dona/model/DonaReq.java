@@ -57,15 +57,15 @@ public class DonaReq {
 
 
     
-    @NotBlank(message = "姓名：請勿空白", groups = StepTwo.class)
+    @NotBlank(message = "", groups = StepTwo.class)
     @Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z]{2,10}$", message = "姓名：僅限輸入中文或英文，2~10字", groups = StepTwo.class)
     private String identityData;
     
-    @NotBlank(message = "信箱: 請勿空白",groups = StepTwo.class)
+    @NotBlank(message = "",groups = StepTwo.class)
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "信箱格式無效",groups = StepTwo.class)
     private String email;
 
-    @NotBlank(message = "電話: 請勿空白",groups = StepTwo.class)
+    @NotBlank(message = "",groups = StepTwo.class)
     @Pattern(regexp = "^(09[0-9]{8})$", message = "電話格式無效，須為 09 開頭的 10 位數",groups = StepTwo.class)
     private String phone;
 
