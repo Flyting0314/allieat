@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>攏呷霸 - 合作店家管理</title>
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	rel="stylesheet" />
+<link rel="stylesheet" href="css/style_backstage.css">
+</head>
+<body>
+
+	<div class="container-fluid">
+		<div class="row">
+			<!-- 側邊欄 -->
+			<div class="col-md-2 side-bar">
+				<h4>攏呷霸-後台首頁</h4>
+				<a href="#">後台首頁</a> <a href="/storeList.html" class="active">合作店家管理</a>
+				<!-- 可展開的受助者管理選項 -->
+				<a href="javascript:void(0)" class="collapsible-menu"
+					data-toggle="collapse" data-target="#recipientSubMenu"
+					aria-expanded="false"> 受助者管理 <i
+					class="fas fa-angle-down float-right mt-1"></i>
+				</a>
+				<div class="collapse" id="recipientSubMenu">
+					<div class="sub-menu">
+						<a href="#" class="sub-item">受助者管理</a> <a href="#"
+							class="sub-item">受助者點數發放</a>
+					</div>
+				</div>
+				<a href="./backstage_unit_management.html">在冊單位管理</a> <a
+					href="./backstage_donation_management.html">捐款管理</a> <a href="#">未領餐紀錄</a>
+				<a class="btn btn-logout">登出</a>
+			</div>
+
+
+			<!-- 主要內容 -->
+			<div class="col-md-10">
+				<div
+					class="header-container d-flex justify-content-between align-items-center mt-3">
+					<div class="title h4">合作店家管理</div>
+				</div>
+
+				<!-- ✅ 篩選 + 搜尋欄 -->
+				<div
+					class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+					<div class="d-flex align-items-center mb-2">
+						<label for="pageSizeSelect" class="mr-2 mb-0">顯示筆數:</label> <select
+							id="pageSizeSelect" class="form-control w-auto mr-3">
+							<option value="10">10 筆</option>
+							<option value="25">25 筆</option>
+							<option value="50">50 筆</option>
+							<option value="all">全部</option>
+						</select> <label for="reviewedFilter" class="mr-2 mb-0">審核狀態:</label> <select
+							id="reviewedFilter" class="form-control w-auto mr-3">
+							<option value="">全部</option>
+							<option value="3">審核中</option>
+							<option value="1">啟用中</option>
+							<option value="0">補件中</option>
+							<option value="2">審核未通過</option>
+						</select> <label for="accStatFilter" class="mr-2 mb-0">啟用狀態:</label> <select
+							id="accStatFilter" class="form-control w-auto">
+							<option value="">全部</option>
+							<option value="0">尚未啟用</option>
+							<option value="1">啟用中</option>
+							<option value="2">停用中</option>
+						</select>
+					</div>
+
+					<div class="d-flex align-items-center mb-2">
+						<input type="text" id="searchInput" placeholder="搜尋名稱或 Email..."
+							class="form-control" style="width: 300px;" />
+					</div>
+				</div>
+
+				<!-- 表格卡片 -->
+				<div class="card mt-3">
+					<div class="card-body">
+						<table class="table table-bordered">
+							<thead class="thead-light">
+								<tr>
+									<th>店名</th>
+									<th>Email</th>
+									<th>註冊時間</th>
+									<th>審核狀態</th>
+									<th>啟用狀態</th>
+									<th class="text-center">操作</th>
+								</tr>
+							</thead>
+							<tbody id="storeTableBody">
+								<!-- 動態插入資料 -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+  let originalData = [];
+
+  async function loadStores() {
+    try {
+      const res = await fetch('/admin/stores');
+      const stores = await res.json();
+      originalData = stores;
+      applyFilters(); // 載入後立即套用篩選
+    } catch (err) {
+      console.error("載入店家資料失敗", err);
+    }
+  }
+
+  function renderTable(data) {
+    const tbody = document.getElementById('storeTableBody');
+    tbody.innerHTML = "";
+
+    data.forEach(store => {
+      const tr = document.createElement('tr');
+
+      const reviewedText = store.reviewed === 3 ? "審核中" :
+                           store.reviewed === 1 ? "啟用中" :
+                           store.reviewed === 2 ? "審核未通過" :
+                           store.reviewed === 0 ? "補件中" : "未知";
+
+      const accStatText = store.accStat === 1 ? "啟用中" :
+                          store.accStat === 2 ? "停用中" :
+                          store.accStat === 0 ? "尚未啟用" : "未知";
+
+      let actionBtn = "";
+
+      if (store.reviewed === 3) {
+        actionBtn = `<a href="storeReview.html?storeId=${store.storeId}" class="btn btn-warning">審核</a>`;
+      } else if (store.reviewed === 1) {
+        actionBtn = `
+          <a href="storeView.html?storeId=${store.storeId}" class="btn btn-primary mr-1">查看</a>
+          <button class="btn btn-${store.accStat === 1 ? 'danger' : 'success'}" onclick="toggleStatus(${store.storeId})">
+            ${store.accStat === 1 ? '停用' : '啟用'}
+          </button>`;
+      } else {
+        actionBtn = `<a href="storeReview.html?storeId=${store.storeId}" class="btn btn-secondary">查看</a>`;
+      }
+
+      tr.innerHTML = `
+        <td>${store.name}</td>
+        <td>${store.email}</td>
+        <td>${store.createdTime ? store.createdTime.split('T')[0] : ''}</td>
+        <td>${reviewedText}</td>
+        <td>${accStatText}</td>
+        <td class="text-center">${actionBtn}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function toggleStatus(storeId) {
+    if (!confirm("確定要切換帳號狀態？")) return;
+
+    try {
+      const res = await fetch(`/admin/store/${storeId}/toggleStatus`, {
+        method: "PUT"
+      });
+      const text = await res.text();
+      alert(text);
+      loadStores();
+    } catch (err) {
+      console.error("切換失敗", err);
+      alert("切換失敗！");
+    }
+  }
+
+  function applyFilters() {
+    const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+    const reviewedFilter = document.getElementById('reviewedFilter').value;
+    const accStatFilter = document.getElementById('accStatFilter').value;
+
+    const filtered = originalData.filter(store => {
+      const matchesKeyword =
+        store.name.toLowerCase().includes(keyword) ||
+        store.email.toLowerCase().includes(keyword);
+
+      const matchesReviewed = reviewedFilter === "" || String(store.reviewed) === reviewedFilter;
+      const matchesAccStat = accStatFilter === "" || String(store.accStat) === accStatFilter;
+
+      return matchesKeyword && matchesReviewed && matchesAccStat;
+    });
+
+    renderTable(filtered);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadStores();
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('reviewedFilter').addEventListener('change', applyFilters);
+    document.getElementById('accStatFilter').addEventListener('change', applyFilters);
+  });
+</script>
+
+</body>
+</html>
