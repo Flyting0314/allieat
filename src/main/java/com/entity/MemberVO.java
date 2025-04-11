@@ -220,6 +220,15 @@ public class MemberVO implements Serializable {
 	public void setVerificationMail(String verificationMail) {
 		this.verificationMail = verificationMail;
 	}
+	
+	// ========= 會員管理後台用 ===========
+	public Integer getOrganizationId() {
+	    return organization != null ? organization.getOrganizationId() : null;
+	}
+
+	public String getOrganizationName() {
+	    return organization != null ? organization.getName() : null;
+	}
 
     
 }
