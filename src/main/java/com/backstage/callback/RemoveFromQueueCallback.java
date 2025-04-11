@@ -6,7 +6,7 @@ import java.util.List;
 /*
  * 用於移除佇列內資訊，搭配DeferredResult使用。
  * 
- **/
+ */
 public class RemoveFromQueueCallback implements Runnable {
 
     private final DeferredResult<String> dr;
