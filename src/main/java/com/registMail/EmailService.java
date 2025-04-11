@@ -29,7 +29,7 @@ public class EmailService {
         store.setVerificationMail(token);
         storeRepository.save(store);
 
-        String verifyUrl = "http://localhost:8080/registerAndLogin/verify?token=" + token;
+        String verifyUrl = "http://localhost:8080/verify.html?token=" + token;
 
 
         SimpleMailMessage message = new SimpleMailMessage();
