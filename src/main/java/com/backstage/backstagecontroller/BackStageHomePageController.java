@@ -4,11 +4,12 @@ import com.backstage.backstageservice.BackStageHomePageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
+
 import java.util.Map;
 
 @RestController
 @RequestMapping("/backStage")
-@CrossOrigin(origins = "*")
 
 public class BackStageHomePageController {
     @Autowired
@@ -42,7 +43,15 @@ public class BackStageHomePageController {
     public ResponseEntity<Map<String, Object>> usageChart() {
         return backStageHomePageServiceImpl.getUsageChart();
     }
-
+    
+    //長輪詢控制器
+    @GetMapping("/homePage/watch")
+    public DeferredResult<String> watchDonation() {
+        DeferredResult<String> reply = new DeferredResult<>(30_000L, "timeout");
+        backStageHomePageServiceImpl.registerListener(reply);
+        return reply;
+    }
+    
 
 
 

@@ -17,7 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(jwtInterceptor)
                 .addPathPatterns("/backStage/**")
                 .excludePathPatterns("/backStage/login",
-                                     "/backStage");
+                                     "/backStage/**");
         
         
     }
