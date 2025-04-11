@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.entity.StoreVO;
 import com.frontservice.StoreRegistAndLoginService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -38,61 +39,81 @@ public class StoreRegistAndLoginController {
     public StoreVO storeForm() {
         return new StoreVO();
     }
-    // **新增這個方法來初始化 photoList**
+
     @ModelAttribute("photoList")
     public List<Map<String, String>> photoList() {
         return new ArrayList<>();
     }
+    
+    //註冊顯示頁
     @GetMapping("")
     public String registerPage(@ModelAttribute("store") StoreVO store, HttpSession session, Model model) {
-        storeService.generatePhotoPreview(store, session, model); // ⬅ 使用新方法
+        storeService.generatePhotoPreview(store, session, model); 
+        model.addAttribute("hasSubmitted", false);
         return "registerAndLogin/storeRegister";
     }
+    
+    //註冊
     @PostMapping("")
     public String register(@Valid @ModelAttribute("store") StoreVO store,
                            BindingResult result,
+                           
                            @RequestParam("photoFiles") MultipartFile[] photoFiles,
                            @RequestParam(value = "agreedToTerms", required = false) String agreedToTerms,
-                           HttpSession session, Model model) {
+                           HttpSession session, Model model, HttpServletRequest req) {
 
         model.addAttribute("hasSubmitted", true);
 
-        try {
-            store.setStoreToPhoto(storeService.mergePhotos(store, photoFiles));
+     // 處理圖片
+        if (photoFiles.length > 0 && !photoFiles[0].isEmpty()) {
+            try {
+                store.setStoreToPhoto(storeService.mergePhotos(store, photoFiles));
+                storeService.generatePhotoPreview(store, session, model);
+            } catch (IOException e) {
+                model.addAttribute("photoError", "圖片處理失敗：" + e.getMessage());
+                return "registerAndLogin/storeRegister";
+            }
+        } else {
             storeService.generatePhotoPreview(store, session, model);
-        } catch (IOException e) {
-        	
-            model.addAttribute("photoError", "圖片處理失敗：" + e.getMessage());
+        }
+        // 檢查
+        if (!"true".equals(agreedToTerms)) {
+            model.addAttribute("errorMessage", "請詳閱並同意使用須知");
+        }
+        if (photoFiles[0].isEmpty()) {
+        	model.addAttribute("photoError", "請上傳三張照片");
+        }
+        if (result.hasErrors() || !"true".equals(agreedToTerms) || store.getStoreToPhoto() == null || store.getStoreToPhoto().size() < 3) {
+            if (store.getStoreToPhoto() == null || store.getStoreToPhoto().size() < 3) {
+                model.addAttribute("photoError", "請上傳三張照片");
+            }
+            return "registerAndLogin/storeRegister";
         }
 
-        if (result.hasErrors()) {
-            model.addAttribute("formErrors", result);
-            return "registerAndLogin/storeRegister"; // **不使用 redirect**
-        }
 
         try {
             StoreVO preparedStore = storeService.prepareStoreForSession(store, photoFiles, agreedToTerms);
             model.addAttribute("store", preparedStore);
             storeService.generatePhotoPreview(preparedStore, session, model);
-            return "registerAndLogin/storeRegisterConF"; // **直接跳轉，而不影響 session**
+            return "registerAndLogin/storeRegisterConF";
         } catch (IllegalArgumentException | IOException e) {
-            model.addAttribute("error", e.getMessage());
-            return "registerAndLogin/storeRegister"; // **仍然停留在註冊頁**
+        	model.addAttribute("photoError", e.getMessage());
+            result.reject("error.general", e.getMessage());
+            return "registerAndLogin/storeRegister";
         }
     }
 
-
+    //確認
     @GetMapping("/confirm")
     public String confirmPage(@ModelAttribute("store") StoreVO store, HttpSession session, Model model) {
         if (store == null) {
             return "redirect:/registerAndLogin/register/store/";
         }
-
-
         storeService.generatePhotoPreview(store, session, model); 
         return "registerAndLogin/storeRegisterConF";
     }
 
+    //送出
     @PostMapping("/submit")
     public String submitFinalRegister(SessionStatus status,
                                       @ModelAttribute("store") StoreVO store,
@@ -125,6 +146,7 @@ public class StoreRegistAndLoginController {
         return "redirect:/registerAndLogin/login";
     }
 
+    //審核驗證
     @PostMapping("/admin/review")
     public String reviewStore(@RequestParam("storeId") Integer storeId,
                               @RequestParam("approved") boolean approved,
