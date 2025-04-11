@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>訂單成功 - 攏呷霸 ALLiEAT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f3f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #444;
+            margin-bottom: 30px;
+        }
+        p {
+            font-size: 18px;
+            color: #555;
+            margin: 10px 0;
+        }
+        .btn-home {
+            margin-top: 30px;
+            padding: 12px 24px;
+            background-color: #3a67e3;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-home:hover {
+            background-color: #2e53c9;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>訂單已送出</h1>
+        <h2>請準時至 <span id="storeName"></span> 取餐</h2>
+        <p>取餐地址：<span id="storeAddress"></span></p>
+        <p>取餐號碼：<span id="pickupCode"></span></p>
+        <p>取餐時間：<span id="pickupTime"></span></p>
+        <button class="btn-home" onclick="goHome()">回首頁</button>
+    </div>
+
+    <script>
+        // 從 sessionStorage 拿資料
+        const data = JSON.parse(sessionStorage.getItem("orderSuccess"));
+
+        if (data) {
+            document.getElementById("storeName").textContent = data.storeName || "未知餐廳";
+            document.getElementById("storeAddress").textContent = data.address || "未提供地址";
+            document.getElementById("pickupCode").textContent = data.pickupCode || "------";
+            document.getElementById("pickupTime").textContent = data.pickupTime || "--:--";
+        } else {
+            alert("⚠️ 無訂單資料，請重新下單！");
+            window.location.href = "/map2";  // 或你的點餐首頁
+        }
+
+        function goHome() {
+            window.location.href = "/index.html";
+        }
+    </script>
+</body>
+</html>

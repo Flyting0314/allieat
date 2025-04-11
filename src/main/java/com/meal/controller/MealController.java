@@ -4,16 +4,23 @@ import com.entity.FoodVO;
 import com.store.model.StoreService;
 import com.entity.StoreVO;
 import com.attached.model.AttachedService;
+import com.cartfood.model.CarFoodDTO;
 import com.cartfood.model.CartFoodService;
+import com.cartfood.model.CartOrderService;
+import com.cartfood.model.MemberServiceImpl;
 import com.entity.AttachedVO;
+import com.entity.OrderDetailId;
+import com.entity.OrderDetailVO;
+import com.entity.OrderFoodVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.*;
 
-@RestController  // 使用 RestController，回傳 JSON
-@RequestMapping("/meal")  // REST API 的路徑
+@RestController
+@RequestMapping("/meal")
 public class MealController {
 
     @Autowired
@@ -23,18 +30,22 @@ public class MealController {
     private AttachedService attachedService;
 
     @Autowired
-    private StoreService storeService;  // 假設這是餐廳相關的服務
+    private StoreService storeService;
 
-    // 取得餐廳詳細資訊
+    @Autowired
+    private MemberServiceImpl memberService;
+
+    @Autowired
+    private CartOrderService orderService;
+
     @GetMapping("/restaurant/{id}")
     public StoreVO getRestaurantInfo(@PathVariable Integer id) {
         return storeService.getStoreById(id);
     }
 
-    // 取得所有主餐
     @GetMapping("/food")
     public List<FoodVO> getFoodList() {
-        return foodService.getAllFoods();  // 回傳 JSON 格式的資料
+        return foodService.getAllFoods();
     }
 
     @GetMapping("/food/store/{storeId}")
@@ -47,19 +58,16 @@ public class MealController {
         return attachedService.getAttachedByFoodId(foodId);
     }
 
-    // 取得所有附餐
     @GetMapping("/attached")
     public List<AttachedVO> getAttachedList() {
         return attachedService.getAllAttached();
     }
 
-    // 附餐頁顯示主餐資訊
     @GetMapping("/food/{foodId}")
     public FoodVO getFoodById(@PathVariable Integer foodId) {
         return foodService.getFoodById(foodId);
     }
 
-    // 根據購物車資訊回傳詳細名稱與價格
     @PostMapping("/cart/details")
     public List<Map<String, Object>> getCartDetails(@RequestBody List<Map<String, Object>> cartItems) {
         List<Map<String, Object>> result = new ArrayList<>();
@@ -83,7 +91,6 @@ public class MealController {
             entry.put("cost", food.getCost());
             entry.put("quantity", quantity);
 
-            // ✨加上店家資訊，讓 cart.html 可以 "繼續點餐"
             if (food.getStore() != null) {
                 entry.put("storeId", food.getStore().getStoreId());
                 entry.put("storeName", food.getStore().getName());
@@ -98,6 +105,96 @@ public class MealController {
         return result;
     }
 
-
+    @PostMapping("/cart/dto")
+    public List<CarFoodDTO> getCartDTOs(@RequestBody List<Integer> foodIds) {
+        List<CarFoodDTO> dtos = new ArrayList<>();
+        for (Integer foodId : foodIds) {
+            FoodVO food = foodService.getFoodById(foodId);
+            if (food != null) {
+                CarFoodDTO dto = foodService.convertToDTO(food);
+                dtos.add(dto);
+            }
+        }
+        return dtos;
     }
 
+    @GetMapping("/food/store/dto")
+    public List<CarFoodDTO> getFoodDTOsByStoreId(@RequestParam Integer storeId) {
+        List<FoodVO> foodList = foodService.getFoodsByStoreId(storeId);
+        List<CarFoodDTO> dtoList = new ArrayList<>();
+        for (FoodVO food : foodList) {
+            CarFoodDTO dto = foodService.convertToDTO(food);
+            dto.setFoodImage(food.getPhoto());
+            dtoList.add(dto);
+        }
+        return dtoList;
+    }
+
+    @PostMapping("/order/submit")
+    public Map<String, Object> submitOrder(@RequestBody Map<String, Object> orderData) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            // 1. 取得基本資料
+            Integer storeId = (Integer) orderData.get("storeId");
+            Integer memberId = (Integer) orderData.get("memberId");
+            Boolean pickStat = (Boolean) orderData.getOrDefault("pickStat", false);
+            Boolean serveStat = (Boolean) orderData.getOrDefault("serveStat", false);
+
+            // 2. 建立主訂單
+            OrderFoodVO order = new OrderFoodVO();
+            order.setPickStat(pickStat);
+            order.setServeStat(serveStat);
+            order.setCreatedTime(new Timestamp(System.currentTimeMillis()));
+            order.setStore(storeService.getStoreById(storeId));
+            order.setMember(memberService.getMemberById(memberId));
+
+            OrderFoodVO savedOrder = orderService.saveOrderOnly(order);
+            Integer generatedOrderId = savedOrder.getOrderId();
+
+            // 3. 處理訂單明細
+            List<Map<String, Object>> items = (List<Map<String, Object>>) orderData.get("items");
+            List<OrderDetailVO> details = new ArrayList<>();
+
+            for (Map<String, Object> item : items) {
+                Integer foodId = (Integer) item.get("foodId");
+                Integer quantity = (Integer) item.getOrDefault("quantity", 1);
+
+                OrderDetailVO detail = new OrderDetailVO();
+                OrderDetailId detailId = new OrderDetailId();
+                detailId.setOrderId(generatedOrderId);
+                detailId.setFoodId(foodId);
+                detail.setId(detailId);
+
+                FoodVO food = foodService.getFoodById(foodId); // ⚠ 為了多次使用這裡提早取出
+                detail.setOrder(savedOrder);
+                detail.setFood(food);
+                detail.setAmount(quantity);
+                detail.setCreatedTime(new Timestamp(System.currentTimeMillis()));
+
+                // ✅ 設定 pointsCost，避免資料庫報錯
+                detail.setPointsCost(food.getCost());
+
+                details.add(detail);
+            }
+
+            
+
+            // 4. 儲存明細
+            orderService.saveOrderDetails(details);
+
+            // 5. 回傳給 success.html
+            result.put("storeName", savedOrder.getStore().getName());
+            result.put("address", savedOrder.getStore().getAddress());
+            result.put("pickupCode", "取餐編號-" + savedOrder.getOrderId());
+            result.put("pickupTime", savedOrder.getCreatedTime().toLocalDateTime().plusMinutes(30).toString());
+
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("error", "❌ 建立訂單失敗：" + e.getMessage());
+            return result;
+        }
+    }
+}
