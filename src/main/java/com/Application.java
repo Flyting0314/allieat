@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableScheduling  //使用排程器一定要在application加這個
+@EnableScheduling 
 public class Application {
 
 	public static void main(String[] args) {

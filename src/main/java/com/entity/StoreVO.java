@@ -69,6 +69,7 @@ public class StoreVO implements Serializable{
 	private String phoneNum;
 	
 	@NotBlank(message = "統一編號不得為空")
+	@Size(max = 8, message = "統一編號最多 8 碼")
 	private String guiNum;
 	
 	@NotBlank(message = "店家食品業者登錄字號不得為空")

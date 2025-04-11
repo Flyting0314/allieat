@@ -164,7 +164,7 @@ h2 {
 
 	<script>
 let cartData = [];
-let timer = 20;
+let timer = 120;
 let countdownInterval;
 let stockCheckInterval;
 let storeCheckInterval;
@@ -248,11 +248,72 @@ function renderCart() {
 }
 
 function confirmCheckout() {
-    alert("✅ 訂單已提交！(此處應連接後端)");
-    clearInterval(countdownInterval);
-    clearInterval(stockCheckInterval);
-    clearInterval(storeCheckInterval);
+    const memberId = localStorage.getItem('memberId');
+    const selectedFood = JSON.parse(localStorage.getItem('selectedFood'));
+
+    if (!memberId || !selectedFood) {
+        alert("⚠ 無法取得使用者或店家資訊！");
+        return;
+    }
+
+    const orderPayload = {
+        storeId: selectedFood.storeId,
+        memberId: parseInt(memberId),
+        pickStat: false,
+        serveStat: false,
+        foodId: selectedFood.foodId,
+        attachedId: selectedFood.attachedId || null,
+        items: JSON.parse(sessionStorage.getItem('cartItems')) || []  // 👈 確保 items 傳給後端
+    };
+
+    fetch('/meal/order/submit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderPayload)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("伺服器錯誤");
+        return res.json(); // ⚠️ 必須後端回傳 JSON
+    })
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        // ✅ 儲存資訊給 success.html 使用
+        sessionStorage.setItem("orderSuccess", JSON.stringify({
+            storeName: data.storeName,
+            address: data.address,
+            pickupCode: data.pickupCode,
+            pickupTime: data.pickupTime
+        }));
+
+        // ✅ 清空購物車資料
+        clearCartStorage();
+
+        // ✅ 導向成功頁
+        window.location.href = "/success.html";
+    })
+    .catch(err => {
+        console.error("訂單建立失敗：", err);
+        alert("❌ 訂單建立失敗，請稍後再試");
+    });
 }
+
+// ✅ 封裝清空購物車 storage 的 function
+function clearCartStorage() {
+    localStorage.removeItem('selectedFood');
+    localStorage.removeItem('cartItems');
+    sessionStorage.removeItem('selectedFood');
+    sessionStorage.removeItem('cartItems');
+}
+
+
+
+
 
 function disableCheckout(msg) {
     const checkoutBtn = document.getElementById('checkoutBtn');

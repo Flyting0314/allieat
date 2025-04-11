@@ -8,6 +8,9 @@ import com.backstage.backstagrepository.FoodRepository;
 import java.util.List;
 import java.util.Optional;
 import com.entity.FoodVO;
+import com.cartfood.model.*;
+import com.entity.AttachedVO;
+import com.entity.StoreVO;
 
 @Service
 public class CartFoodService {
@@ -51,7 +54,37 @@ public class CartFoodService {
     public List<FoodVO> getFoodsByStoreId(Integer storeId) {
         return foodRepository.findByStore_StoreId(storeId);
     }
-    
+ // 將 FoodVO 轉換成 DTO
+    public CarFoodDTO convertToDTO(FoodVO foodVO) {
+        if (foodVO == null) return null;
+
+        CarFoodDTO dto = new CarFoodDTO();
+        dto.setFoodId(foodVO.getFoodId());
+        dto.setName(foodVO.getName());
+        dto.setCreatedTime(foodVO.getCreatedTime());
+        dto.setStatus(foodVO.getStatus());
+        dto.setAmount(foodVO.getAmount());
+        dto.setPhoto(foodVO.getPhoto());
+        dto.setCost(foodVO.getCost());
+
+        StoreVO store = foodVO.getStore();
+        if (store != null) {
+            dto.setStoreId(store.getStoreId());
+            dto.setStoreName(store.getName()); // 假設 StoreVO 有 getName()
+        }
+
+        if (foodVO.getAttached() != null) {
+            List<String> attachedNames = foodVO.getAttached()
+                .stream()
+                .map(AttachedVO::getName) // 假設 AttachedVO 有 getName()
+                .toList();
+            dto.setAttachedNames(attachedNames);
+        }
+
+        return dto;
+    }
+ 
+
     
     
 }

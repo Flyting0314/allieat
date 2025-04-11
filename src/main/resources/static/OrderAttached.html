@@ -845,52 +845,45 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 加載主餐資訊
     function loadFoodInfo(foodId) {
-        console.log('正在獲取主餐資訊，ID:', foodId);
-        
-        fetch(`/meal/food/${foodId}`)
-            .then(response => {
-                console.log('API響應狀態:', response.status);
-                if (!response.ok) {
-                    throw new Error(`伺服器回應狀態碼: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(food => {
-                console.log('獲取到的主餐資訊:', food);
-                
-                // 更新主餐資訊
-                document.getElementById('mainDishTitle').textContent = food.name || '未知餐點';
-                document.getElementById('mainDishPrice').textContent = `${food.cost || 0} 點`;
-                
-                // 更新圖片
-                const imageElement = document.getElementById('mainDishImage');
-                imageElement.src = food.photo ? `/food/images/${food.photo}` : 'https://via.placeholder.com/300x200?text=餐點圖片';
-                imageElement.alt = food.name || '主餐圖片';
-                
-                // 更新頁面標題
-                document.title = `${food.name || '餐點'} - 攏呷霸 ALLiEAT`;
-                
-                // 可以在這裡添加食物標籤如果有的話
-                // const tagsContainer = document.getElementById('mainDishTags');
-                // if (food.tags) {
-                //     tagsContainer.innerHTML = '';
-                //     food.tags.split(',').forEach(tag => {
-                //         const tagSpan = document.createElement('span');
-                //         tagSpan.className = 'afo-tag';
-                //         tagSpan.textContent = tag.trim();
-                //         tagsContainer.appendChild(tagSpan);
-                //     });
-                // }
-            })
-            .catch(error => {
-                console.error('獲取主餐資訊出錯:', error);
-                showError(`無法獲取主餐資訊: ${error.message}`);
-                
-                // 設置預設值
-                document.getElementById('mainDishTitle').textContent = '無法載入主餐資訊';
-                document.getElementById('mainDishPrice').textContent = '請重新選擇';
-            });
+    const selectedStore = JSON.parse(localStorage.getItem('selectedFood'));
+    const storeId = selectedStore?.storeId;
+
+    if (!storeId) {
+        showError("找不到餐廳 ID，請重新返回上一頁");
+        return;
     }
+
+    fetch(`/meal/food/store/dto?storeId=${storeId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`伺服器回應錯誤: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(foodList => {
+            const food = foodList.find(f => f.foodId == foodId);
+
+            if (!food) {
+                showError("找不到指定的主餐資訊");
+                return;
+            }
+
+            // ✅ 套用 DTO 裡的欄位更新頁面
+            document.getElementById('mainDishTitle').textContent = food.name || '未知餐點';
+            document.getElementById('mainDishPrice').textContent = `${food.cost || 0} 點`;
+
+            const imageElement = document.getElementById('mainDishImage');
+            imageElement.src = food.photo ? `/food/images/${food.photo}` : 'https://via.placeholder.com/300x200?text=餐點圖片';
+            imageElement.alt = food.name || '主餐圖片';
+
+            document.title = `${food.name || '餐點'} - 攏呷霸 ALLiEAT`;
+        })
+        .catch(error => {
+            console.error('獲取主餐資訊出錯:', error);
+            showError(`主餐資料讀取失敗：${error.message}`);
+        });
+}
+
 
     // 加載附餐資訊
     function loadAttachedInfo(foodId) {
@@ -1110,6 +1103,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     }); // ✅ 補上這個來結束最外層 DOMContentLoaded 的 function
 
+    
+    if (!localStorage.getItem('memberId')) {
+        localStorage.setItem('memberId', '1');
+        console.log('🔧 假會員ID已寫入 localStorage: 1');
+    }
     </script>
 
 

@@ -38,17 +38,71 @@
 	href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap"
 	rel="stylesheet">
 <style>
-.container {
-	max-width: 800px;
-	background: white;
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+.vendor_profile_wrapper {
+	display: flex;
+	min-height: 100vh;
+}
+
+.vendor_sidebar {
+	width: 220px;
+	background-color: #ffffff;
+	box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+	padding-top: 20px;
+	position: sticky;
+	top: 0;
+	height: 100vh;
+	overflow-y: auto;
+	flex-shrink: 0;
+}
+
+.vendor_sidebar_item {
+	display: flex;
+	align-items: center;
+	padding: 12px 24px;
+	color: #333;
+	font-weight: 500;
+	text-decoration: none;
+	transition: background 0.3s;
+}
+
+.vendor_sidebar_item:hover, .vendor_active {
+	background-color: #f0f0f0;
+	color: #007bff;
+}
+
+.vendor_sidebar_icon {
+	margin-right: 10px;
+}
+
+.vendor_dropdown_icon {
+	margin-left: auto;
+	font-size: 12px;
+}
+
+.vendor_dropdown_menu .dropdown-item {
+	color: #555;
+	padding: 6px 36px;
+	font-size: 14px;
+	display: block;
+	text-decoration: none;
+}
+
+.vendor_main_content {
+	flex-grow: 1;
 	padding: 30px;
-	border-radius: 12px;
-	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+	background: #f9f9f9;
 }
 
 .meal-header, .meal-item {
 	display: grid;
-	grid-template-columns: 80px 1fr 120px 120px 150px;
+	grid-template-columns: 80px 1fr minmax(80px, 120px) minmax(80px, 120px)
+		minmax(100px, 150px);
 	align-items: center;
 	text-align: center;
 	padding: 10px 0;
@@ -220,97 +274,54 @@ input:checked+.slider:before {
 	</section>
 	<!-- Hero Section End -->
 
+	<div class="container">
+		<div class="vendor_profile_wrapper">
+			<!-- 側邊欄 -->
+			<div class="vendor_sidebar">
+				<a href="#" class="vendor_sidebar_item vendor_active"> <i
+					class="fas fa-store vendor_sidebar_icon"></i> 店家資訊管理
+				</a> <a href="javascript:void(0);" class="vendor_sidebar_item"
+					onclick="toggleDropdown(this)"> <i
+					class="fas fa-utensils vendor_sidebar_icon"></i> 餐點管理 <i
+					class="fas fa-chevron-down vendor_dropdown_icon"></i>
+				</a>
+				<div class="vendor_dropdown_menu"
+					style="display: none; margin-left: 40px; padding-top: 5px;">
+					<a
+						th:href="@{/registerAndLogin/storeInfo/{storeId}/menuEdit(storeId=${storeId})}"
+						class="dropdown-item">菜單</a> <a
+						th:href="@{/registerAndLogin/storeInfo/{storeId}/food(storeId=${storeId})}"
+						class="dropdown-item">編輯菜單</a>
+				</div>
 
-	<div class="container text-center">
-		<h2 class="mb-4">餐點管理</h2>
-		<div class="meal-header">
-			<span>餐點圖片</span> <span>餐點名稱</span> <span>設為代用餐</span> <span>數量</span>
-			<span>操作</span>
-		</div>
-		<div class="meal-list" id="mealContainer"></div>
-<!-- 			<div class="meal-item"> -->
-<!-- 				<img src="img/1662363284_d11462c5428ff9b3c8c5.png" alt="餐點圖片"> -->
-<!-- 				<span class="meal-name">佛跳牆套餐</span> -->
-<!-- 				<div class="switch-container"> -->
-<!-- 					<label class="switch"> <input type="checkbox" -->
-<!-- 						class="toggle-alternate"> <span class="slider"></span> -->
-<!-- 					</label> -->
-<!-- 				</div> -->
-<!-- 				<div class="meal-quantity-container"> -->
-<!-- 					<input type="number" class="meal-quantity" value="32"> -->
-<!-- 				</div> -->
-<!-- 				<div class="action-buttons"> -->
-<!-- 					<a href="#" class="text-primary">返回</a> -->
-<!-- 					<button class="btn btn-primary btn-sm">儲存</button> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 			<div class="meal-item"> -->
-<!-- 				<img src="img/20230419_164440_083.jpg" alt="餐點圖片"> <span -->
-<!-- 					class="meal-name">漢堡套餐</span> -->
-<!-- 				<div class="switch-container"> -->
-<!-- 					<label class="switch"> <input type="checkbox" -->
-<!-- 						class="toggle-alternate"> <span class="slider"></span> -->
-<!-- 					</label> -->
-<!-- 				</div> -->
-<!-- 				<div class="meal-quantity-container"> -->
-<!-- 					<input type="number" class="meal-quantity" value="32"> -->
-<!-- 				</div> -->
-<!-- 				<div class="action-buttons"> -->
-<!-- 					<a href="#" class="text-primary">返回</a> -->
-<!-- 					<button class="btn btn-primary btn-sm">儲存</button> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 			<div class="meal-item"> -->
-<!-- 				<img src="img/E1713411744062.jpg" alt="餐點圖片"> <span -->
-<!-- 					class="meal-name">雞腿套餐</span> -->
-<!-- 				<div class="switch-container"> -->
-<!-- 					<label class="switch"> <input type="checkbox" -->
-<!-- 						class="toggle-alternate"> <span class="slider"></span> -->
-<!-- 					</label> -->
-<!-- 				</div> -->
-<!-- 				<div class="meal-quantity-container"> -->
-<!-- 					<input type="number" class="meal-quantity" value="32"> -->
-<!-- 				</div> -->
-<!-- 				<div class="action-buttons"> -->
-<!-- 					<a href="#" class="text-primary">返回</a> -->
-<!-- 					<button class="btn btn-primary btn-sm">儲存</button> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 			<div class="meal-item"> -->
-<!-- 				<img src="img/16pic_2166889_b.jpg" alt="餐點圖片"> <span -->
-<!-- 					class="meal-name">魚排套餐</span> -->
-<!-- 				<div class="switch-container"> -->
-<!-- 					<label class="switch"> <input type="checkbox" -->
-<!-- 						class="toggle-alternate"> <span class="slider"></span> -->
-<!-- 					</label> -->
-<!-- 				</div> -->
-<!-- 				<div class="meal-quantity-container"> -->
-<!-- 					<input type="number" class="meal-quantity" value="32"> -->
-<!-- 				</div> -->
-<!-- 				<div class="action-buttons"> -->
-<!-- 					<a href="#" class="text-primary">返回</a> -->
-<!-- 					<button class="btn btn-primary btn-sm">儲存</button> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 			<div class="meal-item"> -->
-<!-- 				<img src="img/suisei.jpg" alt="餐點圖片"> <span class="meal-name">彗星炒飯</span> -->
-<!-- 				<div class="switch-container"> -->
-<!-- 					<label class="switch"> <input type="checkbox" -->
-<!-- 						class="toggle-alternate"> <span class="slider"></span> -->
-<!-- 					</label> -->
-<!-- 				</div> -->
-<!-- 				<div class="meal-quantity-container"> -->
-<!-- 					<input type="number" class="meal-quantity" value="32"> -->
-<!-- 				</div> -->
-<!-- 				<div class="action-buttons"> -->
-<!-- 					<a href="#" class="text-primary">返回</a> -->
-<!-- 					<button class="btn btn-primary btn-sm">儲存</button> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
+				<a href="#" class="vendor_sidebar_item"> <i
+					class="fas fa-dollar-sign vendor_sidebar_icon"></i> 核銷點數管理
+				</a> <a href="#" class="vendor_sidebar_item"> <i
+					class="fas fa-clipboard-list vendor_sidebar_icon"></i> 訂單管理
+				</a> <a href="#" class="vendor_sidebar_item"> <i
+					class="fas fa-question-circle vendor_sidebar_icon"></i> 常見問題
+				</a>
+			</div>
+
+			<!-- 主要內容 -->
+			<div class="vendor_main_content" id="profileContent">
+				<div class="container text-center">
+					<h2 class="mb-4">餐點管理</h2>
+					<div class="meal-header">
+						<span>餐點圖片</span> <span>餐點名稱</span> <span>設為代用餐</span> <span>數量</span>
+						<span>操作</span>
+					</div>
+					<div class="meal-list" id="mealContainer"></div>
+				</div>
+			</div>
 		</div>
 	</div>
+
+
 	<script>
+	
 	const storeId = [[${storeId}]];
+	
 	document.addEventListener("DOMContentLoaded", function () {
 	    fetch(`/registerAndLogin/storeInfo/${storeId}/menuEdit/findAll`)
 	        .then(response => response.json())
@@ -399,244 +410,6 @@ input:checked+.slider:before {
 	        });
 	});
 
-// 	  document.addEventListener("DOMContentLoaded", function () {
-// 	    fetch('/store/1/menuEdit/findAll')
-// 	      .then(response => response.json())
-// 	      .then(data => {
-// 	        const container = document.getElementById("mealContainer");
-// 	        container.innerHTML = ""; // 清空舊資料
-
-// 	        data.forEach(item => {
-// 	          const mealDiv = document.createElement("div");
-// 	          mealDiv.classList.add("meal-item");
-
-// 	          const resolvedPhotoPath = item.photoPath
-// 	            ? `${item.photoPath}`
-// 	            : '/img/default.png';
-
-// 	          mealDiv.innerHTML = `
-// 	            <img src="${resolvedPhotoPath}" alt="${item.foodName}">
-// 	            <span class="meal-name">${item.foodName}</span>
-// 	            <div class="switch-container">
-// 	              <label class="switch">
-// 	                <input type="checkbox" class="toggle-alternate" ${item.status == 1 ? "checked" : ""}>
-// 	                <span class="slider"></span>
-// 	              </label>
-// 	            </div>
-// 	            <div class="meal-quantity-container">
-// 	              <input type="number" class="meal-quantity" value="${item.amount}">
-// 	            </div>
-// 	            <div class="action-buttons">
-// 	              <button class="btn btn-primary btn-sm save-btn" disabled>儲存</button>
-// 	            </div>
-// 	          `;
-
-// 	          const amountInput = mealDiv.querySelector(".meal-quantity");
-// 	          const toggleCheckbox = mealDiv.querySelector(".toggle-alternate");
-// 	          const saveBtn = mealDiv.querySelector(".save-btn");
-
-// 	          // 記錄原始值
-// 	          amountInput.setAttribute("data-original", item.amount);
-// 	          toggleCheckbox.setAttribute("data-original", item.status);
-// 	          saveBtn.setAttribute("data-food-id", item.foodId);
-
-// 	          // 髒污檢查
-// 	          function checkIfDirty() {
-// 	            const originalAmount = amountInput.getAttribute("data-original");
-// 	            const originalStatus = toggleCheckbox.getAttribute("data-original");
-
-// 	            const currentAmount = amountInput.value;
-// 	            const currentStatus = toggleCheckbox.checked ? "1" : "0";
-
-// 	            if (currentAmount !== originalAmount || currentStatus !== originalStatus) {
-// 	              saveBtn.disabled = false;
-// 	            } else {
-// 	              saveBtn.disabled = true;
-// 	            }
-// 	          }
-
-// 	          amountInput.addEventListener("input", checkIfDirty);
-// 	          toggleCheckbox.addEventListener("change", checkIfDirty);
-
-// 	          // 儲存按鈕點擊事件
-// 	          saveBtn.addEventListener("click", () => {
-// 	            const updatedData = {
-// 	              foodId: item.foodId,
-// 	              amount: parseInt(amountInput.value),
-// 	              status: toggleCheckbox.checked ? 1 : 0
-// 	            };
-
-// 	            fetch('/store/1/menuEdit/update', {
-// 	              method: 'POST', // 或 'PUT'，依你後端 API 設計
-// 	              headers: {
-// 	                'Content-Type': 'application/json'
-// 	              },
-// 	              body: JSON.stringify(updatedData)
-// 	            })
-// 	              .then(res => {
-// 	                if (!res.ok) throw new Error("更新失敗");
-// 	                return res.json();
-// 	              })
-// 	              .then(response => {
-// 	                alert("更新成功！");
-// 	                // 更新原始值
-// 	                amountInput.setAttribute("data-original", updatedData.amount);
-// 	                toggleCheckbox.setAttribute("data-original", updatedData.status);
-// 	                saveBtn.disabled = true;
-// 	              })
-// 	              .catch(err => {
-// 	                console.error(err);
-// 	                alert("更新失敗！");
-// 	              });
-// 	          });
-
-// 	          container.appendChild(mealDiv);
-// 	        });
-// 	      });
-// 	  });
-
-// 	  document.addEventListener("DOMContentLoaded", function () {
-// 	    fetch('/store/1/menuEdit/findAll')
-// 	      .then(response => response.json())
-// 	      .then(data => {
-// 	        const container = document.getElementById("mealContainer");
-// 	        container.innerHTML = ""; // 清空舊資料
-
-// 	        data.forEach(item => {
-// 	          const mealDiv = document.createElement("div");
-// 	          mealDiv.classList.add("meal-item");
-
-// 	          const resolvedPhotoPath = item.photoPath
-// 	            ? `${item.photoPath}`
-// 	            : '/img/default.png';
-
-// 	          mealDiv.innerHTML = `
-// 	            <img src="${resolvedPhotoPath}" alt="${item.foodName}">
-// 	            <span class="meal-name">${item.foodName}</span>
-// 	            <div class="switch-container">
-// 	              <label class="switch">
-// 	                <input type="checkbox" class="toggle-alternate" ${item.status === 1 ? "checked" : ""}>
-// 	                <span class="slider"></span>
-// 	              </label>
-// 	            </div>
-// 	            <div class="meal-quantity-container">
-// 	              <input type="number" class="meal-quantity" value="${item.amount}">
-// 	            </div>
-// 	            <div class="action-buttons">
-// 	              <a href="#" class="text-primary">返回</a>
-// 	              <button class="btn btn-primary btn-sm save-btn" disabled>儲存</button>
-// 	            </div>
-// 	          `;
-
-// 	          // 設定初始資料（用 data-* attribute 記住原始值）
-// 	          const amountInput = mealDiv.querySelector(".meal-quantity");
-// 	          const toggleCheckbox = mealDiv.querySelector(".toggle-alternate");
-// 	          const saveBtn = mealDiv.querySelector(".save-btn");
-
-// 	          amountInput.setAttribute("data-original", item.amount);
-// 	          toggleCheckbox.setAttribute("data-original", item.status);
-
-// 	          // 監聽 input 改變事件
-// 	          function checkIfDirty() {
-// 	            const originalAmount = amountInput.getAttribute("data-original");
-// 	            const originalStatus = toggleCheckbox.getAttribute("data-original");
-
-// 	            const currentAmount = amountInput.value;
-// 	            const currentStatus = toggleCheckbox.checked ? "1" : "0";
-
-// 	            if (currentAmount !== originalAmount || currentStatus !== originalStatus) {
-// 	              saveBtn.disabled = false;
-// 	            } else {
-// 	              saveBtn.disabled = true;
-// 	            }
-// 	          }
-
-// 	          amountInput.addEventListener("input", checkIfDirty);
-// 	          toggleCheckbox.addEventListener("change", checkIfDirty);
-
-// 	          container.appendChild(mealDiv);
-// 	        });
-// 	      });
-// 	  });
-
-// 	document.addEventListener("DOMContentLoaded", function () {
-// 		  fetch('/store/1/menuEdit/findAll')
-// 		    .then(response => response.json())
-// 		    .then(data => {
-// 		      const container = document.getElementById("mealContainer");
-// 		      container.innerHTML = ""; // 清空舊資料
-
-// 		      data.forEach(item => {
-// 		        const mealDiv = document.createElement("div");
-// 		        mealDiv.classList.add("meal-item");
-
-// 		        // 解決 undefined 路徑問題：防止 "/img/upload/undefined"
-// 		        const resolvedPhotoPath = item.photoPath
-// 		          ? `${item.photoPath}`
-// 		          : '/img/default.png'; // 確保有這張預設圖片
-
-// 		        mealDiv.innerHTML = `
-// 		          <img src="${resolvedPhotoPath}" alt="${item.foodName}">
-// 		          <span class="meal-name">${item.foodName}</span>
-// 		          <div class="switch-container">
-// 		            <label class="switch">
-// 		              <input type="checkbox" class="toggle-alternate" ${item.status === 1 ? "checked" : ""}>
-// 		              <span class="slider"></span>
-// 		            </label>
-// 		          </div>
-// 		          <div class="meal-quantity-container">
-// 		            <input type="number" class="meal-quantity" value="${item.amount}">
-// 		          </div>
-// 		          <div class="action-buttons">
-// 		            <a href="#" class="text-primary">返回</a>
-// 		            <button class="btn btn-primary btn-sm">儲存</button>
-// 		          </div>
-// 		        `;
-
-// 		        container.appendChild(mealDiv);
-// 		      });
-// 		    });
-// 		});
-
-
-// 	document.addEventListener("DOMContentLoaded", function () {
-// 		  fetch('/store/1/menuEdit/findAll')
-// 		    .then(response => response.json())
-// 		    .then(data => {
-// 		      const container = document.getElementById("mealContainer");
-// 		      container.innerHTML = ""; // 清空舊資料
-
-// 		      data.forEach(item => {
-// 		        const mealDiv = document.createElement("div");
-// 		        mealDiv.classList.add("meal-item");
-
-// 		        // 確保圖片路徑正確拼接
-// 		        const resolvedPhotoPath = item.photo && !item.photo.startsWith('/img/')
-// 		          ? '/img/upload/' + item.photo
-// 		          : item.photo;
-
-// 		        mealDiv.innerHTML = `
-// 		          <img src="${resolvedPhotoPath}" alt="${item.name}">
-// 		          <span class="meal-name">${item.name}</span>
-// 		          <div class="switch-container">
-// 		            <label class="switch">
-// 		              <input type="checkbox" class="toggle-alternate" ${item.status === 1 ? "checked" : ""}>
-// 		              <span class="slider"></span>
-// 		            </label>
-// 		          </div>
-// 		          <div class="meal-quantity-container">
-// 		            <input type="number" class="meal-quantity" value="${item.amount}">
-// 		          </div>
-// 		          <div class="action-buttons">
-// 		            <a href="#" class="text-primary">返回</a>
-// 		            <button class="btn btn-primary btn-sm">儲存</button>
-// 		          </div>
-// 		        `;
-
-// 		        container.appendChild(mealDiv);
-// 		      });
-// 		    });
-// 		});
 
 	</script>
 

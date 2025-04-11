@@ -6,7 +6,8 @@ const API_ENDPOINTS = {
     monthlyDonations: `${baseURL}/backStage/homePage/monthlyDonations`,
     newDonors: `${baseURL}/backStage/homePage/newDonors`,
     donationChart: `${baseURL}/backStage/homePage/donationChart`,
-    usageChart: `${baseURL}/backStage/homePage/usageChart`
+    usageChart: `${baseURL}/backStage/homePage/usageChart`,
+    watch: `${baseURL}/backStage/homePage/watch`
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -20,6 +21,9 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchChartData('donationChart', API_ENDPOINTS.donationChart, '累積捐款', '#3a6186');
     fetchChartData('usageChart', API_ENDPOINTS.usageChart, '愛心點領用', 'rgba(54, 162, 235, 1)');
 
+    // 資料變動偵測
+    setupLongPollingForUpdate();
+
     // 側邊選單收合功能
     const toggle = document.querySelector(".collapsible-menu");
     const target = document.querySelector("#recipientSubMenu");
@@ -32,15 +36,16 @@ document.addEventListener("DOMContentLoaded", function () {
             target.classList.toggle("show");
         });
     }
+
     // 綁定登出按鈕功能
     document.querySelector(".btn-logout").addEventListener("click", function () {
         if (confirm("確定要登出嗎？")) {
             backstageAuth.logout();
         }
     });
-
 });
-//共用的取資料函式
+
+// 共用的取資料函式
 function fetchData(elementId, apiUrl, unit, key, useFormat = true) {
     authFetch(apiUrl)
         .then(response => response.json())
@@ -55,7 +60,8 @@ function fetchData(elementId, apiUrl, unit, key, useFormat = true) {
         })
         .catch(error => console.error(`Error fetching ${elementId} data:`, error));
 }
-//共用的取資料函式
+
+// 共用的取圖表函式
 function fetchChartData(chartId, apiUrl, label, borderColor) {
     authFetch(apiUrl)
         .then(response => response.json())
@@ -93,6 +99,32 @@ function fetchChartData(chartId, apiUrl, label, borderColor) {
 function formatNumber(num) {
     return num.toLocaleString(); // 加上千位逗號
 }
-//驗證有沒有token，若沒有token則回到首頁，前端驗證權限的方式。
-window.backstageAuth.requireLogin();
 
+// 長輪詢機制：即時監聽變動並更新資料
+function setupLongPollingForUpdate() {
+    function poll() {
+        authFetch(API_ENDPOINTS.watch)
+            .then(response => response.json())
+            .then(data => {
+                if (data.state) {
+                    // 若後端判定有變動，重新撈取六支 API
+                    fetchData("totalDonations", API_ENDPOINTS.totalDonations, "元", "totalDonations", true);
+                    fetchData("totalDonors", API_ENDPOINTS.totalDonors, "人", "totalDonors", false);
+                    fetchData("monthlyDonations", API_ENDPOINTS.monthlyDonations, "元", "monthlyDonations", true);
+                    fetchData("newDonors", API_ENDPOINTS.newDonors, "人", "newDonors", false);
+                    fetchChartData('donationChart', API_ENDPOINTS.donationChart, '累積捐款', '#3a6186');
+                    fetchChartData('usageChart', API_ENDPOINTS.usageChart, '愛心點領用', 'rgba(54, 162, 235, 1)');
+                }
+                poll(); // 持續輪詢
+            })
+            .catch(err => {
+                console.warn("Polling error, retrying in 3s...", err);
+                setTimeout(poll, 3000);
+            });
+    }
+
+    poll(); // 啟動輪詢
+}
+
+// 驗證登入狀態
+window.backstageAuth.requireLogin();

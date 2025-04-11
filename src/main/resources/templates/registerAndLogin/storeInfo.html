@@ -12,16 +12,16 @@
 
 <style>
 .dropdown-item {
-    display: block;
-    color: #333;
-    font-size: 14px;
-    padding: 6px 0;
-    text-decoration: none;
-    transition: all 0.2s ease;
+	display: block;
+	color: #333;
+	font-size: 14px;
+	padding: 6px 0;
+	text-decoration: none;
+	transition: all 0.2s ease;
 }
 
 .dropdown-item:hover {
-    color: #2196F3;
+	color: #2196F3;
 }
 
 /* 基本重置樣式 */
@@ -402,13 +402,14 @@ body {
 }
 
 .vendor_photo_display img {
-    max-width: 200px;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+	max-width: 200px;
+	border-radius: 8px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
+
 .vendor_photo_display p {
-    font-weight: bold;
-    margin-bottom: 8px;
+	font-weight: bold;
+	margin-bottom: 8px;
 }
 
 .vendor_action_buttons {
@@ -444,7 +445,7 @@ body {
 
 <body>
 	<!-- Navbar Start -->
-	    <th:block th:replace="fragments/bodySection :: bodySection"></th:block>
+	<th:block th:replace="fragments/bodySection :: bodySection"></th:block>
 	<!-- Hero Section End -->
 
 	<!-- Store Profile Content Start -->
@@ -466,9 +467,8 @@ body {
 					style="display: none; margin-left: 40px; padding-top: 5px;">
 					<a
 						th:href="@{/registerAndLogin/storeInfo/{storeId}/menuEdit(storeId=${store.storeId})}"
-						class="dropdown-item">菜單</a> 
-					<a 
-						th:href="@{/registerAndLogin/storeInfo/{storeId}/food(storeId=${store.storeId})}" 
+						class="dropdown-item">菜單</a> <a
+						th:href="@{/registerAndLogin/storeInfo/{storeId}/food(storeId=${store.storeId})}"
 						class="dropdown-item">編輯菜單</a>
 				</div>
 				<!-- 餐點管理 Dropdown 結束 -->
@@ -486,23 +486,30 @@ body {
 			<div class="vendor_main_content" id="profileContent">
 				<h1 class="vendor_page_title">店家封面照</h1>
 
-<!-- 封面照區塊 -->
-<div class="vendor_photo_display" style="display: flex; gap: 20px;">
-    <div th:each="photo : ${photoList}" th:if="${photo.photoType == 'COVER'}" style="text-align: center;">
-        <p>封面照</p>
-        <img th:src="${photo.src}" alt="封面照片" style="max-width:200px; border-radius: 8px;" />
-    </div>
+				<!-- 封面照區塊 -->
+				<div class="vendor_photo_display" style="display: flex; gap: 20px;">
+					<div th:each="photo : ${photoList}"
+						th:if="${photo.photoType == 'COVER'}" style="text-align: center;">
+						<p>封面照</p>
+						<img th:src="${photo.src}" alt="封面照片"
+							style="max-width: 200px; border-radius: 8px;" />
+					</div>
 
-    <div th:each="photo : ${photoList}" th:if="${photo.photoType == 'STORE'}" style="text-align: center;">
-        <p>店面環境照</p>
-        <img th:src="${photo.src}" alt="店面照片" style="max-width:200px; border-radius: 8px;" />
-    </div>
+					<div th:each="photo : ${photoList}"
+						th:if="${photo.photoType == 'STORE'}" style="text-align: center;">
+						<p>店面環境照</p>
+						<img th:src="${photo.src}" alt="店面照片"
+							style="max-width: 200px; border-radius: 8px;" />
+					</div>
 
-    <div th:each="photo : ${photoList}" th:if="${photo.photoType == 'KITCHEN'}" style="text-align: center;">
-        <p>廚房環境照</p>
-        <img th:src="${photo.src}" alt="廚房照片" style="max-width:200px; border-radius: 8px;" />
-    </div>
-</div>
+					<div th:each="photo : ${photoList}"
+						th:if="${photo.photoType == 'KITCHEN'}"
+						style="text-align: center;">
+						<p>廚房環境照</p>
+						<img th:src="${photo.src}" alt="廚房照片"
+							style="max-width: 200px; border-radius: 8px;" />
+					</div>
+				</div>
 
 				<a th:href="@{/registerAndLogin/logout}"
 					class="vendor_logout_btn logout-button">登出</a>
