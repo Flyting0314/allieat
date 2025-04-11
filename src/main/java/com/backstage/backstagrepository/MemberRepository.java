@@ -43,7 +43,7 @@ public interface MemberRepository extends JpaRepository<MemberVO, Integer> {
 
 	MemberVO findByIdNum(String idNum);
 
-
+	 List<MemberVO> findByAccStat(Integer accStat); //依照會員帳號啟用狀態查詢會員
 
 }
 

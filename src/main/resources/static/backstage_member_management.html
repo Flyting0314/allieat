@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>受助者管理</title>
+    <!-- 驗證 -->
+    <script src="./js/backstage_auth_js.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/style_backstage.css">
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+    
+    
+    <style>
+        /* 上方標題區域 */
+        .memberManagement-gradient-container {
+            /* background: linear-gradient(135deg, #3a6186, #89253e); */
+            color: white;
+            padding: 5px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* 大標題 */
+        .memberManagement-header-title {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* 主表格區域 */
+        .memberManagement-content-wrapper {
+            background: linear-gradient(135deg, #3a6186, #89253e);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        /* 側邊欄額外樣式 - 與點數管理保持一致 */
+        .side-bar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            height: 100vh;
+            font-size: 18px;
+            border-radius: 8px;
+        }
+
+        .side-bar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 15px 0;
+            padding: 8px;
+            transition: background 0.3s;
+        }
+
+        .side-bar a:hover, .side-bar a.active {
+            background-color: #34495e;
+        }
+
+        .sub-menu {
+            padding-left: 15px;
+            background-color: #34495e;
+        }
+
+        .sub-item {
+            padding: 8px 15px 8px 25px !important;
+            font-size: 0.9rem;
+        }
+        
+        .sub-item.active {
+            background-color: #3a6186;
+            border-left: 3px solid #ffffff;
+        }
+
+
+        /* =================搜尋按鈕區域=================== */
+        .memberManagement-search-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: flex-end; /* 靠右對齊 */
+        }
+
+        .memberManagement-search-row {
+            display: flex;
+            justify-content: flex-end; /* 靠右對齊 */
+            width: 100%;
+            gap: 20px; /* 欄位間距 */
+        }
+
+        .memberManagement-search-group {
+            display: flex;
+            flex-direction: column;
+            width: 180px; /* 固定寬度 */
+        }
+
+
+        .memberManagement-search-group label {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .memberManagement-search-group input,
+        .memberManagement-search-group select {
+            width: 100%;
+            height: 38px;
+            border-radius: 4px;
+            border: none;
+            padding: 8px 12px;
+        }
+
+        .memberManagement-button-row {
+            margin-top: 10px;
+        }
+
+        .input-button-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .memberManagement-search-button {
+            height: 38px;
+            background-color: #5c9ce6;
+            border-color: #5c9ce6;
+            padding: 8px 15px;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            width: 90px;  /* 按鈕寬度 */
+            margin-left: 10px; /* 增加與前一個欄位的距離 */
+            cursor: pointer;
+        }
+
+        /* 返回按鈕樣式 */
+        .memberManagement-back-button-container {
+            margin: 10px 0 15px 0;
+        }
+
+        .memberManagement-back-button {
+            display: inline-block;
+            color: white;
+            background-color: #6c757d;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .memberManagement-back-button:hover {
+            background-color: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+
+        .memberManagement-back-button i {
+            margin-right: 5px;
+        }
+
+
+ /* =================搜尋按鈕區域 END =================== */
+
+
+        .table th, .table td {
+            white-space: nowrap;  /* 防止文字換行 */
+            overflow: hidden;     /* 隱藏超出部分 */
+            /* text-overflow: ellipsis;  超出部分以省略號顯示 */
+            max-width: 300px;     /* 設置最大寬度，可以根據實際需求調整 */
+            cursor: help; 
+        }
+
+        .table td {
+            position: relative; /* 為絕對定位的下拉選單提供參考 */
+            overflow: visible;
+        }
+
+        /* 在冊單位欄位文字過長 顯示調整 */
+        .table td:nth-child(3) {
+            max-width: 280px;
+            white-space: nowrap;
+            overflow: scroll;
+        
+            cursor: help;  /* 提示滑鼠可以查看更多 */
+        }
+
+
+
+        .memberManagement-table-container {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding-right: 5px; 
+      
+
+        }
+        
+        .memberManagement-pagination-container {
+            background-color: white;
+            padding: 15px;
+            border-top: 1px solid #dee2e6;
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .memberManagement-status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .memberManagement-status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .memberManagement-status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .memberManagement-status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .memberManagement-status-waiting {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        
+        .memberManagement-status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .memberManagement-status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .memberManagement-status-not-activated {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        /* 移除卡片頂部的邊距 */
+        .card-body {
+            padding-top: 0;
+        }
+
+        /* 照片縮圖樣式 */
+        .memberManagement-proof-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* 照片預覽模態框 */
+        .memberManagement-image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+            text-align: center; /* 水平居中 */
+        }
+
+        .memberManagement-modal-content {
+            display: none; /* 初始隱藏，等 JS 處理完定位後顯示 */
+            margin: 0 auto; /* 水平居中 */
+            max-width: 80%;
+            max-height: 80vh; /* 使用視窗高度的百分比 */
+            object-fit: contain; /* 保持圖片比例 */
+        }
+
+        .memberManagement-close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+
+
+/* ===============表格水平滾動軸================== */
+
+        .table-responsive {
+            overflow: visible; /* 允許下拉選單溢出 */
+            overflow-x: auto;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch; /* 為 iOS 裝置改善捲動 */
+        }
+
+        .table-responsive table {
+            min-width: 1200px; /* 根據欄位數量調整 */
+        }
+
+        .memberManagement-table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table-responsive table {
+            min-width: 1200px; /* 根據欄位數量調整 */
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- 左側側邊欄 - 與點數管理頁面保持一致 -->
+        <div class="col-md-2 side-bar">
+            <a href="#">後台首頁</a>
+            <a href="#">合作店家管理</a>
+            
+            <!-- 可展開的受助者管理選項 - 確保與點數管理頁面一致 -->
+            <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#recipientSubMenu" aria-expanded="true">
+                受助者管理 <i class="fas fa-angle-down float-right mt-1"></i>
+            </a>
+            <div class="collapse show" id="recipientSubMenu">
+                <div class="sub-menu">
+                    <a href="#" class="sub-item active">受助者管理</a>
+                    <a href="#" class="sub-item">受助者點數發放</a>
+                </div>
+            </div>
+            
+            <a href="#">在冊單位管理</a>
+            <a href="#">捐款管理</a>
+            <a href="#">未領餐紀錄</a>
+        </div>
+        
+        <!-- 主要內容區域 -->
+        <div class="col-md-10">
+            <!-- 整個內容包裹在漸層容器中 -->
+            <div class="memberManagement-content-wrapper">
+                <!-- 標題和搜尋區域 -->
+                <div class="memberManagement-gradient-container">
+                    <div class="memberManagement-header-title mb-3">受助者管理</div>
+                    
+                    <!-- 搜尋區域 - 第一行 -->
+                    <div class="memberManagement-search-section">
+                        <div class="memberManagement-search-row">
+                            <div class="memberManagement-search-group">
+                                <label for="memberName">以姓名搜尋</label>
+                                <input type="text" class="form-control" id="memberName" placeholder="輸入姓名">
+                            </div>
+                            
+                            <div class="memberManagement-search-group">
+                                <label for="memberId">以受助者ID搜尋</label>
+                                <input type="text" class="form-control" id="memberId" placeholder="輸入ID">
+                            </div>
+                            
+                            <div class="memberManagement-search-group">
+                                <label for="unitFilter">以在冊單位搜尋</label>
+                                <select class="form-control" id="unitFilter">
+                                    <option value="">所有單位</option>
+                                    <!-- 動態從後端獲取單位選項 -->
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- 搜尋區域 - 第二行 -->
+                    <div class="memberManagement-search-row">
+                        <div class="memberManagement-search-group">
+                            <label for="auditStatusFilter">審核狀態篩選</label>
+                            <select class="form-control" id="auditStatusFilter">
+                                <option value="">所有</option>
+                                <option value="pending">審核中</option>
+                                <option value="approved">已通過</option>
+                                <option value="rejected">未通過</option>
+                                <option value="waiting">待審核</option>
+                            </select>
+                        </div>
+                        
+                        <div class="memberManagement-search-group">
+                            <label for="activeStatusFilter">啟用狀態篩選</label>
+                            <select class="form-control" id="activeStatusFilter">
+                                <option value="">所有</option>
+                                <option value="active">啟用</option>
+                                <option value="inactive">停用</option>
+                                <option value="not-activated">未啟用</option>
+                            </select>    
+                        </div>
+                        
+                        <div class="memberManagement-search-group">
+                            <label for="missedMealsFilter">以未取餐次數篩選</label>
+                            <div class="input-button-group">
+                                <select class="form-control" id="missedMealsFilter">
+                                    <option value="">所有</option>
+                                    <option value="0">0次</option>
+                                    <option value="1-5">1-5次</option>
+                                    <option value="6-10">6-10次</option>
+                                    <option value="11-15">11-15次</option>
+                                    <option value="15+">15次以上</option>
+                                </select>
+                                <button class="memberManagement-search-button" id="search-button">搜尋</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+           <!-- 返回按鈕區域 - 初始隱藏 -->
+                <div class="memberManagement-back-button-container" style="display: none;">
+                    <button class="memberManagement-back-button" id="back-button">
+                        <i class="fas fa-arrow-left"></i> 回上一頁
+                    </button>
+                </div>
+
+
+                <!-- 表格區域 -->
+                <!-- 表格區域 -->
+                    <div class="table-responsive memberManagement-table-container">
+                        <div class="card-body">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>受助者ID</th>
+                                        <th>姓名</th>
+                                        <th>在冊單位</th>
+                                        <th>身分證字號</th>
+                                        <th>行動電話</th>
+                                        <th>證明照片</th>
+                                        <th>未領餐次數</th>
+                                        <th>審核狀態</th>
+                                        <th>審核操作</th>
+                                        <th>帳號狀態</th>
+                                        <th>帳號操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="member-table">
+                                    <!-- 資料將透過JavaScript動態載入 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- 分頁功能整合到表格卡片中 -->
+                    <div class="memberManagement-pagination-container">
+                        <ul class="pagination mb-0" id="pagination">
+                            <!-- 分頁將透過JavaScript動態生成 -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 照片預覽模態框 -->
+<div id="memberManagement-imageModal" class="memberManagement-image-modal">
+    <span class="memberManagement-close">&times;</span>
+    <img class="memberManagement-modal-content" id="memberManagement-modalImage">
+</div>
+
+
+
+<script>
+
+// 頁面加載完成後執行
+const itemsPerPage = 7; // 每頁顯示的資料數量
+
+
+// 保存原始數據，以便返回
+let originalMemberData = [];
+let isSearchActive = false;
+
+// 全域變數，追蹤排序狀態
+let memberIdSortAscending = true;
+let currentSortedData = []; // 全域變數儲存排序後的完整資料
+
+// 頁面加載完成後執行
+document.addEventListener('DOMContentLoaded', function() {
+    //啟用登入檢查
+    backstageAuth.requireLogin();
+
+    // 載入表格數據
+    loadMemberData();
+    
+    // 載入在冊單位選項
+    loadOrganizatonOptions();
+    
+    // 搜尋按鈕事件處理
+    document.getElementById('search-button').addEventListener('click', function() {
+        isSearchActive = true;
+        document.querySelector('.memberManagement-back-button-container').style.display = 'block';
+        loadMemberData(1); // 重新載入第一頁數據
+    });
+    
+    // 返回按鈕事件處理
+    document.getElementById('back-button').addEventListener('click', function() {
+        // 清空所有搜索條件
+        document.getElementById('memberName').value = '';
+        document.getElementById('memberId').value = '';
+        document.getElementById('unitFilter').value = '';
+        document.getElementById('auditStatusFilter').value = '';
+        document.getElementById('activeStatusFilter').value = '';
+        document.getElementById('missedMealsFilter').value = '';
+        
+        // 隱藏返回按鈕
+        document.querySelector('.memberManagement-back-button-container').style.display = 'none';
+        
+        // 將isSearchActive設為false
+        isSearchActive = false;
+        
+        // 重載原始資料
+        if (originalMemberData.length > 0) {
+            window.renderTable(originalMemberData.slice(0, itemsPerPage));
+            window.renderPagination({
+                total_items: originalMemberData.length,
+                total_pages: Math.ceil(originalMemberData.length / itemsPerPage),
+                current_page: 1,
+                page_size: itemsPerPage
+            });
+        } else {
+            loadMemberData(); // 如果沒有原始數據，則重新加載
+        }
+    });
+    
+    // 移除審核狀態下拉選單中的"審核中"選項
+    const auditStatusFilter = document.getElementById('auditStatusFilter');
+    for (let i = 0; i < auditStatusFilter.options.length; i++) {
+        if (auditStatusFilter.options[i].value === "pending") {
+            auditStatusFilter.remove(i);
+            break;
+        }
+    }
+});
+
+// ============== 載入在冊單位選項 =================
+function loadOrganizatonOptions() {
+    backstageAuth.authFetch('http://localhost:8080/memberManagement/organization')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('網絡響應失敗');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const unitSelect = document.getElementById('unitFilter');
+            unitSelect.innerHTML = '<option value="">所有單位</option>';
+            
+            data.forEach(unit => {
+                const option = document.createElement('option');
+                option.value = unit.id;
+                option.textContent = unit.name;
+                unitSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('載入在冊單位資料失敗:', error);
+            alert('無法加載在冊單位列表，請稍後重試');
+        });
+}
+
+//=========== 載入會員資料 ===============
+function loadMemberData(page = 1) {
+    // 獲取選擇的狀態值
+    const activeStatusFilter = document.getElementById('activeStatusFilter').value;
+    const reviewedFilter = document.getElementById('auditStatusFilter').value;
+    
+    // 構建搜索條件 DTO
+    const searchDTO = {
+        name: document.getElementById('memberName').value || null,
+        memberId: document.getElementById('memberId').value ? parseInt(document.getElementById('memberId').value) : null,
+        organizationId: document.getElementById('unitFilter').value ? parseInt(document.getElementById('unitFilter').value) : null,
+        // 關鍵修改：特別處理 reviewed 和 accStat，確保 0 值能正確傳遞
+        reviewed: reviewedFilter ? window.convertAuditStatusToValue(reviewedFilter) : null,
+        accStat: activeStatusFilter ? window.convertAccountStatusToValue(activeStatusFilter) : null,
+        unclaimedMealCount: document.getElementById('missedMealsFilter').value || null
+    };
+    
+    // 特別處理未啟用狀態
+    if (activeStatusFilter === "not-activated") {
+        searchDTO.accStat = 0;
+    }
+
+    // 在發送請求前記錄發送的資料，幫助調試
+    console.log("Sending search DTO:", JSON.stringify(searchDTO));
+
+    backstageAuth.authFetch('http://localhost:8080/memberManagement/listAll', {
+        method: 'POST',
+        body: searchDTO
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('網絡響應失敗');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Received data:", data); // 記錄接收到的資料
+        
+        // 如果不是搜索狀態，保存原始數據
+        if (!isSearchActive) {
+            originalMemberData = [...data];
+        }
+
+        // 根據當前排序狀態對全部數據排序
+        currentSortedData = memberIdSortAscending 
+            ? data.sort((a, b) => a.memberId - b.memberId)
+            : data.sort((a, b) => b.memberId - a.memberId);
+
+        // 前端處理分頁
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const itemsForCurrentPage = currentSortedData.slice(startIndex, endIndex);
+        
+        // 使用 window.renderTable 確保函數可被全域訪問
+        window.renderTable(itemsForCurrentPage);
+        window.renderPagination({
+            total_items: currentSortedData.length,
+            total_pages: Math.ceil(currentSortedData.length / itemsPerPage),
+            current_page: page,
+            page_size: itemsPerPage
+        });
+    })
+    .catch(error => {
+        console.error('載入會員資料失敗:', error);
+        alert('無法加載會員列表，請稍後重試');
+    });
+}
+
+// 審核操作選項生成
+window.generateAuditOptions = function(reviewed, memberId) {
+    // 已通過(1)的帳號只能改為未通過
+    if (reviewed === 1) {
+        return `
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">變更</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" data-status="rejected" onclick="changeStatus(this, ${memberId})">未通過</a>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 未通過(2)的帳號只能改為已通過
+    else if (reviewed === 2) {
+        return `
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">變更</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" data-status="approved" onclick="changeStatus(this, ${memberId})">通過</a>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 待審核(3)可以選擇通過、不通過
+    else if (reviewed === 3) {
+        return `
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">變更</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" data-status="approved" onclick="changeStatus(this, ${memberId})">通過</a>
+                    <a class="dropdown-item" href="#" data-status="rejected" onclick="changeStatus(this, ${memberId})">未通過</a>
+                </div>
+            </div>
+        `;
+    }
+    
+    return '<button class="btn btn-outline-secondary btn-sm" disabled>無法操作</button>';
+}
+
+// 帳號操作選項生成
+window.generateAccountActions = function(accStat, reviewed, memberId) {
+    // 僅審核通過(1)的會員才能操作帳號狀態
+    if (reviewed !== 1) {
+        return '<button class="btn btn-outline-secondary btn-sm" disabled>無法操作</button>';
+    }
+    
+    // 啟用(1)的帳號可以被設置為停用(2)
+    if (accStat === 1) {
+        return `
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">變更</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" data-status="inactive" onclick="changeAccountStatus(this, ${memberId})">停用</a>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 停用(2)的帳號可以被設置為啟用(1)
+    else if (accStat === 2) {
+        return `
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">變更</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" data-status="active" onclick="changeAccountStatus(this, ${memberId})">啟用</a>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 未啟用(0)的帳號不能做任何操作
+    else if (accStat === 0) {
+        return '<button class="btn btn-outline-secondary btn-sm" disabled>等待啟用</button>';
+    }
+    
+    return '<button class="btn btn-outline-secondary btn-sm" disabled>無法操作</button>';
+}
+
+// 審核狀態轉換 (前端狀態名稱 -> 後端數值)
+window.convertAuditStatusToValue = function(status) {
+    if (status === "pending") return 0; // 審核中
+    if (status === "approved") return 1; // 已通過
+    if (status === "rejected") return 2; // 未通過
+    if (status === "waiting") return 3; // 待審核
+    return null;
+}
+
+// 帳號狀態轉換 (前端狀態名稱 -> 後端數值)
+window.convertAccountStatusToValue = function(status) {
+    if (status === "not-activated") return 0; // 未啟用
+    if (status === "active") return 1; // 啟用
+    if (status === "inactive") return 2; // 停用
+    return null;
+}
+
+// 渲染表格數據
+window.renderTable = function(members) {
+    const tableBody = document.getElementById('member-table');
+    tableBody.innerHTML = '';
+
+    // 新增無搜尋結果的文字提示
+    if (members.length === 0) {
+        const noResultRow = document.createElement('tr');
+        noResultRow.innerHTML = `
+            <td colspan="11" class="text-center text-muted py-3">
+                沒有符合條件的搜尋結果
+            </td>
+        `;
+        tableBody.appendChild(noResultRow);
+        return;
+    }
+
+    // 在表頭修改受助者ID欄位
+    function createMemberIdSortButton() {
+        return `
+            <div class="d-flex justify-content-between align-items-center">
+                受助者ID 
+                <button class="btn btn-link p-0 ml-2" onclick="toggleMemberIdSort()">
+                    <i class="fas ${memberIdSortAscending ? 'fa-sort-up' : 'fa-sort-down'}"></i>
+                </button>
+            </div>
+        `;
+    }
+
+    // 在表頭修改受助者ID欄位
+    document.querySelector('thead tr th:first-child').innerHTML = createMemberIdSortButton();
+
+    members.forEach(member => {
+        const row = document.createElement('tr');
+        
+        // 審核狀態標籤和CSS類別映射
+        const auditStatusMap = {
+            0: {text: '審核中', class: 'memberManagement-status-pending'},
+            1: {text: '已通過', class: 'memberManagement-status-approved'},
+            2: {text: '未通過', class: 'memberManagement-status-rejected'},
+            3: {text: '待審核', class: 'memberManagement-status-waiting'}
+        };
+        
+        // 帳號狀態標籤和CSS類別映射
+        const accountStatusMap = {
+            0: {text: '未啟用', class: 'memberManagement-status-not-activated'},
+            1: {text: '啟用', class: 'memberManagement-status-active'},
+            2: {text: '停用', class: 'memberManagement-status-inactive'}
+        };
+
+        // 獲取狀態標籤和CSS類別
+        const auditStatus = auditStatusMap[member.reviewed] || {text: '未知', class: ''};
+        const accountStatus = accountStatusMap[member.accStat] || {text: '未知', class: ''};
+        
+        // 設置證明照片（如果有）
+        let proofImageHTML = '';
+            if (member.kycImage) {
+                // 修正 - 使用與 Thymeleaf 相同的路徑格式
+                proofImageHTML = `    
+                    <button class="btn btn-sm btn-outline-primary" 
+                            onclick="showImageModal('/member/${member.kycImage}')">
+                        查看
+                    </button>
+                `;
+            } else {
+                proofImageHTML = '<span class="text-muted">無照片</span>';
+            }
+
+        // 填充行數據
+        row.innerHTML = `
+            <td>${member.memberId}</td>
+            <td>${member.name}</td>
+            <td>${member.organizationName || (member.organizationId ? '查詢中...' : '無')}</td>
+            <td>${member.idNum}</td>
+            <td>${member.phone}</td>
+            <td>${proofImageHTML}</td>
+            <td>${member.unclaimedMealCount || 0}</td>
+            <td><span class="memberManagement-status-badge ${auditStatus.class}">${auditStatus.text}</span></td>
+            <td>${window.generateAuditOptions(member.reviewed, member.memberId)}</td>
+            <td><span class="memberManagement-status-badge ${accountStatus.class}">${accountStatus.text}</span></td>
+            <td>${window.generateAccountActions(member.accStat, member.reviewed, member.memberId)}</td>
+        `;
+                
+        tableBody.appendChild(row);
+    });
+}
+
+// 渲染分頁
+window.renderPagination = function(pagination) {
+    const paginationEl = document.getElementById('pagination');
+    paginationEl.innerHTML = '';
+    
+    // 前一頁按鈕
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${pagination.current_page === 1 ? 'disabled' : ''}`;
+    prevLi.innerHTML = `<a class="page-link" href="#" onclick="loadMemberData(${pagination.current_page - 1}); return false;">Previous</a>`;
+    paginationEl.appendChild(prevLi);
+    
+    // 頁碼按鈕
+    for (let i = 1; i <= pagination.total_pages; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${pagination.current_page === i ? 'active' : ''}`;
+        li.innerHTML = `<a class="page-link" href="#" onclick="loadMemberData(${i}); return false;">${i}</a>`;
+        paginationEl.appendChild(li);
+    }
+    
+    // 下一頁按鈕
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${pagination.current_page === pagination.total_pages ? 'disabled' : ''}`;
+    nextLi.innerHTML = `<a class="page-link" href="#" onclick="loadMemberData(${pagination.current_page + 1}); return false;">Next</a>`;
+    paginationEl.appendChild(nextLi);
+}
+
+// 切換 ID 排序
+window.toggleMemberIdSort = function() {
+    memberIdSortAscending = !memberIdSortAscending;
+    loadMemberData(); // 重新載入並排序
+}
+
+// 變更會員審核狀態
+window.changeStatus = function(element, memberId) {
+    const newStatus = element.getAttribute('data-status');
+    
+    // 顯示確認視窗
+    if (confirm(`確定要將審核狀態變更為「${window.getStatusText(newStatus)}」嗎？`)) {
+        // 發送API請求
+        backstageAuth.authFetch(`http://localhost:8080/memberManagement/updateReviewStatus/${memberId}`, {
+            method: 'PUT',
+            body: { status: newStatus }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message || "狀態更新成功");
+                
+                // 安全獲取當前頁碼，默認為第一頁
+                let currentPage = 1;
+                const activePaginationItem = document.querySelector('.pagination .active a');
+                if (activePaginationItem && activePaginationItem.textContent) {
+                    currentPage = parseInt(activePaginationItem.textContent);
+                }
+                
+                // 重新載入當前頁面數據
+                loadMemberData(currentPage);
+            } else {
+                alert(`操作失敗: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('變更審核狀態失敗:', error);
+            alert('操作失敗，請稍後再試。');
+        });
+    }
+}
+
+// 變更帳號狀態
+window.changeAccountStatus = function(element, memberId) {    
+    const newStatus = element.getAttribute('data-status');
+    
+    // 顯示確認視窗
+    if (confirm(`確定要將帳號狀態變更為「${window.getAccountStatusText(newStatus)}」嗎？`)) {
+        // 發送API請求
+        backstageAuth.authFetch(`http://localhost:8080/memberManagement/updateAccountStatus/${memberId}`, {
+            method: 'PUT',
+            body: { status: newStatus }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 安全獲取當前頁碼，默認為第一頁
+                let currentPage = 1;
+                const activePaginationItem = document.querySelector('.pagination .active a');
+                if (activePaginationItem && activePaginationItem.textContent) {
+                    currentPage = parseInt(activePaginationItem.textContent);
+                }
+                
+                // 重新載入當前頁面數據
+                loadMemberData(currentPage);
+            } else {
+                alert(`操作失敗: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('變更帳號狀態失敗:', error);
+            alert('操作已發送，但返回結果有誤。請稍後重整頁面確認。');
+            
+            // 也可以選擇直接重新載入第一頁數據
+            loadMemberData(1);
+        });
+    }
+}
+
+// 顯示照片預覽模態框
+window.showImageModal = function(imageUrl) {
+    const modal = document.getElementById('memberManagement-imageModal');
+    const modalImg = document.getElementById('memberManagement-modalImage');
+    
+    // 確保使用完整的 URL (包含域名)
+    if (!imageUrl.startsWith('http')) {
+        // 使用當前域名作為基礎
+        const base = window.location.origin;
+        imageUrl = base + imageUrl;
+    }
+    
+    console.log("顯示圖片:", imageUrl); // 添加日誌以便調試
+    
+    // 先隱藏圖片，等加載完成後再顯示，避免位置閃爍
+    modalImg.style.display = 'none';
+    
+    // 顯示模態框
+    modal.style.display = "block";
+    modalImg.src = imageUrl;
+    
+    // 圖片加載完成後顯示並置中
+    modalImg.onload = function() {
+        modalImg.style.display = 'block';
+        
+        // 計算並設置圖片的垂直位置以達到居中效果
+        const windowHeight = window.innerHeight;
+        const imgHeight = modalImg.offsetHeight;
+        
+        if (imgHeight < windowHeight) {
+            const topMargin = Math.max(0, (windowHeight - imgHeight) / 2);
+            modalImg.style.marginTop = topMargin + 'px';
+        } else {
+            modalImg.style.marginTop = '30px'; // 如果圖片較大，保留上方空間
+        }
+    };
+    
+    // 關閉模態框的事件處理
+    const closeBtn = document.getElementsByClassName('memberManagement-close')[0];
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+    
+    // 點擊模態框背景也可以關閉
+    modal.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+}
+
+
+
+// 獲取狀態文字描述
+window.getStatusText = function(status) {    
+    const statusMap = {
+        'approved': '已通過',
+        'rejected': '未通過',
+        'pending': '審核中',
+        'waiting': '待審核'
+    };
+    return statusMap[status] || '未知狀態';
+}
+
+// 獲取帳號狀態文字描述
+window.getAccountStatusText = function(status) {    
+    const statusMap = {
+        'active': '啟用',
+        'inactive': '停用',
+        'not-activated': '未啟用'
+    };
+    return statusMap[status] || '未知狀態';
+}
+
+
+
+</script>
+</body>
+</html>

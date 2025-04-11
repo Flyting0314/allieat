@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>帳號驗證中...</title>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const token = new URLSearchParams(window.location.search).get("token");
+      if (!token) {
+        alert("驗證失敗，缺少驗證碼！");
+        return;
+      }
+
+      fetch(`/registerAndLogin/verify?token=${token}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.message) {
+            alert(data.message);
+            window.location.href = "/registerAndLogin/login"; // ✅ 驗證成功 → 導向登入頁
+          } else if (data.error) {
+            alert(data.error);
+            window.location.href = "/registerAndLogin/register/store"; // ❌ 驗證失敗 → 導回註冊頁
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("驗證過程發生錯誤，請稍後再試");
+        });
+    });
+  </script>
+</head>
+<body>
+  <h2>正在驗證您的帳號，請稍候...</h2>
+</body>
+</html>

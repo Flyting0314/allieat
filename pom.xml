@@ -289,10 +289,13 @@
             <scope>runtime</scope>
         </dependency>
         
+        <!-- 單純只使用 bcrypt，不引入整個 Spring Security 後台密碼加密使用 -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
         
         
-        
-
 	</dependencies>
 
 	<build>

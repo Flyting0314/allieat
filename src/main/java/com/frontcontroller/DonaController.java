@@ -35,10 +35,10 @@ public class DonaController {
 	@Autowired
 	private SmartValidator validator;
 	
-	@ModelAttribute("donaReq")
-    public DonaReq donaReq() {
-        return new DonaReq(); // 預設表單物件
-    }
+//	@ModelAttribute("donaReq")
+//    public DonaReq donaReq() {
+//        return new DonaReq(); // 預設表單物件
+//    }
 	
 	
 
@@ -119,32 +119,27 @@ public class DonaController {
     // 第二階段：顯示第二階段頁面
     @GetMapping("donaAddB")
     public String showAddInfoForm(@ModelAttribute("donaReq") DonaReq donaReq, Model model) {
-//        model.addAttribute("donaReq", donaReq); // 帶入第一階段暫存資料..@SessionAttributes不需要
-    	System.out.println("失敗");
-    	System.out.println("donaReq: " + donaReq); // 確認初始化的物件內容
-    	System.out.println("Model attributes: " + model.asMap()); // 打印模型的所有屬性
-    	System.out.println("Rendering view: dona/donaAddB");
-    	 System.out.println("donaReq: " + donaReq);
-    	 model.addAttribute("activeTab", donaReq.getCompanyDonor() != null && donaReq.getCompanyDonor() ? "company" : "personal");
-    	return "dona/donaAddB"; // 第二階段頁面
+        model.addAttribute("showErrors", false);
+        model.addAttribute("activeTab", donaReq.getCompanyDonor() ? "company" : "personal");
+        return "dona/donaAddB";
     }
-    
+
     @PostMapping("donaAddB")
     public String handleAddInfo(
-    		@ModelAttribute("donaReq") DonaReq donaReq, BindingResult result, Model model) {
-    	
-    	validator.validate(donaReq, result); // class-level 驗證器 (含 @ValidMailInfo)
-        validator.validate(donaReq, result, StepTwo.class); // fields 驗證器 (@NotBlank 等)
-    	 boolean isCompany = Boolean.TRUE.equals(donaReq.getCompanyDonor());
-    	System.out.println("identityData: " + donaReq.getIdentityData());
-    	if (result.hasErrors()) {		
-        	result.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
-        	 model.addAttribute("activeTab", isCompany ? "company" : "personal");
-        	System.out.println("失敗");
-            return "dona/donaAddB"; // 若驗證失敗，返回第二階段頁面
+            @ModelAttribute("donaReq") DonaReq donaReq, BindingResult result, Model model) {
+
+        validator.validate(donaReq, result); // class-level 驗證器
+        validator.validate(donaReq, result, StepTwo.class); // field 驗證器
+
+        boolean isCompany = Boolean.TRUE.equals(donaReq.getCompanyDonor());
+
+        if (result.hasErrors()) {
+            model.addAttribute("showErrors", true); // <== 關鍵：送出才顯示錯誤
+            model.addAttribute("activeTab", isCompany ? "company" : "personal");
+            return "dona/donaAddB";
         }
-//        model.addAttribute("donaReq", donaReq); // 暫存資料..@SessionAttributes不需要
-        return "redirect:/dona/donaAddC"; // 跳轉至第三階段
+
+        return "redirect:/dona/donaAddC";
     }
     
     // 第三階段：顯示第三階段頁面

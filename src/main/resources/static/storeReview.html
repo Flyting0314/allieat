@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>合作店家審核</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style_backstage.css">
+</head>
+<body>
+
+<script>
+  // ✅ 登入驗證：沒有 token 就跳回登入頁
+  const token = localStorage.getItem("jwtToken");
+  if (!token) {
+    alert("請先登入");
+    window.location.href = "/backstage_login.html";
+  }
+
+  // ✅ 統一封裝 fetch，加上 Authorization header
+  function authFetch(url, options = {}) {
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        "Authorization": "Bearer " + token
+      }
+    });
+  }
+</script>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- 側邊欄 -->
+    <div class="col-md-2 side-bar">
+      <h4>後台管理</h4>
+      <a href="./backstage_homepage.html">後台首頁</a>
+      <a href="./storeList.html" class="active">合作店家管理</a>
+      <a href="./backstage_unit_management.html">在冊單位管理</a>
+      <a href="./backstage_donation_management.html">捐款管理</a>
+      <a class="btn btn-logout">登出</a>
+    </div>
+
+    <!-- 主內容 -->
+    <div class="col-md-10">
+      <div class="header-container d-flex justify-content-between align-items-center mt-3">
+        <div class="title h4">合作店家審核</div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-body">
+          <form id="reviewForm">
+            <!-- 顯示店家所有欄位 -->
+            <div class="form-group">
+              <label>店家名稱</label>
+              <input type="text" class="form-control" id="storeName" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>負責人姓名</label>
+              <input type="text" class="form-control" id="managerName" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-control" id="email" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>行動電話</label>
+              <input type="text" class="form-control" id="phoneNum" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>統一編號</label>
+              <input type="text" class="form-control" id="guiNum" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>食品業者登錄字號</label>
+              <input type="text" class="form-control" id="businessRegNum" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>地址</label>
+              <div class="form-row">
+                <div class="col">
+                  <input type="text" class="form-control" id="county" readonly>
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" id="district" readonly>
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" id="postalCode" readonly>
+                </div>
+              </div>
+              <input type="text" class="form-control mt-2" id="address" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>店家照片</label>
+              <div class="row">
+                <div class="col-md-4 text-center">
+                  <p>封面照</p>
+                  <img id="coverPhoto" class="img-thumbnail" style="width:100%; height:200px; object-fit:cover;">
+                </div>
+                <div class="col-md-4 text-center">
+                  <p>廚房照</p>
+                  <img id="kitchenPhoto" class="img-thumbnail" style="width:100%; height:200px; object-fit:cover;">
+                </div>
+                <div class="col-md-4 text-center">
+                  <p>店面照</p>
+                  <img id="storePhoto" class="img-thumbnail" style="width:100%; height:200px; object-fit:cover;">
+                </div>
+              </div>
+            </div>
+
+            <!-- 審核按鈕 -->
+            <div class="text-center mt-4">
+              <button type="button" class="btn btn-success mr-2" onclick="submitReview('true')">通過</button>
+              <button type="button" class="btn btn-danger mr-2" onclick="submitReview('false')">不通過</button>
+              <button type="button" class="btn btn-warning" onclick="submitReview('correction')">補件</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const storeId = urlParams.get("storeId");
+
+  // ✅ 載入店家資料
+  // 🔹 載入店家基本資料
+authFetch(`/backStage/store/${storeId}`)
+  .then(res => {
+    if (!res.ok) {
+      if (res.status === 401) {
+        alert("請先登入");
+        window.location.href = "/backstage_login.html";
+      }
+      throw new Error("無法載入店家資料");
+    }
+    return res.json();
+  })
+  .then(store => {
+    document.getElementById("storeName").value = store.name;
+    document.getElementById("managerName").value = store.managerName;
+    document.getElementById("email").value = store.email;
+    document.getElementById("phoneNum").value = store.phoneNum;
+    document.getElementById("guiNum").value = store.guiNum;
+    document.getElementById("businessRegNum").value = store.businessRegNum;
+    document.getElementById("county").value = store.county;
+    document.getElementById("district").value = store.district;
+    document.getElementById("postalCode").value = store.postalCode;
+    document.getElementById("address").value = store.address;
+  })
+  .catch(err => {
+    alert("載入店家資料失敗");
+    console.error(err);
+  });
+
+// 🔹 載入店家圖片資料（photo table）
+authFetch(`/backStage/store/${storeId}/photos`)
+  .then(res => {
+    if (!res.ok) throw new Error("圖片載入失敗");
+    return res.json();
+  })
+  .then(photos => {
+    document.getElementById("coverPhoto").src = photos.coverPhotoUrl || "img/default.jpg";
+    document.getElementById("kitchenPhoto").src = photos.kitchenPhotoUrl || "img/default.jpg";
+    document.getElementById("storePhoto").src = photos.storePhotoUrl || "img/default.jpg";
+  })
+  .catch(err => {
+    console.error("圖片載入失敗", err);
+  });
+
+
+  // ✅ 提交審核
+  function submitReview(status) {
+    if (!confirm("確定要送出審核結果？")) return;
+
+    authFetch(`/backStage/store/${storeId}/review?approved=${status}`, {
+      method: "PUT"
+    })
+    .then(res => res.text())
+    .then(msg => {
+      alert(msg);
+      location.href = "storeList.html";
+    })
+    .catch(err => {
+      alert("審核失敗");
+      console.error(err);
+    });
+  }
+</script>
+</body>
+</html>
