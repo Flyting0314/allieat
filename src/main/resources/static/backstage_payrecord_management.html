@@ -1,0 +1,1247 @@
+<!-- css 外觀等調整 -->
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>受助者點數發放</title>
+    <!-- 驗證 -->
+    <script src="./js/backstage_auth_js.js"></script>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/style_backstage.css">
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+    
+    <!-- 引入日期範圍選擇器相關的CSS和JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
+
+    <style>
+        /* 上方標題區域 */
+        .gradient-container {
+            /* background: linear-gradient(135deg, #3a6186, #89253e); */
+            color: white;
+            padding: 5px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* 大標題 */
+        .header-title {
+            font-size: 30px; /* 可以根據需要調整大小 */
+            font-weight: bold;
+            margin-bottom: 15px; /* 保持原有的底部間距 */
+        }
+
+        /* 主表格區域 */
+        .content-wrapper {
+            background: linear-gradient(135deg, #3a6186, #89253e);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .search-section {
+            display: flex;
+            justify-content: flex-end; /* 靠右對齊 */
+            align-items: flex-end; /* 底部對齊 */
+            gap: 10px; /* 設定元素之間的間距 */
+            margin-bottom: 5px;
+        }
+        
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            margin-left: 10px; /* 增加左側間距 */
+        }
+        
+        .search-group label {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .search-group input,
+        .search-group select {
+            width: 180px;
+            height: 38px;
+            border-radius: 4px;
+            border: none;
+            padding: 8px 12px;
+        }
+        
+        .search-button {
+            height: 38px;
+            background-color: #5c9ce6;
+            border-color: #5c9ce6;
+            padding: 8px 15px;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            width: 70px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .batch-action-container {
+            display: flex;
+            align-items: flex-end; /* 底部對齊 */
+            /* margin-bottom: 10px; */
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .pagination-container {
+            background-color: white;
+            padding: 15px;
+            border-top: 1px solid #dee2e6;
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-distributed, .status-released {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-not-distributed, .status-pending {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+/* =================================== */
+
+        /* 日期範圍選擇器樣式 */
+        .date-range-input {
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        /* 自訂日期範圍選擇器樣式 */
+        .daterangepicker {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+        }
+        
+        .daterangepicker .calendar-table th,
+        .daterangepicker .calendar-table td {
+            font-size: 14px;
+        }
+        
+        /* 增加左右日曆的間距 */
+        .daterangepicker .drp-calendar.left {
+            margin-right: 10px;
+        }
+        
+        /* 選擇範圍的背景色 */
+        .daterangepicker td.in-range {
+            background-color: #e8f4f9;
+        }
+        
+        /* 選擇的日期的背景色 */
+        .daterangepicker td.active {
+            background-color: #5c9ce6;
+        }
+        
+        /* 調整底部按鈕樣式 */
+        .daterangepicker .drp-buttons .btn {
+            font-size: 14px;
+            padding: 6px 12px;
+        }
+        
+        .daterangepicker .drp-buttons .applyBtn {
+            background-color: #5c9ce6;
+            border-color: #5c9ce6;
+        }
+        
+        /* 表格內灰色小字 */
+        .text-muted-small {
+            color: #6c757d; /* Bootstrap 的 muted 顏色 */
+            font-size: 0.85rem; /* 較小的字體大小 */
+        }
+        
+        /* 模態框樣式 */
+        .payrecord-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            min-width: 400px;
+        }
+        
+        .payrecord-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        
+        .payrecord-modal input,
+        .payrecord-modal select {
+            width: 100%;
+            margin: 10px 0;
+            padding: 5px;
+        }
+        
+        .payrecord-modal button {
+            margin-top: 10px;
+            padding: 5px 10px;
+        }
+        
+        /* 側邊欄樣式 - 修改與會員管理頁面保持一致 */
+        /* .side-bar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            height: 100vh;
+            font-size: 18px;
+            border-radius: 8px;
+        }
+
+        .side-bar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 15px 0;
+            padding: 8px;
+            transition: background 0.3s;
+        }
+
+        .side-bar a:hover, .side-bar a.active {
+            background-color: #34495e;
+        } */
+
+
+
+
+
+
+        /* 移除卡片頂部的邊距 */
+        .card-body {
+            padding-top: 0;
+        }
+
+        /* 表格水平滾動樣式 */
+        .table-responsive {
+            overflow: visible; /* 允許下拉選單溢出 */
+            overflow-x: auto;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch; /* 為 iOS 裝置改善捲動 */
+        }
+
+        .table-responsive table {
+            min-width: 1200px; /* 根據欄位數量調整 */
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table th, .table td {
+            white-space: nowrap;  /* 防止文字換行 */
+            overflow: hidden;     /* 隱藏超出部分 */
+            max-width: 300px;     /* 設置最大寬度，可以根據實際需求調整 */
+        }
+
+        /* 返回按鈕樣式 - 與會員管理頁面保持一致 */
+        .back-button-container {
+            margin: 10px 0 15px 0;
+        }
+
+        .back-button {
+            display: inline-block;
+            color: white;
+            background-color: #6c757d;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+
+        .back-button i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 左側側邊欄 -->
+    <div class="col-md-2 side-bar">
+        <h4>攏呷霸-後台首頁</h4>
+        <a href="./backstage_homepage.html">後台首頁</a>
+        
+        <!-- 可展開的合作店家管理選項 -->
+        <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#storeSubMenu" aria-expanded="false">
+            合作店家管理 <i class="fas fa-angle-down float-right mt-1"></i>
+        </a>
+        <div class="collapse" id="storeSubMenu">
+            <div class="sub-menu">
+                <a href="#" class="sub-item">合作店家管理</a>
+                <a href="#" class="sub-item">合作店家點數核銷</a>
+            </div>
+        </div>
+        
+        <!-- 可展開的受助者管理選項 -->
+        <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#recipientSubMenu" aria-expanded="true">
+            受助者管理 <i class="fas fa-angle-down float-right mt-1"></i>
+        </a>
+        <div class="collapse show" id="recipientSubMenu">
+            <div class="sub-menu">
+                <a href="backstage_member_management.html" class="sub-item">受助者管理</a>
+                <a href="backstage_payrecord_management.html" class="sub-item active">受助者點數發放</a>
+            </div>
+        </div>
+        
+        <a href="./backstage_unit_management.html">在冊單位管理</a>
+        <a href="./backstage_donation_management.html">捐款管理</a>
+        <a href="#">未領餐紀錄</a>
+        <a class="btn btn-logout">登出</a>
+    </div>
+    
+            <!-- 主要內容區域 -->
+            <div class="col-md-10">
+                <!-- 整個內容包裹在漸層容器中 -->
+                <div class="content-wrapper">
+                    <!-- 標題和搜尋區域 -->
+                    <div class="gradient-container">
+                        <div class="header-title mb-3">受助者點數發放</div>
+                        
+                        <!-- 搜尋區域 -->
+                        <div class="search-section">
+                            <div class="search-group">
+                                <label>以點數發放ID查詢</label>
+                                <input type="text" id="search-id" placeholder="如1234">
+                            </div>
+                            
+                            <div class="search-group">
+                                <label>依發放狀態查詢</label>
+                                <select id="search-status">
+                                    <option value="">所有</option>
+                                    <option value="1">已發放</option>
+                                    <option value="0">未發放</option>
+                                    <option value="2">停止發放</option>
+                                </select>
+                            </div>
+                            
+                            <div class="search-group">
+                                <label>以時間搜尋</label>
+                                <input type="text" class="date-range-input" id="dateRangePicker" placeholder="選擇日期範圍" readonly style="width: 215px; max-width: 215px;">
+                            </div>
+                            
+                            <button class="search-button" id="search-button">搜尋</button>
+                        </div>
+    
+                        <!-- 排程設定按鈕區域 -->
+                        <div class="batch-action-container">
+                            <button class="btn btn-success" onclick="showBatchDistributeModal()">排程設定</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 返回按鈕區域 - 初始隱藏 -->
+                    <div class="back-button-container" style="display: none;">
+                        <button class="back-button" id="back-button">
+                            <i class="fas fa-arrow-left"></i> 回上一頁
+                        </button>
+                    </div>
+    
+                    <!-- 表格區域保持白色卡片 -->
+                    <div class="table-container">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    點數發放ID 
+                                                    <button class="btn btn-link p-0 ml-2" onclick="togglePayoutIdSort()">
+                                                        <i class="fas fa-sort-up" id="payoutIdSortIcon"></i>
+                                                    </button>
+                                                </div>
+                                            </th>
+                                            <th>發放總點數</th>
+                                            <th>預定發放時間</th>
+                                            <th>實際發放時間</th>
+                                            <th>發放狀態</th>
+                                            <th>發放操作</th>
+                                            <th>修改</th>
+                                            <th>查看明細</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="payrecord-table">
+                                        <!-- 資料將透過JavaScript動態載入 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- 分頁功能整合到表格卡片中 -->
+                        <div class="pagination-container">
+                            <ul class="pagination mb-0" id="pagination">
+                                <!-- 分頁將透過JavaScript動態生成 -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- 排程設定模態框 -->
+<div class="modal fade" id="batchDistributeModal" tabindex="-1" role="dialog" aria-labelledby="batchDistributeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="batchDistributeModalLabel">排程設定</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-secondary">
+                    <i class="fas fa-info-circle"></i> 此為點數自動排程發放系統，您可以修改系統的排程
+                </div>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i> 本次操作將從下月起生效，並一直被接下來的月份沿用
+                </div>
+                <div class="form-group">
+                    <label for="distributeDayOfMonth">發放日（每月）</label>
+                    <input type="number" class="form-control" id="distributeDayOfMonth" min="1" max="28" value="10">
+                    <small class="form-text text-muted">請選擇1-28日，避免月份天數差異問題</small>
+                </div>
+                <div class="form-group">
+                    <label for="distributeTime">發放時間</label>
+                    <input type="time" class="form-control" id="distributeTime" value="10:00">
+                </div>
+                <div class="form-group">
+                    <label for="batchPointsInput">發放點數（每人）</label>
+                    <input type="number" class="form-control" id="batchPointsInput" placeholder="請輸入點數數量" min="10" step="10" value="9000">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="confirmBatchDistribute">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 批量點數確認浮動視窗 -->
+<div class="modal fade" id="confirmBatchModal" tabindex="-1" role="dialog" aria-labelledby="confirmBatchModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmBatchModalLabel">確定</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>請確認以下發放資訊：</p>
+                <div id="confirmBatchInfo" class="alert alert-info"></div>
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-exclamation-triangle"></i> 注意：此操作將從下月開始生效。
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="finalConfirmBatchDistribute">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 批量發放成功提示模態框 -->
+<div class="modal fade" id="batchSuccessModal" tabindex="-1" role="dialog" aria-labelledBy="batchSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="batchSuccessModalLabel">操作成功</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> 系統將於下個月根據您制定的排程發放點數
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 編輯發放紀錄浮動視窗 -->
+<div class="payrecord-modal" id="payrecord-edit-modal">
+    <h3>修改發放資訊</h3>
+    <input type="hidden" id="payoutId">
+
+    <label>預計發放日期</label>
+    <input type="date" id="payrecord-edit-scheduleTime" min="2025-01-01" max="2025-12-31" required>
+
+    <label>預計發放時間</label>
+    <input type="time" id="payrecord-edit-scheduleTime-time" required>
+
+    <label>預計發放點數（每位會員）</label>
+    <input type="number" id="payrecord-edit-payoutPoints" value="0" required>
+
+    <label>調整發放狀態</label>
+    <select id="payrecord-edit-status">
+        <option value="0">未發放</option>
+        <option value="2">停止發放</option>
+    </select>
+
+    <button class="btn btn-primary" onclick="saveEdit()">確定</button>
+    <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+</div>
+
+<!-- 模態框覆蓋層 -->
+<div class="payrecord-modal-overlay" id="payrecord-modal-overlay"></div>
+
+<!-- 引入JavaScript檔案 -->
+
+<script>
+/* ======= main.js ============
+ * 點數發放主頁面邏輯
+ * 
+ * 功能：
+ * - 初始化日期範圍選擇器
+ * - 處理頁面載入和初始數據獲取
+ * - 管理頁面搜索和篩選邏輯
+ * - 實現鍵盤快捷鍵功能
+ * 
+ */
+
+
+// 全局變數定義
+let currentPage = 1;
+const recordsPerPage = 10;
+let totalPages = 1;
+let allRecords = [];
+let originalRecords = []; // 保存原始數據，以便返回
+let isSearchActive = false; // 標記是否處於搜索狀態
+let payoutIdSortAscending = true; // 排序方向
+
+// 頁面初始化
+document.addEventListener("DOMContentLoaded", function () {
+    // 檢查登入狀態
+    backstageAuth.requireLogin();
+
+    // 初始化日期範圍選擇器
+    $('#dateRangePicker').daterangepicker({
+        locale: {
+            format: 'YYYY-MM-DD',
+            separator: ' 至 ',
+            applyLabel: '確定',
+            cancelLabel: '清除',
+            fromLabel: '從',
+            toLabel: '到',
+            customRangeLabel: '自訂時間範圍',
+            daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+            firstDay: 1
+        },
+        opens: 'center',
+        showDropdowns: true,
+        autoApply: false,
+        linkedCalendars: false,
+        startDate: false,
+        endDate: false,
+        autoUpdateInput: false,
+        ranges: {
+            '本月': [moment().startOf('month'), moment().endOf('month')],
+            '上個月': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function(start, end, label) {
+        if (label === '清除') {
+            $('#dateRangePicker').val('');
+        } else {
+            $('#dateRangePicker').val(start.format('YYYY-MM-DD') + ' 至 ' + end.format('YYYY-MM-DD'));
+        }
+    });
+
+    // 清除日期選擇
+    $('#dateRangePicker').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    // 預設載入所有資料
+    fetchRecords(true);
+    
+    // 搜尋按鈕事件
+    document.getElementById('search-button').addEventListener('click', function() {
+        isSearchActive = true;
+        document.querySelector('.back-button-container').style.display = 'block';
+        fetchRecords(false);
+    });
+    
+    // 返回按鈕事件處理
+    document.getElementById('back-button').addEventListener('click', function() {
+        // 清空所有搜索條件
+        document.getElementById('search-id').value = '';
+        document.getElementById('search-status').value = '';
+        document.getElementById('dateRangePicker').value = '';
+        
+        // 隱藏返回按鈕
+        document.querySelector('.back-button-container').style.display = 'none';
+        
+        // 將isSearchActive設為false
+        isSearchActive = false;
+        
+        // 重載原始資料
+        if (originalRecords.length > 0) {
+            allRecords = [...originalRecords];
+            currentPage = 1;
+            displayRecords(currentPage);
+            updatePagination();
+        } else {
+            fetchRecords(true); // 如果沒有原始數據，則重新加載
+        }
+    });
+    
+    // 為搜尋欄位綁定回車鍵事件
+    document.getElementById('search-id').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('search-button').click();
+        }
+    });
+    
+    // 綁定數字輸入框的驗證事件
+    const numberInputs = document.querySelectorAll('input[type="number"]');
+    numberInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            validateNumberInput(this);
+        });
+    });
+
+    // 註冊鍵盤快捷鍵
+    registerKeyboardShortcuts();
+});
+
+// 獲取記錄資料
+function fetchRecords(isInitialLoad = false) {
+    const searchId = document.getElementById('search-id').value;
+    const searchStatus = document.getElementById('search-status').value;
+    const dateRange = document.getElementById('dateRangePicker').value;
+    
+    document.getElementById('payrecord-table').innerHTML = '<tr><td colspan="8" class="text-center">載入中...</td></tr>';
+    
+    const queryParams = new URLSearchParams();
+    
+    if (!isInitialLoad) {
+        if (searchId && searchId.trim() !== '') {
+            queryParams.append('payoutId', searchId.trim());
+        }
+        
+        if (searchStatus && searchStatus !== '') {
+            queryParams.append('status', searchStatus);
+        }
+        
+        if (dateRange && dateRange !== '') {
+            const dates = dateRange.split(' 至 ');
+            if (dates.length === 2) {
+                queryParams.append('startDate', dates[0]);
+                queryParams.append('endDate', dates[1]);
+            }
+        }
+    }
+    
+    const url = `http://localhost:8080/payrecord/listAll${isInitialLoad ? '' : `?${queryParams.toString()}`}`;
+    
+    backstageAuth.authFetch(url)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('網路回應不正確');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // 保存原始數據
+        if (isInitialLoad) {
+            originalRecords = [...data];
+        }
+        
+        // 根據排序方向對數據進行排序
+        allRecords = payoutIdSortAscending
+            ? data.sort((a, b) => a.payoutId - b.payoutId)
+            : data.sort((a, b) => b.payoutId - a.payoutId);
+        
+        totalPages = Math.ceil(allRecords.length / recordsPerPage);
+        totalPages = totalPages === 0 ? 1 : totalPages;
+        
+        currentPage = 1;
+        displayRecords(currentPage);
+        updatePagination();
+    })
+    .catch(error => {
+        console.error("獲取資料時發生錯誤:", error);
+        document.getElementById('payrecord-table').innerHTML = 
+            '<tr><td colspan="8" class="text-center text-danger">資料載入失敗，請稍後再試</td></tr>';
+    });
+}
+
+// 數字輸入框驗證 - 限制只能輸入數字
+function validateNumberInput(input) {
+    input.value = input.value.replace(/[^0-9]/g, '');
+    
+    const minValue = parseInt(input.getAttribute('min'));
+    const maxValue = parseInt(input.getAttribute('max'));
+    const value = parseInt(input.value);
+    
+    if (!isNaN(value)) {
+        if (!isNaN(minValue) && value < minValue) {
+            input.value = minValue;
+        }
+        if (!isNaN(maxValue) && value > maxValue) {
+            input.value = maxValue;
+        }
+    }
+}
+
+// 註冊鍵盤快捷鍵
+function registerKeyboardShortcuts() {
+    document.addEventListener('keydown', function(e) {
+        // Alt + N: 開啟排程設定
+        if (e.altKey && e.key === 'n') {
+            e.preventDefault();
+            showBatchDistributeModal();
+        }
+        
+        // Alt + S: 觸發搜尋
+        if (e.altKey && e.key === 's') {
+            e.preventDefault();
+            document.getElementById('search-button').click();
+        }
+        
+        // Alt + R: 刷新資料
+        if (e.altKey && e.key === 'r') {
+            e.preventDefault();
+            fetchRecords();
+        }
+        
+        // Alt + B: 返回上一頁
+        if (e.altKey && e.key === 'b' && isSearchActive) {
+            e.preventDefault();
+            document.getElementById('back-button').click();
+        }
+    });
+}
+
+// 切換點數發放ID排序方向
+function togglePayoutIdSort() {
+    payoutIdSortAscending = !payoutIdSortAscending;
+    
+    // 更新排序圖標
+    const icon = document.getElementById('payoutIdSortIcon');
+    icon.className = payoutIdSortAscending ? 'fas fa-sort-up' : 'fas fa-sort-down';
+    
+    // 根據當前方向對記錄重新排序
+    allRecords = payoutIdSortAscending 
+        ? allRecords.sort((a, b) => a.payoutId - b.payoutId)
+        : allRecords.sort((a, b) => b.payoutId - a.payoutId);
+    
+    // 重新顯示當前頁的記錄
+    displayRecords(currentPage);
+}
+
+/* ============== operation.js ================
+ * 點數發放頁面操作邏輯
+ * 
+ * 功能：
+ * - 處理點數發放
+ * - 編輯發放記錄
+ * - 設置批量發放排程
+ * - 管理模態框交互
+ * 
+ * 創建日期：2024-04-11
+ * 最後更新：2024-04-11
+ */
+
+// 查看點數發放明細
+function viewDetails(payRecordId) {
+    /* window.location.href = `payDetailWebV2.html?payRecordId=${payRecordId}`; */
+    window.location.href = `backstage_paydetail.html?payRecordId=${payRecordId}`;
+  }
+  
+  // 立刻發放點數
+  function executePay(payoutId) { 
+    if (!confirm(`確定要執行發放 payoutId: ${payoutId} 嗎？`)) return;
+  
+    const rows = document.querySelectorAll('#payrecord-table tr');
+    let actionCell = null;
+    
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].querySelectorAll('td');
+        if (cells.length > 0 && cells[0].textContent.trim() === payoutId.toString()) {
+            actionCell = cells[5]; // 發放操作列
+            break;
+        }
+    }
+    
+    if (!actionCell) {
+        console.error('找不到對應的行或單元格');
+        return;
+    }
+    
+    const originalContent = actionCell.innerHTML;
+    actionCell.innerHTML = '<span class="text-info"><i class="fas fa-spinner fa-spin"></i> 處理中...</span>';
+  
+    backstageAuth.authFetch(`http://localhost:8080/payrecord/execute/${payoutId}`, {
+      method: "POST"
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('發放處理失敗');
+      }
+      return response.json();
+    })
+    .then(result => {
+      alert(`發放成功: ${result.message || '點數已成功發放'}`);
+      fetchRecords();
+    })
+    .catch(error => {
+      console.error("發放失敗:", error);
+      alert(`發放失敗：${error.message || '請稍後再試'}`);
+      actionCell.innerHTML = originalContent;
+    });
+  }
+  
+  // 編輯發放紀錄
+  function editRecord(payoutId, payoutPoints, scheduleTime, status) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    
+    const firstDay = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-01`;
+    const maxDay = 28;
+    const lastDay = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${maxDay}`;
+    
+    const dateInput = document.getElementById("payrecord-edit-scheduleTime");
+    dateInput.min = firstDay;
+    dateInput.max = lastDay;
+  
+    document.getElementById("payrecord-edit-modal").style.display = "block";
+    document.getElementById("payrecord-modal-overlay").style.display = "block";
+    document.getElementById('payoutId').value = payoutId;
+    document.getElementById("payrecord-edit-payoutPoints").value = payoutPoints;
+  
+    const scheduleDate = new Date(scheduleTime);
+    scheduleDate.setHours(scheduleDate.getHours() + 8);
+  
+    if (isNaN(scheduleDate)) {
+      console.error("Invalid Date:", scheduleTime);
+      alert("傳入的時間格式無效！");
+      return;
+    }
+  
+    const dateStr = scheduleDate.toISOString().split("T")[0];
+    const timeStr = scheduleDate.toTimeString().substring(0, 5);
+    
+    document.getElementById("payrecord-edit-scheduleTime").value = dateStr;
+    document.getElementById("payrecord-edit-scheduleTime-time").value = timeStr;
+    document.getElementById("payrecord-edit-status").value = status;
+  }
+  
+  // 儲存編輯內容
+  function saveEdit() {
+    const payoutId = parseInt(document.getElementById('payoutId').value, 10);
+    if (!payoutId) {
+      console.error('找不到 payoutId');
+      return;
+    }
+  
+    const payoutPoints = parseInt(document.getElementById('payrecord-edit-payoutPoints').value, 10);
+    const scheduleDate = document.getElementById('payrecord-edit-scheduleTime').value;
+    const scheduleTime = document.getElementById('payrecord-edit-scheduleTime-time').value;
+    const status = parseInt(document.getElementById('payrecord-edit-status').value, 10);
+  
+    let errorMessage = null;
+    if (isNaN(payoutPoints)) {
+      errorMessage = '請輸入有效的點數';
+    } else if (payoutPoints === 0) {
+      errorMessage = '點數不能為0';
+    } else if (payoutPoints < 0) {
+      errorMessage = '點數不能是負數';
+    } else if (payoutPoints > 100000) {
+      errorMessage = '點數不能大於100000';
+    } else if (!Number.isInteger(payoutPoints)) {
+      errorMessage = '點數必須是整數，不允許小數';
+    }
+  
+    const selectedDate = new Date(`${scheduleDate}T${scheduleTime}`);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+    if (selectedDate < today) {
+      errorMessage = '排程時間必須是今天或未來的時間';
+    }
+  
+    if (errorMessage) {
+      alert(errorMessage);
+      return;
+    }
+  
+    const fullScheduleTime = `${scheduleDate}T${scheduleTime}:00`;
+  
+    const updatedRecord = {
+      payoutId: payoutId,
+      payoutPoints: payoutPoints,
+      scheduleTime: fullScheduleTime,
+      status: status
+    };
+  
+    backstageAuth.authFetch(`http://localhost:8080/payrecord/update/${payoutId}`, {
+      method: 'PUT',
+      body: updatedRecord
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.message || '更新失敗');
+        });
+      }
+      return response.json();
+    })
+    .then(result => {
+      if (result.status === 'success') {
+        alert("更新成功！");
+        closeModal();
+        fetchRecords();
+      }
+    })
+    .catch(error => {
+      console.error("更新失敗:", error);
+      alert(`更新失敗：${error.message}`);
+    });
+  }
+  
+  // 關閉模態框
+  function closeModal() {
+    document.getElementById("payrecord-edit-modal").style.display = "none";
+    document.getElementById("payrecord-modal-overlay").style.display = "none";
+  }
+  
+  // 顯示排程設定模態框
+  function showBatchDistributeModal() {
+    document.getElementById('distributeDayOfMonth').value = '10';
+    document.getElementById('distributeTime').value = '10:00';
+    document.getElementById('batchPointsInput').value = '9000';
+    
+    $('#batchDistributeModal').modal('show');
+  }
+  
+  // 在文檔載入完成後執行
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById('confirmBatchDistribute').addEventListener('click', function() {
+      const dayOfMonth = document.getElementById('distributeDayOfMonth').value;
+      const time = document.getElementById('distributeTime').value;
+      const points = document.getElementById('batchPointsInput').value;
+      
+      if (parseInt(dayOfMonth) < 1 || parseInt(dayOfMonth) > 28) {
+        alert("發放日必須介於1-28之間");
+        return;
+      }
+      
+      document.getElementById('confirmBatchInfo').innerHTML = `您將更改系統每月自動發放點數排程為 每月${dayOfMonth}日 ${time}，並每月對每位會員發放 ${points} 點`;
+      
+      $('#batchDistributeModal').modal('hide');
+      $('#confirmBatchModal').modal('show');
+    });
+  
+    // 批量發放排程最終確認按鈕事件綁定
+    document.getElementById('finalConfirmBatchDistribute').addEventListener('click', function() {
+        setupSchedule();
+    });
+  });
+  
+  // 設定排程API調用
+  function setupSchedule() {
+    const dayOfMonth = parseInt(document.getElementById('distributeDayOfMonth').value);
+    const time = document.getElementById('distributeTime').value;
+    const points = parseInt(document.getElementById('batchPointsInput').value);
+    
+    // 驗證參數
+    if (isNaN(dayOfMonth) || dayOfMonth < 1 || dayOfMonth > 28) {
+        alert("發放日必須介於1-28之間");
+        return;
+    }
+    
+    if (isNaN(points) || points <= 0) {
+        alert("點數必須大於0");
+        return;
+    }
+    
+    // 構建 DTO 格式的資料
+    const payRuleData = {
+      payoutDay: dayOfMonth,
+      payoutTime: time,
+      payoutPoints: points
+    };
+    
+    // 單一 API 調用
+    backstageAuth.authFetch('http://localhost:8080/payrule/setup_payrule', {
+      method: 'POST',
+      body: payRuleData
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.message || '設定排程失敗');
+        });
+      }
+      return response.json();
+    })
+    .then(result => {
+      if (result.status === 'success') {
+        $('#confirmBatchModal').modal('hide');
+        $('#batchSuccessModal').modal('show');
+        
+        // 3秒後重新載入資料
+        setTimeout(() => {
+          fetchRecords();
+        }, 3000);
+      } else {
+        throw new Error(result.message || '設定排程失敗');
+      }
+    })
+    .catch(error => {
+      console.error("設定排程失敗:", error);
+      alert(`設定排程失敗: ${error.message || '請稍後再試'}`);
+      $('#confirmBatchModal').modal('hide');
+    });
+  }
+
+/* ============= table.js ===============
+ * 點數發放頁面表格邏輯
+ * 
+ * 功能：
+ * - 記錄顯示
+ * - 分頁控制
+ * - 時間和狀態格式化
+ * 
+ */
+
+// 顯示特定頁的記錄
+function displayRecords(page) {
+  const tableBody = document.getElementById("payrecord-table");
+  tableBody.innerHTML = "";
+  
+  // 如果沒有記錄，顯示提示訊息
+  if (allRecords.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="8" class="text-center">沒有符合條件的記錄</td></tr>';
+      return;
+  }
+  
+  // 計算當前頁的資料範圍
+  const startIndex = (page - 1) * recordsPerPage;
+  const endIndex = Math.min(startIndex + recordsPerPage, allRecords.length);
+  
+  // 取得當前頁的資料
+  const currentRecords = allRecords.slice(startIndex, endIndex);
+  
+  // 生成表格行
+  currentRecords.forEach(record => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+          <td>${record.payoutId}</td>
+            <td>${record.totalPoints === null || record.totalPoints === 0 ? '<span class="text-muted-small">未發放</span>' : record.totalPoints.toLocaleString()}</td>
+          <td>${formatTimestamp(record.scheduleTime)}</td>
+          <td>${record.payoutDate ? formatTimestamp(record.payoutDate) : '<span class="text-muted-small">尚未發放</span>'}</td>
+          <td>${formatStatusWithBadge(record.status)}</td>
+          <td>
+            ${record.status === 0 || record.status === 2 ? 
+            `<button class="btn btn-outline-success btn-sm" onclick="executePay(${record.payoutId})">立刻發放</button>` : 
+            `<span class="text-muted-small">已發放</span>`}
+          </td>
+          <td>
+            ${record.status === 0 || record.status === 2 ? 
+            `<button class="btn btn-outline-primary btn-sm" onclick="editRecord(${record.payoutId}, ${record.payoutPoints}, '${record.scheduleTime}', ${record.status})">修改</button>` : 
+            `<span class="text-muted-small">已發放</span>`}
+          </td>
+          <td>
+            ${record.status === 1 ? 
+            `<button class="btn btn-outline-primary btn-sm" onclick="viewDetails(${record.payoutId})">查看</button>` : 
+            `<button class="btn btn-outline-secondary btn-sm" disabled>查看</button>`}
+          </td>
+      `;
+      tableBody.appendChild(row);
+  });
+}
+
+// 更新分頁控制
+function updatePagination() {
+  const pagination = document.getElementById('pagination');
+  pagination.innerHTML = '';
+  
+  // 如果只有一頁，不顯示分頁控制
+  if (totalPages <= 1) {
+      return;
+  }
+  
+  // 前一頁按鈕
+  const prevLi = document.createElement('li');
+  prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+  prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="if(${currentPage} > 1) changePage(${currentPage - 1})">上一頁</a>`;
+  pagination.appendChild(prevLi);
+  
+  // 頁碼按鈕
+  // 最多顯示5個頁碼按鈕
+  const maxPagesToShow = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  let endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+  
+  if (endPage - startPage < maxPagesToShow - 1) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+  }
+  
+  for (let i = startPage; i <= endPage; i++) {
+      const pageLi = document.createElement('li');
+      pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+      pageLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>`;
+      pagination.appendChild(pageLi);
+  }
+  
+  // 下一頁按鈕
+  const nextLi = document.createElement('li');
+  nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+  nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="if(${currentPage} < ${totalPages}) changePage(${currentPage + 1})">下一頁</a>`;
+  pagination.appendChild(nextLi);
+}
+
+// 切換頁面
+function changePage(page) {
+  if (page >= 1 && page <= totalPages) {
+      currentPage = page;
+      displayRecords(currentPage);
+      updatePagination();
+      
+      // 滾動到表格頂部
+      document.querySelector('.table-container').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// 增加過濾功能
+function addFilterDropdowns() {
+  // 此功能可以增加表頭篩選器
+  // 針對每個表頭增加下拉選單，讓用戶可以選擇特定值進行篩選
+  
+  // 獲取表頭行
+  const headerRow = document.querySelector('.table thead tr');
+  const columns = headerRow.querySelectorAll('th');
+  
+  // 針對發放狀態欄位增加篩選器
+  const statusColumn = columns[4]; // 發放狀態是第5列 (索引4)
+  
+  // 建立篩選下拉選單
+  const filterContainer = document.createElement('div');
+  filterContainer.className = 'filter-container';
+  filterContainer.innerHTML = `
+      <select class="form-control form-control-sm mt-2" id="status-filter">
+          <option value="">全部狀態</option>
+          <option value="0">未發放</option>
+          <option value="1">已發放</option>
+          <option value="2">停止發放</option>
+      </select>
+  `;
+  
+  // 將篩選器添加到表頭
+  statusColumn.appendChild(filterContainer);
+  
+  // 綁定篩選事件
+  document.getElementById('status-filter').addEventListener('change', function() {
+      const status = this.value;
+      document.getElementById('search-status').value = status;
+      fetchRecords();
+  });
+}
+
+// 格式化狀態 (帶樣式)
+function formatStatusWithBadge(status) {
+  switch (status) {
+      case 0: return '<span class="status-badge status-pending">未發放</span>';
+      case 1: return '<span class="status-badge status-released">已發放</span>';
+      case 2: return '<span class="status-badge status-pending">停止發放</span>';
+      default: return '<span class="status-badge">未知狀態</span>';
+  }
+}
+
+// 格式化時間戳
+function formatTimestamp(timestamp) {
+  if (!timestamp) return "N/A";
+
+  // 檢查 timestamp 是否為 Date 物件或字串
+  let formattedTimestamp = timestamp;
+  if (typeof timestamp === "string" && timestamp.indexOf(" ") > -1) {
+      formattedTimestamp = timestamp.replace(" ", "T") + ".000Z"; // 轉換為 ISO 格式
+  } else if (timestamp instanceof Date) {
+      formattedTimestamp = timestamp.toISOString();
+  }
+
+  const date = new Date(formattedTimestamp);
+  return date.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
+}
+
+// 格式化時間戳 (後端格式)
+function formatForBackend(timestamp) {
+  if (!timestamp) return "N/A";
+  
+  // 確保 timestamp 是有效的 Date 物件
+  const date = new Date(timestamp);
+  
+  // 轉換為 ISO 格式
+  const isoString = date.toISOString(); // 這是 UTC 格式，例如 "2025-04-27T10:03:00.000Z"
+  
+  // 修改為台灣時區的格式（+08:00）
+  const localDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+  
+  // 確保時間是以 ISO 8601 格式顯示
+  const formattedDate = localDate.toISOString().replace("Z", "+08:00");
+  
+  return formattedDate;
+}
+
+</script>
+
+
+
+</body>
+</html>

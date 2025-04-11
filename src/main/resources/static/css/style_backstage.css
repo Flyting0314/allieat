@@ -173,3 +173,58 @@ body {
 /*body {*/
 /*    overflow-y: scroll;*/
 /*}*/
+
+
+
+
+
+/* ----- 新增的樣式，從以下開始 ----- */
+
+/* 側邊欄樣式增強 */
+.side-bar a:hover, .side-bar a.active {
+    background-color: #34495e;
+}
+
+/* 側邊欄子選單樣式 */
+.sub-menu {
+    padding-left: 15px;
+    background-color: #34495e;
+}
+
+.sub-item {
+    padding: 8px 15px 8px 25px !important;
+    font-size: 0.9rem;
+}
+
+/* 側邊欄子選項 白色線條 */
+.sub-item.active {
+    background-color: #3a6186;
+    position: relative; /* 為偽元素定位做準備 */
+    border-left: none; /* 移除原來的邊框 */
+}
+
+/* 側邊欄子選項 白色線條 */
+.sub-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 25%; /* 從上方25%位置開始 */
+    height: 50%; /* 只有元素高度的50% */
+    width: 3px; /* 線條寬度 */
+    background-color: white; /* 線條顏色 */
+}
+
+/* 登出按鈕樣式 */
+/* .btn-logout {
+    background-color: #e74c3c !important;
+    color: white !important;
+    text-align: center;
+    margin-top: 30px !important;
+    border-radius: 4px;
+    font-weight: bold;
+} */
+
+/* .btn-logout:hover {
+    background-color: #c0392b !important;
+    text-decoration: none !important;
+} */
