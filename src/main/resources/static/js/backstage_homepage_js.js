@@ -6,7 +6,8 @@ const API_ENDPOINTS = {
     monthlyDonations: `${baseURL}/backStage/homePage/monthlyDonations`,
     newDonors: `${baseURL}/backStage/homePage/newDonors`,
     donationChart: `${baseURL}/backStage/homePage/donationChart`,
-    usageChart: `${baseURL}/backStage/homePage/usageChart`
+    usageChart: `${baseURL}/backStage/homePage/usageChart`,
+    watch: `${baseURL}/backStage/homePage/watch` // 長輪詢 API
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -32,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
             target.classList.toggle("show");
         });
     }
+
     // 綁定登出按鈕功能
     document.querySelector(".btn-logout").addEventListener("click", function () {
         if (confirm("確定要登出嗎？")) {
@@ -39,8 +41,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // 啟動長輪詢監聽後端是否更新
+    setupLongPollingForUpdate();
 });
-//共用的取資料函式
+
+// 共用的取資料函式
 function fetchData(elementId, apiUrl, unit, key, useFormat = true) {
     authFetch(apiUrl)
         .then(response => response.json())
@@ -55,7 +60,8 @@ function fetchData(elementId, apiUrl, unit, key, useFormat = true) {
         })
         .catch(error => console.error(`Error fetching ${elementId} data:`, error));
 }
-//共用的取資料函式
+
+// 共用的取資料函式（圖表）
 function fetchChartData(chartId, apiUrl, label, borderColor) {
     authFetch(apiUrl)
         .then(response => response.json())
@@ -90,9 +96,31 @@ function fetchChartData(chartId, apiUrl, label, borderColor) {
         .catch(error => console.error(`Error fetching ${label} data:`, error));
 }
 
+// 加上千位逗號
 function formatNumber(num) {
-    return num.toLocaleString(); // 加上千位逗號
+    return num.toLocaleString();
 }
-//驗證有沒有token，若沒有token則回到首頁，前端驗證權限的方式。
-window.backstageAuth.requireLogin();
 
+// 長輪詢監聽是否有後端資料更新
+function setupLongPollingForUpdate() {
+    function poll() {
+        authFetch(API_ENDPOINTS.watch)
+            .then(res => res.json())
+            .then(data => {
+                if (data.state) {
+                    location.reload(); // 有更新就整頁重整
+                } else {
+                    poll(); // 沒有就繼續等
+                }
+            })
+            .catch(err => {
+                console.error("長輪詢錯誤:", err);
+                setTimeout(poll, 5000); // 失敗時延遲重試
+            });
+    }
+
+    poll(); // 初始啟動
+}
+
+// 驗證有沒有 token，若沒有 token 則回到首頁，前端驗證權限的方式。
+window.backstageAuth.requireLogin();
