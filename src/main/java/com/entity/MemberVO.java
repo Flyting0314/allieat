@@ -18,6 +18,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -39,6 +40,7 @@ public class MemberVO implements Serializable {
 	@ManyToOne
     @JoinColumn(name = "organizationId")  
 	@JsonIgnore// Jackson的忽略標籤，應用於SpringBoot環境。
+	@Valid
     private OrganizationVO organization;
 	@NotBlank(message = "姓名不得為空")
 	@Pattern(regexp = "^[\u4e00-\u9fa5a-zA-Z0-9_]{2,10}$", message = "姓名格式無效，需為 2~10 字的中英文及數字")
@@ -61,7 +63,7 @@ public class MemberVO implements Serializable {
     @Size(min = 6, message = "帳號長度至少需為 6 位")
     private String account;
     @Size(min = 6, message = "密碼長度至少需為 6 位")
-    @NotBlank(message = "帳號不得為空")
+    @NotBlank(message = "密碼不得為空")
     private String password;
 
     private Integer pointsBalance= 0;

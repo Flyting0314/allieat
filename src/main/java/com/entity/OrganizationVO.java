@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "organization")
@@ -20,6 +21,7 @@ public class OrganizationVO implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "organizationId ", updatable = false)
+	@NotNull(message = "請選擇註冊單位")
     private Integer organizationId;
 	
 	@OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)

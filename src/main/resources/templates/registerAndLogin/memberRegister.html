@@ -252,7 +252,9 @@
             <h2 class="verification_section_title">基本資料</h2>
             <form th:action="@{/registerAndLogin/register/member}" th:object="${member}" method="post" enctype="multipart/form-data" onsubmit="return validateAgreement()">
 
-
+<div class="verification_form_group">
+    <label class="verification_form_label">註冊單位</label>
+    <div class="verification_form_controls">
 
 <select class="verification_select"
         th:field="*{organization.organizationId}"
@@ -265,11 +267,11 @@
     </option>
     <option value="-1">其他</option>
 </select>
-<div id="orgErrorMessage" class="text-danger"
-     th:style="${#fields.hasErrors('organization.organizationId')} ? '' : 'display: none;'"
-     th:errors="*{organization.organizationId}"></div>
+<div class="text-danger" th:if="${#fields.hasErrors('organization.organizationId')}" th:errors="*{organization.organizationId}"></div>
 
-            
+
+                </div>
+</div>
             <div class="verification_form_group">
                 <label class="verification_form_label">姓名</label>
                 <div class="verification_form_controls">
@@ -352,6 +354,8 @@
      th:if="${hasSubmitted} and ${error != null and error.contains('檔案')}"
      th:text="${error}"></div>
         </div>
+
+        
     </div>
 
 <div class="verification_form_group">
@@ -362,7 +366,9 @@
                 </label>
             </div>
 
-<div id="errorMessage" class="text-danger" th:classappend="${errorMessage} ? '' : 'hidden'" th:text="${errorMessage}"></div>
+<!-- <div id="errorMessage" class="text-danger" th:classappend="${errorMessage} ? '' : 'hidden'" th:text="${errorMessage}"></div> -->
+<div id="errorMessage" class="text-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
 
 
 

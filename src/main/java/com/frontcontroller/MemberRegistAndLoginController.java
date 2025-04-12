@@ -63,34 +63,45 @@ public class MemberRegistAndLoginController {
         return "registerAndLogin/memberRegister";
     }
 
-  //註冊
     @PostMapping({"", "/"})
     public String register(@Valid @ModelAttribute("member") MemberVO member,
                            BindingResult result,
-                           @RequestParam(value = "kycFile", required = false) MultipartFile kycFile, // ✅ 改為非必填
+                           @RequestParam(value = "kycFile", required = false) MultipartFile kycFile,
                            @RequestParam(value = "agreedToTerms", required = false) String agreedToTerms,
-                           HttpSession session, Model model) {
+                           HttpSession session,
+                           Model model) {
 
         model.addAttribute("hasSubmitted", true);
 
-        if (!"true".equals(agreedToTerms)) {
-            model.addAttribute("errorMessage", "請詳閱並同意使用須知");
-        }
-
-        
         MultipartFile sessionKycFile = (MultipartFile) session.getAttribute("kycFile");
-        if ((kycFile == null || kycFile.isEmpty()) && sessionKycFile == null) {
-            model.addAttribute("error", "請上傳身分驗證檔案");
+
+        // ❗ 統一錯誤處理
+        boolean hasFileError = (kycFile == null || kycFile.isEmpty()) && sessionKycFile == null;
+        boolean hasTermsError = !"true".equals(agreedToTerms);
+        boolean hasOrgError = result.hasFieldErrors("organization.organizationId");
+
+        if (hasFileError || hasTermsError || result.hasErrors()) {
+
+            if (hasFileError) {
+                model.addAttribute("error", "請上傳身分驗證檔案");
+            }
+
+            if (hasTermsError) {
+                model.addAttribute("errorMessage", "請詳閱並同意使用須知");
+            }
+
+            if (hasOrgError) {
+                model.addAttribute("orgErrorMessage", "請選擇註冊單位");
+            }
+
             model.addAttribute("organizations", organizationRepository.findByStatus(1));
             return "registerAndLogin/memberRegister";
         }
 
         try {
-            if (kycFile != null && !kycFile.isEmpty()) {
-                session.setAttribute("kycFile", kycFile); 
-            }
-
-            memberService.prepareMemberForSession(member, kycFile != null ? kycFile : sessionKycFile, agreedToTerms);
+            MultipartFile finalFile = (kycFile != null && !kycFile.isEmpty()) ? kycFile : sessionKycFile;
+            memberService.prepareMemberForSession(member, finalFile, agreedToTerms);
+            session.setAttribute("kycFile", finalFile); // ✅ 保留檔案
             return "redirect:/registerAndLogin/register/member/confirm";
         } catch (IllegalArgumentException | IOException e) {
             model.addAttribute("error", e.getMessage());
