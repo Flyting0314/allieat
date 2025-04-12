@@ -12,133 +12,106 @@ public class OrderFoodVO {
 
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "orderId", updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "orderId", updatable = false)
     private Integer orderId;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeId",referencedColumnName = "storeId")  // 外鍵
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "storeId", referencedColumnName = "storeId", nullable = false)
     private StoreVO store;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId",referencedColumnName = "memberId")  // 外鍵
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberId", referencedColumnName = "memberId", nullable = false)
     private MemberVO member;
-	@Column(name = "rate", columnDefinition = "TINYINT(1)")
-    private Boolean  rate;
-	@Column(name = "comment")
+
+    @Column(name = "rate", columnDefinition = "TINYINT(1)")
+    private Integer rate;
+
+    @Column(name = "comment", length = 100)
     private String comment;
-	@Column(name = "serveStat",columnDefinition = "TINYINT(1)")
-    private Boolean  serveStat;
-	 @Column(name = "pickStat", columnDefinition = "TINYINT(1)")
-    private Boolean pickStat;
-	@Column(name = "pickTime")
+
+    @Column(name = "serveStat", columnDefinition = "TINYINT(1)", nullable = false)
+    private Integer serveStat;
+
+    @Column(name = "pickStat", columnDefinition = "TINYINT(1)", nullable = false)
+    private Integer pickStat;
+
+    @Column(name = "pickTime", nullable = false)
     private Timestamp pickTime;
-	@Column(name = "createdTime",updatable = false)
+
+    @Column(name = "createdTime", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdTime;
 
-
-	// Constructor
-    public OrderFoodVO() {
+    // Getter & Setter
+    public Integer getOrderId() {
+        return orderId;
     }
 
-     
-    // Getter & Setter 方法
-	public Integer getOrderId() {
-		return orderId;
-	}
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
 
-	public void setOrderId(Integer orderId) {
-		this.orderId = orderId;
-	}
+    public StoreVO getStore() {
+        return store;
+    }
 
+    public void setStore(StoreVO store) {
+        this.store = store;
+    }
 
+    public MemberVO getMember() {
+        return member;
+    }
 
-	public StoreVO getStore() {
-		return store;
-	}
+    public void setMember(MemberVO member) {
+        this.member = member;
+    }
 
+    public Integer getRate() {
+        return rate;
+    }
 
-	public void setStore(StoreVO store) {
-		this.store = store;
-	}
+    public void setRate(Integer rate) {
+        this.rate = rate;
+    }
 
+    public String getComment() {
+        return comment;
+    }
 
-	public MemberVO getMember() {
-		return member;
-	}
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
+    public Integer getServeStat() {
+        return serveStat;
+    }
 
-	public void setMember(MemberVO member) {
-		this.member = member;
-	}
+    public void setServeStat(Integer serveStat) {
+        this.serveStat = serveStat;
+    }
 
+    public Integer getPickStat() {
+        return pickStat;
+    }
 
-	public Boolean getRate() {
-		return rate;
-	}
+    public void setPickStat(Integer pickStat) {
+        this.pickStat = pickStat;
+    }
 
-	public void setRate(Boolean rate) {
-		this.rate = rate;
-	}
+    public Timestamp getPickTime() {
+        return pickTime;
+    }
 
-	public String getComment() {
-		return comment;
-	}
+    public void setPickTime(Timestamp pickTime) {
+        this.pickTime = pickTime;
+    }
 
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+    public Timestamp getCreatedTime() {
+        return createdTime;
+    }
 
-	public Boolean  getServeStat() {
-		return serveStat;
-	}
-
-	public void setServeStat(Boolean  serveStat) {
-		this.serveStat = serveStat;
-	}
-
-	public Boolean getPickStat() {
-		return pickStat;
-	}
-
-	public void setPickStat(Boolean pickStat) {
-		this.pickStat = pickStat; 	
-	}
-
-	public Timestamp getPickTime() {
-		return pickTime;
-	}
-
-	public void setPickTime(Timestamp pickTime) {
-		this.pickTime = pickTime;
-	}
-
-	public Timestamp getCreatedTime() {
-		return createdTime;
-	}
-
-	public void setCreatedTime(Timestamp createdTime) {
-		this.createdTime = createdTime;
-	}
-
-
-	@Override
-	public String toString() {
-		return "orderId=" + orderId +"\n"
-				+ ", storeId=" + store.getStoreId() +"\n"
-				+ ", memberId=" + member.getMemberId()+"\n"
-				+ ", rate=" + rate +"\n"
-				+ ", comment=" + comment +"\n"
-				+ ", serveStat="+ serveStat +"\n"
-				+ ", pickStat=" + pickStat +"\n"
-				+ ", pickTime=" + pickTime +"\n"
-				+ ", createdTime=" + createdTime;
-				
-	}
-
-
-	
-	
-	
-
+    public void setCreatedTime(Timestamp createdTime) {
+        this.createdTime = createdTime;
+    }
 }

@@ -246,7 +246,6 @@ function renderCart() {
 
     document.getElementById('cartTotal').textContent = `總計：${total} 點`;
 }
-
 function confirmCheckout() {
     const memberId = localStorage.getItem('memberId');
     const selectedFood = JSON.parse(localStorage.getItem('selectedFood'));
@@ -263,7 +262,7 @@ function confirmCheckout() {
         serveStat: false,
         foodId: selectedFood.foodId,
         attachedId: selectedFood.attachedId || null,
-        items: JSON.parse(sessionStorage.getItem('cartItems')) || []  // 👈 確保 items 傳給後端
+        items: JSON.parse(sessionStorage.getItem('cartItems')) || []
     };
 
     fetch('/meal/order/submit', {
@@ -275,23 +274,26 @@ function confirmCheckout() {
     })
     .then(res => {
         if (!res.ok) throw new Error("伺服器錯誤");
-        return res.json(); // ⚠️ 必須後端回傳 JSON
+        return res.json();
     })
     .then(data => {
+      console.log("✅ 後端回傳 data:", data);
         if (data.error) {
             alert(data.error);
             return;
         }
 
-        // ✅ 儲存資訊給 success.html 使用
+        // ✅ 儲存訂單資訊
         sessionStorage.setItem("orderSuccess", JSON.stringify({
             storeName: data.storeName,
             address: data.address,
             pickupCode: data.pickupCode,
-            pickupTime: data.pickupTime
+            pickupTime: data.pickupTime,
+            storeLat: data.storeLat,
+            storeLng: data.storeLng
         }));
 
-        // ✅ 清空購物車資料
+        // ✅ 清空購物車
         clearCartStorage();
 
         // ✅ 導向成功頁
@@ -303,11 +305,25 @@ function confirmCheckout() {
     });
 }
 
-// ✅ 封裝清空購物車 storage 的 function
+// ✅ 清空購物車 function
 function clearCartStorage() {
     localStorage.removeItem('selectedFood');
     localStorage.removeItem('cartItems');
     sessionStorage.removeItem('selectedFood');
+    sessionStorage.removeItem('cartItems');
+}
+
+
+
+
+//✅ 清空購物車與選擇的餐點資料（localStorage 與 sessionStorage）
+function clearCartStorage() {
+    // 清除選擇的主餐與附餐資料
+    localStorage.removeItem('selectedFood');
+    sessionStorage.removeItem('selectedFood');
+
+    // 清除購物車資料
+    localStorage.removeItem('cartItems');
     sessionStorage.removeItem('cartItems');
 }
 
