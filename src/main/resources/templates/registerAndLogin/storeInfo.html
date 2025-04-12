@@ -179,29 +179,7 @@ body {
 	color: #333;
 }
 
-/* 店家照片上傳區域 */
-/* .vendor_photo_container { */
-/*     display: flex; */
-/*     justify-content: flex-start; /* ✅ 照片靠左 */
-* /
-	/*     align-items: flex-start; */
-	/*     margin-bottom: 40px; */
-	/*     position: relative; */
-	/* } */
-	/*         .vendor_photo_upload { */
-	/*             width: 120px; */
-	/*             height: 120px; */
-	/*             border-radius: 50%; */
-	/*             background-color: #f0f0f5; */
-	/*             display: flex; */
-	/*             justify-content: center; */
-	/*             align-items: center; */
-	/*             margin-right: 20px; */
-	/*             overflow: hidden; */
-	/*             box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
-	/*             cursor: pointer; */
-	/*             position: relative; */
-	/*         } */
+
         
         .vendor_photo_upload img {
 	width: 100%;
@@ -299,19 +277,7 @@ body {
 	box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
 }
 
-/* 編輯模式樣式 */
-.form-action-buttons {
-	/*     position: absolute; */
-	/*     top: 30px; */
-	/*     right: 30px; */
-	/*     display: flex; */
-	/*     flex-direction: row; */
-	/*     gap: 15px; /* ✅ 讓按鈕有間距 */
-	/* display: flex; */
-	/*     gap: 10px; */
-	/*     margin-top: 10px; */
-	
-}
+
 
 .vendor_edit_mode .vendor_info_value {
 	display: none;
@@ -332,14 +298,14 @@ body {
 /* 響應式調整 */
 @media ( max-width : 992px) {
 	.vendor_profile_wrapper {
-		flex-direction: row; /* 強制保持水平排列 */
+		flex-direction: row; 
 	}
 	.vendor_sidebar {
-		width: 240px; /* 保持側邊欄寬度 */
+		width: 240px; 
 		margin-right: 20px;
 	}
 	.vendor_info_grid {
-		grid-template-columns: 1fr 1fr; /* 保持兩列 */
+		grid-template-columns: 1fr 1fr; 
 	}
 }
 
@@ -362,7 +328,7 @@ body {
 	cursor: not-allowed;
 }
 
-/* 美化 Flatpickr 讓它跟你原本欄位一致 */
+
 .time-picker.flatpickr-input {
 	background-color: #fff !important;
 	color: #333 !important;
@@ -376,26 +342,20 @@ body {
 }
 
 .store-cover {
-	max-width: 100%; /* 確保圖片不會超出容器 */
-	max-height: 400px; /* 限制圖片最大高度 */
+	max-width: 100%; 
+	max-height: 400px; 
 	width: auto;
 	height: auto;
 	display: block;
 	margin: auto;
-	object-fit: cover; /* 確保圖片按比例裁切 */
-	border-radius: 10px; /* 圓角美化 */
+	object-fit: cover; 
+	border-radius: 10px; 
 }
 
 .vendor_photo_display {
-	/*     display: flex; */
-	/*     justify-content: flex-start; /* ✅ 確保封面照靠左 */
-	/*     align-items: center; */
-	/*     flex-direction: row; /* ✅ 水平排列 */
-	/*     padding: 20px; */
-	/*     margin-bottom: 50px;  */
-	/*     width: 100%; /* ✅ 擴展區塊寬度 */
+
 	display: flex;
-	justify-content: flex-start; /* ✅ 照片靠左 */
+	justify-content: flex-start; 
 	align-items: flex-start;
 	margin-bottom: 40px;
 	position: relative;
@@ -416,19 +376,19 @@ body {
 	top: 30px;
 	right: 30px;
 	display: flex;
-	gap: 10px; /* ✅ 按鈕間距 */
+	gap: 10px; 
 }
 
 .logout-button {
-	display: inline-block; /* ✅ 讓超連結像按鈕 */
-	background-color: #d9534f; /* ✅ 按鈕背景色 */
-	color: white; /* ✅ 文字顏色 */
-	padding: 8px 20px; /* ✅ 按鈕內距 */
-	text-align: center; /* ✅ 文字置中 */
+	display: inline-block; 
+	background-color: #d9534f; 
+	color: white; 
+	padding: 8px 20px; 
+	text-align: center; 
 	font-size: 15px;
-	border-radius: 4px; /* ✅ 圓角效果 */
-	text-decoration: none; /* ✅ 移除超連結的底線 */
-	cursor: pointer; /* ✅ 讓它有按鈕效果 */
+	border-radius: 4px; 
+	text-decoration: none; 
+	cursor: pointer;
 	border: none;
 	transition: all 0.2s;
 	position: absolute;

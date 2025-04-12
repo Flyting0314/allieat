@@ -56,8 +56,7 @@ public class StoreRegistAndLoginController {
     //註冊
     @PostMapping("")
     public String register(@Valid @ModelAttribute("store") StoreVO store,
-                           BindingResult result,
-                           
+                           BindingResult result,                           
                            @RequestParam("photoFiles") MultipartFile[] photoFiles,
                            @RequestParam(value = "agreedToTerms", required = false) String agreedToTerms,
                            HttpSession session, Model model, HttpServletRequest req) {
