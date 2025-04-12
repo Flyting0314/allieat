@@ -29,7 +29,7 @@ public class DonaReq {
 	
 	
 	@NotNull(message = "請勾選個資運用告知聲明", groups = StepTwo.class)
-	@AssertTrue(message = "請勾選個資運用告知聲明", groups = StepTwo.class)
+	@AssertTrue(message = "", groups = StepTwo.class)
     private Boolean agreePrivacy = false;
     
     private Boolean companyDonor = false; // true = 公司捐款, false = 個人捐款

@@ -298,37 +298,47 @@
         }
 
     </style>
-    <script>
-    async function pay() {
-      const response = await fetch('http://localhost:8081/demo/donation/donate-params', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: 300,
-          orderNo: 'ORDER_' + Date.now(),
-          itemDesc: '支持公益捐款'
-        })
-      });
-		console.log("TESTESTESTESTESTESTSTe");
-      const params = await response.json();
-      const form = document.createElement('form');
-      console.log(params);
-      form.method = 'POST';
-      form.action = 'https://cdonate.newebpay.com/allieat/tibame';
-
-      for (const key in params) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = params[key];
-        form.appendChild(input);
-      }
-		
-      document.body.appendChild(form);
-      
-      form.submit();
-    }
-  </script>
+	<script>
+	  async function pay() {
+	    try {
+	      console.log("pay() 開始執行");
+	
+	      const response = await fetch('/donation/donate-params', {
+	        method: 'POST',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify({
+	          amount: 300,
+	          orderNo: 'ORDER_' + Date.now(),
+	          itemDesc: '支持公益捐款'
+	        })
+	      });
+	
+	      if (!response.ok) {
+	        throw new Error("後端錯誤：" + response.status);
+	      }
+	
+	      const params = await response.json();
+	      console.log("回傳參數：", params);
+	
+	      const form = document.createElement('form');
+	      form.method = 'POST';
+	      form.action = 'https://cdonate.newebpay.com/allieat/tibame'; // ✅ 這是藍新測試網址
+	
+	      for (const key in params) {
+	        const input = document.createElement('input');
+	        input.type = 'hidden';
+	        input.name = key;
+	        input.value = params[key];
+	        form.appendChild(input);
+	      }
+	
+	      document.body.appendChild(form);
+	      form.submit();
+	    } catch (err) {
+	      console.error("JavaScript 發生錯誤：", err);
+	    }
+	  }
+	</script>
    
 </head>
 <body>
@@ -343,7 +353,7 @@
                 <div class="col-md-6">
                     <img src="img/all i eat.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
                     <h5 class="text-danger fw-bold">人人溫飽，生活才美好。</h5>
-                    <button onclick="pay()">前往捐款</button>
+                    <button type="button" onclick="pay()">前往捐款</button>
                     <p>
                         我們傳遞的不僅僅是食物，更是一份深深的關愛與陪伴。每一份餐點都是無數人的愛心與付出。您的捐款帶來持續地穩定的經費，讓我們有能力將愛傳遞給最有需要的人，讓世界更美好，形成一個善的循環。
                     </p>
@@ -388,6 +398,8 @@
             <span th:if="${donaReq.guiNum != null and !#strings.isEmpty(donaReq.guiNum)}" th:text="${donaReq.guiNum}"></span>
         </p>
     </div>
+    
+    <!--  
     <h4>信用卡資料</h4>
     <div>
         <label>信用卡號碼</label>
@@ -401,6 +413,7 @@
         <label>CVC</label>
         <input type="text" name="cardCvv" placeholder="3-4位安全碼" />
     </div>
+    -->
     
     <!-- 按鈕 -->
     <div class="df-actions">

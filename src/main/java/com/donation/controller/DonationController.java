@@ -51,7 +51,7 @@ public class DonationController {
 	private final String HASH_KEY = "59IVo9slHjyqrXGzKK56Bf2uOOsvdpBa";
     private final String HASH_IV = "CN8TD5OVygqmdzgP";
     private final String MERCHANT_ID = "MS155406184";
-    private final String donateUrl = "https://cdonate.newebpay.com/allieat";
+    private final String donateUrl = "https://cdonate.newebpay.com/allieat/tibame";
 	
 	@GetMapping("/")
 	public String myMethod() {
@@ -200,27 +200,48 @@ public class DonationController {
 	 * 
 	 */
     // Step 1: 回傳金流參數給前端
-    @PostMapping("/donate-params")
-    public ResponseEntity<Map<String, String>> generateParams(@RequestBody PaymentRequest request) {
-        long timestamp = System.currentTimeMillis() / 1000;
-        String version = "1.1";
+	@PostMapping("/donate-params")
+	public ResponseEntity<Map<String, String>> generateParams(@RequestBody PaymentRequest request) {
+	    try {
+	    	String timestamp = String.valueOf(Instant.now().getEpochSecond());
+	        String version = "1.1";
 
-        Map<String, String> params = new LinkedHashMap<>();
-        params.put("MerchantID", MERCHANT_ID);
-        params.put("RespondType", "JSON");
-        params.put("TimeStamp", String.valueOf(timestamp));
-        params.put("Version", version);
-        params.put("MerchantOrderNo", request.getOrderNo());
-        params.put("Amt", String.valueOf(request.getAmount()));
-        params.put("ItemDesc", request.getItemDesc());
-        params.put("CREDIT", "on");
-        params.put("NotifyURL", "https://localhost:8081/demo/donation/notify");
-        params.put("ReturnURL", "https://localhost:8081/demo/donation/thank");
+	        Map<String, String> params = new LinkedHashMap<>();
+	        params.put("MerchantID", MERCHANT_ID);
+	        params.put("RespondType", "JSON");
+	        params.put("TimeStamp", timestamp); 
+	        params.put("Version", version);
+	        params.put("MerchantOrderNo", request.getOrderNo());
+	        params.put("Amt", String.valueOf(request.getAmount()));
+	        params.put("ItemDesc", request.getItemDesc());
+	        params.put("CREDIT", "on");
+	        params.put("NotifyURL", "https://localhost:8081/demo/donation/notify");
+	        params.put("ReturnURL", "https://localhost:8081/demo/donation/thank");
 
-        params.put("CheckValue", generateCheckValue(params));
-        System.out.println(params);
-        return ResponseEntity.ok(params);
-    }
+	        // 加密
+	        StringBuilder tradeInfoBuilder = new StringBuilder();
+	        for (Map.Entry<String, String> entry : params.entrySet()) {
+	            tradeInfoBuilder.append(entry.getKey()).append('=').append(entry.getValue()).append('&');
+	        }
+	        tradeInfoBuilder.deleteCharAt(tradeInfoBuilder.length() - 1);
+	        
+	        System.out.println("加密前參數：" + tradeInfoBuilder.toString());
+
+	        String tradeInfo = encryptAES(tradeInfoBuilder.toString());
+	        String tradeSha = sha256("HashKey=" + HASH_KEY + "&" + tradeInfo + "&HashIV=" + HASH_IV);
+
+	        Map<String, String> result = new LinkedHashMap<>();
+	        result.put("MerchantID", MERCHANT_ID);
+	        result.put("TradeInfo", tradeInfo);
+	        result.put("TradeSha", tradeSha);
+	        result.put("Version", version);
+
+	        return ResponseEntity.ok(result);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	    }
+	}
 
     // Step 2: 接收金流背景通知
     /*
@@ -245,6 +266,7 @@ public class DonationController {
             String decryptedJson;
             try {
                 decryptedJson = decryptAES(tradeInfo); // 嘗試解密（正式）
+                System.out.println("解密後內容：" + decryptedJson);
             } catch (Exception e) {
                 // 若解密失敗，就直接 base64 decode（測試用）
                 byte[] decoded = Base64.getDecoder().decode(tradeInfo);
@@ -305,6 +327,22 @@ public class DonationController {
         }
     }
 
+    private String encryptAES(String data) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        SecretKeySpec key = new SecretKeySpec(HASH_KEY.getBytes(StandardCharsets.UTF_8), "AES");
+        IvParameterSpec iv = new IvParameterSpec(HASH_IV.getBytes(StandardCharsets.UTF_8));
+        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+        byte[] encrypted = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString(encrypted);
+    }
+    
+    private String sha256(String data) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] digest = md.digest(data.getBytes(StandardCharsets.UTF_8));
+        return bytesToHex(digest).toUpperCase();
+    }
+    
+    
     private String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
