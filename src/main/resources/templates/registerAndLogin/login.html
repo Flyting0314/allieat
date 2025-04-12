@@ -209,7 +209,7 @@
 
             <button type="submit" class="merchant_login_btn">登入</button>
         </form>
-        <!-- 錯誤 or 成功訊息 -->
+        <!-- 錯誤成功訊息 -->
 <p class="text-danger text-center" th:if="${error}" th:text="${error}"></p>
 <p class="text-success text-center" th:if="${success}" th:text="${success}"></p>
 
@@ -258,7 +258,7 @@
 <script src="js/main.js"></script>
 
 <!-- Login JavaScript -->
-<!-- ✅ JS & 用戶類型切換 -->
+<!-- 用戶類型切換 -->
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script>
     document.querySelectorAll('input[name="userType"]').forEach(radio => {

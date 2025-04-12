@@ -282,7 +282,7 @@
 
     <div th:if="${member.organization != null}">
         <div class="verification_form_group">
-            <label class="verification_form_label">註冊單位</label>
+            <label class="verification_form_label">在冊單位</label>
             <p th:text="${member.organization.name}" class="form-control-plaintext"></p>
         </div>
 
@@ -390,12 +390,9 @@
     
     <!-- Form Script -->
     <script>
-// ✅ 用 alert 顯示簡單提示
-    document.getElementById('registerConfirmForm').addEventListener('submit', function (e) {
-        const confirmed = confirm('資料已送出，審核結果會以電子郵件通知');
-        if (!confirmed) {
-            e.preventDefault();
-        }
+
+    document.getElementById('registerConfirmForm').addEventListener('submit', function () {
+        alert('資料已送出，審核結果會以電子郵件通知');
     });
 </script>
 

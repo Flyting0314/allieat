@@ -150,12 +150,11 @@
     
     <!-- Custom Javascript -->
 <script>
-    document.getElementById('registerConfirmForm').addEventListener('submit', function (e) {
-        const confirmed = confirm('資料已送出，審核結果會以電子郵件通知');
-        if (!confirmed) {
-            e.preventDefault();
-        }
-    });
+document.getElementById('registerConfirmForm').addEventListener('submit', function () {
+    alert('資料已送出，審核結果會以電子郵件通知');
+});
+    
+
 </script>
 </body>
 </html>

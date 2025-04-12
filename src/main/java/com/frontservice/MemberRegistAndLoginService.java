@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +31,7 @@ public class MemberRegistAndLoginService {
     private OrganizationRepository organizationRepository;
 
     private final String uploadDir = "upload/member";
-    @ModelAttribute("member") // ✅ 新增，提供 Session 預設值
+    @ModelAttribute("member") 
     public MemberVO prepareMember() {
         MemberVO member = new MemberVO();
         member.setOrganization(new OrganizationVO());
@@ -47,7 +48,7 @@ public class MemberRegistAndLoginService {
 
         member.setOrganization(resolveOrganization(member.getOrganization()));
 
-        // ✅ 若使用者已有圖片（例如從確認頁回來），則保留
+
         String oldImage = member.getKycImage();
 
         if (kycFile != null && !kycFile.isEmpty()) {
@@ -55,14 +56,18 @@ public class MemberRegistAndLoginService {
             String savedFilename = saveKycFile(kycFile);
             member.setKycImage(savedFilename);
         } else if (oldImage != null && !oldImage.isEmpty()) {
-            // 沒上傳新檔案就保留原圖
+            // 沒上傳新就保留
             member.setKycImage(oldImage);
         }
 
         return member;
     }
 
-
+    public void generateKycPreview(MemberVO member, Model model) {
+        if (member.getKycImage() != null && !member.getKycImage().isEmpty()) {
+            model.addAttribute("kycPreview", "/member/" + member.getKycImage());
+        }
+    }
 
     public void finalizeRegistration(MemberVO member) {
         member.setRegTime(new Timestamp(System.currentTimeMillis()));
@@ -73,27 +78,20 @@ public class MemberRegistAndLoginService {
         Integer orgId = org.getOrganizationId();
 
         if (orgId == null) {
-            throw new IllegalArgumentException("未選擇單位或單位 ID 為空");
+            throw new IllegalArgumentException("未選擇單位");
         }
 
+        // 選其他
         if (orgId == -1) {
-            String name = org.getName();
-            if (name == null || name.trim().isEmpty()) {
-                throw new IllegalArgumentException("請填寫其他單位名稱");
-            }
-            String trimmedName = name.trim().toLowerCase();
-            organizationRepository.findByName(trimmedName).ifPresent(o -> {
-                throw new IllegalArgumentException("該單位名稱已存在，請從下拉選單中選擇");
-            });
-
+           
             OrganizationVO newOrg = new OrganizationVO();
-            newOrg.setName(trimmedName);
-            newOrg.setType(org.getType());
-            newOrg.setStatus(0);
+            newOrg.setName("使用者提供，待審核"); 
+            newOrg.setType("未知");
+            newOrg.setStatus(2); 
             newOrg.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-
             return organizationRepository.save(newOrg);
         } else {
+            // 選現有單位
             return organizationRepository.findById(orgId)
                     .orElseThrow(() -> new IllegalArgumentException("無效的單位 ID"));
         }
