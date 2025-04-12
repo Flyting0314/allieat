@@ -413,8 +413,11 @@
 						    </div>
 
     							<!--  修改提示語句 -->
-    						<p th:if="${hasSubmitted} and ${photoList.?[photoType == 'COVER'].size() > 0}" class="text-muted small">若您不想更換圖片，無需重新選擇檔案。</p>
-
+    						<input type="hidden" id="hasSubmittedFlag" th:value="${hasSubmitted}"/>
+<p class="text-muted small cover-hint"
+   th:if="${store.storeToPhoto != null and store.storeToPhoto.?[photoType == 'COVER'].size() > 0}">
+    若您不想更換圖片，無需重新選擇檔案。
+</p>
     							<!-- 上傳欄位 -->
     						<div class="partner_photo_upload_field">
 						    	<label class="custom-upload-btn">
@@ -434,7 +437,11 @@
 						             class="preview-img"
 						             alt="廚房預覽圖"/>
 						   </div>
-							<p th:if="${hasSubmitted} and ${photoList.?[photoType == 'KITCHEN'].size() > 0}" class="text-muted small">若您不想更換圖片，無需重新選擇檔案。</p>
+							
+							<p class="text-muted small kitchen-hint"
+   th:if="${store.storeToPhoto != null and store.storeToPhoto.?[photoType == 'KITCHEN'].size() > 0}">
+    若您不想更換圖片，無需重新選擇檔案。
+</p>
 							<div class="partner_photo_upload_field">
 								<label class="custom-upload-btn">
 							        選擇檔案
@@ -454,7 +461,11 @@
 						             class="preview-img"
 						             alt="店面預覽圖"/>
 						    </div>
-						    <p th:if="${hasSubmitted} and ${photoList.?[photoType == 'STORE'].size() > 0}" class="text-muted small">若您不想更換圖片，無需重新選擇檔案。</p>
+<p class="text-muted small store-hint"
+   th:if="${store.storeToPhoto != null and store.storeToPhoto.?[photoType == 'STORE'].size() > 0}">
+    若您不想更換圖片，無需重新選擇檔案。
+</p>
+
 						    <div class="partner_photo_upload_field">
 							    <label class="custom-upload-btn">
 							        選擇檔案
@@ -707,6 +718,82 @@ clearPhotoErrorOnSelect('file_upload_cover');
 clearPhotoErrorOnSelect('file_upload_kitchen');
 clearPhotoErrorOnSelect('file_upload_store');
 
+
+document.addEventListener('DOMContentLoaded', function () {
+    const hasSubmitted = document.getElementById('hasSubmittedFlag')?.value === "true";  // ✅ 取得 hasSubmitted 標記
+    const coverHint = document.querySelector(".cover-hint");  // ✅ 封面圖片的提示
+    const kitchenHint = document.querySelector(".kitchen-hint");
+    const storeHint = document.querySelector(".store-hint");
+
+    if (!hasSubmitted) {
+      
+        if (coverHint) coverHint.style.display = 'none';
+        if (kitchenHint) kitchenHint.style.display = 'none';
+        if (storeHint) storeHint.style.display = 'none';
+    }
+
+    document.querySelectorAll("input[type=file]").forEach(input => {
+        input.addEventListener('change', function () {
+          
+            if (coverHint && input.id === "file_upload_cover") coverHint.style.display = 'none';
+            if (kitchenHint && input.id === "file_upload_kitchen") kitchenHint.style.display = 'none';
+            if (storeHint && input.id === "file_upload_store") storeHint.style.display = 'none';
+        });
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const coverHint = document.querySelector(".cover-hint");
+    const kitchenHint = document.querySelector(".kitchen-hint");
+    const storeHint = document.querySelector(".store-hint");
+    const coverPreview = document.getElementById("coverPhotoPreview");
+    const kitchenPreview = document.getElementById("kitchenPhotoPreview");
+    const storePreview = document.getElementById("storePhotoPreview");
+
+    function checkCoverPreview() {
+        if (!coverPreview.innerHTML.trim()) {
+            if (coverHint) coverHint.style.display = 'none';  
+        }
+    }
+
+    function checkKitchenPreview() {
+        if (!kitchenPreview.innerHTML.trim()) {
+            if (kitchenHint) kitchenHint.style.display = 'none'; 
+        }
+    }
+
+    function checkStorePreview() {
+        if (!storePreview.innerHTML.trim()) {
+            if (storeHint) storeHint.style.display = 'none'; 
+        }
+    }
+
+
+    checkCoverPreview();
+    checkKitchenPreview();
+    checkStorePreview();
+
+    document.querySelectorAll("input[type=file]").forEach(input => {
+        input.addEventListener('change', function () {
+            if (input.id === "file_upload_cover") {
+                checkCoverPreview();
+            }
+            if (input.id === "file_upload_kitchen") {
+                checkKitchenPreview();
+            }
+            if (input.id === "file_upload_store") {
+                checkStorePreview();
+            }
+        });
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', function () {
+        checkCoverPreview();
+        checkKitchenPreview();
+        checkStorePreview();
+    });
+});
 </script>
 
 </body>
