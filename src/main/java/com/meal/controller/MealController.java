@@ -138,8 +138,9 @@ public class MealController {
             // 1. 取得基本資料
             Integer storeId = (Integer) orderData.get("storeId");
             Integer memberId = (Integer) orderData.get("memberId");
-            Boolean pickStat = (Boolean) orderData.getOrDefault("pickStat", false);
-            Boolean serveStat = (Boolean) orderData.getOrDefault("serveStat", false);
+            Integer pickStat = (Integer) orderData.getOrDefault("pickStat", 0);
+            Integer serveStat = (Integer) orderData.getOrDefault("serveStat", 0);
+            
 
             // 2. 建立主訂單
             OrderFoodVO order = new OrderFoodVO();
@@ -187,7 +188,10 @@ public class MealController {
             result.put("storeName", savedOrder.getStore().getName());
             result.put("address", savedOrder.getStore().getAddress());
             result.put("pickupCode", "取餐編號-" + savedOrder.getOrderId());
-            result.put("pickupTime", savedOrder.getCreatedTime().toLocalDateTime().plusMinutes(30).toString());
+            //result.put("pickupTime", savedOrder.getCreatedTime().toLocalDateTime().plusMinutes(30).toString());
+            result.put("pickupTime", null); // 或不要加這個欄位
+            result.put("storeLat", savedOrder.getStore().getLatitude());   // ✅ 正確方法
+            result.put("storeLng", savedOrder.getStore().getLongitude());  // ✅ 正確方法
 
             return result;
 

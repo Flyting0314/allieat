@@ -60,25 +60,36 @@
         <p>取餐號碼：<span id="pickupCode"></span></p>
         <p>取餐時間：<span id="pickupTime"></span></p>
         <button class="btn-home" onclick="goHome()">回首頁</button>
+        <button class="btn-map" onclick="goToMap()">查看取餐地圖</button>
+        
     </div>
 
-    <script>
-        // 從 sessionStorage 拿資料
-        const data = JSON.parse(sessionStorage.getItem("orderSuccess"));
+   <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const data = JSON.parse(sessionStorage.getItem("orderSuccess"));
 
-        if (data) {
-            document.getElementById("storeName").textContent = data.storeName || "未知餐廳";
-            document.getElementById("storeAddress").textContent = data.address || "未提供地址";
-            document.getElementById("pickupCode").textContent = data.pickupCode || "------";
-            document.getElementById("pickupTime").textContent = data.pickupTime || "--:--";
-        } else {
-            alert("⚠️ 無訂單資料，請重新下單！");
-            window.location.href = "/map2";  // 或你的點餐首頁
-        }
+    if (data) {
+      // 渲染訂單資訊
+      document.getElementById("storeName").textContent = data.storeName || "未知餐廳";
+      document.getElementById("storeAddress").textContent = data.address || "未提供地址";
+      document.getElementById("pickupCode").textContent = data.pickupCode || "------";
+      document.getElementById("pickupTime").textContent = "店家接單後會通知您";
 
-        function goHome() {
-            window.location.href = "/index.html";
-        }
-    </script>
+      // ✅ 自動跳轉到 pickupMap.html
+      setTimeout(() => {
+        window.location.href = "/pickupMap.html"; // 檔名應統一為小寫且一致
+      }, 5000);
+    } else {
+      alert("⚠️ 無訂單資料，請重新下單！");
+      window.location.href = "/map2";
+    }
+  });
+
+  function goHome() {
+    window.location.href = "/index.html";
+  }
+</script>
+
+
 </body>
 </html>

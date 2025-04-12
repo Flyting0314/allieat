@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>取餐地點 - 攏呷霸 ALLiEAT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      background-color: white;
+      padding: 15px 30px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar .logo img {
+      height: 60px;
+      margin-right: 15px;
+    }
+
+    .navbar h1 {
+      font-size: 28px;
+      color: #003366;
+      font-weight: bold;
+    }
+
+    .container {
+      display: flex;
+      padding: 30px;
+    }
+
+    .store-info {
+      width: 25%;
+      padding: 20px;
+      border: 2px dashed #aaaaff;
+      border-radius: 10px;
+      background-color: #ffffff;
+      margin-right: 30px;
+    }
+
+    .store-info h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .store-info p {
+      margin-top: 8px;
+      font-size: 16px;
+      color: #555;
+    }
+
+    #map {
+      width: 75%;
+      height: 500px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">
+      <img src="/img/logo3.png" alt="logo" />
+      <h1>攏呷霸</h1>
+    </div>
+    <div>
+      <a href="/index.html">首頁</a> | <a href="/logout">登出</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="store-info">
+      <h2 id="storeName">店家名稱</h2>
+      <p id="storeAddress">店家地址</p>
+    </div>
+    <div id="map"></div>
+  </div>
+
+  <!-- Google Maps + 取餐資訊 -->
+  <script>
+    const orderData = JSON.parse(sessionStorage.getItem("orderSuccess"));
+    console.log("🧪 orderData from sessionStorage:", orderData);
+    console.log("📌 storeLat:", orderData.storeLat, "storeLng:", orderData.storeLng);
+    
+    console.log("🧪 orderData from sessionStorage:", orderData); // ← ✅ 放這裡！
+
+    function initMap() {
+    	  const defaultLocation = { lat: 25.0330, lng: 121.5654 }; // fallback 台北
+
+    	  console.log("🧪 orderData from sessionStorage:", orderData);
+
+    	  const storeLat = parseFloat(orderData?.storeLat);
+    	  const storeLng = parseFloat(orderData?.storeLng);
+    	  console.log("🧭 storeLat:", storeLat, "storeLng:", storeLng);
+
+    	  const storeLocation = (!isNaN(storeLat) && !isNaN(storeLng))
+    	    ? { lat: storeLat, lng: storeLng }
+    	    : defaultLocation;
+
+    	  const map = new google.maps.Map(document.getElementById("map"), {
+    	    zoom: 16,
+    	    center: storeLocation,
+    	  });
+
+    	  const marker = new google.maps.Marker({
+    	    position: storeLocation,
+    	    map: map,
+    	  });
+
+    	  const infoWindow = new google.maps.InfoWindow({
+    	    content: `
+    	      <div>
+    	        <strong>${orderData?.storeName || '店家名稱'}</strong><br/>
+    	        取餐號碼：${orderData?.pickupCode || '------'}<br/>
+    	        取餐時間：店家接單後會通知您
+    	      </div>
+    	    `
+    	  });
+
+    	  marker.addListener("click", () => {
+    	    infoWindow.open(map, marker);
+    	  });
+
+    	  infoWindow.open(map, marker);
+    	}
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!orderData) {
+        alert("⚠️ 無法取得訂單資訊，將跳回首頁！");
+        location.href = "/index.html";
+        return;
+      }
+
+      document.getElementById("storeName").textContent = orderData.storeName || '未知店家';
+      document.getElementById("storeAddress").textContent = orderData.address || '未提供地址';
+    });
+  </script>
+
+  <!-- Google Maps API (替換成你自己的 key) -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwk4bH6RdOWmqwmrpdYu7-NKZin0St0vQ&callback=initMap"
+    async defer>
+  </script>
+</body>
+</html>

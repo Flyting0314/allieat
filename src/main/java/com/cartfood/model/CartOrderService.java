@@ -29,13 +29,13 @@ public class CartOrderService {
     private MemberRepository memberRepo;
 
     // 建立訂單
-    public OrderFoodVO createOrder(Integer memberId, Integer storeId, Boolean pickStat, Boolean serveStat) {
+    public OrderFoodVO createOrder(Integer memberId, Integer storeId, Integer pickStat, Integer serveStat) {
         OrderFoodVO order = new OrderFoodVO();
 
         order.setCreatedTime(new Timestamp(System.currentTimeMillis()));
         order.setPickStat(pickStat);
         order.setServeStat(serveStat);
-        order.setRate(false); // 預設未評價
+        order.setRate(0); // 預設未評價
         order.setComment(null); // 預設無評論
 
         order.setStore(storeRepo.findById(storeId).orElse(null));

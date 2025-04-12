@@ -289,16 +289,26 @@ public class StoreVO implements Serializable{
 	}
 
 	// 解析 mapApi 成為 longitude
-	public Double getLongitude() {
-		if (mapApi != null && mapApi.contains(",")) {
-			try {
-				return Double.parseDouble(mapApi.split(",")[1].trim());
-			} catch (NumberFormatException e) {
-				return null;
-			}
-		}
-		return null;
-	}
+    public Double getLongitude() {
+        if (mapApi != null && mapApi.contains(",")) {
+            try {
+                return Double.parseDouble(mapApi.split(",")[1].trim());
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    //// 方便後端 JSON 回傳時使用簡化名稱 2025411更新
+    public Double getLat() {
+        return getLatitude();
+    }
+
+    public Double getLng() {
+        return getLongitude();
+    }
+
 	@Override
 	public String toString() {
 		return "storeId=" + storeId +"\n"
@@ -335,5 +345,6 @@ public class StoreVO implements Serializable{
 	    this.storeToPhoto = storeToPhoto;
 	}
 	
+
 
 }
