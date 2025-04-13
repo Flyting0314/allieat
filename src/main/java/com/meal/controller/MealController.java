@@ -8,13 +8,16 @@ import com.cartfood.model.CarFoodDTO;
 import com.cartfood.model.CartFoodService;
 import com.cartfood.model.CartOrderService;
 import com.cartfood.model.MemberServiceImpl;
+import com.cartfood.model.OrderDetailDTO;
 import com.entity.AttachedVO;
 import com.entity.OrderDetailId;
 import com.entity.OrderDetailVO;
 import com.entity.OrderFoodVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -76,6 +79,9 @@ public class MealController {
             Integer foodId = (Integer) item.get("foodId");
             Integer attachedId = item.get("attachedId") != null ? (Integer) item.get("attachedId") : null;
             Integer quantity = item.get("quantity") != null ? (Integer) item.get("quantity") : 1;
+            
+         // ✅ [2025/04/13] 加入備註欄位
+            String note = item.get("note") != null ? (String) item.get("note") : null;
 
             FoodVO food = foodService.getFoodById(foodId);
             AttachedVO attached = null;
@@ -90,6 +96,9 @@ public class MealController {
             entry.put("attachedName", attached != null ? attached.getName() : "無");
             entry.put("cost", food.getCost());
             entry.put("quantity", quantity);
+            
+            // ✅ [2025/04/13] 回傳 note 給前端
+            entry.put("note", note);
 
             if (food.getStore() != null) {
                 entry.put("storeId", food.getStore().getStoreId());
@@ -133,16 +142,15 @@ public class MealController {
     @PostMapping("/order/submit")
     public Map<String, Object> submitOrder(@RequestBody Map<String, Object> orderData) {
         Map<String, Object> result = new HashMap<>();
+        List<String> errors = new ArrayList<>();
 
         try {
-            // 1. 取得基本資料
             Integer storeId = (Integer) orderData.get("storeId");
             Integer memberId = (Integer) orderData.get("memberId");
             Integer pickStat = (Integer) orderData.getOrDefault("pickStat", 0);
             Integer serveStat = (Integer) orderData.getOrDefault("serveStat", 0);
-            
 
-            // 2. 建立主訂單
+            // 1. 建立主訂單
             OrderFoodVO order = new OrderFoodVO();
             order.setPickStat(pickStat);
             order.setServeStat(serveStat);
@@ -152,46 +160,64 @@ public class MealController {
 
             OrderFoodVO savedOrder = orderService.saveOrderOnly(order);
             Integer generatedOrderId = savedOrder.getOrderId();
+            System.out.println("✅ 訂單建立成功，ID：" + generatedOrderId);
 
-            // 3. 處理訂單明細
+            // 2. 處理訂單明細
             List<Map<String, Object>> items = (List<Map<String, Object>>) orderData.get("items");
             List<OrderDetailVO> details = new ArrayList<>();
 
             for (Map<String, Object> item : items) {
-                Integer foodId = (Integer) item.get("foodId");
-                Integer quantity = (Integer) item.getOrDefault("quantity", 1);
+                Integer foodId = item.get("foodId") != null ? (Integer) item.get("foodId") : null;
+                Integer quantity = item.get("quantity") != null ? (Integer) item.get("quantity") : 1;
+                Integer pointsCost = item.get("pointsCost") != null ? (Integer) item.get("pointsCost") : null;
+
+                if (foodId == null) {
+                    errors.add("❌ 缺少 foodId，無法處理某筆訂單明細");
+                    continue;
+                }
+
+                FoodVO food = foodService.getFoodById(foodId);
+                if (food == null) {
+                    errors.add("❌ 找不到食物編號：" + foodId);
+                    continue;
+                }
 
                 OrderDetailVO detail = new OrderDetailVO();
                 OrderDetailId detailId = new OrderDetailId();
                 detailId.setOrderId(generatedOrderId);
                 detailId.setFoodId(foodId);
                 detail.setId(detailId);
-
-                FoodVO food = foodService.getFoodById(foodId); // ⚠ 為了多次使用這裡提早取出
-                detail.setOrder(savedOrder);
+                detail.setOrderFood(savedOrder);
                 detail.setFood(food);
                 detail.setAmount(quantity);
                 detail.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-
-                // ✅ 設定 pointsCost，避免資料庫報錯
-                detail.setPointsCost(food.getCost());
+                detail.setPointsCost(pointsCost != null ? pointsCost : food.getCost());
+                detail.setNote(item.get("note") != null ? (String) item.get("note") : null); // 有 note 就存
 
                 details.add(detail);
             }
 
-            
-
-            // 4. 儲存明細
             orderService.saveOrderDetails(details);
+            System.out.println("✅ 所有有效訂單明細已儲存，共 " + details.size() + " 筆");
 
-            // 5. 回傳給 success.html
-            result.put("storeName", savedOrder.getStore().getName());
-            result.put("address", savedOrder.getStore().getAddress());
+            // 3. 回傳資訊
+            StoreVO store = savedOrder.getStore();
+            result.put("storeName", store.getName());
+            result.put("address", store.getAddress());
             result.put("pickupCode", "取餐編號-" + savedOrder.getOrderId());
-            //result.put("pickupTime", savedOrder.getCreatedTime().toLocalDateTime().plusMinutes(30).toString());
-            result.put("pickupTime", null); // 或不要加這個欄位
-            result.put("storeLat", savedOrder.getStore().getLatitude());   // ✅ 正確方法
-            result.put("storeLng", savedOrder.getStore().getLongitude());  // ✅ 正確方法
+            result.put("pickupTime", null);
+            result.put("storeLat", store.getLatitude());
+            result.put("storeLng", store.getLongitude());
+
+            List<OrderDetailDTO> detailDTOs = new ArrayList<>();
+            for (OrderDetailVO detail : details) {
+                detailDTOs.add(orderService.convertToDTO(detail));
+            }
+            result.put("details", detailDTOs);
+
+            if (!errors.isEmpty()) {
+                result.put("warnings", errors);
+            }
 
             return result;
 

@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.backstage.backstagrepository.FoodRepository;
-
-import java.util.List;
-import java.util.Optional;
 import com.entity.FoodVO;
-import com.cartfood.model.*;
 import com.entity.AttachedVO;
 import com.entity.StoreVO;
+
+import java.util.List;
 
 @Service
 public class CartFoodService {
@@ -35,8 +33,11 @@ public class CartFoodService {
         }
     }
 
-    // 單筆查詢 Food
+    // 單筆查詢 Food（加上 null 判斷）
     public FoodVO getFoodById(Integer foodId) {
+        if (foodId == null) {
+            throw new IllegalArgumentException("❌ 查詢食物時 foodId 不能為 null");
+        }
         return foodRepository.findById(foodId).orElse(null);
     }
 
@@ -54,7 +55,8 @@ public class CartFoodService {
     public List<FoodVO> getFoodsByStoreId(Integer storeId) {
         return foodRepository.findByStore_StoreId(storeId);
     }
- // 將 FoodVO 轉換成 DTO
+
+    // 將 FoodVO 轉換成 DTO
     public CarFoodDTO convertToDTO(FoodVO foodVO) {
         if (foodVO == null) return null;
 
@@ -76,15 +78,11 @@ public class CartFoodService {
         if (foodVO.getAttached() != null) {
             List<String> attachedNames = foodVO.getAttached()
                 .stream()
-                .map(AttachedVO::getName) // 假設 AttachedVO 有 getName()
+                .map(AttachedVO::getName)
                 .toList();
             dto.setAttachedNames(attachedNames);
         }
 
         return dto;
     }
- 
-
-    
-    
 }

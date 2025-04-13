@@ -245,7 +245,20 @@ function renderCart() {
     });
 
     document.getElementById('cartTotal').textContent = `總計：${total} 點`;
+
+    // ✅ 儲存正確格式的 cartItems 到 sessionStorage，key 為 pointsCost
+    const cartItemsForSubmit = cartData.map(item => ({
+    	foodId: item.foodId,
+        foodName: item.foodName,
+        attachedName: item.attachedName,
+        quantity: item.quantity,
+        pointsCost: item.cost,   // ✅ 後端需要這個 key
+        note: item.note || ""
+    }));
+
+    sessionStorage.setItem('cartItems', JSON.stringify(cartItemsForSubmit));
 }
+
 function confirmCheckout() {
     const memberId = localStorage.getItem('memberId');
     const selectedFood = JSON.parse(localStorage.getItem('selectedFood'));
@@ -258,8 +271,8 @@ function confirmCheckout() {
     const orderPayload = {
         storeId: selectedFood.storeId,
         memberId: parseInt(memberId),
-        pickStat: false,
-        serveStat: false,
+        pickStat: 0,
+        serveStat: 0,
         foodId: selectedFood.foodId,
         attachedId: selectedFood.attachedId || null,
         items: JSON.parse(sessionStorage.getItem('cartItems')) || []
@@ -290,7 +303,8 @@ function confirmCheckout() {
             pickupCode: data.pickupCode,
             pickupTime: data.pickupTime,
             storeLat: data.storeLat,
-            storeLng: data.storeLng
+            storeLng: data.storeLng,
+            details: data.details // ✅ 加上訂單明細
         }));
 
         // ✅ 清空購物車

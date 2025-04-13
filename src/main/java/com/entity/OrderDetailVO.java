@@ -29,12 +29,12 @@ public class OrderDetailVO {
     @Column(name = "note")
     private String note;
 
-    // 2025/4/10 新增：建立與 OrderFoodVO 的多對一關聯
+    // 2025/04/13 修改：建立與 OrderFoodVO 的多對一關聯，欄位名稱由 order 改為 orderFood
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId", insertable = false, updatable = false)
-    private OrderFoodVO order;
+    private OrderFoodVO orderFood;
 
-    // 2025/4/10 新增：建立與 FoodVO 的多對一關聯
+    // 2025/04/10 新增：建立與 FoodVO 的多對一關聯
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "foodId", insertable = false, updatable = false)
     private FoodVO food;
@@ -80,12 +80,12 @@ public class OrderDetailVO {
         this.note = note;
     }
 
-    public OrderFoodVO getOrder() {
-        return order;
+    public OrderFoodVO getOrderFood() {
+        return orderFood;
     }
 
-    public void setOrder(OrderFoodVO order) {
-        this.order = order;
+    public void setOrderFood(OrderFoodVO orderFood) {
+        this.orderFood = orderFood;
     }
 
     public FoodVO getFood() {
@@ -106,8 +106,4 @@ public class OrderDetailVO {
                 + "note=" + note + "\n";
     }
 
-	public void setAttached(AttachedVO attached) {
-		
-		
-	}
 }
