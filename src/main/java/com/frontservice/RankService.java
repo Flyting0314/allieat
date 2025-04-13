@@ -15,6 +15,7 @@ import com.backstage.backstagrepository.DonorRepository;
 import com.entity.DonaVO;
 import com.entity.RankVO;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -149,7 +150,11 @@ public class RankService {
         updateRanks();
     }
 
-
+    @PostConstruct  // ✅ Spring Boot 啟動時執行
+    public void initLatestDonations() {
+        updateLatestDonations();
+        updateRanks();
+    }
    
     
 }
