@@ -100,13 +100,15 @@ document.addEventListener("DOMContentLoaded", function () {
     return n.toString().padStart(2, '0');
   }
 
-
   function renderTable(data) {
     dataBody.innerHTML = "";
-    // console.log(data);
-    data.forEach(item => {
+
+    // 僅顯示 status = 0 或 1 的資料
+    const visibleData = data.filter(item => item.status === 0 || item.status === 1);
+
+    visibleData.forEach(item => {
       const tr = document.createElement("tr");
-      console.log(item.organizationId);
+
       // 組織名稱欄
       let tdName = document.createElement("td");
       tdName.textContent = item.name;
@@ -143,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
       tdAction.classList.add("text-center", "align-middle"); //  讓按鈕置中對齊
 
       let editBtn = document.createElement("a");
-      editBtn.href = `./backstage_unit_management_update.html?id=${item.organizationId}`;//傳id到下一頁
+      editBtn.href = `./backstage_unit_management_update.html?id=${item.organizationId}`; // 傳id到下一頁
       editBtn.classList.add("btn", "btn-sm", "btn-primary");
       editBtn.textContent = "修改";
 
@@ -226,6 +228,4 @@ document.addEventListener("DOMContentLoaded", function () {
       backstageAuth.logout();
     }
   });
-
-
 });
