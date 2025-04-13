@@ -290,7 +290,7 @@ function confirmCheckout() {
         return res.json();
     })
     .then(data => {
-      console.log("✅ 後端回傳 data:", data);
+        console.log("✅ 後端回傳 data:", data);
         if (data.error) {
             alert(data.error);
             return;
@@ -304,13 +304,18 @@ function confirmCheckout() {
             pickupTime: data.pickupTime,
             storeLat: data.storeLat,
             storeLng: data.storeLng,
-            details: data.details // ✅ 加上訂單明細
+            details: data.details
         }));
 
-        // ✅ 清空購物車
+        // ✅ 清空前端購物車資料
         clearCartStorage();
 
-        // ✅ 導向成功頁
+        // ✅ 清空後端 session 中的購物車
+        fetch('/api/cart/clear', { method: 'POST' })
+            .then(() => console.log("✅ 後端購物車已清空"))
+            .catch(err => console.error("❌ 後端購物車清除失敗", err));
+
+        // ✅ 導向成功頁面
         window.location.href = "/success.html";
     })
     .catch(err => {
@@ -318,6 +323,7 @@ function confirmCheckout() {
         alert("❌ 訂單建立失敗，請稍後再試");
     });
 }
+
 
 // ✅ 清空購物車 function
 function clearCartStorage() {

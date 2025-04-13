@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
+import jakarta.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -79,8 +80,6 @@ public class MealController {
             Integer foodId = (Integer) item.get("foodId");
             Integer attachedId = item.get("attachedId") != null ? (Integer) item.get("attachedId") : null;
             Integer quantity = item.get("quantity") != null ? (Integer) item.get("quantity") : 1;
-            
-         // ✅ [2025/04/13] 加入備註欄位
             String note = item.get("note") != null ? (String) item.get("note") : null;
 
             FoodVO food = foodService.getFoodById(foodId);
@@ -96,8 +95,6 @@ public class MealController {
             entry.put("attachedName", attached != null ? attached.getName() : "無");
             entry.put("cost", food.getCost());
             entry.put("quantity", quantity);
-            
-            // ✅ [2025/04/13] 回傳 note 給前端
             entry.put("note", note);
 
             if (food.getStore() != null) {
@@ -140,7 +137,7 @@ public class MealController {
     }
 
     @PostMapping("/order/submit")
-    public Map<String, Object> submitOrder(@RequestBody Map<String, Object> orderData) {
+    public Map<String, Object> submitOrder(@RequestBody Map<String, Object> orderData, HttpSession session) {
         Map<String, Object> result = new HashMap<>();
         List<String> errors = new ArrayList<>();
 
@@ -150,7 +147,6 @@ public class MealController {
             Integer pickStat = (Integer) orderData.getOrDefault("pickStat", 0);
             Integer serveStat = (Integer) orderData.getOrDefault("serveStat", 0);
 
-            // 1. 建立主訂單
             OrderFoodVO order = new OrderFoodVO();
             order.setPickStat(pickStat);
             order.setServeStat(serveStat);
@@ -162,7 +158,6 @@ public class MealController {
             Integer generatedOrderId = savedOrder.getOrderId();
             System.out.println("✅ 訂單建立成功，ID：" + generatedOrderId);
 
-            // 2. 處理訂單明細
             List<Map<String, Object>> items = (List<Map<String, Object>>) orderData.get("items");
             List<OrderDetailVO> details = new ArrayList<>();
 
@@ -192,7 +187,7 @@ public class MealController {
                 detail.setAmount(quantity);
                 detail.setCreatedTime(new Timestamp(System.currentTimeMillis()));
                 detail.setPointsCost(pointsCost != null ? pointsCost : food.getCost());
-                detail.setNote(item.get("note") != null ? (String) item.get("note") : null); // 有 note 就存
+                detail.setNote(item.get("note") != null ? (String) item.get("note") : null);
 
                 details.add(detail);
             }
@@ -200,7 +195,9 @@ public class MealController {
             orderService.saveOrderDetails(details);
             System.out.println("✅ 所有有效訂單明細已儲存，共 " + details.size() + " 筆");
 
-            // 3. 回傳資訊
+            // ✅ 清空 session 購物車
+            session.removeAttribute("cart");
+
             StoreVO store = savedOrder.getStore();
             result.put("storeName", store.getName());
             result.put("address", store.getAddress());
