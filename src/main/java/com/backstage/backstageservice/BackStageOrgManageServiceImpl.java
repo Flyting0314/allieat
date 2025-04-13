@@ -113,6 +113,15 @@ public class BackStageOrgManageServiceImpl implements BackStageOrgManageService 
         map.put("createdTime", vo.getCreatedTime());
         return map;
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
 
 

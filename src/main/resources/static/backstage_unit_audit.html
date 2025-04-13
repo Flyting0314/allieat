@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>攏呷霸 - 在冊單位管理</title>
+    <title>攏呷霸 - 在冊單位管理-單位審核</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="css/style_backstage.css">
 </head>
@@ -12,6 +12,7 @@
 <div class="container-fluid">
     <div class="row">
         <!-- 左側側邊欄 -->
+       <!-- 左側側邊欄 -->
         <div class="col-md-2 side-bar">
             <h4>在冊單位管理</h4>
             <a href="./backstage_homepage.html">後台首頁</a>
@@ -34,9 +35,8 @@
         <!-- 主要內容區域 -->
         <div class="col-md-10">
             <div class="header-container d-flex justify-content-between align-items-center mt-3">
-                <div class="title h4">在冊單位管理</div>
+                <div class="title h4">在冊單位管理-單位審核</div>
                 <div class="d-flex justify-content-end mt-2">
-                 	<a href="backstage_unit_audit.html" class="btn btn-success mr-2">單位審核</a>
                     <a href="backstage_unit_management_new.html" class="btn btn-success">新增單位</a>
                 </div>
             </div>
@@ -53,10 +53,6 @@
                     </select>
                 </div>
 
-
-                <div class="d-flex align-items-center">
-                    <input type="text" id="searchInput" placeholder="搜尋名稱或類型..." class="form-control" style="width: 300px;" />
-                </div>
             </div>
 
             <div class="card mt-4">
@@ -71,13 +67,13 @@
                                 單位性質<span class="arrow-group" id="sort-type">▲▼</span>
                             </th>
                             <th data-sort-field="createdTime" style="cursor: pointer;">
-                                註冊時間<span class="arrow-group" id="sort-createdTime">▲▼</span>
+                                申請時間<span class="arrow-group" id="sort-createdTime">▲▼</span>
                             </th>
                             <th data-sort-field="status" style="cursor: pointer;">
                                 啟用狀態<span class="arrow-group" id="sort-status">▲▼</span>
                             </th>
                             <th style="cursor: default;" class="text-center align-middle">
-                                資料修改
+                                審核資料
                             </th>
                         </tr>
                         </thead>
@@ -91,14 +87,18 @@
                             <!-- 動態插入分頁按鈕 -->
                         </ul>
                     </nav>
+                     <div class="text-right mt-3">
+   						 <a href="backstage_unit_management.html" class="btn btn-secondary">返回在冊單位管理</a>
+					</div>
                 </div>
+                
             </div>
         </div>
     </div>
 </div>
 
 <script src="./js/backstage_auth_js.js"></script>
-<script src="js/backstage_unt_management_js.js"></script>
+<script src="js/backstage_unt_audit_js.js"></script>
 
 </body>
 </html>

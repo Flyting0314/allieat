@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,11 @@ public interface MemberRepository extends JpaRepository<MemberVO, Integer> {
 
 	MemberVO findByIdNum(String idNum);
 
-	 List<MemberVO> findByAccStat(Integer accStat); //依照會員帳號啟用狀態查詢會員
+	List<MemberVO> findByAccStat(Integer accStat); //依照會員帳號啟用狀態查詢會員
+	
+	//撈照片，用organizationId找
+	@Query(value = "SELECT kycImage FROM member WHERE organizationId = :organizationId AND reviewed = 3", nativeQuery = true)
+	String findPendingPicByOrgId(@Param("organizationId") Integer organizationId);
 
 }
 
