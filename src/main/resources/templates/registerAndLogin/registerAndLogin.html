@@ -3,76 +3,7 @@
 
 <head>
 <th:block th:replace="fragments/header :: header"></th:block>
-    <style>
-        body {
-            background-color: #f8f9fa;
-    text-align: center;
-    font-family: 'Noto Sans TC', sans-serif;
-        }
-        .membership-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 70vh; /* Adjusted from 80vh to ensure it doesn't exceed bounds */
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .membership-box {
-            background: white;
-            padding: 50px 40px; /* Increased padding */
-            margin: 20px;      /* Increased margin between boxes */
-            border-radius: 15px;
-            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1); /* Enhanced shadow */
-            width: 400px;      /* Increased width from 300px */
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        .membership-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0px 12px 20px rgba(0, 0, 0, 0.15);
-        }
-        .membership-box h2 {
-            font-size: 32px; /* Increased from 24px */
-            font-weight: bold;
-            margin-bottom: 20px; /* Increased from 10px */
-            color: #343a40;
-        }
-        .membership-box p {
-            font-size: 18px; /* Increased from 16px */
-            color: #666;
-            margin-bottom: 30px; /* Increased from 20px */
-            line-height: 1.6;
-        }
-        .membership-box button {
-            background-color: #007bff;
-            color: white;
-            padding: 15px 30px; /* Larger button */
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-block;
-            font-size: 18px; /* Larger text */
-            transition: background-color 0.3s;
-        }
-        .membership-box a:hover {
-            background-color: #0056b3;
-        }
-        /* 按鈕容器樣式 */
-        .verification_back_btn {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-            padding: 10px 20px;
-            background-color: white;
-            color: #666;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            text-decoration: none;
-        }
-    </style>
+<link th:href="@{/css/register.css}" rel="stylesheet">
 </head>
 
 <body>

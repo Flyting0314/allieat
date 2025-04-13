@@ -1,0 +1,123 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+}
+
+body {
+    background-color: #FAF3DD;
+}
+
+.confirm-container {
+    max-width: 850px;
+    margin: 40px auto;
+    background: #fffef9;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(244, 201, 93, 0.3);
+}
+
+.confirm-title {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: bold;
+    color: #664d03;
+}
+
+.confirm-field {
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #5a4636;
+}
+
+.confirm-label {
+    font-weight: bold;
+    margin-right: 5px;
+    color: #a47100;
+}
+
+/* 相片區塊 */
+.confirm-photo-preview {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.confirm-photo-item {
+    flex: 1 1 30%;
+    max-width: 32%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.confirm-photo-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #5a4636;
+}
+
+.confirm-photo-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border: 1px solid #e2cda3;
+    padding: 5px;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+/* 按鈕區 */
+.confirm-buttons {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.confirm-buttons button,
+.verification_back_btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* 返回按鈕 */
+.verification_back_btn {
+    background-color: #fff;
+    border: 1px solid #e2cda3;
+    color: #8b6f3b;
+}
+
+/* 確認送出按鈕 */
+.confirm-buttons button[type="submit"] {
+    background-color: #f4c95d;
+    border: none;
+    color: #5a4636;
+}
+
+.confirm-buttons button:hover,
+.verification_back_btn:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* 響應式 */
+@media (max-width: 768px) {
+    .confirm-photo-preview {
+        flex-direction: column;
+    }
+    .confirm-photo-item {
+        max-width: 100%;
+    }
+    .confirm-buttons {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+}
