@@ -1,67 +1,45 @@
 package com.cartfood.model;
 
-import java.sql.Timestamp;
-import java.util.List;
-
+import com.entity.FoodVO;
+import com.entity.OrderDetailVO;
+import com.entity.OrderFoodVO;
+import com.cartfood.model.OrderDetailDTO;
+import com.backstage.backstagrepository.*;
+import com.backstage.backstagrepository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.backstage.backstagrepository.MemberRepository;
-import com.backstage.backstagrepository.OrderDetailRepository;
-import com.backstage.backstagrepository.OrderFoodRepository;
-import com.backstage.backstagrepository.StoreRepository;
-import com.entity.OrderDetailVO;
-import com.entity.OrderFoodVO;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CartOrderService {
 
     @Autowired
-    private OrderDetailRepository orderDetailRepo;
+    private OrderFoodRepository orderFoodRepository;
 
     @Autowired
-    private OrderFoodRepository orderRepo;
+    private OrderDetailRepository orderDetailRepository;
 
-    @Autowired
-    private StoreRepository storeRepo;
-
-    @Autowired
-    private MemberRepository memberRepo;
-
-    // 建立訂單
-    public OrderFoodVO createOrder(Integer memberId, Integer storeId, Integer pickStat, Integer serveStat) {
-        OrderFoodVO order = new OrderFoodVO();
-
-        order.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-        order.setPickStat(pickStat);
-        order.setServeStat(serveStat);
-        order.setRate(0); // 預設未評價
-        order.setComment(null); // 預設無評論
-
-        order.setStore(storeRepo.findById(storeId).orElse(null));
-        order.setMember(memberRepo.findById(memberId).orElse(null));
-
-        return orderRepo.save(order);
-    }
-
-    // 儲存主訂單與明細
-    public void saveOrder(OrderFoodVO order, List<OrderDetailVO> details) {
-        OrderFoodVO savedOrder = orderRepo.save(order); // 先存主訂單，拿到 orderId
-
-        for (OrderDetailVO detail : details) {
-            detail.setOrder(savedOrder); // 關聯主訂單
-        }
-
-        orderDetailRepo.saveAll(details); // 再儲存所有明細
-    }
-
-    // 若只想儲存主訂單
     public OrderFoodVO saveOrderOnly(OrderFoodVO order) {
-        return orderRepo.save(order);
+        return orderFoodRepository.save(order); // ✅ 真正儲存訂單並回傳帶有 orderId 的物件
     }
 
-    // 單獨儲存明細
     public void saveOrderDetails(List<OrderDetailVO> details) {
-        orderDetailRepo.saveAll(details);
+        orderDetailRepository.saveAll(details); // ✅ 一次儲存所有訂單明細
+    }
+
+    public OrderDetailDTO convertToDTO(OrderDetailVO detail) {
+        OrderDetailDTO dto = new OrderDetailDTO();
+        FoodVO food = detail.getFood();
+
+        dto.setFoodName(food != null ? food.getName() : "未知主餐");
+        dto.setQuantity(detail.getAmount());
+        dto.setPointsCost(detail.getPointsCost());
+        dto.setCreatedTime(detail.getCreatedTime());
+        dto.setNote(detail.getNote() != null ? detail.getNote() : "");
+        
+
+        return dto;
     }
 }

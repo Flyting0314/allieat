@@ -77,6 +77,8 @@
 
       // ✅ 自動跳轉到 pickupMap.html
       setTimeout(() => {
+    	  console.log("✅ 導頁前儲存的經緯度：", data.storeLat, data.storeLng);
+
         window.location.href = "/pickupMap.html"; // 檔名應統一為小寫且一致
       }, 5000);
     } else {

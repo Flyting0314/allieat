@@ -1,15 +1,13 @@
 package com.entity;
 
 import java.sql.Timestamp;
-
+import java.util.Set;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "orderlist")
 public class OrderFoodVO {
-	
-
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +39,10 @@ public class OrderFoodVO {
 
     @Column(name = "createdTime", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdTime;
+
+    // 2025/04/13 新增：與訂單明細(OrderDetailVO)建立一對多關聯
+    @OneToMany(mappedBy = "orderFood", cascade = CascadeType.ALL)
+    private Set<OrderDetailVO> orderDetails;
 
     // Getter & Setter
     public Integer getOrderId() {
@@ -114,4 +116,12 @@ public class OrderFoodVO {
     public void setCreatedTime(Timestamp createdTime) {
         this.createdTime = createdTime;
     }
-}
+
+    public Set<OrderDetailVO> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(Set<OrderDetailVO> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+} 
