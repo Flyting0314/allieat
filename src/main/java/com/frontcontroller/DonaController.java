@@ -126,25 +126,27 @@ public class DonaController {
 
     @PostMapping("donaAddB")
     public String handleAddInfo(
-            @ModelAttribute("donaReq") DonaReq donaReq, BindingResult result, Model model) {
+    		@ModelAttribute("donaReq") DonaReq donaReq,
+            BindingResult result,
+            Model model) {
 
-        validator.validate(donaReq, result); // class-level 驗證器
-        validator.validate(donaReq, result, StepTwo.class); // field 驗證器
+        validator.validate(donaReq, result);
+        validator.validate(donaReq, result, StepTwo.class);
 
         boolean isCompany = Boolean.TRUE.equals(donaReq.getCompanyDonor());
 
         if (result.hasErrors()) {
-            model.addAttribute("showErrors", true); // <== 關鍵：送出才顯示錯誤
+            model.addAttribute("showErrors", true); // 顯示錯誤
             model.addAttribute("activeTab", isCompany ? "company" : "personal");
             return "dona/donaAddB";
         }
 
-        return "redirect:/dona/donaAddC";
-    }
+        return "redirect:/dona/donaAddC";}
     
     // 第三階段：顯示第三階段頁面
     @GetMapping("/donaAddC")
     public String showAddFinalForm(@ModelAttribute("donaReq") DonaReq donaReq, Model model) {
+    	System.out.println("🧾 Step C 確認 donationType = " + donaReq.getDonationType());
 //        model.addAttribute("donaReq", donaReq); // 帶入前兩階段暫存資料..@SessionAttributes不需要
         return "dona/donaAddC"; // 第三階段頁面
     }
