@@ -49,7 +49,7 @@ public class DonaReq {
     @NotNull(message = "單筆捐贈/定期定額: 請勿空白" ,groups = StepOne.class)
     @Min(value = 0, message = "捐贈選項無效")
     @Max(value = 1, message = "捐贈選項無效")
-    private Integer donationType= 1;
+    private Integer donationType;
     
     
     // ====== Step 2 驗證用 ======

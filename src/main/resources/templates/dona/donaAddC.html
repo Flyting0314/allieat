@@ -372,7 +372,10 @@
  <form th:action="@{/dona/donaAddC}"  method="post">
     <h4>確認您的資料</h4>
     <div>
-        <p><strong>捐款類型：</strong><span th:text="${donaReq.donationType == 0 ? '定期定額' : '單筆捐款'}"></span></p>
+        <p><strong>捐款類型：</strong><span th:if="${donaReq.donationType != null}">
+    <span th:if="${donaReq.donationType != 1}">單筆捐款</span>
+    <span th:if="${donaReq.donationType == 1}">定期定額</span>
+</span></p>
         <p><strong>捐款金額：</strong><span th:text="${donaReq.donationIncome}"></span></p>
         <p><strong>姓名：</strong><span th:text="${donaReq.identityData}"></span></p>
         <p><strong>Email：</strong><span th:text="${donaReq.email}"></span></p>
@@ -442,18 +445,55 @@
      <!-- Template Javascript -->
      <script src="js/main.js"></script>
      <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const cardExpiryInput = document.getElementById("cardExpiry");
+     document.addEventListener("DOMContentLoaded", function () {
+    	    const form = document.querySelector("form"); // 找到表單
+    	    const cardNumber = document.querySelector("input[name='cardNumber']");
+    	    const cardExpiry = document.querySelector("input[name='cardExpiry']");
+    	    const cardCvv = document.querySelector("input[name='cardCvv']");
 
-        cardExpiryInput.addEventListener("input", function (e) {
-            let value = cardExpiryInput.value.replace(/[^0-9]/g, "");
+    	    // 自動格式化 MM/YY
+    	    cardExpiry.addEventListener("input", function () {
+    	        let value = cardExpiry.value.replace(/[^0-9]/g, "");
+    	        if (value.length >= 3) {
+    	            value = value.slice(0, 2) + '/' + value.slice(2, 4);
+    	        }
+    	        cardExpiry.value = value;
+    	    });
 
-            if (value.length >= 3) {
-                value = value.slice(0, 2) + '/' + value.slice(2, 4);
-            }
-            cardExpiryInput.value = value;
-        });
-    });
+    	    // 驗證送出
+    	    form.addEventListener("submit", function (e) {
+    	        const cardNumValue = cardNumber.value.trim();
+    	        const expiryValue = cardExpiry.value.trim();
+    	        const cvvValue = cardCvv.value.trim();
+
+    	        // 信用卡號應為16位數字
+    	        const cardRegex = /^\d{16}$/;
+    	        if (!cardRegex.test(cardNumValue)) {
+    	            alert("請輸入正確的16位數信用卡號碼");
+    	            e.preventDefault();
+    	            return;
+    	        }
+
+    	        // 有效日期應為 MM/YY 格式，且 MM 需為 01~12
+    	        const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+    	        if (!expiryRegex.test(expiryValue)) {
+    	            alert("請輸入正確的有效日期（格式 MM/YY）");
+    	            e.preventDefault();
+    	            return;
+    	        }
+
+    	        // CVC 應為 3 或 4 位數字
+    	        const cvvRegex = /^\d{3,4}$/;
+    	        if (!cvvRegex.test(cvvValue)) {
+    	            alert("請輸入正確的 3 至 4 位安全碼（CVC）");
+    	            e.preventDefault();
+    	            return;
+    	        }
+
+    	        // 所有欄位皆正確，允許送出
+    	        alert("信用卡資訊驗證通過，準備送出！");
+    	    });
+    	});
 </script>
 </body>
 </html>

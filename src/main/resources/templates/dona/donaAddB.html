@@ -1,36 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head >
+<link rel="icon" href="data:,">
 
-<head>
-    <meta charset="utf-8">
-    <title>攏呷霸 ALLiEAT - 愛心代用餐平台</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="愛心代用餐, 公益, 餐飲捐贈" name="keywords">
-    <meta content="攏呷霸愛心代用餐平台，連結善心人士與需要溫飽的人" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap"
-        rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link rel="stylesheet" href="/css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="/css/style.css">
-
+<th:block th:replace="fragments/header :: header"></th:block>
     <style>
         * {
             box-sizing: border-box;
@@ -113,14 +86,14 @@
             flex: 1;
             text-align: center;
             padding: 10px;
-            background-color: #e9ecef;
+            background-color: white ;
             cursor: pointer;
             border: 1px solid #ddd;
             border-bottom: none;
         }
 
         .df-tab.df-active {
-            background-color: white;
+            background-color:#e9ecef;
         }
 
         .df-panel {
@@ -312,68 +285,9 @@
     </style>
 </head>
 
-<body th:attr="data-show-errors=${showErrors}">>
+<body th:attr="data-show-errors=${showErrors}">
     <!-- Navbar Start -->
-    <section id="header">
-        <div class="container-fluid p-0 nav-bar">
-            <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
-                <a href="index.html" class="navbar-brand px-lg-4 m-0">
-                    <h1 class="m-0 display-4 text-uppercase text-white" style="display: inline-block;">
-                        <img src="/img/logo3.png" width="80px" height="80px" alt="" style="vertical-align: middle; margin-right: 0px; margin-top: -10px; 
-                                border-radius: 50%; object-fit: cover;">
-                        <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
-                    </h1>
-                </a>
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                    <div class="navbar-nav ml-auto p-4">
-                        <a href="index.html" class="nav-item nav-link">關於我們</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle active" data-toggle="dropdown">我要捐款</a>
-                            <div class="dropdown-menu text-capitalize">
-                                <a href="reservation.html" class="dropdown-item active">我要捐款</a>
-                                <a href="testimonial.html" class="dropdown-item">捐款查詢</a>
-                            </div>
-                        </div>
-                        <a href="service.html" class="nav-item nav-link">受助者取餐</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊/登入</a>
-                            <div class="dropdown-menu text-capitalize">
-                                <a href="reservation.html" class="dropdown-item">註冊</a>
-                                <a href="testimonial.html" class="dropdown-item">登入</a>
-                            </div>
-                        </div>
-                        <a href="contact.html" class="nav-item nav-link">會員專區</a>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </section>
-    <!-- Navbar End -->
-
-    <!-- Hero Section Start -->
-    <section id="hero">
-        <div class="container-fluid p-0 mb-5">
-            <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active" style="
-                        background-image: url('/img/圖片3.png');
-                        background-size: 110% auto;
-                        background-position: center 50px;
-                        height: 300px;
-                        filter: brightness(225%);">
-                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                            <h2 class="text-primary font-weight-medium m-0"></h2>
-                            <h1 class="display-1 text-white m-0"></h1>
-                            <h2 class="text-white m-0"></h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <th:block th:replace="fragments/bodySection :: bodySection"></th:block>
     <!-- Hero Section End -->
 
     <!-- Donation Form Start -->
@@ -420,8 +334,9 @@
 
                     <!-- 個人捐款表單 -->
                     <div class="df-panel df-visible" id="personal-form">
-                        <form th:action="@{donaAddB}" method="post" th:object="${donaReq}">
+                        <form th:action="@{/dona/donaAddB}" method="post" th:object="${donaReq}">
                             <input type="hidden" name="companyDonor" value="false">
+                            <input type="hidden" name="donationType" value="0">
                             <!-- 基本資料區塊 -->
                             <div class="df-input-group">
                                 <label class="df-required" for="identityData">捐款人姓名</label>
@@ -508,16 +423,20 @@
                                         th:field="*{postalCode}" placeholder="郵遞區號" readonly>
                                     <select class="df-select" id="city-personal" name="county" th:field="*{county}">
                                         <option value="" selected>縣市</option>
+                                        
                                     </select>
                                     <select class="df-select" id="area-personal" name="district" th:field="*{district}">
                                         <option value="" selected>鄉鎮市區</option>
                                     </select>
                                 </div>
                                 <input type="text" class="df-input" name="address" th:field="*{address}"
-                                    placeholder="請輸入詳細地址" id="address-personal">
-                                <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error"
-                                    id="address.errors"></span>
+                                    placeholder="請輸入詳細地址" id="address-personal" oninput="hideContent('addressErrorPersonal')">
+                                <span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="error text-danger fw-bold mb-2"id="postalCode.errors"></span>
+<span th:if="${#fields.hasErrors('county')}" th:errors="*{county}" class="error text-danger fw-bold mb-2"></span>
+<span th:if="${#fields.hasErrors('district')}" th:errors="*{district}" class="error text-danger fw-bold mb-2"></span>
+<span id="addressErrorPersonal" th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error text-danger fw-bold mb-2"></span>
                             </div>
+
 
 
                             <!-- 捐款收據區塊 -->
@@ -545,7 +464,7 @@
                                     <input type="text" class="df-input" placeholder="請填寫身分證姓名" th:field="*{salutation}"
                                         id="salutation">
                                     <span th:if="${#fields.hasErrors('salutation')}" th:errors="*{salutation}"
-                                        class="error" id="salutation.errors"></span>
+                                        class="error text-danger fw-bold mb-2" id="salutation.errors"></span>
 
                                 </div>
 
@@ -553,7 +472,7 @@
                                     <label class="df-required" for="idNum">捐款人身分證</label>
                                     <input type="text" class="df-input" placeholder="A123456789" th:field="*{idNum}"
                                         id="idNum">
-                                    <span th:if="${#fields.hasErrors('idNum')}" th:errors="*{idNum}" class="error"
+                                    <span th:if="${#fields.hasErrors('idNum')}" th:errors="*{idNum}" class="error text-danger fw-bold mb-2"
                                         id="idNum.errors"></span>
 
                                 </div>
@@ -587,10 +506,10 @@
                                             </span>
                                         </label>
                                     <!-- 錯誤訊息區塊 -->
-                                    <span class="text-danger"
-                                        th:if="${showErrors} and ${#fields.hasErrors('agreePrivacy')}"
-                                        th:errors="*{agreePrivacy}">
-                                    </span>
+                                    <span id="agreePrivacyErrorPersonal" class="text-danger"
+      th:if="${showErrors} and ${#fields.hasErrors('agreePrivacy')}"
+      th:errors="*{agreePrivacy}">
+</span>
                                 </div>
                             </div>
 
@@ -608,6 +527,7 @@
                     <div class="df-panel" id="company-form">
                         <form th:action="@{donaAddB}" method="post" th:object="${donaReq}">
                             <input type="hidden" name="companyDonor" value="true">
+                            <input type="hidden" name="donationType" value="1">
                             <!-- 基本資料區塊 -->
                             <div class="df-input-group">
                                 <label class="df-required" for="identityData">公司/機構名稱</label>
@@ -666,10 +586,15 @@
                                     </select>
                                 </div>
                                 <input type="text" class="df-input" name="address" th:field="*{address}"
-                                    placeholder="請輸入詳細地址" id="address-company">
-                                <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error"
-                                    id="address.errors"></span>
+    placeholder="請輸入詳細地址" id="address-company"
+    oninput="hideContent('addressErrorCompany')">
+                                <span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="error text-danger fw-bold mb-2"></span>
+<span th:if="${#fields.hasErrors('county')}" th:errors="*{county}" class="error text-danger fw-bold mb-2"></span>
+<span th:if="${#fields.hasErrors('district')}" th:errors="*{district}" class="error text-danger fw-bold mb-2"></span>
+<span id="addressErrorCompany" th:if="${#fields.hasErrors('address')}"
+      th:errors="*{address}" class="error text-danger fw-bold mb-2"></span>
                             </div>
+
 
 
                             <!-- 捐款收據區塊 -->
@@ -693,14 +618,14 @@
                                     <input type="text" class="df-input" placeholder="抬頭同公司/機構名稱"
                                         th:field="*{salutation}" id="salutation">
                                     <span th:if="${#fields.hasErrors('salutation')}" th:errors="*{salutation}"
-                                        class="error" id="salutation.errors"></span>
+                                        class="error text-danger fw-bold mb-2" id="salutation.errors"></span>
                                 </div>
 
                                 <div class="df-input-group">
                                     <label class="df-required" for="guiNum">統一編號</label>
                                     <input type="text" class="df-input" placeholder="12345678" th:field="*{guiNum}"
-                                        id="guiNum">
-                                    <span th:if="${#fields.hasErrors('guiNum')}" th:errors="*{guiNum}" class="error"
+                                        id="guiNum" >
+                                    <span th:if="${#fields.hasErrors('guiNum')}" th:errors="*{guiNum}" class="error text-danger fw-bold mb-2"
                                         id="guiNum.errors"></span>
                                 </div>
                             </div>
@@ -725,7 +650,7 @@
                                 <div style="margin-top: 12px;">
                                     <label style="display: flex; align-items: flex-start;">
                                         <input type="checkbox" th:field="*{agreePrivacy}" id="privacy-agreement-company"
-                                                disabled onclick="hideContent('agreePrivacyErrorCompany')">
+                                                disabled>
                                         <span>
                                             您已了解並同意本平台蒐集、處理及使用您的個人資料。
                                             請閱讀「<span class="df-privacy-link"
@@ -734,10 +659,11 @@
                                         </span>
                                     </label>
                                     <!-- 錯誤訊息區塊 -->
-                                    <span class="text-danger"
-                                        th:if="${showErrors} and ${#fields.hasErrors('agreePrivacy')}"
-                                        th:errors="*{agreePrivacy}">
-                                    </span>
+                                    <span id="agreePrivacyError" class="text-danger"
+      th:if="${showErrors} and ${#fields.hasErrors('agreePrivacy')}"
+      th:errors="*{agreePrivacy}">
+</span>
+
                                 </div>
                             </div>
 
@@ -791,6 +717,11 @@
             <p>七、資料安全維護措施：
                 <br>本平台將依據相關法令及內部規範，採取適當的安全措施保護您的個人資料。
             </p>
+            
+            <label style="display: flex; align-items: flex-start; margin-top: 20px;">
+            <input type="checkbox" id="privacy-check-inside-company">
+            <span>我已閱讀並同意上述個資說明</span>
+        </label>
 
             <div style="margin-top: 20px; text-align: center;">
                 <button onclick="closePrivacyLightbox()" class="df-button df-button-next"
@@ -801,60 +732,7 @@
     <!-- Donation Form End -->
 
     <!-- Footer Start -->
-    <section id="footer">
-        <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
-            <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
-                <div class="col-lg-3 col-md-6 mb-5">
-                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">聯絡我們</h4>
-                    <p><i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號</p>
-                    <p><i class="fa fa-phone-alt mr-2"></i>02-2222-5252</p>
-                    <p class="m-0"><i class="fa fa-envelope mr-2"></i>allieat105@gmail.com</p>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-5">
-                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">關注我們</h4>
-                    <p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
-                    <div class="d-flex justify-content-start">
-                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
-                                class="fab fa-twitter"></i></a>
-                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
-                                class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
-                                class="fab fa-linkedin-in"></i></a>
-                        <a class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i
-                                class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-5">
-                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">客服時間</h4>
-                    <div>
-                        <h6 class="text-white text-uppercase">周一 - 週五</h6>
-                        <p>早上10:00 - 晚上21:00</p>
-                        <h6 class="text-white text-uppercase">週六 - 週日</h6>
-                        <p>早上11:00 - 晚上19:00</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-5">
-                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">訂閱電子報</h4>
-                    <p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
-                    <div class="w-100">
-                        <div class="input-group">
-                            <input type="text" class="form-control border-light" style="padding: 25px;"
-                                placeholder="輸入您的信箱">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container-fluid text-center text-white mt-4 py-4 px-sm-3 px-md-5"
-                style="border-color: rgba(256, 256, 256, .1) !important;">
-                <p class="mb-2 text-white">版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>. 保留所有權利</p>
-                <p class="m-0 text-white">網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司 設計部
-                        設計</a></p>
-            </div>
-        </div>
-    </section>
+    <th:block th:replace="fragments/footer :: footer"></th:block>
     <!-- Footer End -->
 
     <!-- Back to Top -->
@@ -884,6 +762,7 @@
             const el = document.getElementById(id);
             if (el) {
                 el.style.display = "none";
+                
             }
         }
 
@@ -945,49 +824,6 @@
         // 燈箱功能
         let hasReadPrivacy = false;
 
-        function openPrivacyLightbox() {
-            const modal = document.getElementById('privacy-lightbox');
-            const modalContent = modal.querySelector('.df-modal-content');
-
-            modal.classList.add('df-visible');
-            document.body.style.overflow = 'hidden';
-            hasReadPrivacy = true;
-
-            // ⭐ 每次打開燈箱時，把滾動位置重設為最上面
-            modalContent.scrollTop = 0;
-        }
-
-        function closePrivacyLightbox() {
-            const modal = document.getElementById('privacy-lightbox');
-            const modalContent = modal.querySelector('.df-modal-content');
-
-            // 檢查是否已滑到底
-            const hasScrolledToBottom = Math.ceil(modalContent.scrollTop + modalContent.clientHeight) >= modalContent.scrollHeight;
-
-            if (hasScrolledToBottom) {
-                modal.classList.remove('df-visible');
-                document.body.style.overflow = '';
-
-                const isCompanyFormVisible = document.getElementById('company-form')?.classList.contains('df-visible');
-
-                if (isCompanyFormVisible) {
-                    const companyCheckbox = document.getElementById('privacy-agreement-company');
-                    if (companyCheckbox) {
-                        companyCheckbox.disabled = false;
-                        companyCheckbox.checked = true;
-                    }
-                } else {
-                    const personalCheckbox = document.getElementById('privacy-agreement-personal');
-                    if (personalCheckbox) {
-                        personalCheckbox.disabled = false;
-                        personalCheckbox.checked = true;
-                    }
-                }
-
-            } else {
-                alert('請閱讀完整的個資聲明內容後再關閉視窗。');
-            }
-        }
 
 
         // 點擊燈箱外部區域關閉燈箱
@@ -1620,26 +1456,36 @@
                 ]
             }
         ];
-
-        function setupAddressDropdown(prefix) {
+        
+        function setupAddressDropdown(prefix, defaultCity = "", defaultArea = "") {
             const citySel = $(`#city-${prefix}`);
             const areaSel = $(`#area-${prefix}`);
             const zipInput = $(`#zipcode-${prefix}`);
 
             function initCity() {
                 citySel.empty().append('<option value="">縣市</option>');
-                addrData.forEach((item, i) => {
-                    citySel.append(`<option value="${item.city}">${item.city}</option>`);
-                    if (i === 0) initArea(item.area);
+                addrData.forEach((item) => {
+                    const isSelected = item.city === defaultCity ? "selected" : "";
+                    citySel.append(`<option value="${item.city}" ${isSelected}>${item.city}</option>`);
                 });
+
+                if (defaultCity) {
+                    const cityObj = addrData.find(d => d.city === defaultCity);
+                    if (cityObj) initArea(cityObj.area, defaultArea);
+                }
             }
 
-            function initArea(areas) {
+            function initArea(areas, selectedArea = "") {
                 areaSel.empty();
-                areas.forEach((area, i) => {
-                    areaSel.append(`<option value="${area.name}" data-zipcode="${area.zipcode}">${area.name}</option>`);
-                    if (i === 0) zipInput.val(area.zipcode);
+                areas.forEach(area => {
+                    const isSelected = area.name === selectedArea ? "selected" : "";
+                    areaSel.append(`<option value="${area.name}" data-zipcode="${area.zipcode}" ${isSelected}>${area.name}</option>`);
                 });
+
+                const selected = areas.find(a => a.name === selectedArea);
+                if (selected) {
+                    zipInput.val(selected.zipcode);
+                }
             }
 
             initCity();
@@ -1662,9 +1508,125 @@
         }
 
         $(document).ready(function () {
-            setupAddressDropdown('personal');
-            setupAddressDropdown('company');
+            setupAddressDropdown('personal', '臺北市', '中正區');
+            setupAddressDropdown('company', '臺北市', '中正區');
+            console.log("已設定臺北市 / 中正區 / 郵遞區號 100");
         });
+
+
+
+
+ 
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            const fields = document.querySelectorAll("input, select, textarea");
+            fields.forEach(field => {
+                field.addEventListener("input", function () {
+                    // 修正這邊：從 .df-input-group 而非 .form-group 開始找
+                    const errorSpan = this.closest(".df-input-group")?.querySelector(".text-danger, .error");
+                    if (errorSpan) {
+                        errorSpan.style.display = "none";
+                    }
+                });
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const lightbox = document.getElementById('privacy-lightbox');
+            const modalContent = lightbox.querySelector('.df-modal-content');
+            const closeBtn = document.querySelector('.df-modal-close');
+            const outsideCheckbox = document.getElementById('privacy-agreement-company'); // 外部 checkbox
+            const errorMsg = document.getElementById('agreePrivacyError'); // 錯誤訊息
+            const internalCheckbox = document.getElementById("privacy-check-inside-company")
+
+// ✅ 燈箱內的勾選同步隱藏錯誤
+    internalCheckbox.addEventListener("change", function () {
+    if (this.checked) {
+        const isCompany = document.getElementById('company-form')?.classList.contains('df-visible');
+        const errorMsgId = isCompany ? 'agreePrivacyError' : 'agreePrivacyErrorPersonal';
+        const error = document.getElementById(errorMsgId);
+        if (error) {
+            error.style.display = "none";
+            error.innerText = "";
+        }
+    }
+});
+            // ✅ 開啟燈箱
+window.openPrivacyLightbox = function () {
+    const modal = document.getElementById('privacy-lightbox');
+    const modalContent = modal.querySelector('.df-modal-content');
+    const personalForm = document.getElementById('personal-form');
+    const companyForm = document.getElementById('company-form');
+    const internalCheckbox = document.getElementById("privacy-check-inside-company");
+
+    modal.classList.add("df-visible");
+    document.body.style.overflow = "hidden";
+
+    const isCompany = companyForm?.classList.contains('df-visible');
+    const outsideCheckbox = document.getElementById(
+        isCompany ? 'privacy-agreement-company' : 'privacy-agreement-personal'
+    );
+
+    internalCheckbox.checked = outsideCheckbox.checked;
+};
+
+
+            
+
+            // ✅ 關閉燈箱
+            window.closePrivacyLightbox = function () {
+    const modal = document.getElementById("privacy-lightbox");
+    const content = modal.querySelector('.df-modal-content');
+    const hasScrolledToBottom = Math.ceil(content.scrollTop + content.clientHeight) >= content.scrollHeight;
+    const internalCheckbox = document.getElementById("privacy-check-inside-company");
+
+    if (!hasScrolledToBottom) {
+        alert("請閱讀完整內容再關閉。");
+        return;
+    }
+
+    const personalForm = document.getElementById('personal-form');
+    const companyForm = document.getElementById('company-form');
+    const isCompany = companyForm?.classList.contains('df-visible');
+    const outsideCheckbox = document.getElementById(
+        isCompany ? 'privacy-agreement-company' : 'privacy-agreement-personal'
+    );
+    const errorMsg = document.getElementById('agreePrivacyError');
+
+    modal.classList.remove("df-visible");
+    document.body.style.overflow = "";
+
+    outsideCheckbox.disabled = false;
+    outsideCheckbox.checked = internalCheckbox.checked;
+
+    if (internalCheckbox.checked) {
+        sessionStorage.setItem("noticeAgreed", "true");
+        outsideCheckbox.disabled = false;
+        outsideCheckbox.checked = true;
+
+        // ✅ 根據類型選擇正確錯誤訊息元素
+        const errorMsgId = isCompany ? 'agreePrivacyError' : 'agreePrivacyErrorPersonal';
+        const errorMsg = document.getElementById(errorMsgId);
+        if (errorMsg) {
+            errorMsg.style.display = "none";
+            errorMsg.innerText = "";
+        }
+
+    } else {
+        sessionStorage.removeItem("noticeAgreed");
+        outsideCheckbox.checked = false;
+
+        const errorMsgId = isCompany ? 'agreePrivacyError' : 'agreePrivacyErrorPersonal';
+        const errorMsg = document.getElementById(errorMsgId);
+        if (errorMsg) {
+            errorMsg.style.display = "block";
+        }
+    }
+};
+        
+
+        }); 
+        
+       
     </script>
 </body>
 
