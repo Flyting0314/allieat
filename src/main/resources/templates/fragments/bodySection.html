@@ -1,5 +1,6 @@
 <th:block th:fragment="bodySection">
     <header>
+
         <div class="container-fluid p-0 nav-bar">
             <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
                 <a th:href="@{/index}" class="navbar-brand px-lg-4 m-0">
@@ -17,9 +18,10 @@
                         <a th:href="@{/index}" class="nav-item nav-link active">關於我們</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">捐款專區</a>
-                            <div class="dropdown-menu text-capitalize">
+                            <div class="dropdown-menu text-capitalize dropdown-custom">
                                 <a th:href="@{/dona/donaAddA}" class="dropdown-item">我要捐款</a>
                                 <a th:href="@{/dona/donaAddD}" class="dropdown-item">捐款查詢</a>
+                                <a th:href="@{/rank/top}" class="dropdown-item">哈燒排行榜</a>
                             </div>
                         </div>
                         <a th:href="@{/map}" class="nav-item nav-link">我要取餐 / 點餐</a>
@@ -27,7 +29,7 @@
                         <!-- ✅ 登入 / 登出 切換 -->
                         <div class="nav-item dropdown" th:if="${session.member == null and session.store == null}">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊 / 登入</a>
-                            <div class="dropdown-menu text-capitalize">
+                            <div class="dropdown-menu text-capitalize dropdown-custom">
                                 <a th:href="@{/registerAndLogin/register}" class="dropdown-item">註冊</a>
                                 <a th:href="@{/registerAndLogin/login}" class="dropdown-item">登入</a>
                             </div>

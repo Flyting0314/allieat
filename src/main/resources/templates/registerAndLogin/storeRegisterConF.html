@@ -2,78 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="zh-TW">
 <head>
 <th:block th:replace="fragments/header :: header"></th:block>
-    <style>
-        .confirm-container {
-            max-width: 800px;
-            margin: 30px auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .confirm-title {
-            font-size: 24px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .confirm-field {
-            margin-bottom: 10px;
-        }
-        .confirm-label {
-            font-weight: bold;
-        }
-        .confirm-photo-preview {
-            margin-top: 20px;
-        }
-        .confirm-photo-item {
-            margin-bottom: 20px;
-        }
-        .confirm-photo-label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-        }
-        .confirm-photo-item img {
-            max-width: 300px;
-            height: auto;
-            border: 1px solid #ccc;
-            padding: 5px;
-            border-radius: 4px;
-        }
-        .confirm-buttons {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .confirm-buttons button {
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-        .confirm-photo-preview {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.confirm-photo-item {
-    flex: 1 1 30%;
-    max-width: 32%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.confirm-photo-item img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border: 1px solid #ccc;
-    padding: 5px;
-    border-radius: 8px;
-}
-    </style>
+<link th:href="@{/css/storeRegisterConF.css}" rel="stylesheet">
 </head>
 <body>
 <!-- Navbar Start -->

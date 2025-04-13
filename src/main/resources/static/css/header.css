@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+    
+    .dropdown-custom {
+    background-color: #FAF3DD;
+    border: 1px solid #e6cfa8;
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+}
+
+.dropdown-custom .dropdown-item {
+    color: #5a4636;
+    font-weight: 500;
+    padding: 10px 20px;
+    transition: all 0.2s ease-in-out;
+}
+
+.dropdown-custom .dropdown-item:hover {
+    background-color: #f1e3c2;
+    color: #000;
+}
+    
