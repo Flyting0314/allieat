@@ -11,37 +11,10 @@
       margin: 0;
       padding: 0;
     }
-
-    .navbar {
-      background-color: white;
-      padding: 15px 30px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .navbar .logo {
-      display: flex;
-      align-items: center;
-    }
-
-    .navbar .logo img {
-      height: 60px;
-      margin-right: 15px;
-    }
-
-    .navbar h1 {
-      font-size: 28px;
-      color: #003366;
-      font-weight: bold;
-    }
-
     .container {
       display: flex;
       padding: 30px;
     }
-
     .store-info {
       width: 25%;
       padding: 20px;
@@ -50,24 +23,20 @@
       background-color: #ffffff;
       margin-right: 30px;
     }
-
     .store-info h2 {
       margin: 0;
       font-size: 20px;
       color: #333;
     }
-
     .store-info p {
       margin-top: 8px;
       font-size: 16px;
       color: #555;
     }
-
     .store-info a {
       color: #0077cc;
       text-decoration: underline;
     }
-
     .order-item {
       background-color: #f9f9f9;
       border-radius: 8px;
@@ -75,18 +44,15 @@
       margin-bottom: 16px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
-
     .order-item p {
       margin: 4px 0;
     }
-
     .total-points {
       font-weight: bold;
       margin-top: 15px;
       font-size: 18px;
       color: #444;
     }
-
     #map {
       width: 75%;
       height: 500px;
@@ -95,24 +61,13 @@
   </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <div class="navbar">
-    <div class="logo">
-      <img src="/img/logo3.png" alt="logo" />
-      <h1>攏呷霸</h1>
-    </div>
-    <div>
-      <a href="/index.html">首頁</a> | <a href="/logout">登出</a>
-    </div>
-  </div>
-
-  <!-- Main Content -->
+  <div id="header-placeholder"></div>
+  <div id="body-section-placeholder"></div>
   <div class="container">
     <div class="store-info">
       <h2 id="storeName">店家名稱</h2>
       <p id="storeAddress">店家地址</p>
       <p><a id="googleMapLink" href="#" target="_blank">在 Google 地圖中開啟</a></p>
-
       <div class="order-detail" style="margin-top: 20px;">
         <h3>訂單明細</h3>
         <div id="orderDetails">載入中...</div>
@@ -121,31 +76,66 @@
     </div>
     <div id="map"></div>
   </div>
+  <div id="footer-placeholder"></div>
+
+  <script>
+    function loadFragment(id, path) {
+      fetch(path)
+        .then(res => res.text())
+        .then(html => {
+          const container = document.getElementById(id);
+          container.innerHTML = html;
+          container.style.display = 'block';
+          convertThAttributes(container);
+        })
+        .catch(err => {
+          console.error(`❌ ${path} 載入失敗`, err);
+          const fallback = document.createElement('div');
+          fallback.style.color = 'red';
+          fallback.textContent = `⚠️ 無法載入 ${path}`;
+          document.getElementById(id).appendChild(fallback);
+        });
+    }
+
+    function convertThAttributes(container) {
+      container.querySelectorAll('[th\\:href]').forEach(el => {
+        const val = el.getAttribute('th:href');
+        if (val?.startsWith('@{') && val.endsWith('}')) {
+          el.setAttribute('href', val.slice(2, -1));
+          el.removeAttribute('th:href');
+        }
+      });
+      container.querySelectorAll('[th\\:src]').forEach(el => {
+        const val = el.getAttribute('th:src');
+        if (val?.startsWith('@{') && val.endsWith('}')) {
+          el.setAttribute('src', val.slice(2, -1));
+          el.removeAttribute('th:src');
+        }
+      });
+    }
+
+    loadFragment("header-placeholder", "/header.html");
+    loadFragment("body-section-placeholder", "/bodySection.html");
+    loadFragment("footer-placeholder", "/footer.html");
+  </script>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const orderDataStr = sessionStorage.getItem("orderSuccess");
-
       if (!orderDataStr) {
         alert("⚠️ 無法取得訂單資訊，將跳回首頁！");
         location.href = "/index.html";
         return;
       }
-
       const orderData = JSON.parse(orderDataStr);
-      console.log("🧪 從 sessionStorage 取得的訂單資訊：", orderData);
-
       document.getElementById("storeName").textContent = orderData.storeName || "未知店家";
       document.getElementById("storeAddress").textContent = orderData.address || "未提供地址";
-
       const encodedAddress = encodeURIComponent(orderData.address || "");
       document.getElementById("googleMapLink").href =
         `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-
       const container = document.getElementById("orderDetails");
       container.innerHTML = "";
       let total = 0;
-
       if (orderData.details && orderData.details.length > 0) {
         orderData.details.forEach(detail => {
           const itemDiv = document.createElement("div");
@@ -160,28 +150,23 @@
           container.appendChild(itemDiv);
           total += (detail.pointsCost || 0) * (detail.quantity || 1);
         });
-
         document.getElementById("totalPoints").textContent = `🧾 訂單總點數：${total} 點`;
       } else {
         container.innerHTML = "<p>❌ 找不到訂單明細</p>";
       }
-
       function formatDateTime(timestamp) {
         const d = new Date(timestamp);
         return d.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
       }
-
-      waitForPickup(); // ✅ 啟動輪詢
+      waitForPickup();
     });
 
     function initMap() {
       const orderData = JSON.parse(sessionStorage.getItem("orderSuccess")) || {};
       const defaultLocation = { lat: 25.0330, lng: 121.5654 };
-
       const storeLat = parseFloat(orderData.storeLat);
       const storeLng = parseFloat(orderData.storeLng);
       const hasCoords = !isNaN(storeLat) && !isNaN(storeLng);
-
       if (hasCoords) {
         renderMap({ lat: storeLat, lng: storeLng });
       } else {
@@ -200,17 +185,14 @@
 
     function renderMap(location) {
       const orderData = JSON.parse(sessionStorage.getItem("orderSuccess")) || {};
-
       const map = new google.maps.Map(document.getElementById("map"), {
         zoom: 16,
         center: location,
       });
-
       const marker = new google.maps.Marker({
         position: location,
         map: map,
       });
-
       const infoWindow = new google.maps.InfoWindow({
         content: `
           <div>
@@ -220,26 +202,23 @@
           </div>
         `
       });
-
       marker.addListener("click", () => infoWindow.open(map, marker));
       infoWindow.open(map, marker);
     }
 
     window.initMap = initMap;
 
-    // ✅ 長輪詢監聽取餐狀態
     function waitForPickup() {
       const orderData = JSON.parse(sessionStorage.getItem("orderSuccess")) || {};
       const orderId = orderData?.orderId;
       if (!orderId) return;
-
       fetch(`/meal/order/wait-pickup?orderId=${orderId}`)
         .then(res => res.json())
         .then(data => {
           if (data.pickedUp) {
             window.location.href = `/evaluate.html?orderId=${orderId}`;
           } else {
-            setTimeout(waitForPickup, 1000); // 每秒再問一次
+            setTimeout(waitForPickup, 1000);
           }
         })
         .catch(err => {
@@ -249,7 +228,6 @@
     }
   </script>
 
-  <!-- Google Maps API -->
   <script async
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwk4bH6RdOWmqwmrpdYu7-NKZin0St0vQ&libraries=places&callback=initMap&region=TW&language=zh-TW">
   </script>
