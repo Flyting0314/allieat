@@ -1,0 +1,333 @@
+        * {
+            box-sizing: border-box;
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+        }
+        
+        body {
+    margin: 0;
+    padding: 30px;
+    background-color: #FAF3DD;
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    color: #5a4636;
+        }
+        
+        .container {
+           background-color: #fffef9;
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 800px;
+    margin: 30px auto;
+    box-shadow: 0 4px 12px rgba(244, 201, 93, 0.2);
+        }
+h3, h4 {
+    color: #da8f2e;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+
+        .donation-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+        }
+        .donation-card:hover, .donation-card.active {
+            border-color: red;
+            background: #ffe5e5;
+        }
+       .steps {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0 30px 0;
+}
+.step {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+}
+        
+        .step-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #f4d87c;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    margin-right: 6px;
+}
+        
+        .step-circle.active {
+            background-color: #ff0000;
+            color: white;
+        }
+        
+       .step-circle.completed {
+    background-color: #da8f2e;
+}
+
+        
+        .step-circle.completed::after {
+            content: "✓";
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background-color: #e9ecef;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-bottom: none;
+        }
+        
+        .tab.active {
+            background-color: white;
+        }
+        
+        .form-section {
+            display: none;
+        }
+        
+        .form-section.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 8.5L1 3.5h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+        
+        .date-select {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .date-select select {
+            flex: 1;
+        }
+        
+        .gender-options {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .gender-option {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .radio-container {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .radio-container input[type="radio"] {
+            margin-top: 3px;
+            margin-right: 8px;
+        }
+        
+        .section-title {
+            font-weight: bold; 
+            margin: 20px 0 5px 0; 
+            padding-top: 15px; /* 增加與文字的距離 */
+            border-top: 1px solid #ddd; /* 改為上方邊框 */
+            text-align: left; /* 確保文字靠左對齊 */
+        }
+        
+        .receipt-options, .privacy-options {
+            margin-bottom: 20px;
+        }
+        
+        .note {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+        }
+        
+        .btn-prev {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-next {
+            background-color: #DA9F5B;
+            color: black;
+        }
+        
+        .required::after {
+            content: "*";
+            color: red;
+        }
+        
+        .address-inputs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .address-inputs > * {
+            flex: 1;
+        }
+        
+        .example {
+            font-size: 12px;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        /* 燈箱樣式 */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 80%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .close-lightbox {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        
+        .privacy-link {
+            color: #1a73e8;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* 按鈕 */
+
+        .df-button {
+             padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+        }
+
+       .df-button-prev {
+    background-color: #fff;
+    color: #da8f2e;
+    border: 1px solid #e2cda3;
+}
+.df-button-prev:hover {
+    background-color: #fff3dc;
+}
+.df-button-next {
+    background-color: #DA9F5B;
+    color: #fff;
+}
+.df-button-next:hover {
+    background-color: #c57d39;
+}
+        .df-actions {
+   display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+        }
+/* input 欄位（若啟用） */
+input[type="text"],
+input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e2cda3;
+    border-radius: 4px;
+    background-color: #fffef9;
+    margin-bottom: 15px;
+}
+
+p {
+    margin: 8px 0;
+    font-size: 16px;
+}
+strong {
+    color: #7a5c2d;
+}
+@media (max-width: 768px) {
+    .df-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
