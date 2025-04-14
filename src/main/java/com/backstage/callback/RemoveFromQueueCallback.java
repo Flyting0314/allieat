@@ -4,7 +4,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.util.List;
 
 /*
- * 用於移除佇列內資訊，搭配DeferredResult使用。
+ * 用於移除佇列內資訊，搭配DeferredResult使用，後台HomePage長輪詢。
  * 
  */
 public class RemoveFromQueueCallback implements Runnable {
