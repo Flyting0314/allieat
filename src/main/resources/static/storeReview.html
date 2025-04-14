@@ -120,7 +120,6 @@
             <div class="text-center mt-4">
               <button type="button" class="btn btn-success mr-2" onclick="submitReview('true')">通過</button>
               <button type="button" class="btn btn-danger mr-2" onclick="submitReview('false')">不通過</button>
-              <button type="button" class="btn btn-warning" onclick="submitReview('correction')">補件</button>
             </div>
 
           </form>
@@ -134,8 +133,7 @@
   const urlParams = new URLSearchParams(window.location.search);
   const storeId = urlParams.get("storeId");
 
-  // ✅ 載入店家資料
-  // 🔹 載入店家基本資料
+  // 載入店家基本資料
 authFetch(`/backStage/store/${storeId}`)
   .then(res => {
     if (!res.ok) {
