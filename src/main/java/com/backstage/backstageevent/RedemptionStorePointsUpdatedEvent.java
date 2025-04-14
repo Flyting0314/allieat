@@ -1,6 +1,10 @@
 package com.backstage.backstageevent;
 
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> b791394 (1. 新增實體 ”店家點數核銷 PointsRedemption” 相關檔案：VO, Repository, Service,)
 
 import org.springframework.context.ApplicationEvent;
 
