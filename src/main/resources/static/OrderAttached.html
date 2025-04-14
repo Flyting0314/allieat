@@ -729,7 +729,7 @@ body {
 				<div class="afo-side-dish-card">
 					<h2 class="afo-section-heading">附餐選擇</h2>
 					<p class="afo-section-subtitle">
-						請選擇一個附餐<span class="afo-required-mark">（必選）</span>
+						請選擇一個附餐<span class="afo-required-mark">（選填，可略過）</span>
 					</p>
 
 					<!-- 錯誤提示容器 -->
@@ -780,62 +780,38 @@ body {
 
 
 	<script>
-
-        /**
- * 附餐選擇頁面主要JavaScript
- * 功能：
- * 1. 顯示主餐資訊
- * 2. 載入附餐選項
- * 3. 處理附餐選擇和加入購物車功能
- */
-
 document.addEventListener("DOMContentLoaded", function() {
-    // 解析URL參數
     const urlParams = new URLSearchParams(window.location.search);
     const foodId = urlParams.get('foodId');
-    
-    console.log('獲取到的食物ID:', foodId);
-    
+
     if (!foodId) {
         showError('找不到食物ID，請返回上一頁重新選擇餐點');
         return;
     }
 
-    // 顯示加載中的狀態
     showLoading();
-    
-    // 加載主餐資訊
     loadFoodInfo(foodId);
-    
-    // 加載對應的附餐
     loadAttachedInfo(foodId);
-    
-    // 設置返回按鈕事件
-    document.getElementById('afoBackButton').addEventListener('click', function(e) {
+
+    document.getElementById('afoBackButton')?.addEventListener('click', e => {
         e.preventDefault();
         window.history.back();
     });
 
-    // 設置購物車按鈕點擊事件
-    if (document.getElementById('pizzaFloatingCart')) {
-        document.getElementById('pizzaFloatingCart').addEventListener('click', function() {
-            window.location.href = '/cart';
-        });
-    }
+    document.getElementById('pizzaFloatingCart')?.addEventListener('click', () => {
+        window.location.href = '/cart';
+    });
 
-    // 初始化購物車計數
     updateCartCount();
 
-    // 顯示加載中狀態的函數
     function showLoading() {
         console.log('載入中...');
     }
 
-    // 顯示錯誤信息的函數
     function showError(message) {
-        const optionContainer = document.getElementById('afoOptionContainer');
-        if (optionContainer) {
-            optionContainer.innerHTML = `
+        const container = document.getElementById('afoOptionContainer');
+        if (container) {
+            container.innerHTML = `
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-circle mr-2"></i> ${message}
                 </div>
@@ -843,204 +819,104 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // 加載主餐資訊
     function loadFoodInfo(foodId) {
-    const selectedStore = JSON.parse(localStorage.getItem('selectedFood'));
-    const storeId = selectedStore?.storeId;
+        const selectedStore = JSON.parse(localStorage.getItem('selectedFood'));
+        const storeId = selectedStore?.storeId;
+        if (!storeId) {
+            showError("找不到餐廳 ID，請重新返回上一頁");
+            return;
+        }
 
-    if (!storeId) {
-        showError("找不到餐廳 ID，請重新返回上一頁");
-        return;
-    }
+        fetch(`/meal/food/store/dto?storeId=${storeId}`)
+            .then(res => res.json())
+            .then(list => {
+                const food = list.find(f => f.foodId == foodId);
+                if (!food) return showError("找不到指定的主餐資訊");
 
-    fetch(`/meal/food/store/dto?storeId=${storeId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`伺服器回應錯誤: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(foodList => {
-            const food = foodList.find(f => f.foodId == foodId);
-
-            if (!food) {
-                showError("找不到指定的主餐資訊");
-                return;
-            }
-
-            // ✅ 套用 DTO 裡的欄位更新頁面
-            document.getElementById('mainDishTitle').textContent = food.name || '未知餐點';
-            document.getElementById('mainDishPrice').textContent = `${food.cost || 0} 點`;
-
-            const imageElement = document.getElementById('mainDishImage');
-            imageElement.src = food.photo ? `/food/images/${food.photo}` : 'https://via.placeholder.com/300x200?text=餐點圖片';
-            imageElement.alt = food.name || '主餐圖片';
-
-            document.title = `${food.name || '餐點'} - 攏呷霸 ALLiEAT`;
-        })
-        .catch(error => {
-            console.error('獲取主餐資訊出錯:', error);
-            showError(`主餐資料讀取失敗：${error.message}`);
-        });
-}
-
-
-    // 加載附餐資訊
-    function loadAttachedInfo(foodId) {
-        console.log('正在獲取附餐資訊，食物ID:', foodId);
-        
-        fetch(`/meal/attached/food/${foodId}`)
-            .then(response => {
-                console.log('附餐API響應狀態:', response.status);
-                if (!response.ok) {
-                    throw new Error(`伺服器回應狀態碼: ${response.status}`);
-                }
-                return response.json();
+                document.getElementById('mainDishTitle').textContent = food.name || '未知餐點';
+                document.getElementById('mainDishPrice').textContent = `${food.cost || 0} 點`;
+                const img = document.getElementById('mainDishImage');
+                img.src = food.photo ? `/food/images/${food.photo}` : 'https://via.placeholder.com/300x200?text=餐點圖片';
+                img.alt = food.name || '主餐圖片';
+                document.title = `${food.name} - 攏呷霸 ALLiEAT`;
             })
-            .then(attachedList => {
-                console.log('獲取到的附餐列表:', attachedList);
-                
-                const optionContainer = document.getElementById('afoOptionContainer');
-                if (!optionContainer) {
-                    console.error('找不到附餐容器元素');
-                    return;
-                }
-                
-                optionContainer.innerHTML = ''; // 清空載入中提示
-                
-                if (!attachedList || attachedList.length === 0) {
-                    optionContainer.innerHTML = `
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle mr-2"></i> 此餐點目前沒有可選的附餐選項
-                        </div>
-                    `;
-                    return;
-                }
-                
-                attachedList.forEach(attached => {
-                    const optionItem = document.createElement('label');
-                    optionItem.className = 'afo-option-item';
-                    optionItem.htmlFor = `option-${attached.attachedId}`;
-                    optionItem.innerHTML = `
-                        <input type="radio" 
-                               id="option-${attached.attachedId}" 
-                               name="side-option" 
-                               value="${attached.name}" 
-                               class="afo-option-radio">
-                        <span class="afo-option-label">${attached.name}</span>
-                    `;
-                    
-                    optionContainer.appendChild(optionItem);
-                });
-                
-                // 綁定事件
-                bindOptionEvents();
-            })
-            .catch(error => {
-                console.error('獲取附餐資訊出錯:', error);
-                
-                const optionContainer = document.getElementById('afoOptionContainer');
-                if (optionContainer) {
-                    optionContainer.innerHTML = `
-                        <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-circle mr-2"></i> 無法載入附餐選項，請稍後再試
-                            <br><small>錯誤訊息: ${error.message}</small>
-                        </div>
-                    `;
-                }
-                
-                // 嘗試創建模擬數據以便測試UI
-                setTimeout(() => {
-                    createMockAttachedItems();
-                }, 1000);
+            .catch(err => {
+                console.error('主餐資料讀取失敗：', err);
+                showError("主餐資料讀取失敗：" + err.message);
             });
     }
 
-    // 創建模擬的附餐項目（僅供測試用）
-    function createMockAttachedItems() {
-        console.log('創建模擬附餐選項供測試');
-        
-        const optionContainer = document.getElementById('afoOptionContainer');
-        if (!optionContainer) {
-            return;
-        }
-        
-        const mockItems = [
-            { attachedId: 1, name: '可樂' },
-            { attachedId: 2, name: '紅茶' },
-            { attachedId: 3, name: '奶茶' }
-        ];
-        
-        optionContainer.innerHTML = '';
-        
-        mockItems.forEach(item => {
-            const optionItem = document.createElement('label');
-            optionItem.className = 'afo-option-item';
-            optionItem.htmlFor = `option-${item.attachedId}`;
-            optionItem.innerHTML = `
-                <input type="radio" 
-                       id="option-${item.attachedId}" 
-                       name="side-option" 
-                       value="${item.name}" 
-                       class="afo-option-radio">
-                <span class="afo-option-label">${item.name}</span>
-            `;
-            
-            optionContainer.appendChild(optionItem);
-        });
-        
-        // 綁定事件
-        bindOptionEvents();
+    function loadAttachedInfo(foodId) {
+        fetch(`/meal/attached/food/${foodId}`)
+            .then(res => res.json())
+            .then(list => {
+                const container = document.getElementById('afoOptionContainer');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                if (!list || list.length === 0) {
+                    container.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle mr-2"></i> 此餐點目前沒有可選的附餐選項
+                        </div>`;
+                    return;
+                }
+
+                list.forEach(item => {
+                    const label = document.createElement('label');
+                    label.className = 'afo-option-item';
+                    label.htmlFor = `option-${item.attachedId}`;
+                    label.innerHTML = `
+                        <input type="radio" id="option-${item.attachedId}" name="side-option" value="${item.name}" class="afo-option-radio">
+                        <span class="afo-option-label">${item.name}</span>`;
+                    container.appendChild(label);
+                });
+
+                bindOptionEvents();
+            })
+            .catch(err => {
+                console.error('獲取附餐資訊出錯：', err);
+                const container = document.getElementById('afoOptionContainer');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-circle mr-2"></i> 無法載入附餐選項，請稍後再試<br>
+                            <small>錯誤訊息: ${err.message}</small>
+                        </div>`;
+                }
+            });
     }
 
-    // 事件綁定函數 - 將在載入附餐後調用
     function bindOptionEvents() {
         const radios = document.getElementsByName("side-option");
         const optionItems = document.querySelectorAll(".afo-option-item");
-        const errorContainer = document.getElementById("afoErrorContainer");
-        const optionContainer = document.getElementById("afoOptionContainer");
         const nextButton = document.getElementById("afoNextButton");
 
-        // 選項事件
         for (let i = 0; i < radios.length; i++) {
-            radios[i].onchange = function() {
+            radios[i].onchange = function () {
                 optionItems.forEach(item => item.classList.remove("afo-selected"));
                 optionItems[i].classList.add("afo-selected");
-                errorContainer.style.display = "none";
             };
         }
 
-        // 下一步按鈕
-        nextButton.onclick = function() {
+        nextButton.onclick = function () {
             let selectedOption = null;
-            
             for (let i = 0; i < radios.length; i++) {
                 if (radios[i].checked) {
                     selectedOption = radios[i];
                     break;
                 }
             }
-            
-            if (!selectedOption) {
-                errorContainer.style.display = "block";
-                optionContainer.classList.add("afo-shake-animation");
-                
-                setTimeout(function() {
-                    optionContainer.classList.remove("afo-shake-animation");
-                }, 500);
-                
-                return false;
-            }
-            
-            const selectedValue = selectedOption.value;
-            const selectedId = selectedOption.id.replace('option-', '');
+
+            const selectedValue = selectedOption?.value || null;
+            const selectedId = selectedOption?.id.replace('option-', '') || null;
             const notes = document.getElementById("afoNotesInput")?.value || "";
-            
-            // 加入購物車邏輯
+
             addToCart(selectedValue, selectedId, notes);
-            
-            alert(`已成功添加到購物車！\n主餐: ${document.getElementById('mainDishTitle').textContent}\n附餐: ${selectedValue}\n備註: ${notes}`);
-            
+
+            alert(`已成功添加到購物車！\n主餐: ${document.getElementById('mainDishTitle').textContent}\n附餐: ${selectedValue || "無"}\n備註: ${notes}`);
+
             if (confirm("是否前往購物車頁面？")) {
                 window.location.href = "/cart";
             } else {
@@ -1049,66 +925,51 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     }
 
-    // 加入購物車函數
     function addToCart(sideDish, sideDishId, notes) {
-    const mainDishTitle = document.getElementById('mainDishTitle').textContent;
-    const mainDishPrice = document.getElementById('mainDishPrice').textContent;
+        const newItem = {
+            foodId: parseInt(foodId),
+            attachedId: sideDishId ? parseInt(sideDishId) : null,
+            quantity: 1,
+            note: notes
+        };
 
-    const newItem = {
-        foodId: parseInt(foodId),         // 主餐 ID
-        attachedId: parseInt(sideDishId), // 附餐 ID
-        quantity: 1,                      // 數量先預設 1
-        notes: notes
-    };
+        fetch('/api/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newItem)
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('加入購物車失敗');
+            return res.text();
+        })
+        .then(msg => {
+            console.log(msg);
+            updateCartCount();
+        })
+        .catch(err => {
+            console.error('加入購物車發生錯誤：', err);
+            alert('加入購物車失敗，請稍後再試');
+        });
+    }
 
-    fetch('/api/cart/add', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newItem)
-    })
-    .then(res => {
-        if (!res.ok) throw new Error('加入購物車失敗');
-        return res.text();
-    })
-    .then(msg => {
-        console.log(msg);
-        alert(`已成功加入購物車！\n主餐: ${mainDishTitle}\n附餐: ${sideDish}\n備註: ${notes}`);
-        updateCartCount(); // 若你未來要用後端取得購物車總數，這裡可再改進
-    })
-    .catch(err => {
-        console.error('加入購物車發生錯誤：', err);
-        alert('加入購物車失敗，請稍後再試');
-    });
-}
-
-    
-    // 更新購物車數量顯示
- // 更新購物車數量顯示
     function updateCartCount() {
         fetch('/api/cart')
             .then(res => res.json())
             .then(cart => {
-                const cartCountElement = document.querySelector('.pizza-cart-count');
-                if (cartCountElement) {
-                    cartCountElement.textContent = cart.length;
-                }
+                const countEl = document.querySelector('.pizza-cart-count');
+                if (countEl) countEl.textContent = cart.length;
             })
-            .catch(err => {
-                console.error("取得購物車數量失敗：", err);
-            });
+            .catch(err => console.error("取得購物車數量失敗：", err));
     }
-    document.addEventListener('DOMContentLoaded', updateCartCount);
+});
 
-    }); // ✅ 補上這個來結束最外層 DOMContentLoaded 的 function
+// ✅ 假會員 ID 測試用（正式版請移除）
+if (!localStorage.getItem('memberId')) {
+    localStorage.setItem('memberId', '1');
+    console.log('🔧 假會員ID已寫入 localStorage: 1');
+}
+</script>
 
-    
-    if (!localStorage.getItem('memberId')) {
-        localStorage.setItem('memberId', '1');
-        console.log('🔧 假會員ID已寫入 localStorage: 1');
-    }
-    </script>
 
 
 

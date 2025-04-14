@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>訂單評價 - ALLiEAT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- 載入 header.html 中的資源 -->
+  <link href="img/favicon.ico" rel="icon">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+  <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+  .custom-evaluate-wrapper {
+  font-family: "Noto Sans TC", "Montserrat", sans-serif;
+  background: #f5f7f8;
+  padding: 30px 0;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.custom-evaluate-container {
+  max-width: 800px; /* Increased from 450px for a wider container */
+  margin: 0 auto;
+  background: white;
+  padding: 50px 60px; /* Adjusted padding to leave more space for content */
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative corner element */
+.custom-evaluate-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  background-color: #da9f5b;
+  border-radius: 0 0 100% 0;
+  opacity: 0.85;
+}
+
+.custom-evaluate-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 28px;
+  position: relative;
+  padding-bottom: 15px;
+  font-weight: 600;
+}
+
+.custom-evaluate-title::after {
+  content: '';
+  position: absolute;
+  width: 60px;
+  height: 3px;
+  background-color: #da9f5b;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.custom-evaluate-order-info {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #eeeeee;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.custom-evaluate-order-info strong {
+  color: #555;
+}
+
+.custom-evaluate-form-group {
+  margin-bottom: 25px;
+}
+
+.custom-evaluate-form-group label {
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 12px;
+  display: block;
+  font-size: 16px;
+}
+
+.custom-evaluate-rating {
+  display: flex;
+  gap: 15px;
+  font-size: 34px;
+  cursor: pointer;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.custom-evaluate-star {
+  color: #ccc;
+  transition: color 0.3s ease;
+}
+
+.custom-evaluate-star:hover {
+  color: #ffc107;
+}
+
+.custom-evaluate-star.selected {
+  color: #ffc107;
+}
+
+.custom-evaluate-comment {
+  width: 100%;
+  padding: 15px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  resize: none; /* 禁止用戶調整大小 */
+  transition: border-color 0.3s ease;
+  min-height: 80px; /* 減少高度讓它更像橫向長方形 */
+  height: 80px; /* 固定高度 */
+}
+
+.custom-evaluate-comment:focus {
+  outline: none;
+  border-color: #da9f5b;
+  box-shadow: 0 0 0 2px rgba(218, 159, 91, 0.15);
+}
+
+.custom-evaluate-button {
+  background: #da9f5b;
+  color: white;
+  padding: 14px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-top: 10px;
+}
+
+.custom-evaluate-button:hover {
+  background: #c78d4d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(218, 159, 91, 0.3);
+}
+
+.custom-evaluate-success {
+  color: #28a745;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: 600;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .custom-evaluate-wrapper {
+    padding: 15px;
+  }
+
+  .custom-evaluate-container {
+    width: 95%;
+    padding: 25px 20px;
+  }
+
+  .custom-evaluate-rating {
+    font-size: 30px;
+  }
+}
+  </style>
+</head>
+<body>
+  <!-- 頭部佔位符 -->
+  <div id="header-placeholder"></div>
+  
+  <!-- 導航區塊佔位符 -->
+  <div id="body-section-placeholder"></div>
+
+  <div class="custom-evaluate-wrapper">
+    <div class="custom-evaluate-container">
+      <h2 class="custom-evaluate-title">訂單評價</h2>
+
+      <div class="custom-evaluate-order-info" id="orderInfo">
+        <div><strong>訂單編號：</strong>#222</div>
+        <div><strong>店家：</strong>麥富迪</div>
+      </div>
+
+      <div class="custom-evaluate-form-group">
+        <label for="rating">評分：</label>
+        <div class="custom-evaluate-rating" id="ratingStars">
+          <span class="custom-evaluate-star" data-value="1">★</span>
+          <span class="custom-evaluate-star" data-value="2">★</span>
+          <span class="custom-evaluate-star" data-value="3">★</span>
+          <span class="custom-evaluate-star" data-value="4">★</span>
+          <span class="custom-evaluate-star" data-value="5">★</span>
+        </div>
+      </div>
+
+      <div class="custom-evaluate-form-group">
+        <label for="comment">留言：</label>
+        <textarea id="comment" class="custom-evaluate-comment" rows="4" placeholder="說說您的用餐體驗吧！"></textarea>
+      </div>
+
+      <button class="custom-evaluate-button" onclick="submitEvaluation()">送出評價</button>
+      <div class="custom-evaluate-success" id="successMsg"></div>
+    </div>
+  </div>
+
+  <!-- 頁尾佔位符 -->
+  <div id="footer-placeholder"></div>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+  <script src="lib/easing/easing.min.js"></script>
+  <script src="lib/waypoints/waypoints.min.js"></script>
+  <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+  <script src="lib/tempusdominus/js/moment.min.js"></script>
+  <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+  <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+  <script>
+    // 通用片段載入函數
+    function loadFragment(id, path, callback) {
+      console.log(`正在嘗試載入 ${path} 到 ${id}`);
+      
+      const container = document.getElementById(id);
+      if (!container) {
+        console.error(`❌ 容器 ${id} 不存在`);
+        return;
+      }
+
+      fetch(path)
+        .then(response => {
+          console.log(`${path} 響應狀態:`, response.status);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.text();
+        })
+        .then(html => {
+          container.innerHTML = html;
+          
+          // 轉換 Thymeleaf 屬性
+          convertThAttributes(container);
+          
+          console.log(`✅ 成功載入 ${path}`);
+          
+          // 如果有回調函數，執行回調
+          if (typeof callback === 'function') {
+            callback();
+          }
+        })
+        .catch(error => {
+          console.error(`❌ 載入 ${path} 失敗:`, error);
+          
+          // 顯示錯誤訊息
+          const errorMsg = document.createElement('div');
+          errorMsg.style.color = 'red';
+          errorMsg.textContent = `無法載入 ${path}: ${error.message}`;
+          container.appendChild(errorMsg);
+        });
+    }
+
+    // 轉換 Thymeleaf 屬性的函數
+    function convertThAttributes(container) {
+      container.querySelectorAll('[th\\:href]').forEach(el => {
+        const val = el.getAttribute('th:href');
+        if (val?.startsWith('@{') && val.endsWith('}')) {
+          el.setAttribute('href', val.slice(2, -1));
+          el.removeAttribute('th:href');
+        }
+      });
+      
+      container.querySelectorAll('[th\\:src]').forEach(el => {
+        const val = el.getAttribute('th:src');
+        if (val?.startsWith('@{') && val.endsWith('}')) {
+          el.setAttribute('src', val.slice(2, -1));
+          el.removeAttribute('th:src');
+        }
+      });
+    }
+
+    // 訂單評價頁面的主要邏輯
+    const orderId = new URLSearchParams(window.location.search).get('orderId');
+    let selectedRating = 0;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('文件已載入');
+      
+      // 星星評分事件綁定
+      document.querySelectorAll('.custom-evaluate-star').forEach(star => {
+        star.addEventListener('click', () => {
+          selectedRating = parseInt(star.dataset.value);
+          updateStars(selectedRating);
+        });
+      });
+
+      // 載入訂單資訊
+      if (orderId) {
+        fetch(`/meal/order/${orderId}`)
+          .then(res => res.json())
+          .then(order => {
+            if (order.error) {
+              document.getElementById('orderInfo').innerHTML = '⚠ 無法載入訂單資訊';
+              return;
+            }
+
+            const info = `
+              <div><strong>訂單編號：</strong>#${order.orderId}</div>
+              <div><strong>店家：</strong>${order.storeName}</div>
+            `;
+            document.getElementById('orderInfo').innerHTML = info;
+          })
+          .catch(() => {
+            document.getElementById('orderInfo').innerHTML = '⚠ 無法載入訂單資訊';
+          });
+      }
+
+      // 載入頭部
+      loadFragment('header-placeholder', '/header.html', () => {
+        // 頭部載入完成後載入導航區塊
+        loadFragment('body-section-placeholder', '/bodySection.html', () => {
+          // 導航區塊載入完成後載入頁尾
+          loadFragment('footer-placeholder', '/footer.html');
+        });
+      });
+    });
+
+    // 更新星星評分
+    function updateStars(rating) {
+      document.querySelectorAll('.custom-evaluate-star').forEach(star => {
+        star.classList.toggle('selected', parseInt(star.dataset.value) <= rating);
+      });
+    }
+
+    // 提交評價
+    function submitEvaluation() {
+      if (selectedRating === 0) {
+        alert('請先選擇評分！');
+        return;
+      }
+
+      const payload = {
+        orderId: parseInt(orderId || 0),
+        rating: selectedRating,
+        comment: document.getElementById('comment').value
+      };
+
+      fetch('/meal/order/evaluate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('successMsg').textContent = '🎉 感謝您的評價！';
+          
+          // 3秒後自動返回首頁
+          setTimeout(() => {
+            window.location.href = '/index.html';
+          }, 3000);
+        } else {
+          alert('提交失敗：' + (data.message || '未知錯誤'));
+        }
+      })
+      .catch(err => {
+        console.error('評價送出失敗：', err);
+        alert('發送錯誤，請稍後再試');
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+        * {
+             margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+        }
+        
+        /* 確認頁面主體樣式 */
+        .verification_wrapper {
+             background-color: #FAF3DD;
+    padding: 60px 0;
+    min-height: 70vh;
+        }
+        
+        /* 主容器樣式 */
+        .verification_container {
+            background-color: white;
+    width: 100%;
+    max-width: 850px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(244, 201, 93, 0.4);
+    margin: 0 auto;
+        }
+        
+        /* 主標題樣式 */
+        .verification_title {
+             font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+    color: #664d03;
+        }
+        
+        /* 副標題樣式 */
+        .verification_subtitle {
+             font-size: 16px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #8b6f3b;
+        }
+        
+        /* 段落標題樣式 */
+        .verification_section_title {
+            font-size: 20px;
+    font-weight: bold;
+    margin: 25px 0 20px 0;
+    color: #a47100;
+    border-left: 6px solid #f4c95d;
+    padding-left: 12px;
+        }
+        
+        /* 表單群組樣式 */
+        .verification_form_group {
+            margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+        }
+        
+        /* 表單標籤樣式 */
+        .verification_form_label {
+            width: 140px;
+    padding-top: 10px;
+    font-size: 16px;
+    color: #5a4636;
+        }
+        
+        /* 表單控制區域樣式 */
+        .verification_form_controls {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        /* 輸入欄位樣式 */
+       .verification_input,
+		.verification_select,
+		.verification_address_input {
+    		width: 100%;
+    		padding: 10px 14px;
+    		font-size: 16px;
+    		border: 1px solid #e2cda3;
+    		border-radius: 6px;
+    		background-color: #fffef9;
+    		color: #5a4636;
+    		transition: border-color 0.2s;
+		}
+        
+        /* 表單值容器樣式 */
+        .verification_form_value {
+            flex: 1;
+            min-width: 200px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 16px;
+            color: #333;
+        }
+        
+
+
+			.verification_select {
+				appearance: none;
+    			background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%235a4636' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+    			background-repeat: no-repeat;
+    			background-position: right 0.75rem center;
+    			background-size: 16px 12px;
+    			cursor: pointer;
+    		}
+
+
+        
+        /* 地址欄位組合樣式 */
+        .verification_address_group {
+			display: flex;
+    		gap: 12px;
+    		margin-bottom: 12px;
+        }
+        
+        /* 地址欄位樣式 */
+        .verification_address_field {
+            flex: 1;
+
+        }
+        
+        /* 地址輸入欄位樣式 */
+        .verification_address_input {
+		    width: 100%;
+		    padding: 10px 14px;
+		    font-size: 16px;
+		    border: 1px solid #e2cda3;
+		    border-radius: 6px;
+		    background-color: #fffef9;
+		    color: #5a4636;
+		    transition: border-color 0.2s;
+        }
+        
+        .verification_input:focus,
+		.verification_select:focus {
+    		border-color: #f4c95d;
+    		outline: none;
+		}
+        
+        /* 地址提示文字樣式 */
+        .verification_address_hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        /* 單選框容器樣式 */
+        .verification_radio_group {
+            display: flex;
+            gap: 20px;
+        }
+        
+        /* 單選框項目樣式 */
+        .verification_radio_item {
+            display: flex;
+		    align-items: center;
+		    flex: 1;
+		    padding: 10px;
+		    background-color: #fffaf1;
+		    border-radius: 4px;
+        }
+        
+        /* 單選框樣式 */
+        .verification_radio {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* 單選框標籤樣式 */
+        .verification_radio_label {
+            font-size: 16px;
+            color: #333;
+        }
+        
+        /* 按鈕容器樣式 */
+        .verification_button_container {
+            display: flex;
+		    justify-content: space-between;
+		    margin-top: 30px;
+        }
+        
+        .verification_back_btn,
+		.verification_next_btn {
+		    padding: 10px 20px;
+		    font-size: 16px;
+		    border-radius: 6px;
+		    cursor: pointer;
+		    transition: all 0.3s ease;
+		}
+        
+        /* 返回按鈕樣式 */
+        .verification_back_btn {
+            background-color: #fff;
+		    border: 1px solid #e2cda3;
+		    color: #8b6f3b;
+        }
+        
+        /* 繼續按鈕樣式 */
+        .verification_next_btn {
+            background-color: #f4c95d;
+		    border: none;
+		    color: #5a4636;
+        }
+        
+        .verification_next_btn:hover,
+		.verification_back_btn:hover {
+		    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+		}
+		
+        /* === Modal 用戶須知 === */
+		#noticeModal .modal-content {
+		    background-color: #fffdf6;
+		    border-radius: 12px;
+		    border: 1px solid #f4c95d;
+		}
+
+		#noticeModal h3 {
+		    color: #a47100;
+		    font-weight: bold;
+		}
+
+		#noticeModal label {
+		    margin-top: 16px;
+		    display: inline-block;
+		    font-size: 15px;
+		    color: #5a4636;
+		}
+
+		#noticeModal button {
+		    background-color: #f4c95d;
+		    border: none;
+		    border-radius: 4px;
+		    padding: 6px 16px;
+		    font-size: 15px;
+		    color: #5a4636;
+		    cursor: pointer;
+		}
+
+		#noticeModal button:hover {
+		    background-color: #eac85e;
+		}
+        /* 響應式調整 */
+        @media (max-width: 767px) {
+            .verification_form_group {
+                flex-direction: column;
+            }
+            
+            .verification_form_label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .verification_address_group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .verification_radio_group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .verification_wrapper {
+                padding: 30px 15px;
+            }
+        }
+        .hidden {
+		    display: none !important;
+		}
+		.text-danger {
+		    font-size: 14px;
+		    margin-top: 6px;
+		    color: #d9534f;
+		   }
+		   
+		   

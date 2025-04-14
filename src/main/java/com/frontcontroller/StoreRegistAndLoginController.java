@@ -56,8 +56,7 @@ public class StoreRegistAndLoginController {
     //註冊
     @PostMapping("")
     public String register(@Valid @ModelAttribute("store") StoreVO store,
-                           BindingResult result,
-                           
+                           BindingResult result,                           
                            @RequestParam("photoFiles") MultipartFile[] photoFiles,
                            @RequestParam(value = "agreedToTerms", required = false) String agreedToTerms,
                            HttpSession session, Model model, HttpServletRequest req) {
@@ -77,15 +76,12 @@ public class StoreRegistAndLoginController {
             storeService.generatePhotoPreview(store, session, model);
         }
         // 檢查
-        if (!"true".equals(agreedToTerms)) {
-            model.addAttribute("errorMessage", "請詳閱並同意使用須知");
-        }
-        if (photoFiles[0].isEmpty()) {
-        	model.addAttribute("photoError", "請上傳三張照片");
-        }
         if (result.hasErrors() || !"true".equals(agreedToTerms) || store.getStoreToPhoto() == null || store.getStoreToPhoto().size() < 3) {
             if (store.getStoreToPhoto() == null || store.getStoreToPhoto().size() < 3) {
                 model.addAttribute("photoError", "請上傳三張照片");
+            }
+            if (!"true".equals(agreedToTerms)) {
+                model.addAttribute("errorMessage", "請詳閱並同意使用須知");
             }
             return "registerAndLogin/storeRegister";
         }
@@ -126,7 +122,7 @@ public class StoreRegistAndLoginController {
             storeService.finalizeRegistration(store);
             status.setComplete(); // 清除 SessionAttributes
             redirectAttributes.addFlashAttribute("showModal", true);
-            return "redirect:/map";
+            return "redirect:/";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/registerAndLogin/register/store/confirm";

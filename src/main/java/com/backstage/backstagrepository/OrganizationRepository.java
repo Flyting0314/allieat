@@ -26,6 +26,10 @@ public interface OrganizationRepository extends JpaRepository<OrganizationVO, In
 	@Query(value = "from OrganizationVO where organizationId=?1 and name like?2 and createdTime=?3 order by organizationId")
 	List<OrganizationVO> findByOthers(int organizationId , String name , Timestamp createdTime);
 	Optional<OrganizationVO> findByName(String name);
+
+	List<OrganizationVO> findByStatus(Integer status);
+
+	List<OrganizationVO> findByNameAndStatus(String name, Integer status);
 	
 	
 }

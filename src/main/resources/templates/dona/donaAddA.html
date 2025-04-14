@@ -2,9 +2,7 @@
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
-<th:block th:replace="fragments/header :: header"></th:block>
-
+    <th:block th:replace="fragments/header :: header"></th:block>
     <style>
         body {
             background-color: #f8f9fa;
@@ -62,15 +60,6 @@
             color: white;
         }
 
-        .donate-circle.donate-done {
-            background-color: #e0e0e0;
-            color: black;
-        }
-
-        .donate-circle.donate-done::after {
-            content: "✓";
-        }
-
         .donate-tabs {
             display: flex;
             border-bottom: 1px solid #ddd;
@@ -84,7 +73,6 @@
             padding: 10px;
             background-color: #e9ecef;
             cursor: pointer;
-            border: none;
         }
 
         .donate-tab.donate-selected {
@@ -116,156 +104,119 @@
             margin-top: 10px;
         }
     </style>
-
-
-
 </head>
 
 <body>
-      <th:block th:replace="fragments/bodySection :: bodySection">
-      </th:block>
-    <!-- Donation Content Start -->
-    <div class="container-fluid py-5">
-        <div class="donate-box">
-            <div class="row">
-                <!-- 左側圖片與說明 -->
-                <div class="col-md-6">
-                    <img src="/img/001.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
-                    <h5 class="text-danger fw-bold">人人溫飽，生活才美好。</h5>
-                    <p>
-                        我們傳遞的不僅僅是食物，更是一份深深的關愛與陪伴。每一份餐點都是無數人的愛心與付出。您的捐款帶來持續地穩定的經費，讓我們有能力將愛傳遞給最有需要的人，讓世界更美好，形成一個善的循環。
-                    </p>
+<th:block th:replace="fragments/bodySection :: bodySection"></th:block>
+<div class="container-fluid py-5">
+    <div class="donate-box">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="/img/001.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
+                <h5 class="text-danger fw-bold">人人溫飽，生活才美好。</h5>
+                <p>我們傳遞的不僅僅是食物，更是一份深深的關愛與陪伴...</p>
+            </div>
+            <div class="col-md-6">
+                <h3>信用卡捐款</h3>
+                <p>支援 VISA、MasterCard、JCB</p>
+
+                <div class="donate-process">
+                    <div class="donate-step">
+                        <div class="donate-circle donate-current">1</div>
+                        <div>選擇金額</div>
+                    </div>
+                    <div class="donate-step">
+                        <div class="donate-circle">2</div>
+                        <div>填寫資料</div>
+                    </div>
+                    <div class="donate-step">
+                        <div class="donate-circle">3</div>
+                        <div>線上付款</div>
+                    </div>
                 </div>
 
-                <!-- 右側捐款流程 -->
-                <div class="col-md-6">
-                    <h3>信用卡捐款</h3>
-                    <p>支援 VISA、MasterCard、JCB</p>
+                <div class="donate-tabs">
+                    <div class="donate-tab donate-selected" id="tab-personal">定期定額</div>
+                    <div class="donate-tab" id="tab-company">單筆捐款</div>
+                </div>
 
-                    <!-- 步驟流程 -->
-                    <div class="donate-process">
-                        <div class="donate-step">
-                            <div class="donate-circle donate-current">1</div>
-                            <div>選擇金額</div>
+                <form th:action="@{/dona/donaAddA}" method="post" th:object="${donaReq}" id="donationForm">
+                    <input type="hidden" th:field="*{donationIncome}" id="donationIncomeHidden" name="donationIncome">
+                    <input type="hidden" th:field="*{companyDonor}" id="companyDonorHidden">
+                    <input type="hidden" th:field="*{donationType}" id="donationTypeHidden">
+
+                    <div class="df-panel" id="panel-personal">
+                        <div class="mb-3">
+                            <label class="donate-option">
+                                <input type="radio" name="personalAmount" onclick="selectDonation(500, false,this)">
+                                
+                                <strong>$500</strong>
+                            </label>
                         </div>
-                        <div class="donate-step">
-                            <div class="donate-circle">2</div>
-                            <div>填寫資料</div>
+                        <div class="mb-3">
+                            <label class="donate-option">
+                                <input type="radio" name="personalAmount" onclick="selectDonation(800, false,this)">
+                                <strong>$800</strong>
+                            </label>
                         </div>
-                        <div class="donate-step">
-                            <div class="donate-circle">3</div>
-                            <div>線上付款</div>
+                        <div class="mb-3">
+                            <label class="donate-option">
+                                <input type="radio" name="personalAmount" onclick="selectDonation(1000, false,this)">
+                                <strong>$1000</strong>
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="donate-option">
+                                <input type="radio" name="personalAmount" onclick="selectDonation(customAmountInput.value, false,this)" id="donate-custom">
+                                <strong>自訂金額</strong>
+                                <input type="number" id="customAmountInput" placeholder="請輸入金額"
+       class="form-control mt-2" oninput="selectDonation(this.value, false, this)">
+                            </label>
                         </div>
                     </div>
 
-                    <!-- 分頁標籤 -->
-                    <div class="donate-tabs">
-                        <div class="donate-tab donate-selected" id="tab-personal">定期定額</div>
-                        <div class="donate-tab" id="tab-company">單筆捐款</div>
-                    </div>
-
-                    <!-- 定期定額捐款 -->
-                    <div class="df-panel" id="panel-personal" style="display: block;">
-                        <form th:action="@{donaAddB}" method="post" th:object="${donaReq}">
-                            <input type="hidden" name="companyDonor" value="false">
-                            <!-- 捐款選項 -->
-                            <div class="mb-3">
-                                <label class="donate-option" for="donate100">
-                                    <input type="radio" id="donate100" th:field="*{donationIncome}" value="100"
-                                        onclick="hideContent('donationIncomeError')" />
-                                    <strong>$500</strong>
-                                    <p class="mb-0 text-muted">捐款送愛心，和我們一起，用實際行動溫暖他人，用心點亮生活。</p>
-                                </label>
-                            </div>
-                            <div class="mb-3">
-                                <label class="donate-option" for="donate500">
-                                    <input type="radio" id="donate500" th:field="*{donationIncome}" value="500"
-                                        onclick="hideContent('donationIncomeError')" />
-                                    <strong>$800</strong>
-                                    <p class="mb-0 text-muted">為社會貢獻一份力量，讓更多人感受到溫暖與希望。</p>
-                                </label>
-                            </div>
-                            <div class="mb-3">
-                                <label class="donate-option" for="donate1000">
-                                    <input type="radio" id="donate1000" th:field="*{donationIncome}" value="1000"
-                                        onclick="hideContent('donationIncomeError')" />
-                                    <strong>$1000</strong>
-                                    <p class="mb-0 text-muted">每份心意，都將傳遞到需要的地方。</p>
-                                </label>
-                            </div>
-                            <div class="mb-3">
-                                <label class="donate-option" for="donate-custom">
-                                    <input type="radio" id="donate-custom" th:field="*{donationIncome}" value="-1"
-                                        onclick="hideContent('donationIncomeError')" />
-                                    <strong>自訂金額</strong>
-                                    <input type="number" id="customAmountInput" name="donationIncome"
-                                        class="form-control mt-2" placeholder="請輸入金額"
-                                        onfocus="hideContent('donationIncomeError')"
-                                        oninput="hideContent('donationIncomeError')" />
-                                </label>
-                            </div>
-                            <!-- 錯誤訊息 -->
-                            <div th:if="${#fields.hasErrors('donationIncome')}" th:errors="*{donationIncome}"
-                                id="donationIncomeError" class="text-danger fw-bold mb-2"></div>
-                            <div class="df-actions">
-                                <button type="submit" class="df-button df-button-next">下一步</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- 單筆捐款 -->
                     <div class="df-panel" id="panel-company" style="display: none;">
-                        <form th:action="@{donaAddB}" method="post" th:object="${donaReq}">
-                            <input type="hidden" name="companyDonor" value="true">
-                            <!-- 捐款選項 -->
-                            <div class="mb-3">
-                                <label class="donate-option" for="donate100-c">
-                                    <input type="radio" id="donate100-c" th:field="*{donationIncome}" value="100"
-                                        onclick="hideContent('donationIncomeError')" />
-                                    <strong>$1500</strong>
-                                    <p class="mb-0 text-muted">捐款送愛心，和我們一起，用實際行動溫暖他人。</p>
-                                </label>
-                            </div>
-                            <div class="mb-3">
-                                <label class="donate-option" for="donate500-c">
-                                    <input type="radio" id="donate500-c" th:field="*{donationIncome}" value="500"
-                                        onclick="hideContent('donationIncomeError')" />
-                                    <strong>$3000</strong>
-                                    <p class="mb-0 text-muted">讓更多人感受到溫暖與希望。</p>
-                                </label>
-                            </div>
-                            <div class="mb-3">
-                                <label class="donate-option" for="donate1000-c">
-                                    <input type="radio" id="donate1000-c" th:field="*{donationIncome}" value="1000"
-                                        onclick="hideContent('donationIncomeError')" />
-                                    <strong>$5000</strong>
-                                    <p class="mb-0 text-muted">您的愛心，是我們最大的動力。</p>
-                                </label>
-                            </div>
-                            <div class="mb-3">
-                                <label class="donate-option" for="donate-custom-c">
-                                    <input type="radio" id="donate-custom-c" th:field="*{donationIncome}" value="-1"
-                                        onclick="hideContent('donationIncomeError')" />
-                                    <strong>自訂金額</strong>
-                                    <input type="number" id="customAmountInputCompany" name="donationIncome"
-                                        class="form-control mt-2" placeholder="請輸入金額"
-                                        onfocus="hideContent('donationIncomeError')"
-                                        oninput="hideContent('donationIncomeError')" />
-                                </label>
-                            </div>
-                            <!-- 錯誤訊息 -->
-                            <div th:if="${#fields.hasErrors('donationIncome')}" th:errors="*{donationIncome}"
-                                id="donationIncomeError" class="text-danger fw-bold mb-2"></div>
-                            <div class="df-actions">
-                                <button type="submit" class="df-button df-button-next">下一步</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                        <div class="mb-3">
+                            <label class="donate-option">
+                                <input type="radio" name="companyAmount" onclick="selectDonation(1500, true,this)">
+                                <strong>$1500</strong>
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="donate-option">
+                                <input type="radio" name="companyAmount" onclick="selectDonation(3000, true,this)">
+                                <strong>$3000</strong>
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="donate-option">
+                                <input type="radio" name="companyAmount" onclick="selectDonation(5000, true,this)">
+                                <strong>$5000</strong>
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="donate-option">
+                                <input type="radio" name="companyAmount" onclick="selectDonation(customAmountInputCompany.value, true, this)" id="donate-custom-c">
 
+                                <strong>自訂金額</strong>
+                                <input type="number" id="customAmountInputCompany" placeholder="請輸入金額"
+       class="form-control mt-2" oninput="selectDonation(this.value, true, this)">
+
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="text-danger fw-bold mb-2" id="donationIncomeError" style="display: none;"></div>
+                    <div class="df-actions">
+                        <button type="submit" class="df-button df-button-next">下一步</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
+    
 
     <!-- JS -->
     <script>
@@ -297,14 +248,14 @@
                 });
             });
 
-            const customInput = document.getElementById("customAmountInput");
-            const customRadio = document.getElementById("donate-custom");
-            if (customInput && customRadio) {
-                customInput.addEventListener("input", function () {
-                    customRadio.checked = true;
-                    customRadio.value = customInput.value || "-1";
-                });
-            }
+//             const customInput = document.getElementById("customAmountInput");
+//             const customRadio = document.getElementById("donate-custom");
+//             if (customInput && customRadio) {
+//                 customInput.addEventListener("input", function () {
+//                     customRadio.checked = true;
+//                     customRadio.value = customInput.value || "-1";
+//                 });
+//             }
 
             const customInputCompany = document.getElementById("customAmountInputCompany");
             const customRadioCompany = document.getElementById("donate-custom-c");
@@ -353,46 +304,15 @@
         document.addEventListener("DOMContentLoaded", function () {
             const recurringBtn = document.getElementById("recurringBtn");
             const oneTimeBtn = document.getElementById("oneTimeBtn");
-
-            // 設定點擊事件，確保只有一個按鈕會被選取
-            recurringBtn.addEventListener("click", function () {
-                recurringBtn.classList.add("donate-selected");
-                oneTimeBtn.classList.remove("donate-selected");
-            });
-
-            oneTimeBtn.addEventListener("click", function () {
-                oneTimeBtn.classList.add("donate-selected");
-                recurringBtn.classList.remove("donate-selected");
-            });
-
-            // 捐款選項互斥功能
-            const donationOptions = document.querySelectorAll('.donate-option');
-            donationOptions.forEach(option => {
-                option.addEventListener('click', function () {
-                    donationOptions.forEach(o => o.classList.remove('donate-active'));
-                    this.classList.add('donate-active');
-                });
-            });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
             const customInput = document.getElementById("customAmountInput");
             const customRadio = document.getElementById("donate-custom");
-
-            if (customInput && customRadio) {
-                customInput.addEventListener("input", function () {
-                    customRadio.checked = true;
-                    customRadio.value = customInput.value || "-1";
-                });
-            }
-        });
-
-
-        document.addEventListener("DOMContentLoaded", function () {
-            // 切換定期/單筆捐款標籤
             const tabPersonal = document.getElementById("tab-personal");
             const tabCompany = document.getElementById("tab-company");
             const panelPersonal = document.getElementById("panel-personal");
             const panelCompany = document.getElementById("panel-company");
+
+            const donationOptions = document.querySelectorAll('.donate-option');
+
 
             tabPersonal.addEventListener("click", function () {
                 tabPersonal.classList.add("donate-selected");
@@ -408,8 +328,39 @@
                 panelCompany.style.display = "block";
             });
 
-            // 捐款選項樣式切換
-            const donationOptions = document.querySelectorAll('.donate-option');
+            // 設定點擊事件，確保只有一個按鈕會被選取
+           recurringBtn.addEventListener("click", function () {
+    recurringBtn.classList.add("donate-selected");
+    oneTimeBtn.classList.remove("donate-selected");
+});
+
+
+
+            oneTimeBtn.addEventListener("click", function () {
+                oneTimeBtn.classList.add("donate-selected");
+                recurringBtn.classList.remove("donate-selected");
+            });
+
+            // 捐款選項互斥功能
+           
+            donationOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    donationOptions.forEach(o => o.classList.remove('donate-active'));
+                    this.classList.add('donate-active');
+                });
+            });
+            
+            
+//             if (customInput && customRadio) {
+//                 customInput.addEventListener("input", function () {
+//                     customRadio.checked = true;
+//                     customRadio.value = customInput.value || "-1";
+//                 });
+//             }
+            
+            
+            
+
             donationOptions.forEach(option => {
                 option.addEventListener('click', function () {
                     donationOptions.forEach(o => o.classList.remove('donate-active'));
@@ -419,8 +370,7 @@
             });
 
             // 自訂金額選項觸發
-            const customInput = document.getElementById("customAmountInput");
-            const customRadio = document.getElementById("donate-custom");
+
             if (customInput && customRadio) {
                 customInput.addEventListener("input", function () {
                     customRadio.checked = true;
@@ -497,11 +447,61 @@
                     }
                 });
             }
+            
         });
 
 
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("donationForm");
+            form.addEventListener("submit", function (e) {
+                const income = document.getElementById("donationIncomeHidden").value;
+                if (!income || parseInt(income) < 100) {
+                    e.preventDefault();
+                    alert("請選擇或輸入有效的捐款金額！");
+                }
+            });
+        });
 
 
+        function selectDonation(amount, isCompany, inputElement) {
+            const income = document.getElementById("donationIncomeHidden");
+            const donor = document.getElementById("companyDonorHidden");
+            const type = document.getElementById("donationTypeHidden");
+            const error = document.getElementById("donationIncomeError");
+
+            const value = parseInt(amount);
+
+            // ✅ 確保選取 `radio` 按鈕，即使是公司捐款
+            const label = inputElement.closest("label.donate-option");
+            const radio = label ? label.querySelector('input[type="radio"]') : null;
+            if (radio) {
+                radio.checked = true;
+            }
+
+            if (!isNaN(value) && value >= 100) {
+                income.value = value;
+                donor.value = isCompany ? 'true' : 'false';
+                type.value = isCompany ? 1 : 0;
+                if (error) {
+                    error.innerText = "";
+                    error.style.display = "none";
+                }
+            } else {
+                income.value = '';
+                type.value = '';
+                if (error) {
+                    error.innerText = "請輸入有效金額（最少為 100 元）";
+                    error.style.display = "block";
+                }
+            }
+        }
+
+
+
+
+
+        
+        
     </script>
 </body>
 

@@ -1,8 +1,10 @@
 package com.backstage.backstageservice;
 
 import com.backstage.backstagedto.DonateInitResponse;
-import org.springframework.http.ResponseEntity;
+import com.backstage.backstagedto.DonationDetailsDTO;
+
 
 public interface BackStageDonateManageService {
-    ResponseEntity<DonateInitResponse> getInitData();
+    DonateInitResponse getInitData();
+    DonationDetailsDTO getDonateRecord(Integer id);
 }

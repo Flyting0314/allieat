@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>訂單管理</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 40px;
+      background: #f8f9fa;
+    }
+    .order-box {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .btn-group {
+      margin-top: 10px;
+    }
+    button {
+      padding: 10px 16px;
+      margin-right: 8px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-pick { background: #28a745; color: white; }
+    .btn-none { background: #6c757d; color: white; }
+    .btn-notyet { background: #ffc107; color: black; }
+    .btn-cancel { background: #dc3545; color: white; }
+    .message {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🛒 所有訂單管理</h2>
+  <div id="orderList">載入中...</div>
+
+  <script>
+  let page = 0;
+  const size = 50;
+  let total = 0;
+
+  function loadOrders() {
+    fetch(`/meal/order/page?page=${page}&size=${size}`)
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('orderList');
+        if (page === 0) container.innerHTML = '';
+
+        const orders = data.orders;
+        total = data.total;
+
+        if (orders.length === 0 && page === 0) {
+          container.innerHTML = '<p>目前沒有任何訂單。</p>';
+          document.getElementById('loadMoreBtn').style.display = 'none';
+          return;
+        }
+
+        orders.forEach(order => {
+          const box = document.createElement('div');
+          box.className = 'order-box';
+          box.innerHTML = `
+            <h4>訂單 #${order.orderId} - 會員 ${order.memberId}</h4>
+            <div class="btn-group">
+              <button class="btn-pick" onclick="updateStatus(${order.orderId}, 0)">✅ 已領取</button>
+              <button class="btn-none" onclick="updateStatus(${order.orderId}, 1)">⛔ 無</button>
+              <button class="btn-notyet" onclick="updateStatus(${order.orderId}, 2)">⏳ 未領取</button>
+              <button class="btn-cancel" onclick="updateStatus(${order.orderId}, 3)">❌ 已棄單</button>
+            </div>
+            <div class="message" id="msg-${order.orderId}"></div>
+          `;
+          container.appendChild(box);
+        });
+
+        page++;
+        if (page * size >= total) {
+          document.getElementById('loadMoreBtn').style.display = 'none';
+        } else {
+          document.getElementById('loadMoreBtn').style.display = 'block';
+        }
+      })
+      .catch(err => {
+        console.error("載入失敗", err);
+        document.getElementById('orderList').innerHTML = '<p style="color:red;">❌ 無法載入訂單，請稍後再試。</p>';
+      });
+  }
+
+  function updateStatus(orderId, pickStat) {
+	  fetch(`/meal/order/pickup-status?orderId=${orderId}&pickStat=${pickStat}`, {
+	    method: 'POST'
+	  })
+	  .then(res => res.json())
+	  .then(data => {
+	    const msgBox = document.getElementById('msg-' + orderId);
+
+	    if (pickStat === 0) {
+	      msgBox.innerHTML = `✅ 狀態已更新，請至取餐畫面繼續`;
+	    } else if (data.message) {
+	      alert(data.message); // ➤ 訂單已取消
+	      window.location.href = "/index.html";
+	    } else if (data.error) {
+	      msgBox.innerHTML = `❌ ${data.error}`;
+	    }
+	  })
+	  .catch(err => {
+	    alert("⚠️ 更新失敗，請稍後再試");
+	    console.error(err);
+	  });
+	}
+
+
+  window.onload = loadOrders;
+</script>
+
+<!-- 在 body 最後加這個按鈕 -->
+<button id="loadMoreBtn" onclick="loadOrders()" style="padding: 12px 20px; margin: 20px auto; display: block;">載入更多</button>
+
+</body>
+</html>

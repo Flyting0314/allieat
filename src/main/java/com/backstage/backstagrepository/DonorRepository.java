@@ -1,8 +1,10 @@
 package com.backstage.backstagrepository;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -51,5 +53,62 @@ public interface DonorRepository extends JpaRepository<DonaVO, Integer> {
  		                                      @Param("startTime") Timestamp startTime,
  		                                      @Param("endTime") Timestamp endTime);
  	
+ 	
+//=========================捐款排行用
+ 	@Query("""
+ 	        SELECT d.identityData, SUM(d.donationIncome), d.anonymous
+ 	        FROM DonaVO d
+ 	        WHERE d.guiNum IS NULL
+ 	        GROUP BY d.identityData, d.email, d.phone, d.anonymous
+ 	        ORDER BY SUM(d.donationIncome) DESC
+ 	    """)
+ 	    List<Object[]> sumPersonalDonation(Pageable pageable);
 
-}
+ 	    @Query("""
+ 	        SELECT d.identityData, SUM(d.donationIncome), d.anonymous
+ 	        FROM DonaVO d
+ 	        WHERE d.guiNum IS NOT NULL
+ 	        GROUP BY d.identityData, d.guiNum, d.anonymous
+ 	        ORDER BY SUM(d.donationIncome) DESC
+ 	    """)
+ 	    List<Object[]> sumCompanyDonation(Pageable pageable);
+
+ 	   @Query("""
+ 			    SELECT d.identityData, SUM(d.donationIncome), d.anonymous
+ 			    FROM DonaVO d
+ 			    WHERE MONTH(d.createdTime) = :month AND YEAR(d.createdTime) = :year AND d.guiNum IS NULL
+ 			    GROUP BY d.identityData, d.anonymous
+ 			    ORDER BY SUM(d.donationIncome) DESC
+ 			""")
+ 			List<Object[]> sumMonthlyPersonalDonation(@Param("month") int month, @Param("year") int year, Pageable pageable);
+
+
+ 			@Query("""
+ 			    SELECT d.identityData, SUM(d.donationIncome), d.anonymous
+ 			    FROM DonaVO d
+ 			    WHERE MONTH(d.createdTime) = :month AND YEAR(d.createdTime) = :year AND d.guiNum IS NOT NULL
+ 			    GROUP BY d.identityData, d.anonymous
+ 			    ORDER BY SUM(d.donationIncome) DESC
+ 			""")
+ 			List<Object[]> sumMonthlyCompanyDonation(@Param("month") int month, @Param("year") int year, Pageable pageable);
+
+ 	    @Query("""
+ 	        SELECT d FROM DonaVO d
+ 	        WHERE NOT EXISTS (
+ 	            SELECT 1 FROM DonaVO x
+ 	            WHERE x.email = d.email AND x.phone = d.phone
+ 	            AND x.createdTime < d.createdTime
+ 	        )
+ 	        ORDER BY d.createdTime DESC
+ 	    """)
+ 	    List<DonaVO> findFirstTimeDonors(Pageable pageable);
+
+ 	    @Query("SELECT d FROM DonaVO d ORDER BY d.createdTime DESC")
+ 	    List<DonaVO> findLatestDonations(Pageable pageable);
+ 	    
+ 	    
+ 	   @Query("SELECT SUM(d.donationIncome) FROM DonaVO d")
+ 	  Long sumAllDonationIncome();
+//======================
+ 	}
+

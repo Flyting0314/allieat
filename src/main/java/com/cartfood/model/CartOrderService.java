@@ -1,67 +1,99 @@
 package com.cartfood.model;
 
-import java.sql.Timestamp;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.backstage.backstagrepository.MemberRepository;
-import com.backstage.backstagrepository.OrderDetailRepository;
-import com.backstage.backstagrepository.OrderFoodRepository;
-import com.backstage.backstagrepository.StoreRepository;
+import com.entity.FoodVO;
 import com.entity.OrderDetailVO;
 import com.entity.OrderFoodVO;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+import com.cartfood.model.OrderDetailDTO;
+import com.backstage.backstagrepository.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartOrderService {
 
-    @Autowired
-    private OrderDetailRepository orderDetailRepo;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
-    private OrderFoodRepository orderRepo;
+    private OrderFoodRepository orderFoodRepository;
 
     @Autowired
-    private StoreRepository storeRepo;
+    private OrderDetailRepository orderDetailRepository;
 
-    @Autowired
-    private MemberRepository memberRepo;
-
-    // 建立訂單
-    public OrderFoodVO createOrder(Integer memberId, Integer storeId, Boolean pickStat, Boolean serveStat) {
-        OrderFoodVO order = new OrderFoodVO();
-
-        order.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-        order.setPickStat(pickStat);
-        order.setServeStat(serveStat);
-        order.setRate(false); // 預設未評價
-        order.setComment(null); // 預設無評論
-
-        order.setStore(storeRepo.findById(storeId).orElse(null));
-        order.setMember(memberRepo.findById(memberId).orElse(null));
-
-        return orderRepo.save(order);
-    }
-
-    // 儲存主訂單與明細
-    public void saveOrder(OrderFoodVO order, List<OrderDetailVO> details) {
-        OrderFoodVO savedOrder = orderRepo.save(order); // 先存主訂單，拿到 orderId
-
-        for (OrderDetailVO detail : details) {
-            detail.setOrder(savedOrder); // 關聯主訂單
-        }
-
-        orderDetailRepo.saveAll(details); // 再儲存所有明細
-    }
-
-    // 若只想儲存主訂單
     public OrderFoodVO saveOrderOnly(OrderFoodVO order) {
-        return orderRepo.save(order);
+        return orderFoodRepository.save(order); // ✅ 儲存訂單主檔
     }
 
-    // 單獨儲存明細
     public void saveOrderDetails(List<OrderDetailVO> details) {
-        orderDetailRepo.saveAll(details);
+        orderDetailRepository.saveAll(details); // ✅ 儲存訂單明細
+    }
+
+    public OrderDetailDTO convertToDTO(OrderDetailVO detail) {
+        OrderDetailDTO dto = new OrderDetailDTO();
+        FoodVO food = detail.getFood();
+
+        dto.setFoodName(food != null ? food.getName() : "未知主餐");
+        dto.setQuantity(detail.getAmount());
+        dto.setPointsCost(detail.getPointsCost());
+        dto.setCreatedTime(detail.getCreatedTime());
+        dto.setNote(detail.getNote() != null ? detail.getNote() : "");
+
+        return dto;
+    }
+
+    public Optional<OrderFoodVO> findOrderById(Integer orderId) {
+        return orderFoodRepository.findById(orderId); // ✅ 查詢訂單
+    }
+
+    public boolean updatePickStat(Integer orderId, Integer newStatus) {
+        Optional<OrderFoodVO> optionalOrder = orderFoodRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            OrderFoodVO order = optionalOrder.get();
+            order.setPickStat(newStatus);
+            orderFoodRepository.save(order); // ✅ 更新狀態
+            return true;
+        }
+        return false;
+    }
+
+    public void saveEvaluation(Integer orderId, Integer rating, String comment) {
+        Optional<OrderFoodVO> optionalOrder = orderFoodRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            OrderFoodVO order = optionalOrder.get();
+            order.setRate(rating);
+            order.setComment(comment);
+            orderFoodRepository.save(order); // ✅ 儲存評價
+        } else {
+            throw new RuntimeException("找不到訂單 ID：" + orderId);
+        }
+    }
+
+    // ✅ 原始全撈方法（仍保留）
+    public List<OrderFoodVO> getAllOrders() {
+        return entityManager.createQuery("SELECT o FROM OrderFoodVO o ORDER BY o.createdTime DESC", OrderFoodVO.class)
+                             .getResultList();
+    }
+
+    // ✅ 新增：分頁查詢訂單
+    public List<OrderFoodVO> getOrdersPaged(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdTime"));
+        return orderFoodRepository.findAll(pageable).getContent();
+    }
+
+    // ✅ 新增：查詢訂單總數
+    public long getTotalOrderCount() {
+        return orderFoodRepository.count();
     }
 }

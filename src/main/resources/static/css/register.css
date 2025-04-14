@@ -1,0 +1,164 @@
+        body {
+background-color: #fffaf6;
+        font-family: 'Noto Sans TC', sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        }
+        
+        .membership-container {
+            display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 30px;
+        padding: 40px 20px;
+        max-width: 1200px;
+        margin: auto;
+        }
+        .membership-box {
+             background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        padding: 50px 40px;
+        width: 360px;
+        transition: all 0.3s ease;
+        }
+        .membership-box:hover {
+            transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+        .membership-box h2 {
+           font-size: 30px;
+        color: #222;
+        margin-bottom: 15px;
+        }
+        .membership-box p {
+            font-size: 18px;
+        line-height: 1.6;
+        color: #666;
+        margin-bottom: 30px;
+        }
+        .membership-box button {
+             background-color: #FFA07A;
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-size: 17px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        }
+        .membership-box a:hover {
+            background-color: #0056b3;
+        }
+        
+         .membership-box button:hover {
+        background-color: #e68e1f;
+    }
+        
+        /* 按鈕容器樣式 */
+        .verification_back_btn {
+             margin: 40px auto;
+        background-color: white;
+        color: #666;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 12px 25px;
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        display: inline-block;
+        }
+        
+        .verification_back_btn:hover {
+        background-color: #f0f0f0;
+    }
+    
+    /* 登入頁面套用統一卡片樣式 */
+    .merchant_login_wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 40px 0;
+        margin-top: 20px;
+    }
+
+    .merchant_login_container {
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        padding: 50px 40px;
+        width: 400px;
+        transition: all 0.3s ease;
+    }
+
+    .merchant_login_container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .merchant_login_title {
+        font-size: 30px;
+        font-weight: bold;
+        color: #222;
+        margin-bottom: 20px;
+    }
+
+    .merchant_form_label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 16px;
+        color: #333;
+        text-align: left;
+    }
+
+    .merchant_form_input {
+        width: 100%;
+        padding: 14px;
+        font-size: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background-color: #f5f5f9;
+        color: #333;
+        transition: border-color 0.3s;
+    }
+
+    .merchant_login_btn {
+        width: 100%;
+        padding: 14px;
+        background-color: #FFA07A;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 17px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 20px;
+    }
+
+    .merchant_login_btn:hover {
+        background-color: #e68e1f;
+    }
+
+    .merchant_register_link {
+        color: #FFA07A;
+        font-weight: bold;
+    }
+
+    .merchant_register_link:hover {
+        text-decoration: underline;
+    }
+    
+     /* 響應式調整 */
+        @media (max-width: 576px) {
+            .merchant_login_container {
+                padding: 30px 20px;
+                margin: 0 15px;
+            }
+        }

@@ -28,9 +28,14 @@ public class DonationDetailsDTO {
         this.address = address;
         this.errorMsg = errorMsg;
     }
+    
+    public DonationDetailsDTO(String errorMsg) {
+    	 this.errorMsg = errorMsg;
+    }
 
     public DonationDetailsDTO() {
     }
+    
 
     public String getDonorName() {
         return donorName;

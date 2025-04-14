@@ -24,4 +24,12 @@ public class PaymentRequest {
 	public void setItemDesc(String itemDesc) {
 		this.itemDesc = itemDesc;
 	}
+	public String getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object getExecTimes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

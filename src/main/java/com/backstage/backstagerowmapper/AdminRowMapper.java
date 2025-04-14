@@ -6,9 +6,13 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
+/*
+ * 應用於後台登入的資訊mapping
+ */
+
 public class AdminRowMapper implements RowMapper<AdminVO> {
-
-
+	
     @Override
     public AdminVO mapRow(ResultSet rs, int rowNum) throws SQLException {
         String account =rs.getString("account");

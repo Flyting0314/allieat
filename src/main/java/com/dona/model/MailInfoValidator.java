@@ -33,8 +33,10 @@ public class MailInfoValidator implements ConstraintValidator<ValidMailInfo, Don
 	    boolean hasGui = StringUtils.hasText(donaReq.getGuiNum());
 
 	    if (!hasId && !hasGui) {
-	        context.buildConstraintViolationWithTemplate("請填寫身分證或統編")
+	        context.buildConstraintViolationWithTemplate("請填寫身分證")
 	               .addPropertyNode("idNum").addConstraintViolation();
+	        context.buildConstraintViolationWithTemplate("請填寫統一編號")
+	           .addPropertyNode("guiNum").addConstraintViolation(); 
 	        valid = false;
 	    } else {
 	        if (hasId && !donaReq.getIdNum().matches("^[A-Z][0-9]{9}$")) {
@@ -51,7 +53,7 @@ public class MailInfoValidator implements ConstraintValidator<ValidMailInfo, Don
 
 	    // 地址欄位
 	    if (!StringUtils.hasText(donaReq.getCounty())) {
-	        context.buildConstraintViolationWithTemplate("請選擇都市")
+	        context.buildConstraintViolationWithTemplate("請選擇縣市")
 	               .addPropertyNode("county").addConstraintViolation();
 	        valid = false;
 	    }
