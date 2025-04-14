@@ -122,7 +122,7 @@ public class StoreRegistAndLoginController {
             storeService.finalizeRegistration(store);
             status.setComplete(); // 清除 SessionAttributes
             redirectAttributes.addFlashAttribute("showModal", true);
-            return "redirect:/map";
+            return "redirect:/";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/registerAndLogin/register/store/confirm";

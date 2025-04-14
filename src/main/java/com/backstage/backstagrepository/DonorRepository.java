@@ -105,6 +105,10 @@ public interface DonorRepository extends JpaRepository<DonaVO, Integer> {
 
  	    @Query("SELECT d FROM DonaVO d ORDER BY d.createdTime DESC")
  	    List<DonaVO> findLatestDonations(Pageable pageable);
+ 	    
+ 	    
+ 	   @Query("SELECT SUM(d.donationIncome) FROM DonaVO d")
+ 	  Long sumAllDonationIncome();
 //======================
  	}
 

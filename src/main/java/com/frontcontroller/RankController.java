@@ -39,4 +39,6 @@ public class RankController {
         rankService.updateRanks();
         return "redirect:/rank/top";
     }
+    
+    
 }

@@ -288,8 +288,20 @@
             const kitchenInput = document.getElementById('file_upload_kitchen');
             const kitchenHint = document.getElementById('kitchenHint');
             const storeInput = document.getElementById('file_upload_store');
-            const storeHint = document.getElementById('storeHint');
+            const storeHint = document.getElementById('storeHint');      
+            const agreedHiddenInput = document.getElementById("agreedToTerms");
 
+            // 儲存狀態
+            if (localStorage.getItem("agreedToTerms") === "true") {
+                agreeCheckbox.checked = true;
+                agreedHiddenInput.value = "true";
+            }
+
+            // 
+            agreeCheckbox.addEventListener("change", function () {
+                localStorage.setItem("agreedToTerms", agreeCheckbox.checked);
+                agreedHiddenInput.value = agreeCheckbox.checked ? "true" : "false";
+            });
             //上傳圖片後請重新輸入消失
             if (coverInput && coverHint) {
                 coverInput.addEventListener('change', function () {
@@ -1071,6 +1083,8 @@
                 zipInput.value = '';
             }
         });
+        
+        
 
     </script>
 
