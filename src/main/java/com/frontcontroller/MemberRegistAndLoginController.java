@@ -127,7 +127,7 @@ public class MemberRegistAndLoginController {
             memberService.finalizeRegistration(member);
             status.setComplete(); 
             redirectAttributes.addFlashAttribute("showModal", true);
-            return "redirect:/map";
+            return "redirect:/";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/registerAndLogin/register/member/confirm";

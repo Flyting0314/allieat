@@ -271,7 +271,7 @@
         }
 
         .df-privacy-link {
-            color: #DA9F5B;
+            color: #1a73e8;
             text-decoration: underline;
             cursor: pointer;
         }
@@ -506,10 +506,9 @@
                                             </span>
                                         </label>
                                     <!-- 錯誤訊息區塊 -->
-                                    <span id="agreePrivacyErrorPersonal" class="text-danger"
-      th:if="${showErrors} and ${#fields.hasErrors('agreePrivacy')}"
-      th:errors="*{agreePrivacy}">
-</span>
+                                    <span class="text-danger fw-bold" id="agreePrivacyErrorPersonal"
+      th:if="${#fields.hasErrors('agreePrivacy')}" 
+      th:errors="*{agreePrivacy}">請勾選同意條款</span>
                                 </div>
                             </div>
 
@@ -659,10 +658,9 @@
                                         </span>
                                     </label>
                                     <!-- 錯誤訊息區塊 -->
-                                    <span id="agreePrivacyError" class="text-danger"
+                                    <span id="agreePrivacyErrorCompany" class="text-danger fw-bold"
       th:if="${showErrors} and ${#fields.hasErrors('agreePrivacy')}"
-      th:errors="*{agreePrivacy}">
-</span>
+      th:errors="*{agreePrivacy}">請勾選同意條款</span>
 
                                 </div>
                             </div>
@@ -824,16 +822,11 @@
         // 燈箱功能
         let hasReadPrivacy = false;
 
-
-
         // 點擊燈箱外部區域關閉燈箱
         document.getElementById('privacy-lightbox').addEventListener('click', function (e) {
             if (e.target === this) {
                 closePrivacyLightbox();
             }
-
-
-
         });
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -970,6 +963,105 @@
             });
         });
 
+ 
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            const fields = document.querySelectorAll("input, select, textarea");
+            fields.forEach(field => {
+                field.addEventListener("input", function () {
+                    // 修正這邊：從 .df-input-group 而非 .form-group 開始找
+                    const errorSpan = this.closest(".df-input-group")?.querySelector(".text-danger, .error");
+                    if (errorSpan) {
+                        errorSpan.style.display = "none";
+                    }
+                });
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const lightbox = document.getElementById('privacy-lightbox');
+            const modalContent = lightbox.querySelector('.df-modal-content');
+            const closeBtn = document.querySelector('.df-modal-close');
+            const outsideCheckbox = document.getElementById('privacy-agreement-company'); // 外部 checkbox
+            const errorMsg = document.getElementById('agreePrivacyError'); // 錯誤訊息
+            const internalCheckbox = document.getElementById("privacy-check-inside-company")
+
+//  燈箱內的勾選同步隱藏錯誤
+    internalCheckbox.addEventListener("change", function () {
+    if (this.checked) {
+        const isCompany = document.getElementById('company-form')?.classList.contains('df-visible');
+        const errorMsgId = isCompany ? 'agreePrivacyError' : 'agreePrivacyErrorPersonal';
+        const error = document.getElementById(errorMsgId);
+        if (error) {
+            error.style.display = "none";
+            error.innerText = "";
+        }
+    }
+});
+            //  開啟燈箱
+window.openPrivacyLightbox = function () {
+    const modal = document.getElementById('privacy-lightbox');
+    const modalContent = modal.querySelector('.df-modal-content');
+    const personalForm = document.getElementById('personal-form');
+    const companyForm = document.getElementById('company-form');
+    const internalCheckbox = document.getElementById("privacy-check-inside-company");
+
+    modal.classList.add("df-visible");
+    document.body.style.overflow = "hidden";
+
+    const isCompany = companyForm?.classList.contains('df-visible');
+    const outsideCheckbox = document.getElementById(
+        isCompany ? 'privacy-agreement-company' : 'privacy-agreement-personal'
+    );
+
+    internalCheckbox.checked = outsideCheckbox.checked;
+};
+
+
+            
+
+            //  關閉燈箱
+window.closePrivacyLightbox = function () {
+    const modal = document.getElementById("privacy-lightbox");
+    const content = modal.querySelector('.df-modal-content');
+    const hasScrolledToBottom = Math.ceil(content.scrollTop + content.clientHeight) >= content.scrollHeight;
+    const internalCheckbox = document.getElementById("privacy-check-inside-company");
+
+    if (!hasScrolledToBottom) {
+        alert("請閱讀完整內容再關閉。");
+        return;
+    }
+
+    const isCompany = document.getElementById('company-form')?.classList.contains('df-visible');
+    const outsideCheckbox = document.getElementById(
+        isCompany ? 'privacy-agreement-company' : 'privacy-agreement-personal'
+    );
+    const errorMsgId = isCompany ? 'agreePrivacyErrorCompany' : 'agreePrivacyErrorPersonal';
+    const errorMsg = document.getElementById(errorMsgId);
+
+    modal.classList.remove("df-visible");
+    document.body.style.overflow = "";
+
+    outsideCheckbox.disabled = false;
+    outsideCheckbox.checked = internalCheckbox.checked;
+
+    if (internalCheckbox.checked) {
+        sessionStorage.setItem("noticeAgreed", "true");
+        if (errorMsg) {
+            errorMsg.style.display = "none";
+            errorMsg.innerText = "";
+        }
+    } else {
+        sessionStorage.removeItem("noticeAgreed");
+        outsideCheckbox.checked = false;
+        if (errorMsg) {
+            errorMsg.style.display = "block";
+        }
+    }
+};
+
+        
+
+        }); 
         // JavaScript 更新區域與郵遞區號
         const addrData = [
             {
@@ -1512,120 +1604,6 @@
             setupAddressDropdown('company', '臺北市', '中正區');
             console.log("已設定臺北市 / 中正區 / 郵遞區號 100");
         });
-
-
-
-
- 
-        
-        document.addEventListener("DOMContentLoaded", function () {
-            const fields = document.querySelectorAll("input, select, textarea");
-            fields.forEach(field => {
-                field.addEventListener("input", function () {
-                    // 修正這邊：從 .df-input-group 而非 .form-group 開始找
-                    const errorSpan = this.closest(".df-input-group")?.querySelector(".text-danger, .error");
-                    if (errorSpan) {
-                        errorSpan.style.display = "none";
-                    }
-                });
-            });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            const lightbox = document.getElementById('privacy-lightbox');
-            const modalContent = lightbox.querySelector('.df-modal-content');
-            const closeBtn = document.querySelector('.df-modal-close');
-            const outsideCheckbox = document.getElementById('privacy-agreement-company'); // 外部 checkbox
-            const errorMsg = document.getElementById('agreePrivacyError'); // 錯誤訊息
-            const internalCheckbox = document.getElementById("privacy-check-inside-company")
-
-// ✅ 燈箱內的勾選同步隱藏錯誤
-    internalCheckbox.addEventListener("change", function () {
-    if (this.checked) {
-        const isCompany = document.getElementById('company-form')?.classList.contains('df-visible');
-        const errorMsgId = isCompany ? 'agreePrivacyError' : 'agreePrivacyErrorPersonal';
-        const error = document.getElementById(errorMsgId);
-        if (error) {
-            error.style.display = "none";
-            error.innerText = "";
-        }
-    }
-});
-            // ✅ 開啟燈箱
-window.openPrivacyLightbox = function () {
-    const modal = document.getElementById('privacy-lightbox');
-    const modalContent = modal.querySelector('.df-modal-content');
-    const personalForm = document.getElementById('personal-form');
-    const companyForm = document.getElementById('company-form');
-    const internalCheckbox = document.getElementById("privacy-check-inside-company");
-
-    modal.classList.add("df-visible");
-    document.body.style.overflow = "hidden";
-
-    const isCompany = companyForm?.classList.contains('df-visible');
-    const outsideCheckbox = document.getElementById(
-        isCompany ? 'privacy-agreement-company' : 'privacy-agreement-personal'
-    );
-
-    internalCheckbox.checked = outsideCheckbox.checked;
-};
-
-
-            
-
-            // ✅ 關閉燈箱
-            window.closePrivacyLightbox = function () {
-    const modal = document.getElementById("privacy-lightbox");
-    const content = modal.querySelector('.df-modal-content');
-    const hasScrolledToBottom = Math.ceil(content.scrollTop + content.clientHeight) >= content.scrollHeight;
-    const internalCheckbox = document.getElementById("privacy-check-inside-company");
-
-    if (!hasScrolledToBottom) {
-        alert("請閱讀完整內容再關閉。");
-        return;
-    }
-
-    const personalForm = document.getElementById('personal-form');
-    const companyForm = document.getElementById('company-form');
-    const isCompany = companyForm?.classList.contains('df-visible');
-    const outsideCheckbox = document.getElementById(
-        isCompany ? 'privacy-agreement-company' : 'privacy-agreement-personal'
-    );
-    const errorMsg = document.getElementById('agreePrivacyError');
-
-    modal.classList.remove("df-visible");
-    document.body.style.overflow = "";
-
-    outsideCheckbox.disabled = false;
-    outsideCheckbox.checked = internalCheckbox.checked;
-
-    if (internalCheckbox.checked) {
-        sessionStorage.setItem("noticeAgreed", "true");
-        outsideCheckbox.disabled = false;
-        outsideCheckbox.checked = true;
-
-        // ✅ 根據類型選擇正確錯誤訊息元素
-        const errorMsgId = isCompany ? 'agreePrivacyError' : 'agreePrivacyErrorPersonal';
-        const errorMsg = document.getElementById(errorMsgId);
-        if (errorMsg) {
-            errorMsg.style.display = "none";
-            errorMsg.innerText = "";
-        }
-
-    } else {
-        sessionStorage.removeItem("noticeAgreed");
-        outsideCheckbox.checked = false;
-
-        const errorMsgId = isCompany ? 'agreePrivacyError' : 'agreePrivacyErrorPersonal';
-        const errorMsg = document.getElementById(errorMsgId);
-        if (errorMsg) {
-            errorMsg.style.display = "block";
-        }
-    }
-};
-        
-
-        }); 
-        
        
     </script>
 </body>

@@ -35,24 +35,6 @@ public class DonaController {
 	@Autowired
 	private SmartValidator validator;
 	
-//	@ModelAttribute("donaReq")
-//    public DonaReq donaReq() {
-//        return new DonaReq(); // 預設表單物件
-//    }
-	
-	
-
-	// === 清空 session ===
-		@ModelAttribute("donaReq")
-		public DonaReq initializeDonaReq() {
-		    DonaReq donaReq = new DonaReq();
-		    donaReq.setIsRadio(false);
-		    donaReq.setIsLightbox(false);
-
-	        donaReq.setAgreePrivacy(false);
-	        donaReq.setCompanyDonor(false); // 預設為個人捐款
-		    return donaReq;
-		}
 		
 	@GetMapping("/")
 	public String index() {
@@ -60,7 +42,7 @@ public class DonaController {
 	}
 	@GetMapping("")
 	public String redirectToIndex() {
-	    return "redirect:/allieatnew/"; // 重導向至正確路徑
+	    return "redirect:/allieatnew/"; 
 	}
 
 	// 列出所有捐款紀錄
@@ -82,7 +64,7 @@ public class DonaController {
     @GetMapping("donaAddA")
     public String showAddTypeForm(Model model) {
         model.addAttribute("donaReq", new DonaReq());
-        return "dona/donaAddA"; // 第一階段頁面
+        return "dona/donaAddA"; 
     }
 
     // 第一階段：處理第一階段表單
@@ -95,24 +77,15 @@ public class DonaController {
          if (donaReq.getDonationIncome() == null || donaReq.getDonationIncome() <= 0) {
              result.rejectValue("donationIncome", "error.donationIncome", "請填寫有效的金額");
          }
-
-    	
+   	
     	System.out.println("Received donationType: " + donaReq.getDonationType());
         System.out.println("Received donationIncome: " + donaReq.getDonationIncome());
         validator.validate(donaReq, result, StepOne.class);
     	if (result.hasErrors()) {
     		result.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
         	System.out.println("失敗");
-            return "dona/donaAddA"; // 若驗證失敗，返回第一階段頁面
+            return "dona/donaAddA"; 
         }
-    
-
-        // 確保捐款類型已填寫
-//        if (donaReq.getDonationIncome() == null || donaReq.getDonationIncome() <= 0) {
-//            result.rejectValue("donationIncome", "error.donationIncome", "請填寫有效的金額");
-//            return "dona/donaAddA";
-//        }
-//        model.addAttribute("donaReq", donaReq); // 暫存資料..@SessionAttributes不需要
         return "redirect:/dona/donaAddB"; // 跳轉至第二階段
     }
 
@@ -126,7 +99,7 @@ public class DonaController {
 
     @PostMapping("donaAddB")
     public String handleAddInfo(
-    		@ModelAttribute("donaReq") DonaReq donaReq,
+            @ModelAttribute("donaReq") DonaReq donaReq,
             BindingResult result,
             Model model) {
 
@@ -135,14 +108,18 @@ public class DonaController {
 
         boolean isCompany = Boolean.TRUE.equals(donaReq.getCompanyDonor());
 
+        if (!Boolean.TRUE.equals(donaReq.getAgreePrivacy())) {
+            result.rejectValue("agreePrivacy", "error.agreePrivacy", "請詳閱並勾選同意個資運用聲明");
+        }
+
         if (result.hasErrors()) {
-            model.addAttribute("showErrors", true); // 顯示錯誤
+            model.addAttribute("showErrors", true);
             model.addAttribute("activeTab", isCompany ? "company" : "personal");
             return "dona/donaAddB";
         }
 
-        return "redirect:/dona/donaAddC";}
-    
+        return "redirect:/dona/donaAddC";
+    }
     // 第三階段：顯示第三階段頁面
     @GetMapping("/donaAddC")
     public String showAddFinalForm(@ModelAttribute("donaReq") DonaReq donaReq, Model model) {
@@ -163,15 +140,15 @@ public class DonaController {
     	// 驗證信用卡資料
         if (!donaService.isValidCard(cardNumber, cardExpiry, cardCvv)) {
         	
-        	System.out.println("❌ 信用卡驗證失敗");
+        	System.out.println(" 信用卡驗證失敗");
         	result.reject("creditCard.invalid", "信用卡資訊不正確！");
             return "dona/donaAddC"; // 返回第三階段頁面
         }
-        System.out.println("✅ 信用卡驗證成功，準備儲存捐款");
+        System.out.println(" 信用卡驗證成功，準備儲存捐款");
         // 儲存捐款資料（不儲存信用卡信息）
      // 儲存並回傳真正的 DonaVO 實體
         DonaVO savedDona = donaService.insertDona(donaReq);
-        System.out.println("🚀 前往成功頁面 dona = " + savedDona);
+        System.out.println(" 前往成功頁面 dona = " + savedDona);
        
         redirectAttributes.addFlashAttribute("dona", savedDona);
      // 印出儲存的捐款資訊（幫助你確認有沒有正確放進 model）
@@ -179,31 +156,20 @@ public class DonaController {
 
         // 重導向至完成頁面
         return "redirect:/dona/donaAddOne";
-      
     }   
   //最後捐完顯示
   	@GetMapping("/donaAddOne")
-  	public String showDonaSuccessPage(@ModelAttribute("dona") DonaVO dona, Model model, SessionStatus status) {
-  		 
-  		System.out.println("======跳轉到 donaAddOneF.html 準備中...======");
-  		
-  		// 顯示資料
-//  	    model.addAttribute("dona", donaReq);
+  	public String showDonaSuccessPage(@ModelAttribute("dona") DonaVO dona, Model model, SessionStatus status) { 		 
+  		System.out.println("======跳轉到 donaAddOneF.html 準備中...======");  		
   		 model.addAttribute("dona", dona);
-  	    // ✅ 清除 Session 避免 F5 重送
+  	    // 清除 Session
   	    status.setComplete();
-
   	    return "dona/donaAddOneF";
   	}
 	// ========= 捐款三步驟結束 =========
     
     
-//    // 最終頁面：顯示完成資訊
-//    @GetMapping("/addShow")
-//    public String showCompletedPage(@ModelAttribute("donaReq") DonaReq donaReq, Model model) {
-//        model.addAttribute("donaReq", donaReq); // 顯示保存成功的資料
-//        return "dona/donaAddShow"; // 最終頁面
-//    }
+
  // 清理會話數據因為@SessionAttributes的緣故
     @PostMapping("/complete")
     public String completeForm(SessionStatus status) {
@@ -289,42 +255,8 @@ public class DonaController {
         model.addAttribute("donaList", filteredDonaList); // 添加篩選結果到 Model
         return "dona/donaAddD"; // 返回查詢結果頁面
     }
- // 處理查詢表單並返回結果2版本  
-//    @GetMapping("/donaAddD")
-//    public String showSelectPage(Model model) {
-//        model.addAttribute("donaReq", new DonaReq());
-//        return "dona/donaAddD";
-//    }
-//
-//    @PostMapping("/donaAddD")
-//    public String handleSelect(@RequestParam(required = false) Integer startYear, @RequestParam(required = false) Integer startMonth, @RequestParam(required = false) Integer endYear, @RequestParam(required = false) Integer endMonth, @ModelAttribute DonaReq donaReq, Model model) {
-//        Timestamp startTime = donaService.createTimestamp(startYear, startMonth, 1);
-//        Timestamp endTime = donaService.createTimestamp(endYear, endMonth, 31);
-//        List<Dona> filteredDonaList = donaService.searchDonas(donaReq, startTime, endTime);
-//        model.addAttribute("donaList", filteredDonaList);
-//        return "dona/donaAddD";
-//    }
 
-//	// 顯示捐款查詢頁面(原本的)
-//    @GetMapping("/select")
-//    public String showSelectPage(Model model) {
-//        model.addAttribute("donaList", donaService.getAllDonas()); // 獲取所有資料作為下拉選單
-//        return "dona/select_page";
-//    }
 
-		
-//	@PostMapping("getOne")
-//	public String getOneDona(@RequestParam Integer donationRecordId, Model model) {
-//	    // 透過 donationRecordId 查詢資料
-//	    Dona dona = donaService.findById(donationRecordId);
-//	    if (dona != null) {
-//	        model.addAttribute("dona", dona); // 將結果傳遞給前端
-//	        return "dona/listOneDona";       // 返回對應的 Thymeleaf 頁面
-//	    } else {
-//	        model.addAttribute("errorMessage", "找不到對應的捐款紀錄");
-//	        return "dona/errorPage";         // 返回錯誤頁面
-//	    }
-//	}
     
     @PostMapping("/getOne")
     public String getOneDona(@RequestParam Integer donationRecordId, Model model) {
@@ -345,26 +277,16 @@ public class DonaController {
 		return "redirect:/dona/list";
 	}
 	
-	
-	 
+	// === 清空 session ===
+	@ModelAttribute("donaReq")
+	public DonaReq initializeDonaReq() {
+	    DonaReq donaReq = new DonaReq();
+	    donaReq.setIsRadio(false);
+	    donaReq.setIsLightbox(false);
 
+        donaReq.setAgreePrivacy(false);
+        donaReq.setCompanyDonor(false); // 預設為個人捐款
+	    return donaReq;
+	}
 	
-	
-	
-//	// 顯示新增表單(原測版)
-//	@GetMapping("/add")
-//	public String showAddForm(Model model) {
-//		model.addAttribute("donaReq", new DonaReq());
-//		return "dona/addDona";
-//	}
-//
-//	// 處理新增捐款紀錄(原測版)
-//	@PostMapping("/add")
-//	public String insertDona(@Valid @ModelAttribute DonaReq donaReq, BindingResult result) {
-//		if (result.hasErrors()) {
-//			return "dona/addDona"; // 若驗證失敗，返回新增表單
-//		}
-//		donaService.insertDona(donaReq);
-//		return "redirect:/dona/list"; // 成功後重導向列表
-//	}
 }

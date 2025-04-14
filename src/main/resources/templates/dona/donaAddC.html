@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-    <th:block th:replace="fragments/header :: header"></th:block>
+<th:block th:replace="fragments/header :: header"></th:block>
     <style>
         * {
             box-sizing: border-box;
             font-family: "Microsoft JhengHei", Arial, sans-serif;
         }
-
+        
         body {
             margin: 0;
             padding: 20px;
             background-color: #f5f5f5;
         }
-
+        
         .container {
             margin-top: 20px;
             background-color: white;
@@ -30,25 +29,23 @@
             border: 2px solid #ddd;
             cursor: pointer;
         }
-
-        .donation-card:hover,
-        .donation-card.active {
+        .donation-card:hover, .donation-card.active {
             border-color: red;
             background: #ffe5e5;
         }
-
+        
         .steps {
             display: flex;
             justify-content: flex-start;
             margin-bottom: 20px;
         }
-
+        
         .step {
             display: flex;
             align-items: center;
             margin: 0 10px;
         }
-
+        
         .step-circle {
             width: 24px;
             height: 24px;
@@ -60,27 +57,27 @@
             margin-right: 5px;
             font-size: 12px;
         }
-
+        
         .step-circle.active {
             background-color: #ff0000;
             color: white;
         }
-
+        
         .step-circle.completed {
             background-color: #e0e0e0;
             color: black;
         }
-
+        
         .step-circle.completed::after {
             content: "✓";
         }
-
+        
         .tabs {
             display: flex;
             border-bottom: 1px solid #ddd;
             margin-bottom: 20px;
         }
-
+        
         .tab {
             flex: 1;
             text-align: center;
@@ -90,29 +87,29 @@
             border: 1px solid #ddd;
             border-bottom: none;
         }
-
+        
         .tab.active {
             background-color: white;
         }
-
+        
         .form-section {
             display: none;
         }
-
+        
         .form-section.active {
             display: block;
         }
-
+        
         .form-group {
             margin-bottom: 15px;
         }
-
+        
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-
+        
         .form-control {
             width: 100%;
             padding: 10px;
@@ -120,7 +117,7 @@
             border-radius: 4px;
             background-color: #f1f1f1;
         }
-
+        
         .form-select {
             width: 100%;
             padding: 10px;
@@ -132,22 +129,22 @@
             background-repeat: no-repeat;
             background-position: right 10px center;
         }
-
+        
         .date-select {
             display: flex;
             gap: 10px;
         }
-
+        
         .date-select select {
             flex: 1;
         }
-
+        
         .gender-options {
             display: flex;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
+        
         .gender-option {
             flex: 1;
             padding: 10px;
@@ -156,46 +153,42 @@
             justify-content: center;
             align-items: center;
         }
-
+        
         .radio-container {
             display: flex;
             align-items: flex-start;
             margin-bottom: 10px;
         }
-
+        
         .radio-container input[type="radio"] {
             margin-top: 3px;
             margin-right: 8px;
         }
-
+        
         .section-title {
-            font-weight: bold;
-            margin: 20px 0 5px 0;
-            padding-top: 15px;
-            /* 增加與文字的距離 */
-            border-top: 1px solid #ddd;
-            /* 改為上方邊框 */
-            text-align: left;
-            /* 確保文字靠左對齊 */
+            font-weight: bold; 
+            margin: 20px 0 5px 0; 
+            padding-top: 15px; /* 增加與文字的距離 */
+            border-top: 1px solid #ddd; /* 改為上方邊框 */
+            text-align: left; /* 確保文字靠左對齊 */
         }
-
-        .receipt-options,
-        .privacy-options {
+        
+        .receipt-options, .privacy-options {
             margin-bottom: 20px;
         }
-
+        
         .note {
             font-size: 14px;
             color: #666;
             margin: 5px 0;
         }
-
+        
         .buttons {
             display: flex;
             justify-content: space-between;
             margin-top: 10px;
         }
-
+        
         .btn {
             padding: 6px 12px;
             border-radius: 4px;
@@ -203,32 +196,32 @@
             font-weight: bold;
             border: none;
         }
-
+        
         .btn-prev {
             background-color: #e0e0e0;
             color: #333;
         }
-
+        
         .btn-next {
             background-color: #DA9F5B;
             color: black;
         }
-
+        
         .required::after {
             content: "*";
             color: red;
         }
-
+        
         .address-inputs {
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
         }
-
-        .address-inputs>* {
+        
+        .address-inputs > * {
             flex: 1;
         }
-
+        
         .example {
             font-size: 12px;
             color: #666;
@@ -248,11 +241,11 @@
             justify-content: center;
             align-items: center;
         }
-
+        
         .lightbox.active {
             display: flex;
         }
-
+        
         .lightbox-content {
             background-color: white;
             padding: 20px;
@@ -262,7 +255,7 @@
             overflow-y: auto;
             position: relative;
         }
-
+        
         .close-lightbox {
             position: absolute;
             top: 10px;
@@ -271,7 +264,7 @@
             cursor: pointer;
             color: #333;
         }
-
+        
         .privacy-link {
             color: #1a73e8;
             text-decoration: underline;
@@ -303,45 +296,44 @@
             justify-content: space-between;
             margin-top: 10px;
         }
+
     </style>
     <script>
-        async function pay() {
-          try {
-            console.log("綠界捐款流程開始");
-    
-            const response = await fetch('/donation/ecpay-donate', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                amount: 300,
-                itemDesc: 'TestItem'
-              })
-            });
-    
-            if (!response.ok) {
-              throw new Error("後端錯誤：" + response.status);
-            }
-    
-            const html = await response.text();
-    
-            // ✅ 使用 window.open 跳轉綠界付款頁面
-            const blob = new Blob([html], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            window.open(url, '_blank');
-    
-            console.log("表單已送出至綠界");
-    
-          } catch (err) {
-            console.error("發生錯誤：", err);
-          }
-        }
-      </script>
+    async function pay() {
+      const response = await fetch('http://localhost:8081/demo/donation/donate-params', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: 300,
+          orderNo: 'ORDER_' + Date.now(),
+          itemDesc: '支持公益捐款'
+        })
+      });
+		console.log("TESTESTESTESTESTESTSTe");
+      const params = await response.json();
+      const form = document.createElement('form');
+      console.log(params);
+      form.method = 'POST';
+      form.action = 'https://cdonate.newebpay.com/allieat/tibame';
 
+      for (const key in params) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = params[key];
+        form.appendChild(input);
+      }
+		
+      document.body.appendChild(form);
+      
+      form.submit();
+    }
+  </script>
+   
 </head>
-
 <body>
-    <!-- Navbar Start -->
-    <th:block th:replace="fragments/bodySection :: bodySection"></th:block>
+<!-- Navbar Start -->
+            <th:block th:replace="fragments/bodySection :: bodySection"></th:block>
     <!-- Hero Section End -->
     <!-- Reservation Start -->
     <div class="container-fluid py-5">
@@ -351,33 +343,23 @@
                 <div class="col-md-6">
                     <img src="img/all i eat.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
                     <h5 class="text-danger fw-bold">人人溫飽，生活才美好。</h5>
-                    <button type="button" onclick="pay()">前往捐款</button>
+                    <button onclick="pay()">前往捐款</button>
                     <p>
                         我們傳遞的不僅僅是食物，更是一份深深的關愛與陪伴。每一份餐點都是無數人的愛心與付出。您的捐款帶來持續地穩定的經費，讓我們有能力將愛傳遞給最有需要的人，讓世界更美好，形成一個善的循環。
                     </p>
                 </div>
-
-                <!-- 右側捐款流程 -->
+        
+                <!-- 右側捐款流程 -->   
                 <div class="col-md-6">
                     <h3>信用卡捐款</h3>
                     <p>支援 VISA、MasterCard、JCB</p>
-
-                    <!-- 步驟指示器 -->
-                    <div class="steps">
-                        <div class="step">
-                            <div class="step-circle completed"></div>
-                            <div>選擇金額</div>
-                        </div>
-                        <div class="step">
-                            <div class="step-circle completed"></div>
-                            <div>填寫資料</div>
-                        </div>
-                        <div class="step">
-                            <div class="step-circle active">3</div>
-                            <div>線上付款</div>
-                        </div>
+    
+                <!-- 步驟指示器 -->
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-circle completed"></div>
+                        <div>選擇金額</div>
                     </div>
-
                     <div class="step">
                         <div class="step-circle completed"></div>
                         <div>填寫資料</div>
@@ -409,9 +391,6 @@
             <span th:if="${donaReq.guiNum != null and !#strings.isEmpty(donaReq.guiNum)}" th:text="${donaReq.guiNum}"></span>
         </p>
     </div>
-    
-    <!--  
-
     <h4>信用卡資料</h4>
     <div>
         <label>信用卡號碼</label>
@@ -425,24 +404,24 @@
         <label>CVC</label>
         <input type="text" name="cardCvv" placeholder="3-4位安全碼" />
     </div>
-    -->
-
-                        <!-- 按鈕 -->
-                        <div class="df-actions">
-                            <button type="button" class="df-button df-button-prev"
-                                th:onclick="|location.href='@{/dona/donaAddB}'|">上一步</button>
-                            <button type="submit" class="df-button df-button-next">送出</button>
-                        </div>
-
-
-                    </form>
-                </div>
-            </div>
-        </div>
+    
+    <!-- 按鈕 -->
+    <div class="df-actions">
+        <button type="button" class="df-button df-button-prev" th:onclick="|location.href='@{/dona/donaAddB}'|">上一步</button>
+        <button type="submit" class="df-button df-button-next">送出</button>
     </div>
-    <!-- Reservation End -->
-    <!-- Footer Start -->
+    
+    
+</form>
+    </div>
+    </div>
+    </div>
+    </div>
+     <!-- Reservation End -->
+     <!-- Footer Start -->
 
+
+        <th:block th:replace="fragments/footer :: footer"></th:block>
 
      <!-- Footer End -->
      <!-- Back to Top -->
@@ -516,7 +495,5 @@
     	    });
     	});
 </script>
-
 </body>
-
 </html>
