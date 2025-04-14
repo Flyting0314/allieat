@@ -216,3 +216,13 @@ body {
 }
 
 
+
+/* 可折疊選單的樣式 */
+.collapsible-menu {
+    position: relative;
+}
+
+.collapse {
+    transition: all 0.3s ease;
+}
+

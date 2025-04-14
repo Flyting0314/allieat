@@ -42,11 +42,15 @@
 				</div>
 				<!-- 餐點管理 Dropdown 結束 -->
 
-				<a href="#" class="vendor_sidebar_item"> <i
-					class="fas fa-dollar-sign vendor_sidebar_icon"></i> 核銷點數管理
-				</a> <a href="#" class="vendor_sidebar_item"> <i
+				<!-- tess加入超連結測試 -->
+			<a th:href="@{/registerAndLogin/storeInfo/{storeId}/pointsRedemption(storeId=${store.storeId})}" class="vendor_sidebar_item">
+			    <i class="fas fa-dollar-sign vendor_sidebar_icon"></i>
+			    核銷點數管理
+			</a>
+				 <a href="#" class="vendor_sidebar_item"> <i
 					class="fas fa-clipboard-list vendor_sidebar_icon"></i> 訂單管理
-				</a> <a href="#" class="vendor_sidebar_item"> <i
+				</a> 
+				<a href="#" class="vendor_sidebar_item"> <i
 					class="fas fa-question-circle vendor_sidebar_icon"></i> 常見問題
 				</a>
 			</div>

@@ -93,25 +93,28 @@ public class BackStagePayDetailService {
 	
 	// ======== 將 PayDetailVO 轉換為 PayDetailWithMemberDTO ========
 	private PayDetailWithMemberDTO convertToDTO(PayDetailVO payDetail) {
-		PayDetailWithMemberDTO dto = new PayDetailWithMemberDTO();
+	    PayDetailWithMemberDTO dto = new PayDetailWithMemberDTO();
 
-		// 設定 PayDetail 的欄位
-		dto.setPayDetailId(payDetail.getPayDetailId());
-		dto.setPayoutId(payDetail.getPayRecordVO().getPayoutId()); // PayoutId 來自 PayRecordVO
-		dto.setPointsExpensed(payDetail.getPointsExpensed());
-		dto.setPayDate(payDetail.getCreatedTime());
+	    // 設定 PayDetail 的欄位
+	    dto.setPayDetailId(payDetail.getPayDetailId());
+	    dto.setPayoutId(payDetail.getPayRecordVO().getPayoutId()); // PayoutId 來自 PayRecordVO
+	    dto.setPointsExpensed(payDetail.getPointsExpensed());
+	    dto.setPayDate(payDetail.getCreatedTime());
+	    
+	    // 設定應發放點數
+	    dto.setPayoutPoints(payDetail.getPayRecordVO().getPayoutPoints());
 
-		// 設定會員相關資料
-		MemberVO member = payDetail.getMember();
-		if (member != null) {
-			dto.setMemberId(member.getMemberId());
-			dto.setName(member.getName());
-			dto.setOrganizationName(member.getOrganization().getName());// 讓頁面上出現在冊單位
-			dto.setIdNum(member.getIdNum());
-			dto.setPhone(member.getPhone());
-		}
+	    // 設定會員相關資料
+	    MemberVO member = payDetail.getMember();
+	    if (member != null) {
+	        dto.setMemberId(member.getMemberId());
+	        dto.setName(member.getName());
+	        dto.setOrganizationName(member.getOrganization().getName());// 讓頁面上出現在冊單位
+	        dto.setIdNum(member.getIdNum());
+	        dto.setPhone(member.getPhone());
+	    }
 
-		return dto;
+	    return dto;
 	}
 
 	
@@ -195,18 +198,19 @@ public class BackStagePayDetailService {
 			Join<MemberVO, OrganizationVO> orgJoin = memberJoin.join("organization", JoinType.INNER);
 			
 			// 選擇需要的所有欄位
-			query.multiselect(
-				root.get("payDetailId").alias("payDetailId"),
-				root.get("createdTime").alias("payDate"),
-				root.get("pointsExpensed").alias("pointsExpensed"),
-				memberJoin.get("memberId").alias("memberId"),
-				memberJoin.get("name").alias("name"),
-				memberJoin.get("idNum").alias("idNum"),
-				memberJoin.get("phone").alias("phone"),
-				memberJoin.get("pointsBalance").alias("pointsBalance"),
-				orgJoin.get("name").alias("organizationName"),
-				payRecordJoin.get("payoutId").alias("payoutId")
-			);
+		    query.multiselect(
+		            root.get("payDetailId").alias("payDetailId"),
+		            root.get("createdTime").alias("payDate"),
+		            root.get("pointsExpensed").alias("pointsExpensed"),
+		            memberJoin.get("memberId").alias("memberId"),
+		            memberJoin.get("name").alias("name"),
+		            memberJoin.get("idNum").alias("idNum"),
+		            memberJoin.get("phone").alias("phone"),
+		            memberJoin.get("pointsBalance").alias("pointsBalance"),
+		            orgJoin.get("name").alias("organizationName"),
+		            payRecordJoin.get("payoutId").alias("payoutId"),
+		            payRecordJoin.get("payoutPoints").alias("payoutPoints") // 添加應發放點數
+		        );
 			
 			// 準備條件列表
 			List<Predicate> predicates = new ArrayList<>();
@@ -246,20 +250,21 @@ public class BackStagePayDetailService {
 			List<Tuple> results = entityManager.createQuery(query).getResultList();
 			
 			// 將結果轉換為 DTO 對象列表
-			List<PayDetailWithMemberDTO> dtoList = results.stream().map(tuple -> {
-				PayDetailWithMemberDTO dto = new PayDetailWithMemberDTO();
-				dto.setPayDetailId(tuple.get("payDetailId", Integer.class));
-				dto.setPayDate(tuple.get("payDate", Timestamp.class));
-				dto.setPointsExpensed(tuple.get("pointsExpensed", Integer.class));
-				dto.setMemberId(tuple.get("memberId", Integer.class));
-				dto.setName(tuple.get("name", String.class));
-				dto.setIdNum(tuple.get("idNum", String.class));
-				dto.setPhone(tuple.get("phone", String.class));
-				dto.setPointsBalance(tuple.get("pointsBalance", Integer.class));
-				dto.setOrganizationName(tuple.get("organizationName", String.class));
-				dto.setPayoutId(tuple.get("payoutId", Integer.class));
-				return dto;
-			}).collect(Collectors.toList());
+			   List<PayDetailWithMemberDTO> dtoList = results.stream().map(tuple -> {
+			        PayDetailWithMemberDTO dto = new PayDetailWithMemberDTO();
+			        dto.setPayDetailId(tuple.get("payDetailId", Integer.class));
+			        dto.setPayDate(tuple.get("payDate", Timestamp.class));
+			        dto.setPointsExpensed(tuple.get("pointsExpensed", Integer.class));
+			        dto.setMemberId(tuple.get("memberId", Integer.class));
+			        dto.setName(tuple.get("name", String.class));
+			        dto.setIdNum(tuple.get("idNum", String.class));
+			        dto.setPhone(tuple.get("phone", String.class));
+			        dto.setPointsBalance(tuple.get("pointsBalance", Integer.class));
+			        dto.setOrganizationName(tuple.get("organizationName", String.class));
+			        dto.setPayoutId(tuple.get("payoutId", Integer.class));
+			        dto.setPayoutPoints(tuple.get("payoutPoints", Integer.class)); // 設置應發放點數
+			        return dto;
+			    }).collect(Collectors.toList());
 			
 			return dtoList;
 		}

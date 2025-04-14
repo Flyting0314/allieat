@@ -213,31 +213,7 @@
             margin-top: 10px;
             padding: 5px 10px;
         }
-        
-        /* 側邊欄樣式 - 修改與會員管理頁面保持一致 */
-        /* .side-bar {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px;
-            height: 100vh;
-            font-size: 18px;
-            border-radius: 8px;
-        }
-
-        .side-bar a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            margin: 15px 0;
-            padding: 8px;
-            transition: background 0.3s;
-        }
-
-        .side-bar a:hover, .side-bar a.active {
-            background-color: #34495e;
-        } */
-
-
+    
 
 
 
@@ -304,37 +280,37 @@
     <div class="container-fluid">
         <div class="row">
             <!-- 左側側邊欄 -->
-    <div class="col-md-2 side-bar">
-        <h4>攏呷霸-後台首頁</h4>
-        <a href="./backstage_homepage.html">後台首頁</a>
-        
-        <!-- 可展開的合作店家管理選項 -->
-        <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#storeSubMenu" aria-expanded="false">
-            合作店家管理 <i class="fas fa-angle-down float-right mt-1"></i>
-        </a>
-        <div class="collapse" id="storeSubMenu">
-            <div class="sub-menu">
-                <a href="#" class="sub-item">合作店家管理</a>
-                <a href="#" class="sub-item">合作店家點數核銷</a>
+            <div class="col-md-2 side-bar">
+                <h4>攏呷霸-後台首頁</h4>
+                <a href="./backstage_homepage.html">後台首頁</a>
+                
+                <!-- 可展開的合作店家管理選項 -->
+                <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#storeSubMenu" aria-expanded="false">
+                    合作店家管理 <i class="fas fa-angle-down float-right mt-1"></i>
+                </a>
+                <div class="collapse" id="storeSubMenu">
+                    <div class="sub-menu">
+                        <a href="#" class="sub-item">合作店家管理</a>
+                        <a href="./backstage_pointsRedemption_management.html" class="sub-item">合作店家點數核銷</a>
+                    </div>
+                </div>
+                
+                <!-- 可展開的受助者管理選項 -->
+                <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#recipientSubMenu" aria-expanded="true">
+                    受助者管理 <i class="fas fa-angle-down float-right mt-1"></i>
+                </a>
+                <div class="collapse show" id="recipientSubMenu">
+                    <div class="sub-menu">
+                        <a href="./backstage_member_management.html" class="sub-item">受助者管理</a>
+                        <a href="./backstage_payrecord_management.html" class="sub-item active">受助者點數發放</a>
+                    </div>
+                </div>
+                
+                <a href="./backstage_unit_management.html">在冊單位管理</a>
+                <a href="./backstage_donation_management.html">捐款管理</a>
+                <a href="#">未領餐紀錄</a>
+                <a class="btn btn-logout">登出</a>
             </div>
-        </div>
-        
-        <!-- 可展開的受助者管理選項 -->
-        <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#recipientSubMenu" aria-expanded="true">
-            受助者管理 <i class="fas fa-angle-down float-right mt-1"></i>
-        </a>
-        <div class="collapse show" id="recipientSubMenu">
-            <div class="sub-menu">
-                <a href="backstage_member_management.html" class="sub-item">受助者管理</a>
-                <a href="backstage_payrecord_management.html" class="sub-item active">受助者點數發放</a>
-            </div>
-        </div>
-        
-        <a href="./backstage_unit_management.html">在冊單位管理</a>
-        <a href="./backstage_donation_management.html">捐款管理</a>
-        <a href="#">未領餐紀錄</a>
-        <a class="btn btn-logout">登出</a>
-    </div>
     
             <!-- 主要內容區域 -->
             <div class="col-md-10">
@@ -655,6 +631,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 註冊鍵盤快捷鍵
     registerKeyboardShortcuts();
+
+
+    // 綁定登出按鈕功能
+    const logoutBtn = document.querySelector(".btn-logout");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", function() {
+            if (confirm("確定要登出嗎？")) {
+                backstageAuth.logout();
+            }
+        });
+    }
+
+
+
 });
 
 // 獲取記錄資料
@@ -687,37 +677,51 @@ function fetchRecords(isInitialLoad = false) {
     
     const url = `http://localhost:8080/payrecord/listAll${isInitialLoad ? '' : `?${queryParams.toString()}`}`;
     
-    backstageAuth.authFetch(url)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('網路回應不正確');
-        }
-        return response.json();
-    })
-    .then(data => {
-        // 保存原始數據
-        if (isInitialLoad) {
-            originalRecords = [...data];
-        }
-        
-        // 根據排序方向對數據進行排序
-        allRecords = payoutIdSortAscending
-            ? data.sort((a, b) => a.payoutId - b.payoutId)
-            : data.sort((a, b) => b.payoutId - a.payoutId);
-        
-        totalPages = Math.ceil(allRecords.length / recordsPerPage);
-        totalPages = totalPages === 0 ? 1 : totalPages;
-        
-        currentPage = 1;
-        displayRecords(currentPage);
-        updatePagination();
-    })
-    .catch(error => {
-        console.error("獲取資料時發生錯誤:", error);
-        document.getElementById('payrecord-table').innerHTML = 
-            '<tr><td colspan="8" class="text-center text-danger">資料載入失敗，請稍後再試</td></tr>';
-    });
+    // 添加重試邏輯和錯誤處理
+    const fetchWithRetry = (attempt = 1) => {
+        backstageAuth.authFetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`網路回應不正確: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 保存原始數據並顯示
+            if (isInitialLoad) {
+                originalRecords = [...data];
+            }
+            
+            // 不對數據進行額外的排序，直接使用後端返回的排序（已經是降序）
+            allRecords = [...data];
+            
+            totalPages = Math.ceil(allRecords.length / recordsPerPage);
+            totalPages = totalPages === 0 ? 1 : totalPages;
+            
+            currentPage = 1;
+            displayRecords(currentPage);
+            updatePagination();
+        })
+        .catch(error => {
+            console.error("獲取資料時發生錯誤:", error);
+            
+            // 如果錯誤是連接問題且重試次數少於3次，則重試
+            if (attempt < 3) {
+                console.log(`嘗試重新連接 (${attempt+1}/3)...`);
+                setTimeout(() => fetchWithRetry(attempt + 1), 1000); // 延遲1秒再重試
+            } else {
+                // 顯示錯誤消息
+                document.getElementById('payrecord-table').innerHTML = 
+                    '<tr><td colspan="8" class="text-center text-danger">資料載入失敗，請稍後再試或重新整理頁面</td></tr>';
+            }
+        });
+    };
+    
+    // 開始首次嘗試
+    fetchWithRetry();
 }
+
+
 
 // 數字輸入框驗證 - 限制只能輸入數字
 function validateNumberInput(input) {
@@ -774,13 +778,18 @@ function togglePayoutIdSort() {
     const icon = document.getElementById('payoutIdSortIcon');
     icon.className = payoutIdSortAscending ? 'fas fa-sort-up' : 'fas fa-sort-down';
     
-    // 根據當前方向對記錄重新排序
-    allRecords = payoutIdSortAscending 
-        ? allRecords.sort((a, b) => a.payoutId - b.payoutId)
-        : allRecords.sort((a, b) => b.payoutId - a.payoutId);
-    
-    // 重新顯示當前頁的記錄
-    displayRecords(currentPage);
+    // 手動對數據進行排序
+    if (allRecords.length > 0) {
+        allRecords = payoutIdSortAscending 
+            ? allRecords.sort((a, b) => a.payoutId - b.payoutId)
+            : allRecords.sort((a, b) => b.payoutId - a.payoutId);
+        
+        // 重新顯示當前頁的記錄
+        displayRecords(currentPage);
+    } else {
+        // 如果沒有數據，重新加載
+        fetchRecords(true);
+    }
 }
 
 /* ============== operation.js ================
@@ -798,8 +807,9 @@ function togglePayoutIdSort() {
 
 // 查看點數發放明細
 function viewDetails(payRecordId) {
-    /* window.location.href = `payDetailWebV2.html?payRecordId=${payRecordId}`; */
+    // window.location.href = `payDetailWebV2.html?payRecordId=${payRecordId}`;
     window.location.href = `backstage_paydetail.html?payRecordId=${payRecordId}`;
+
   }
   
   // 立刻發放點數

@@ -24,6 +24,8 @@ public interface StoreRepository extends JpaRepository<StoreVO, Integer> {
 
     List<StoreVO> findByReviewedIn(List<Integer> reviewedList);
 
+    // 查找點數大於某個值的餐廳
+    List<StoreVO> findByPointsGreaterThan(Integer points);
 
 	
 }
