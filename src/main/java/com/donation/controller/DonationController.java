@@ -147,7 +147,7 @@ public class DonationController {
     }
 
     @PostMapping("/ecpay-return")
-public ResponseEntity<String> handleEcpayReturn(@RequestParam Map<String, String> data) {
+    public ResponseEntity<String> handleEcpayReturn(@RequestParam Map<String, String> data) {
     System.out.println("綠界背景通知：" + data);
 
     String receivedMac = data.get("CheckMacValue");
@@ -174,6 +174,36 @@ public ResponseEntity<String> handleEcpayReturn(@RequestParam Map<String, String
 
     return ResponseEntity.ok("1|OK"); // 綠界固定回傳格式
 }
+
+    @PostMapping("/period-notify")
+    public ResponseEntity<String> handleEcpayPeriodNotify(@RequestParam Map<String, String> data) {
+    System.out.println(" 綠界定期定額通知：" + data);
+
+    String receivedMac = data.get("CheckMacValue");
+
+    // 驗證 CheckMacValue（先移除它）
+    Map<String, String> dataWithoutMac = new LinkedHashMap<>(data);
+    dataWithoutMac.remove("CheckMacValue");
+
+    String generatedMac = EcpayCheckMacValueGenerator.generate(dataWithoutMac, HASH_KEY, HASH_IV);
+
+    if (!receivedMac.equals(generatedMac)) {
+        System.out.println(" CheckMacValue 錯誤（定期通知）");
+        return ResponseEntity.badRequest().body("CheckMacValue 錯誤");
+    }
+
+    //  通過驗證，處理扣款資訊
+    String orderNo = data.get("MerchantTradeNo");
+    String rtnCode = data.get("RtnCode"); // 1 = 成功
+
+    if ("1".equals(rtnCode)) {
+        System.out.println(" 訂單 " + orderNo + " 定期扣款成功，每期金額：" + data.get("PeriodAmount"));
+        // TODO: 根據 orderNo 更新訂閱付款狀態
+    }
+
+    return ResponseEntity.ok("1|OK"); // 綠界固定要求的回應格式
+    }
+
 
     @GetMapping("/thank")
     public String thank() {
