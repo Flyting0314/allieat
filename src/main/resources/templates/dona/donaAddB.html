@@ -1026,10 +1026,7 @@ window.closePrivacyLightbox = function () {
     const hasScrolledToBottom = Math.ceil(content.scrollTop + content.clientHeight) >= content.scrollHeight;
     const internalCheckbox = document.getElementById("privacy-check-inside-company");
 
-    if (!hasScrolledToBottom) {
-        alert("請閱讀完整內容再關閉。");
-        return;
-    }
+
 
     const isCompany = document.getElementById('company-form')?.classList.contains('df-visible');
     const outsideCheckbox = document.getElementById(
