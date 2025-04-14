@@ -5,44 +5,46 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class EcpayCheckMacValueGenerator {
 
     public static String generate(Map<String, String> params, String hashKey, String hashIV) {
         try {
-            // 1. 排序參數
+            // Step 1：ASCII 排序（不分大小寫）
             Map<String, String> sortedParams = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
             sortedParams.putAll(params);
 
-            // 2. 組合字串：HashKey=...&key1=value1&...&HashIV=...
-            StringBuilder sb = new StringBuilder("HashKey=").append(hashKey);
-            for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
-                sb.append("&").append(entry.getKey()).append("=").append(entry.getValue());
-            }
-            sb.append("&HashIV=").append(hashIV);
+            // Step 2：組合原始字串
+            String raw = "HashKey=" + hashKey + "&" +
+                    sortedParams.entrySet().stream()
+                            .map(e -> e.getKey() + "=" + e.getValue())
+                            .collect(Collectors.joining("&")) +
+                    "&HashIV=" + hashIV;
 
-            // 3. URL encode，並轉小寫（綠界規範）
-            String encoded = URLEncoder.encode(sb.toString(), StandardCharsets.UTF_8.name())
+            // Step 3：URL encode + 小寫 + 特殊字元處理（照綠界 SHA256 規定）
+            String urlEncoded = URLEncoder.encode(raw, StandardCharsets.UTF_8.name())
+                    .toLowerCase()
+                    .replaceAll("%21", "!")
+                    .replaceAll("%28", "(")
+                    .replaceAll("%29", ")")
+                    .replaceAll("%2a", "*")
+                    .replaceAll("%2d", "-")
+                    .replaceAll("%2e", ".")
+                    .replaceAll("%5f", "_");
 
-                    .replaceAll("\\%21", "!")
-                    .replaceAll("\\%28", "(")
-                    .replaceAll("\\%29", ")")
-                    .replaceAll("\\%2A", "*")
-                    .replaceAll("\\%20", "+")
-                    .replaceAll("\\%5F", "_")
-                    .replaceAll("\\%2D", "-")
-                    .replaceAll("\\%2E", ".")
-                    .replaceAll("\\%7E", "~");
+            // Step 4：SHA256 加密
+            MessageDigest sha = MessageDigest.getInstance("SHA-256");
+            byte[] digest = sha.digest(urlEncoded.getBytes(StandardCharsets.UTF_8));
 
-            // 4. SHA256 加密
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] digest = md.digest(encoded.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hash = new StringBuilder();
+            // Step 5：轉成大寫的十六進位字串
+            StringBuilder sb = new StringBuilder();
             for (byte b : digest) {
-                hash.append(String.format("%02X", b));
+                sb.append(String.format("%02X", b));
             }
 
-            return hash.toString();
+            return sb.toString();
+
         } catch (Exception e) {
             throw new RuntimeException("CheckMacValue 產生失敗", e);
         }

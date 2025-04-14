@@ -298,37 +298,10 @@
         }
 
     </style>
-    <script>
-    async function pay() {
-      const response = await fetch('http://localhost:8081/demo/donation/donate-params', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: 300,
-          orderNo: 'ORDER_' + Date.now(),
-          itemDesc: '支持公益捐款'
-        })
-      });
-		console.log("TESTESTESTESTESTESTSTe");
-      const params = await response.json();
-      const form = document.createElement('form');
-      console.log(params);
-      form.method = 'POST';
-      form.action = 'https://cdonate.newebpay.com/allieat/tibame';
 
-      for (const key in params) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = params[key];
-        form.appendChild(input);
-      }
-		
-      document.body.appendChild(form);
-      
-      form.submit();
-    }
-  </script>
+
+
+
    
 </head>
 <body>
@@ -341,9 +314,9 @@
             <div class="row">
                 <!-- 左側圖片與說明 -->
                 <div class="col-md-6">
-                    <img src="img/all i eat.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
+                    <img src="/img/001.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
                     <h5 class="text-danger fw-bold">人人溫飽，生活才美好。</h5>
-                    <button onclick="pay()">前往捐款</button>
+
                     <p>
                         我們傳遞的不僅僅是食物，更是一份深深的關愛與陪伴。每一份餐點都是無數人的愛心與付出。您的捐款帶來持續地穩定的經費，讓我們有能力將愛傳遞給最有需要的人，讓世界更美好，形成一個善的循環。
                     </p>
@@ -360,140 +333,120 @@
                         <div class="step-circle completed"></div>
                         <div>選擇金額</div>
                     </div>
-                    <div class="step">
-                        <div class="step-circle completed"></div>
-                        <div>填寫資料</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-circle active">3</div>
-                        <div>線上付款</div>
-                    </div>
+
+                    <form th:action="@{/dona/donaAddC}" method="post">
+                        <h4>確認您的資料</h4>
+                        <div>
+                            <p><strong>捐款類型：</strong><span th:if="${donaReq.donationType != null}">
+                                    <span th:if="${donaReq.donationType != 1}">單筆捐款</span>
+                                    <span th:if="${donaReq.donationType == 1}">定期定額</span>
+                                </span></p>
+                            <p><strong>捐款金額：</strong><span th:text="${donaReq.donationIncome}"></span></p>
+                            <p><strong>姓名：</strong><span th:text="${donaReq.identityData}"></span></p>
+                            <p><strong>Email：</strong><span th:text="${donaReq.email}"></span></p>
+                            <p><strong>行動電話：</strong><span th:text="${donaReq.phone}"></span></p>
+                            <p><strong>地址：</strong>
+                                <span
+                                    th:text="${donaReq.county} + ' ' + donaReq.district + ' ' + donaReq.address"></span>
+                            </p>
+                            <p><strong>稱謂：</strong><span th:text="${donaReq.salutation}"></span></p>
+                            <p><strong>身分證號：</strong>
+                                <span th:if="${donaReq.idNum != null and !#strings.isEmpty(donaReq.idNum)}"
+                                    th:text="${donaReq.idNum}"></span>
+                            </p>
+                            <p><strong>統一編號：</strong>
+                                <span th:if="${donaReq.guiNum != null and !#strings.isEmpty(donaReq.guiNum)}"
+                                    th:text="${donaReq.guiNum}"></span>
+                            </p>
+                        </div>
+
+                        <!-- <h4>信用卡資料</h4>
+                        <div>
+                            <label>信用卡號碼</label>
+                            <input type="text" name="cardNumber" placeholder="請輸入16位卡號" />
+                        </div>
+                        <div>
+                            <label>有效日期</label>
+                            <input type="text" name="cardExpiry" placeholder="MM/YY" class="form-control"
+                                id="cardExpiry" maxlength="5" />
+                        </div>
+                        <div>
+                            <label>CVC</label>
+                            <input type="text" name="cardCvv" placeholder="3-4位安全碼" />
+                        </div> -->
+
+                        <!-- 按鈕 -->
+                        <div class="df-actions">
+                            <button type="button" class="df-button df-button-prev"
+                                th:onclick="|location.href='@{/dona/donaAddB}'|">上一步</button>
+                            <button type="button" class="df-button df-button-next" onclick="pay()">前往捐款</button>
+                        </div>
+
+
+                    </form>
                 </div>
- <form th:action="@{/dona/donaAddC}"  method="post">
-    <h4>確認您的資料</h4>
-    <div>
-        <p><strong>捐款類型：</strong><span th:if="${donaReq.donationType != null}">
-    <span th:if="${donaReq.donationType != 1}">單筆捐款</span>
-    <span th:if="${donaReq.donationType == 1}">定期定額</span>
-</span></p>
-        <p><strong>捐款金額：</strong><span th:text="${donaReq.donationIncome}"></span></p>
-        <p><strong>姓名：</strong><span th:text="${donaReq.identityData}"></span></p>
-        <p><strong>Email：</strong><span th:text="${donaReq.email}"></span></p>
-        <p><strong>行動電話：</strong><span th:text="${donaReq.phone}"></span></p>
-        <p><strong>地址：</strong>
-            <span th:text="${donaReq.county} + ' ' + donaReq.district + ' ' + donaReq.address"></span>
-        </p>
-<p><strong>稱謂：</strong><span th:text="${donaReq.salutation}"></span></p>
-        <p><strong>身分證號：</strong>
-            <span th:if="${donaReq.idNum != null and !#strings.isEmpty(donaReq.idNum)}" th:text="${donaReq.idNum}"></span>
-        </p>
-        <p><strong>統一編號：</strong>
-            <span th:if="${donaReq.guiNum != null and !#strings.isEmpty(donaReq.guiNum)}" th:text="${donaReq.guiNum}"></span>
-        </p>
-    </div>
-    <h4>信用卡資料</h4>
-    <div>
-        <label>信用卡號碼</label>
-        <input type="text" name="cardNumber" placeholder="請輸入16位卡號" />
-    </div>
-    <div>
-        <label>有效日期</label>
-<input type="text" name="cardExpiry" placeholder="MM/YY" class="form-control" id="cardExpiry" maxlength="5" />
-    </div>
-    <div>
-        <label>CVC</label>
-        <input type="text" name="cardCvv" placeholder="3-4位安全碼" />
-    </div>
-    
-    <!-- 按鈕 -->
-    <div class="df-actions">
-        <button type="button" class="df-button df-button-prev" th:onclick="|location.href='@{/dona/donaAddB}'|">上一步</button>
-        <button type="submit" class="df-button df-button-next">送出</button>
+            </div>
+        </div>
+
     </div>
     
     
-</form>
+
     </div>
-    </div>
-    </div>
-    </div>
+
      <!-- Reservation End -->
      <!-- Footer Start -->
 
 
-        <th:block th:replace="fragments/footer :: footer"></th:block>
 
-     <!-- Footer End -->
-     <!-- Back to Top -->
-     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top" style="background-color: #c5a27b; border-color: #c5a27b;"><i class="fa fa-angle-double-up"></i></a>
-     
-     
-     <!-- JavaScript Libraries -->
-     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-     <script src="lib/easing/easing.min.js"></script>
-     <script src="lib/waypoints/waypoints.min.js"></script>
-     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-     <script src="lib/tempusdominus/js/moment.min.js"></script>
-     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-     
-     <!-- Contact Javascript File -->
-     <script src="mail/jqBootstrapValidation.min.js"></script>
-     <script src="mail/contact.js"></script>
-     
-     <!-- Template Javascript -->
-     <script src="js/main.js"></script>
-     <script>
-     document.addEventListener("DOMContentLoaded", function () {
-    	    const form = document.querySelector("form"); // 找到表單
-    	    const cardNumber = document.querySelector("input[name='cardNumber']");
-    	    const cardExpiry = document.querySelector("input[name='cardExpiry']");
-    	    const cardCvv = document.querySelector("input[name='cardCvv']");
+    <th:block th:replace="fragments/footer :: footer"></th:block>
 
-    	    // 自動格式化 MM/YY
-    	    cardExpiry.addEventListener("input", function () {
-    	        let value = cardExpiry.value.replace(/[^0-9]/g, "");
-    	        if (value.length >= 3) {
-    	            value = value.slice(0, 2) + '/' + value.slice(2, 4);
-    	        }
-    	        cardExpiry.value = value;
-    	    });
 
-    	    // 驗證送出
-    	    form.addEventListener("submit", function (e) {
-    	        const cardNumValue = cardNumber.value.trim();
-    	        const expiryValue = cardExpiry.value.trim();
-    	        const cvvValue = cardCvv.value.trim();
+    <!-- Footer End -->
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
+        style="background-color: #c5a27b; border-color: #c5a27b;"><i class="fa fa-angle-double-up"></i></a>
 
-    	        // 信用卡號應為16位數字
-    	        const cardRegex = /^\d{16}$/;
-    	        if (!cardRegex.test(cardNumValue)) {
-    	            alert("請輸入正確的16位數信用卡號碼");
-    	            e.preventDefault();
-    	            return;
-    	        }
 
-    	        // 有效日期應為 MM/YY 格式，且 MM 需為 01~12
-    	        const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
-    	        if (!expiryRegex.test(expiryValue)) {
-    	            alert("請輸入正確的有效日期（格式 MM/YY）");
-    	            e.preventDefault();
-    	            return;
-    	        }
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-    	        // CVC 應為 3 或 4 位數字
-    	        const cvvRegex = /^\d{3,4}$/;
-    	        if (!cvvRegex.test(cvvValue)) {
-    	            alert("請輸入正確的 3 至 4 位安全碼（CVC）");
-    	            e.preventDefault();
-    	            return;
-    	        }
+    <!-- Contact Javascript File -->
+    <script src="mail/jqBootstrapValidation.min.js"></script>
+    <script src="mail/contact.js"></script>
 
-    	        // 所有欄位皆正確，允許送出
-    	        alert("信用卡資訊驗證通過，準備送出！");
-    	    });
-    	});
-</script>
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+         <script>
+
+        async function pay() {
+            const win = window.open();
+            if (!win) {
+                alert("請允許瀏覽器彈出視窗，才能完成付款！");
+                return;
+            }
+
+            const response = await fetch('http://localhost:8080/donation/ecpay-donate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amount: 300,
+                    itemDesc: '支持公益捐款'
+                })
+            });
+
+            const html = await response.text();
+            win.document.write(html);
+            win.document.close();
+        }
+    </script>
+
 </body>
 </html>

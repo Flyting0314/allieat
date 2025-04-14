@@ -413,147 +413,152 @@ main {
 		src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
 
 	<script>
-        let cartData = [];
+    let cartData = [];
 
-        function loadCart() {
-            fetch('/api/cart')
-                .then(response => response.json())
-                .then(cart => {
-                    if (!cart || cart.length === 0) {
-                        document.getElementById('cartItems').innerHTML = '<div class="text-center text-muted mt-4">購物車是空的。</div>';
-                        document.getElementById('cartTotal').textContent = '總計：0 點';
-                        return;
+    function loadCart() {
+        fetch('/api/cart')
+            .then(response => response.json())
+            .then(cart => {
+                if (!cart || cart.length === 0) {
+                    document.getElementById('cartItems').innerHTML = '<div class="text-center text-muted mt-4">購物車是空的。</div>';
+                    document.getElementById('cartTotal').textContent = '總計：0 點';
+                    return;
+                }
+
+                fetch('/meal/cart/details', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cart)
+                })
+                .then(res => res.json())
+                .then(details => {
+                    console.log("API 回傳 cart details：", details);
+
+                    cartData = details;
+
+                    // 儲存 storeId / storeName 供返回使用
+                    if (details.length > 0) {
+                        localStorage.setItem('selectedFood', JSON.stringify({
+                            storeId: details[0].storeId,
+                            storeName: details[0].storeName
+                        }));
                     }
 
-                    fetch('/meal/cart/details', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(cart)
-                    })
-                    .then(res => res.json())
-                    .then(details => {
-                    	 console.log("API 回傳 cart details：", details); // ← 加這一行
-                    	
-                    	
-                        cartData = details;
-
-                        // ✅ 儲存 storeId / storeName 供返回使用
-                        if (details.length > 0) {
-    localStorage.setItem('selectedFood', JSON.stringify({
-        storeId: details[0].storeId,
-        storeName: details[0].storeName
-    }));
-}
-
-
-                        renderCart();
-                    })
-                    .catch(err => {
-                        console.error('獲取購物車詳情失敗：', err);
-                        document.getElementById('cartItems').innerHTML = '<div class="text-center text-danger">載入購物車失敗，請稍後再試。</div>';
-                    });
+                    renderCart();
                 })
                 .catch(err => {
-                    console.error('獲取購物車失敗：', err);
+                    console.error('獲取購物車詳情失敗：', err);
                     document.getElementById('cartItems').innerHTML = '<div class="text-center text-danger">載入購物車失敗，請稍後再試。</div>';
                 });
-        }
-
-        function renderCart() {
-            const cartItems = document.getElementById('cartItems');
-            let total = 0;
-            cartItems.innerHTML = '';
-
-            cartData.forEach((item, index) => {
-                const itemTotal = item.cost * item.quantity;
-                total += itemTotal;
-
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'cart-item d-grid mb-3';
-                itemDiv.style.gridTemplateColumns = '3fr 3fr 2fr 2fr 2fr';
-                itemDiv.style.alignItems = 'center';
-                itemDiv.innerHTML = `
-                    <div>${item.foodName}</div>
-                    <div>${item.attachedName}</div>
-                    <div>
-                        <div class="d-flex justify-content-center align-items-center">
-                            <button class="btn btn-sm btn-outline-primary" onclick="updateQuantity(${index}, -1)">-</button>
-                            <span class="mx-2">${item.quantity}</span>
-                            <button class="btn btn-sm btn-outline-primary" onclick="updateQuantity(${index}, 1)">+</button>
-                        </div>
-                    </div>
-                    <div>${item.cost} 點</div>
-                    <div>${itemTotal} 點</div>
-                `;
-                cartItems.appendChild(itemDiv);
-            });
-
-            document.getElementById('cartTotal').textContent = `總計：${total} 點`;
-        }
-
-        function updateQuantity(index, change) {
-            if (cartData[index].quantity + change < 1) return;
-
-            cartData[index].quantity += change;
-            renderCart();
-
-            const item = cartData[index];
-            fetch('/api/cart/update', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    foodId: item.foodId,
-                    attachedId: item.attachedId,
-                    quantity: item.quantity
-                })
-
-            })
-            .then(res => res.json())
-            .then(result => {
-                if (!result.success) {
-                    alert('更新失敗：' + result.message);
-                    loadCart();
-                }
             })
             .catch(err => {
-                console.error('更新失敗:', err);
-                loadCart();
+                console.error('獲取購物車失敗：', err);
+                document.getElementById('cartItems').innerHTML = '<div class="text-center text-danger">載入購物車失敗，請稍後再試。</div>';
             });
-        }
+    }
 
-        function clearCart() {
-            if (confirm('確定要清空購物車嗎？')) {
-                fetch('/api/cart/clear', { method: 'POST' })
-                    .then(() => {
-                        cartData = [];
-                        document.getElementById('cartItems').innerHTML = '<div class="text-center text-muted mt-4">購物車是空的。</div>';
-                        document.getElementById('cartTotal').textContent = '總計：0 點';
-                    });
+    function renderCart() {
+        const cartItems = document.getElementById('cartItems');
+        let total = 0;
+        cartItems.innerHTML = '';
+
+        cartData.forEach((item, index) => {
+            const itemTotal = item.cost * item.quantity;
+            total += itemTotal;
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'cart-item d-grid mb-3';
+            itemDiv.style.gridTemplateColumns = '3fr 3fr 2fr 2fr 2fr';
+            itemDiv.style.alignItems = 'center';
+            itemDiv.innerHTML = `
+                <div>${item.foodName}</div>
+                <div>${item.attachedName}</div>
+                <div>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <button class="btn btn-sm btn-outline-primary" onclick="updateQuantity(${index}, -1)">-</button>
+                        <span class="mx-2">${item.quantity}</span>
+                        <button class="btn btn-sm btn-outline-primary" onclick="updateQuantity(${index}, 1)">+</button>
+                    </div>
+                </div>
+                <div>${item.cost} 點</div>
+                <div>${itemTotal} 點</div>
+            `;
+            cartItems.appendChild(itemDiv);
+        });
+
+        document.getElementById('cartTotal').textContent = `總計：${total} 點`;
+    }
+
+    function updateQuantity(index, change) {
+        if (cartData[index].quantity + change < 1) return;
+
+        cartData[index].quantity += change;
+        renderCart();
+
+        const item = cartData[index];
+
+        console.log("🔄 更新數量", {
+            foodId: item.foodId,
+            attachedId: item.attachedId,
+            quantity: item.quantity
+        });
+
+        fetch('/api/cart/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                foodId: item.foodId,
+                attachedId: item.attachedId,
+                quantity: item.quantity
+            })
+        })
+        .then(res => {
+            if (!res.ok) {
+                return res.text().then(msg => {
+                    alert('❌ 更新失敗：' + msg);
+                    loadCart();
+                });
             }
+        })
+        .catch(err => {
+            console.error('❌ 更新數量時發生錯誤:', err);
+            loadCart();
+        });
+    }
+
+    function clearCart() {
+        if (confirm('確定要清空購物車嗎？')) {
+            fetch('/api/cart/clear', { method: 'POST' })
+                .then(() => {
+                    cartData = [];
+                    document.getElementById('cartItems').innerHTML = '<div class="text-center text-muted mt-4">購物車是空的。</div>';
+                    document.getElementById('cartTotal').textContent = '總計：0 點';
+                });
         }
+    }
 
-        function goBackToOrder() {
-            const selectedFood = JSON.parse(localStorage.getItem('selectedFood'));
-            if (selectedFood && selectedFood.storeId && selectedFood.storeName) {
-                const storeId = selectedFood.storeId;
-                const storeName = encodeURIComponent(selectedFood.storeName);
-                window.location.href = `/orderfood.html?id=${storeId}&name=${storeName}`;
-            } else {
-                alert('未能找到有效的餐廳資料，請稍後再試。');
-            }
+    function goBackToOrder() {
+        const selectedFood = JSON.parse(localStorage.getItem('selectedFood'));
+        if (selectedFood && selectedFood.storeId && selectedFood.storeName) {
+            const storeId = selectedFood.storeId;
+            const storeName = encodeURIComponent(selectedFood.storeName);
+            window.location.href = `/orderfood.html?id=${storeId}&name=${storeName}`;
+        } else {
+            alert('未能找到有效的餐廳資料，請稍後再試。');
         }
+    }
 
-
-        function confirmOrder() {
-            if (cartData.length === 0) {
-                alert('購物車是空的，請先添加商品');
-                return;
-            }
-            window.location.href = '/checkout.html';
+    function confirmOrder() {
+        if (cartData.length === 0) {
+            alert('購物車是空的，請先添加商品');
+            return;
         }
+        window.location.href = '/checkout.html';
+    }
 
-        window.onload = loadCart;
-    </script>
+    window.onload = loadCart;
+</script>
+
 </body>
 </html>
 </body>
