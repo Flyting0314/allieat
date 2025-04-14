@@ -36,44 +36,66 @@ public class DonationController {
 
     // 綠界金流付款 API
     @PostMapping("/ecpay-donate")
-	public ResponseEntity<String> ecpayDonate(@RequestBody PaymentRequest request) {
-		// 自動產生不重複訂單編號
-		String orderNo = "ORDER" + System.currentTimeMillis();
+    public ResponseEntity<String> ecpayDonate(@RequestBody PaymentRequest request) {
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("MerchantID", MERCHANT_ID);
+        // 在原始訂單編號後加上時間戳記，避免重複
+        String uniqueOrderNo = request.getOrderNo() + System.currentTimeMillis();
+        params.put("MerchantTradeNo", uniqueOrderNo);
+        
+        params.put("MerchantTradeDate", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
+        params.put("PaymentType", "aio");
+        //20250414從這裡開始改
+        params.put("TradeDesc", "Allieat 捐款平台");
+        params.put("ItemName", request.getItemDesc());
 
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put("MerchantID", MERCHANT_ID);
-		params.put("MerchantTradeNo", orderNo); // 用後端產生的
-		params.put("MerchantTradeDate", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
-		params.put("PaymentType", "aio");
-		params.put("TotalAmount", String.valueOf(request.getAmount()));
-		params.put("TradeDesc", "Allieat 捐款平台");
-		params.put("ItemName", request.getItemDesc());
-		params.put("ReturnURL", "http://localhost:8080/donation/ecpay-return");
-		params.put("ChoosePayment", "Credit");
-		params.put("EncryptType", "1");
+        if ("periodic".equalsIgnoreCase(request.getType())) {
+            // 定期定額參數
+            params.put("PeriodAmount", String.valueOf(request.getAmount()));
+            params.put("PeriodType", "M"); // 每月
+            params.put("Frequency", "1");  // 每 1 月一次
+            //params.put("ExecTimes", "12"); // 扣 12 次
+            // ExecTimes 改成訂閱制支援無限期數
+            if (request.getExecTimes() != null) {
+                params.put("ExecTimes", String.valueOf(request.getExecTimes()));
+            }
+            params.put("ReturnURL", "https://8cf9-1-164-225-29.ngrok-free.app/donation/thank");
+            params.put("PeriodReturnURL", "https://8cf9-1-164-225-29.ngrok-free.app/donation/period-notify");
+        } else {
+            // 單筆付款參數（原本的單筆）
+            params.put("TotalAmount", String.valueOf(request.getAmount()));
+            params.put("ReturnURL", "https://8cf9-1-164-225-29.ngrok-free.app/donation/ecpay-return");
+            params.put("ChoosePayment", "Credit");
+            params.put("EncryptType", "1");
+        }
+        //結束
 
+        //印出來
+        System.out.println("送出綠界參數如下：");
+        params.forEach((k, v) -> System.out.println(k + " = " + v));
+        
+        String checkMacValue = EcpayCheckMacValueGenerator.generate(params, HASH_KEY, HASH_IV);
+        params.put("CheckMacValue", checkMacValue);
 
-		String checkMacValue = EcpayCheckMacValueGenerator.generate(params, HASH_KEY, HASH_IV);
-		params.put("CheckMacValue", checkMacValue);
+        StringBuilder sb = new StringBuilder();
+        sb.append("<html><body onload='document.forms[0].submit()'>");
+        //20250414
+        String actionUrl = "https://payment-stage.ecpay.com.tw/Cashier/";
+        if ("periodic".equalsIgnoreCase(request.getType())) {
+            actionUrl += "AioPeriodCheckOut/V5";
+        } else {
+            actionUrl += "AioCheckOut/V5";
+        }
+        sb.append("<form method='post' action='" + actionUrl + "'>");
+        //結束
 
-		// 可選：儲存訂單到資料庫
-		// DonationVO donationVO = new DonationVO();
-		// donationVO.setOrderNo(orderNo);
-		// donationVO.setAmount(request.getAmount());
-		// donationVO.setDesc(request.getItemDesc());
-		// donationSvc.addDonation(donationVO);
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            sb.append("<input type='hidden' name='" + entry.getKey() + "' value='" + entry.getValue() + "'/>");
+        }
+        sb.append("</form></body></html>");
 
-		// 自動產生表單
-		StringBuilder sb = new StringBuilder();
-		sb.append("<html><body onload='document.forms[0].submit()'>");
-		sb.append("<form method='post' action='https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5'>");
-		for (Map.Entry<String, String> entry : params.entrySet()) {
-			sb.append("<input type='hidden' name='" + entry.getKey() + "' value='" + entry.getValue() + "'/>");
-		}
-		sb.append("</form></body></html>");
-
-		return ResponseEntity.ok(sb.toString());
-	}
+        return ResponseEntity.ok(sb.toString());
+    }
 
     @GetMapping("addDonation")
     public String addDonation(ModelMap model) {
