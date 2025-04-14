@@ -38,10 +38,7 @@ public class DonationController {
     @PostMapping("/ecpay-donate")
 	public ResponseEntity<String> ecpayDonate(@RequestBody PaymentRequest request) {
 		// 自動產生不重複訂單編號
-    	String orderNo = "ORD" + System.currentTimeMillis(); // 最多 20 字
-    	if (orderNo.length() > 20) {
-    	    orderNo = orderNo.substring(0, 20);  // 強制限制長度
-    	}
+		String orderNo = "ORDER" + System.currentTimeMillis();
 
 		Map<String, String> params = new LinkedHashMap<>();
 		params.put("MerchantID", MERCHANT_ID);
@@ -54,6 +51,7 @@ public class DonationController {
 		params.put("ReturnURL", "http://localhost:8080/donation/ecpay-return");
 		params.put("ChoosePayment", "Credit");
 		params.put("EncryptType", "1");
+
 
 		String checkMacValue = EcpayCheckMacValueGenerator.generate(params, HASH_KEY, HASH_IV);
 		params.put("CheckMacValue", checkMacValue);
