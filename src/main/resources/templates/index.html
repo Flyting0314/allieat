@@ -1,107 +1,186 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh-TW" xmlns:th="http://www.thymeleaf.org">
 <head>
+<meta charset="utf-8">
+<title>攏呷霸 ALLiEAT - 愛心代用餐平台</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="愛心代用餐, 公益, 餐飲捐贈" name="keywords">
+<meta content="攏呷霸愛心代用餐平台，連結善心人士與需要溫飽的人" name="description">
 
-    <meta charset="utf-8">
-    <title>攏呷霸 ALLiEAT - 愛心代用餐平台</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="愛心代用餐, 公益, 餐飲捐贈" name="keywords">
-    <meta content="攏呷霸愛心代用餐平台，連結善心人士與需要溫飽的人" name="description">
+<!-- Favicon -->
+<link href="img/favicon.ico" rel="icon">
 
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link
+	href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap"
+	rel="stylesheet">
 
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+<!-- Font Awesome -->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+	rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+<!-- Libraries Stylesheet -->
+<link href="lib/owlcarousel/assets/owl.carousel.min.css"
+	rel="stylesheet">
+<link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
+	rel="stylesheet" />
+<link
+	href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap"
+	rel="stylesheet">
 
-    <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link rel="stylesheet" href="/coffee-shop-html-template/css/style.css">
-
+<!-- Customized Bootstrap Stylesheet -->
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+<link th:href="@{/css/header.css}" rel="stylesheet">
    
     <!-- <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> -->
     <!-- <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> -->
     <!-- <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> -->
     <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+    .floating-donation-box {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  background-color: #fff5f5;
+  border: 2px solid #f25454;
+  border-radius: 12px;
+  padding: 10px 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  text-align: center;
+  animation: floatUpDown 2s ease-in-out infinite alternate;
+}
+
+.floating-donation-amount {
+  font-weight: bold;
+  font-size: 25px;
+  color: #d92626;
+  margin-bottom: 6px;
+}
+
+.floating-donation-btn {
+  display: inline-block;
+  background-color: #ff8888;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.floating-donation-btn:hover {
+  background-color: #d23c3c;
+}
+
+@keyframes floatUpDown {
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 576px) {
+  .floating-donation-box {
+    right: 10px;
+    bottom: 80px;
+    padding: 10px 14px;
+  }
+}
+    
+   .testimonial-scroll {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            gap: 20px;
+            padding: 10px 0;
+            scroll-behavior: smooth;
+            white-space: nowrap;
+        }
+
+        .testimonial-item {
+            flex: 0 0 auto;
+            width: 300px;
+            background: #fff7eb;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            white-space: normal;
+        }
+
+        .testimonial-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f59d23;
+        }
+        
+        .testimonial-item:hover {
+  transform: translateY(-5px);
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 576px) {
+  .testimonial-item {
+    width: 250px;
+  }
+}
+
+#testimonials {
+  background-color: #fff9f0;
+}
+#mission {
+  background-color: #fffdf8;
+}
+@keyframes floatUpDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.floating-donate-btn {
+  position: fixed;
+  bottom: 100px;
+  right: 50px;
+  background-color: #f25454;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  animation: floatUpDown 2.5s ease-in-out infinite;
+}
+
+
+.floating-donate-btn:hover {
+  background-color: #d23c3c;
+}
+
+
+    </style>
+    
 </head>
 
 <body>
-    <!-- Navbar Start -->
-    <section id="header">
-        <div class="container-fluid p-0 nav-bar">
-            <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
-                <a href="index.html" class="navbar-brand px-lg-4 m-0">
-                    <h1 class="m-0 display-4 text-uppercase text-white" style="display: inline-block;">
-                        <img src="/img/logo3.png" width="80px" height="80px" alt="" 
-     style="vertical-align: middle; margin-right: 0px; margin-top: -10px; 
-            border-radius: 50%; object-fit: cover;">
-            <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
-
-
-
-                    </h1>
-                   
-                </a>
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                    <div class="navbar-nav ml-auto p-4">
-                        <a href="about Us.html" class="nav-item nav-link active">關於我們</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">我要捐款</a>
-                            <div class="dropdown-menu text-capitalize">
-                                <a href="donation_index.html" class="dropdown-item">我要捐款</a>
-                                <a href="testimonial.html" class="dropdown-item">捐款查詢</a>
-                            </div>
-                        </div>
-                        <a href="service.html" class="nav-item nav-link">受助者取餐</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊/登入</a>
-                            <div class="dropdown-menu text-capitalize">
-                                <a href="memberlogin.html" class="dropdown-item">註冊</a>
-                                <a href="testimonial.html" class="dropdown-item">登入</a>
-                            </div>
-                        </div>
-                        <a href="contact.html" class="nav-item nav-link">會員專區</a>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </section>
-    <!-- Navbar End -->
-
-    <!-- Hero Section Start -->
-    <section id="hero">
-        <div class="container-fluid p-0 mb-5">
-            <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active" style="
-                        background-image: url('img/圖片3.png');
-                        background-size: 110% auto;
-                        background-position: center 50px; /* 調整這裡 */
-                        height: 300px; /* 可以調整高度 */
-                        filter: brightness(225%);">
-                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                            <h2 class="text-primary font-weight-medium m-0"></h2>
-                            <h1 class="display-1 text-white m-0"></h1>
-                            <h2 class="text-white m-0"></h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Hero Section End -->
+    <th:block th:replace="fragments/bodySection :: bodySection"></th:block>
+   
 
     <!-- Mission Section Start -->
     <section id="mission" class="py-5">
@@ -111,6 +190,7 @@
                 <h1 class="display-4">散播愛心 散播愛</h1>
             </div>
             <div class="row">
+           
                 <div class="col-lg-4 py-0 py-lg-5">
                     <h1 class="mb-3">受助者的便利性</h1>
                     <h5 class="mb-3">點餐介面可讓受助者提前查看可選餐點，避免因過敏或信仰限制而無法食用。
@@ -124,6 +204,7 @@
                         <img class="position-absolute w-100 h-100" src="img/攏呷霸LOGO.png" style="object-fit: cover;">
                     </div>
                 </div>
+                
                 <div class="col-lg-4 py-0 py-lg-5">
                     <h1 class="mb-3">捐贈者的安心感</h1>
                     <h5>透過點數紀錄機制，確保捐款確實用於愛心餐點，讓善款流向透明，提升捐贈意願。
@@ -136,8 +217,9 @@
             </div>
         </div>
     </section>
-    <!-- Mission Section End -->
 
+    <!-- Mission Section End -->
+<th:block th:replace="fragments/missionAnimated :: missionAnimated"></th:block>
     <!-- Featured Food Section Start -->
     <section id="featured-food" class="py-5">
         <div class="container">
@@ -218,10 +300,11 @@
         </div>
     </section>
     <!-- Featured Food Section End -->
-
    
                     
-              
+       <th:block th:replace="fragments/statsSection :: statsSection"></th:block>   
+       
+           
 
     <!-- Testimonial Section Start -->
     <section id="testimonials" class="py-5">
@@ -230,100 +313,55 @@
                 <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">用戶評價</h4>
                 <h1 class="display-4">真實顧客評價</h1>
             </div>
-            <div class="owl-carousel testimonial-carousel">
-                <div class="testimonial-item">
+            <div class="testimonial-scroll">
+                <div class="testimonial-item" data-aos="fade-up" data-aos-delay="100">
                     <div class="d-flex align-items-center mb-3">
-                        <img class="img-fluid" src="img/李瑋國.jpg" alt="">
+                        <img class="img-fluid" src="img/李瑋國.jpg" alt="李小國">
                         <div class="ml-3">
                             <h4>李小國</h4>
                             <i>日本政府高階JAVA工程師</i>
                         </div>
                     </div>
-                    <p class="m-0">這個代用餐平台的理念真的讓人感動，不僅幫助了很多需要溫飽的人，也讓我們這些有能力幫助別人的人有了一個很好的方式來付出愛心。平台的設計很簡單，捐贈的流程也很順暢，不會讓人覺得麻煩。看到這麼多人受惠，真的覺得這是一個值得長期支持的公益平台！</p>
+                    <p class="m-0">這個代用餐平台的理念真的讓人感動，值得長期支 持的公益平台！</p>
                 </div>
-                <div class="testimonial-item">
+                <div class="testimonial-item" data-aos="fade-up" data-aos-delay="200">
                     <div class="d-flex align-items-center mb-3">
-                        <img class="img-fluid" src="img/黃仲緯.jpg" alt="">
+                        <img class="img-fluid" src="img/黃仲緯.jpg" alt="黃小緯">
                         <div class="ml-3">
                             <h4>黃小緯</h4>
                             <i>台灣JAVA資深講師</i>
                         </div>
                     </div>
-                    <p class="m-0">這個平台真的讓公益變得很簡單！不用特別去找機構捐贈，只要在合作的餐廳買個代用餐，就能幫助到有需要的人。而且受助者能夠自由選擇自己喜歡的餐點，這樣的方式比單純捐款更有溫度。每次看到成功領取的通知都覺得很有成就感，真的很棒！</p>
+                    <p class="m-0">這個平台真的讓公益變得很簡單，真的很棒！</p>
                 </div>
-                <div class="testimonial-item">
+                <div class="testimonial-item" data-aos="fade-up" data-aos-delay="300">
                     <div class="d-flex align-items-center mb-3">
-                        <img class="img-fluid" src="img/黃于玲.jpg" alt="">
+                        <img class="img-fluid" src="img/黃于玲.jpg" alt="黃小玲">
                         <div class="ml-3">
                             <h4>黃小玲</h4>
                             <i>日本IT公司老闆</i>
                         </div>
                     </div>
-                    <p class="m-0">這是一個非常值得信賴的代用餐平台，所有的捐贈資訊都公開透明，讓人很放心。最棒的是這不僅是一個公益行動，還能夠幫助餐廳提升銷量，讓整個社會都能受益。希望未來能有更多店家加入，讓這份溫暖能夠傳遞得更遠！我也會繼續支持攏呷霸平台的!</p>
+                    <p class="m-0">這是一個非常值得信賴的代用餐平台，我也會繼續支持攏呷霸平台！</p>
                 </div>
-                <div class="testimonial-item">
+                <div class="testimonial-item" data-aos="fade-up" data-aos-delay="400">
                     <div class="d-flex align-items-center mb-3">
-                        <img class="img-fluid" src="img/李伊淇2.jpg" alt="">
+                        <img class="img-fluid" src="img/李伊淇2.jpg" alt="李小淇">
                         <div class="ml-3">
                             <h4>李小淇</h4>
                             <i>IT公司老闆</i>
                         </div>
                     </div>
-                    <p class="m-0">一直在關注這個代用餐平台，真的覺得這樣的模式太棒了！不僅能夠幫助那些需要幫助的人，還能夠讓更多餐飲業者參與其中，把愛心傳遞出去。每次看到有人透過這個平台領取到餐點，都會覺得自己的一點小小付出能夠帶來很大的溫暖，真的很值得！</p>
+                    <p class="m-0">一直在關注這個代用餐平台，真的很值得支持！</p>
                 </div>
             </div>
+            <p class="text-center text-muted small mt-2">← 滑動看更多顧客評價 →</p>
         </div>
     </section>
     <!-- Testimonial Section End -->
 
     <!-- Footer Start -->
-    <section id="footer">
-        <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
-            <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
-                <div class="col-lg-3 col-md-6 mb-5">
-                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">聯絡我們</h4>
-                    <p><i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號</p>
-                    <p><i class="fa fa-phone-alt mr-2"></i>02-2222-5252</p>
-                    <p class="m-0"><i class="fa fa-envelope mr-2"></i>allieat105@gmail.com</p>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-5">
-                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">關注我們</h4>
-                    <p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
-                    <div class="d-flex justify-content-start">
-                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-5">
-                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">客服時間</h4>
-                    <div>
-                        <h6 class="text-white text-uppercase">周一 - 週五</h6>
-                        <p>早上10:00 - 晚上21:00</p>
-                        <h6 class="text-white text-uppercase">週六 - 週日</h6>
-                        <p>早上11:00 - 晚上19:00</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-5">
-                    <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">訂閱電子報</h4>
-                    <p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
-                    <div class="w-100">
-                        <div class="input-group">
-                            <input type="text" class="form-control border-light" style="padding: 25px;" placeholder="輸入您的信箱">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container-fluid text-center text-white  mt-4 py-4 px-sm-3 px-md-5" style="border-color: rgba(256, 256, 256, .1) !important;">
-                <p class="mb-2 text-white">版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>. 保留所有權利</p>
-                <p class="m-0 text-white">網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司 設計部 設計</a></p>
-            </div>
-        </div>
-     </section>
+<th:block th:replace="fragments/footer :: footer"></th:block>
      <!-- Footer End -->
      
      <!-- Back to Top -->
@@ -335,7 +373,7 @@
      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
      <script src="lib/easing/easing.min.js"></script>
      <script src="lib/waypoints/waypoints.min.js"></script>
-     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+     
      <script src="lib/tempusdominus/js/moment.min.js"></script>
      <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
      <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
@@ -347,7 +385,55 @@
      <!-- Template Javascript -->
      <script src="js/main.js"></script>
       <script src="js/indexRank.js"></script>
+      
+      
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+
+AOS.init();
+
+function animateAmount(el, target, duration) {
+    let start = 0;
+    let startTime = null;
+
+    function update(currentTime) {
+      if (!startTime) startTime = currentTime;
+      const progress = currentTime - startTime;
+      const percent = Math.min(progress / duration, 1);
+      const currentAmount = Math.floor(percent * target);
+      el.innerText = "NT$ " + currentAmount.toLocaleString();
+      if (percent < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const el = document.getElementById("donationAmountBox");
+    fetch("/api/donation/total-amount")
+      .then(response => response.json())
+      .then(data => {
+        const amount = data.totalAmount || 0;
+        animateAmount(el, amount, 2000);
+      })
+      .catch(err => {
+        console.error("無法載入總金額", err);
+        el.innerText = "NT$ 0";
+      });
+  });
+
+</script>
+
+
+<div class="floating-donation-box">
+  <div class="floating-donation-amount" id="donationAmountBox">NT$ 0</div>
+  <a th:href="@{/dona/donaAddA}" class="floating-donation-btn">
+    <i class="fas fa-heart"></i> 立即捐款
+  </a>
+</div>
+
      </body>
      
      </html>
-     
