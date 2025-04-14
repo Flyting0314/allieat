@@ -9,8 +9,6 @@ import com.backstage.callback.RemoveFromQueueCallback;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.web.context.request.async.DeferredResult;
@@ -21,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class BackStageHomePageServiceImpl implements BackStageHomePageService {
@@ -39,65 +38,41 @@ public class BackStageHomePageServiceImpl implements BackStageHomePageService {
 	private final List<DeferredResult<String>> waitingQueue = new CopyOnWriteArrayList<>();
 
 	@Override
-	public ResponseEntity<Map<String, Object>> getTotalDonations() {
+	public Map<String, Object> getTotalDonations() {
+		// 查詢最後一筆捐款總額
 		Map<String, Object> result = new HashMap<>();
-		try {
-			// 查詢最後一筆捐款總額
-			result.put("totalDonations", accDona.findTopByOrderByRankIdDesc().getAmount());
-		} catch (Exception e) {
-			result.put("error", "查詢總捐款金額失敗");
-			result.put("message", e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(result);
+		result.put("totalDonations", accDona.findTopByOrderByRankIdDesc().getAmount());
+		return result;
 	}
 
 	@Override
-	public ResponseEntity<Map<String, Object>> getTotalDonors() {
+	public Map<String, Object> getTotalDonors() {
 		Map<String, Object> result = new HashMap<>();
-		try {
-			// 查詢總捐款人有多少
-			result.put("totalDonors", donor.count());
-		} catch (Exception e) {
-			result.put("error", "查詢總捐款人數失敗");
-			result.put("message", e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(result);
+		//總捐贈者
+		result.put("totalDonors", donor.count());
+		return result;
 	}
 
 	@Override
-	public ResponseEntity<Map<String, Object>> getMonthlyDonations() {
+	public Map<String, Object> getMonthlyDonations() {
 		Map<String, Object> result = new HashMap<>();
-		try {
-			// 最新的累計值
-			result.put("monthlyDonations", totalAmount.Now() - totalAmount.LastMonth());
-		} catch (Exception e) {
-			result.put("error", "查詢當月捐款金額失敗");
-			result.put("message", e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(result);
+		//每月的捐贈
+		result.put("monthlyDonations", totalAmount.Now() - totalAmount.LastMonth());
+		return result;
 	}
 
 	@Override
-	public ResponseEntity<Map<String, Object>> getNewDonors() {
+	public Map<String, Object> getNewDonors() {
 		Map<String, Object> result = new HashMap<>();
-		try {
-			// 最近新增的捐款人
-			result.put("newDonors", donor.countDonorLastMonth());
-		} catch (Exception e) {
-			result.put("error", "查詢新增捐款人失敗");
-			result.put("message", e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(result);
+		// 最近新增的捐款人
+		result.put("newDonors", donor.countDonorLastMonth());		
+		return result;
 	}
 
 	@Override
-	public ResponseEntity<Map<String, Object>> getDonationChart() {
+	public Map<String, Object> getDonationChart() {
 		Map<String, Object> result = new HashMap<>();
-		try {
+
 			// 最近12個月累積捐款圖表
 			List<Object[]> test = totalAmount.findMonthlyTotalAmounts();
 			List<String> labels = new ArrayList<>();
@@ -109,19 +84,14 @@ public class BackStageHomePageServiceImpl implements BackStageHomePageService {
 			}
 			// 資料封裝
 			ChartDTO chartDTO = new ChartDTO(labels, data);
-			result.put("donationChart", chartDTO);
-		} catch (Exception e) {
-			result.put("error", "查詢捐款圖表資料失敗");
-			result.put("message", e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(result);
+			result.put("donationChart", chartDTO);	
+		return result;
 	}
 
 	@Override
-	public ResponseEntity<Map<String, Object>> getUsageChart() {
+	public Map<String, Object> getUsageChart() {
 		Map<String, Object> result = new HashMap<>();
-		try {
+	
 			// 最近12個月的領用情況
 			List<Object[]> test = monthlyRecipients.findMonthlyPickedOrders();
 			List<String> labels = new ArrayList<>();
@@ -132,50 +102,52 @@ public class BackStageHomePageServiceImpl implements BackStageHomePageService {
 			}
 			// 資料封裝
 			ChartDTO chartDTO1 = new ChartDTO(labels, data);
-			result.put("usageChart", chartDTO1);
-		} catch (Exception e) {
-			result.put("error", "查詢領用圖表資料失敗");
-			result.put("message", e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(result);
+			result.put("usageChart", chartDTO1);	
+		return result;
 	}
 
-	// 自製的監聽
+	// RemoveFromQueueCallback 用於移除等待中的 DeferredResult 狀態，是一個runnable物件
+	// onCompletion 與 onTimeout 是 DeferredResult<String> 提供的 callback 註冊方法，
+	// 這兩個方法皆需傳入一個 Runnable 物件，當請求完成或逾時時會自動執行該 Runnable。
+	@Override
 	public void registerListener(DeferredResult<String> dr) {
 		waitingQueue.add(dr);
-		// RemoveFromQueueCallback 用於移除等待中的 DeferredResult 狀態，是一個runnable物件
-		// onCompletion 與 onTimeout 是 DeferredResult<String> 提供的 callback 註冊方法，
-		// 這兩個方法皆需傳入一個 Runnable 物件，當請求完成或逾時時會自動執行該 Runnable。
 		dr.onCompletion(new RemoveFromQueueCallback(dr, waitingQueue));
 		dr.onTimeout(new RemoveFromQueueCallback(dr, waitingQueue));
+
 	}
+	
+	//thread-safe 型別
+	private final AtomicLong lastDonor = new AtomicLong(0);
 
-	// 快取狀態紀錄
-	Long lastDonor = 0L;
-
-	// 用於確認，這次得狀態有沒有改變
+	@Override
 	public void checkForUpdate() {
 		// 現在資訊查詢
 		Long currentDonor = donor.count();
-		System.out.println(currentDonor);
+
 		// 比對前後資訊，若不同則call。
-		if (currentDonor != lastDonor) {
-			lastDonor = currentDonor;
-			//回傳資料
-			Map<String, Object> payload = new HashMap<>();
-			payload.put("state", true);
+		if (currentDonor != lastDonor.get()) {
+			lastDonor.set(currentDonor);
+			// 回傳資料，變動時call送出上述六支api的資訊。
+			  Map<String, Object> payload = new HashMap<>();
+	          payload.putAll(getTotalDonations());
+	          payload.putAll(getTotalDonors());
+	          payload.putAll(getMonthlyDonations());
+	          payload.putAll(getNewDonors());
+	          payload.putAll(getDonationChart());
+	          payload.putAll(getUsageChart());
+			
 			try {
 				String json = objectMapper.writeValueAsString(payload);
 				for (DeferredResult<String> it : waitingQueue) {
 					it.setResult(json);
 				}
 				waitingQueue.clear();
-
 			} catch (Exception e) {
 				e.printStackTrace();
 				waitingQueue.clear();
 			}
 		}
 	}
+
 }

@@ -52,8 +52,7 @@ function fetchData(elementId, apiUrl, unit, key, useFormat = true) {
         .then(data => {
             const value = data[key];
             if (value !== undefined) {
-                const displayValue = useFormat ? formatNumber(value) + unit : value + unit;
-                document.getElementById(elementId).innerText = displayValue;
+                updateElement(elementId, value, unit, useFormat);
             } else {
                 console.error(`Key '${key}' not found in response from ${apiUrl}`);
             }
@@ -67,54 +66,69 @@ function fetchChartData(chartId, apiUrl, label, borderColor) {
         .then(response => response.json())
         .then(data => {
             const chartKey = Object.keys(data)[0];
-            const chartData = data[chartKey];
-
-            const ctx = document.getElementById(chartId).getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: chartData.labels,
-                    datasets: [{
-                        label: label,
-                        data: chartData.data,
-                        borderColor: borderColor,
-                        backgroundColor: 'transparent',
-                        borderWidth: 2,
-                        tension: 0.3,
-                        pointRadius: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
+            renderChart(chartId, data[chartKey], label, borderColor);
         })
         .catch(error => console.error(`Error fetching ${label} data:`, error));
 }
 
+// 數字格式化
 function formatNumber(num) {
     return num.toLocaleString(); // 加上千位逗號
 }
 
-// 長輪詢機制：即時監聽變動並更新資料
+// 更新卡片數值欄位
+function updateElement(elementId, value, unit, useFormat = true) {
+    const displayValue = useFormat ? formatNumber(value) + unit : value + unit;
+    document.getElementById(elementId).innerText = displayValue;
+}
+
+// 繪製圖表
+function renderChart(chartId, chartData, label, borderColor) {
+    const ctx = document.getElementById(chartId).getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: label,
+                data: chartData.data,
+                borderColor: borderColor,
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                tension: 0.3,
+                pointRadius: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+}
+
+// 長輪詢機制：即時監聽變動並更新資料（直接使用推播資料）
 function setupLongPollingForUpdate() {
     function poll() {
         authFetch(API_ENDPOINTS.watch)
             .then(response => response.json())
             .then(data => {
-                if (data.state) {
-                    // 若後端判定有變動，重新撈取六支 API
-                    fetchData("totalDonations", API_ENDPOINTS.totalDonations, "元", "totalDonations", true);
-                    fetchData("totalDonors", API_ENDPOINTS.totalDonors, "人", "totalDonors", false);
-                    fetchData("monthlyDonations", API_ENDPOINTS.monthlyDonations, "元", "monthlyDonations", true);
-                    fetchData("newDonors", API_ENDPOINTS.newDonors, "人", "newDonors", false);
-                    fetchChartData('donationChart', API_ENDPOINTS.donationChart, '累積捐款', '#3a6186');
-                    fetchChartData('usageChart', API_ENDPOINTS.usageChart, '愛心點領用', 'rgba(54, 162, 235, 1)');
-                }
+                // 直接使用推播回傳資料更新畫面
+                if (data.totalDonations !== undefined)
+                    updateElement("totalDonations", data.totalDonations, "元", true);
+                if (data.totalDonors !== undefined)
+                    updateElement("totalDonors", data.totalDonors, "人", false);
+                if (data.monthlyDonations !== undefined)
+                    updateElement("monthlyDonations", data.monthlyDonations, "元", true);
+                if (data.newDonors !== undefined)
+                    updateElement("newDonors", data.newDonors, "人", false);
+                if (data.donationChart)
+                    renderChart("donationChart", data.donationChart, "累積捐款", "#3a6186");
+                if (data.usageChart)
+                    renderChart("usageChart", data.usageChart, "愛心點領用", "rgba(54, 162, 235, 1)");
+
                 poll(); // 持續輪詢
             })
             .catch(err => {
