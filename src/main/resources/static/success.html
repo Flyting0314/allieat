@@ -64,22 +64,28 @@
         
     </div>
 
-   <script>
+  <script>
   document.addEventListener("DOMContentLoaded", () => {
     const data = JSON.parse(sessionStorage.getItem("orderSuccess"));
 
     if (data) {
+      // ⬇️ 如果 orderId 存在 localStorage 中，就補上
+      const fullData = {
+        ...data,
+        orderId: data.orderId || localStorage.getItem("lastOrderId") || null // 補強處理
+      };
+      sessionStorage.setItem("orderSuccess", JSON.stringify(fullData));
+
       // 渲染訂單資訊
-      document.getElementById("storeName").textContent = data.storeName || "未知餐廳";
-      document.getElementById("storeAddress").textContent = data.address || "未提供地址";
-      document.getElementById("pickupCode").textContent = data.pickupCode || "------";
+      document.getElementById("storeName").textContent = fullData.storeName || "未知餐廳";
+      document.getElementById("storeAddress").textContent = fullData.address || "未提供地址";
+      document.getElementById("pickupCode").textContent = fullData.pickupCode || "------";
       document.getElementById("pickupTime").textContent = "店家接單後會通知您";
 
       // ✅ 自動跳轉到 pickupMap.html
       setTimeout(() => {
-    	  console.log("✅ 導頁前儲存的經緯度：", data.storeLat, data.storeLng);
-
-        window.location.href = "/pickupMap.html"; // 檔名應統一為小寫且一致
+        console.log("✅ 導頁前儲存的經緯度：", fullData.storeLat, fullData.storeLng);
+        window.location.href = "/pickupMap.html";
       }, 5000);
     } else {
       alert("⚠️ 無訂單資料，請重新下單！");
@@ -91,6 +97,7 @@
     window.location.href = "/index.html";
   }
 </script>
+
 
 
 </body>
