@@ -76,8 +76,8 @@ public class LoginController {
             } else if (member.getReviewed() == 1 && member.getAccStat() == 0) {
                 model.addAttribute("error", "帳號已審核通過，請至信箱點擊啟用連結後再登入！");
                 return "registerAndLogin/login";
-            } else if (member.getAccStat() == 0) {
-                model.addAttribute("error", "店家資料補件通知已寄送，請依指示補齊相關資料");
+            } else if (member.getAccStat() == 2) {
+                model.addAttribute("error", "帳號異常,請聯繫官方");
                 return "registerAndLogin/login";
             }
             
@@ -106,8 +106,8 @@ public class LoginController {
             } else if (store.getReviewed() == 1 && store.getAccStat() == 0) {
                 model.addAttribute("error", "帳號已審核通過，請至信箱點擊啟用連結後再登入！");
                 return "registerAndLogin/login";
-            } else if (store.getAccStat() == 0) {
-                model.addAttribute("error", "店家資料補件通知已寄送，請依指示補齊相關資料");
+            } else if (store.getAccStat() == 2) {
+                model.addAttribute("error", "帳號異常,請聯繫官方");
                 return "registerAndLogin/login";
             }
             

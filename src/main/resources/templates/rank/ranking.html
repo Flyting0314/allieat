@@ -2,287 +2,113 @@
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head >
 <th:block th:replace="fragments/header :: header"></th:block>
-    <style>
-        /* 基本重置樣式 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
-            
-        }
-        
-        body {
-            background-color: #f5f5f9;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* 登入頁面主體樣式 */
-        .merchant_login_wrapper {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 40px 0;
-            margin-top: 20px;
-        }
-        
-        /* 登入容器樣式 */
-        .merchant_login_container {
-            background-color: white;
-            width: 100%;
-            max-width: 500px;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-        
-        /* 登入標題樣式 */
-        .merchant_login_title {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 30px;
-            color: #333;
-            text-align: center;
-        }
-        
-        /* 表單組樣式 */
-        .merchant_form_group {
-            margin-bottom: 20px;
-        }
-        
-        /* 表單標籤樣式 */
-        .merchant_form_label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 16px;
-            color: #333;
-        }
-        
-        /* 表單輸入欄位樣式 */
-        .merchant_form_input {
-            width: 100%;
-            padding: 14px;
-            font-size: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            background-color: #f5f5f9;
-            color: #333;
-            transition: border-color 0.3s;
-        }
-        
-        .merchant_form_input:focus {
-            border-color: #4285f4;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
-        }
-        
-        /* 登入按鈕樣式 */
-        .merchant_login_btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            background-color: #4285f4;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            text-align: center;
-            margin-top: 30px;
-        }
-        
-        .merchant_login_btn:hover {
-            background-color: #3367d6;
-        }
-        
-        /* 記住我選項樣式 */
-        .merchant_remember_container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-        
-        .merchant_remember_checkbox {
-            margin-right: 8px;
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-        
-        .merchant_remember_label {
-            font-size: 14px;
-            color: #666;
-            cursor: pointer;
-        }
-        
-        /* 忘記密碼連結樣式 */
-        .merchant_forgot_link {
-            font-size: 14px;
-            color: #4285f4;
-            text-decoration: none;
-            float: right;
-        }
-        
-        .merchant_forgot_link:hover {
-            text-decoration: underline;
-        }
-        
-        /* 分隔線樣式 */
-        .merchant_divider {
-            height: 1px;
-            background-color: #e0e0e0;
-            margin: 30px 0;
-        }
-        
-        /* 註冊連結容器 */
-        .merchant_register_container {
-            text-align: center;
-        }
-        
-        .merchant_register_text {
-            font-size: 14px;
-            color: #666;
-        }
-        
-        .merchant_register_link {
-            color: #4285f4;
-            text-decoration: none;
-            font-weight: 500;
-            
-        }
-        
-        .merchant_register_link:hover {
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        
-        /* 登入選項區塊樣式 */
-        .merchant_login_options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 5px;
-        }
-        
-        /* 響應式調整 */
-        @media (max-width: 576px) {
-            .merchant_login_container {
-                padding: 30px 20px;
-                margin: 0 15px;
-            }
-        }
-        /* 主體背景 */
+<link th:href="@{/css/indexRank.css}" rel="stylesheet">
 
-
-/* 排行區塊統一卡片樣式 */
-.ranking-container {
-    background-color: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    padding: 30px;
-    margin: 20px auto;
-    width: 90%;
-    max-width: 900px;
-    transition: all 0.3s ease-in-out;
-}
-
-/* 標題 */
-.ranking-container h2 {
-    font-size: 1.5rem;
-    color: #f59d23;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #fbe0b9;
-    padding-bottom: 10px;
-}
-
-/* 表格樣式 */
-.ranking-container table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-}
-
-.ranking-container th, .ranking-container td {
-    padding: 14px;
-    border-bottom: 1px solid #eee;
-    text-align: center;
-}
-
-.ranking-container th {
-    background-color: #fff3e6;
-    color: #555;
-    font-weight: 600;
-}
-
-.ranking-container tbody tr:hover {
-    background-color: #fff7f0;
-}
-
-/* 分頁切換 tab */
-.tabs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-.tab {
-    background-color: #fff3e0;
-    color: #c77000;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.2s;
-}
-
-.tab:hover, .tab.active {
-    background-color: #f59d23;
-    color: #fff;
-    border: 2px solid #f59d23;
-}
-        
-    </style>
 </head>
 
 <body>
    <th:block th:replace="fragments/bodySection :: bodySection"></th:block>
 
-    <style>
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab { padding: 10px; cursor: pointer; background: lightgray; border-radius: 5px; }
-        .tab.active { background: darkgray; color: white; }
-        .ranking-container { display: none; }
-        .ranking-container.active { display: block; }
-    </style>
-</head>
-<body>
+<div class="ranking-and-total-wrapper">
+
+    <!-- 🅰 左側 A區：4 個排行榜 -->
+    <div class="ranking-left-column">
+        <div class="tabs">
+            <div class="tab active" onclick="switchAreaTab('a', 'personal-total', this)">個人總捐款</div>
+            <div class="tab" onclick="switchAreaTab('a', 'company-total', this)">企業總捐款</div>
+            <div class="tab" onclick="switchAreaTab('a', 'personal-monthly', this)">本月個人</div>
+            <div class="tab" onclick="switchAreaTab('a', 'company-monthly', this)">本月企業</div>
+        </div>
 
 
+        <div id="personal-total" class="ranking-container active area-a">
+        <h2>個人捐款排行榜（Top 20）</h2>
+    <table>
+        <thead><tr><th>#</th><th>姓名</th><th>金額</th></tr></thead>
+        <tbody>
+            <tr th:each="r, stat : ${personalTopList}">
+                <td th:text="${stat.count}"></td>
+                <td th:text="${r.identityData}"></td>
+                <td th:text="${r.totalDonation}"></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+    
+    
+        <div id="company-total" class="ranking-container area-a">
+        <h2>企業捐款排行榜（Top 20）</h2>
+    <table>
+        <thead><tr><th>#</th><th>企業名稱</th><th>金額</th></tr></thead>
+        <tbody>
+            <tr th:each="r, stat : ${companyTopList}">
+                <td th:text="${stat.count}"></td>
+                <td th:text="${r.identityData}"></td>
+                <td th:text="${r.totalDonation}"></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+    
+    
+        <div id="personal-monthly" class="ranking-container area-a">
+        <h2>本月個人捐款排行榜</h2>
+    <table>
+        <tbody>
+            <tr th:each="r, stat : ${monthlyPersonalTopList}">
+                <td th:text="${stat.count}"></td>
+                <td th:text="${r.identityData}"></td>
+                <td th:text="${r.totalDonation}"></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+    
+    
+        <div id="company-monthly" class="ranking-container area-a">
+        <h2> 本月企業捐款排行榜</h2>
+    <table>
+        <tbody>
+            <tr th:each="r, stat : ${monthlyCompanyTopList}">
+                <td th:text="${stat.count}"></td>
+                <td th:text="${r.identityData}"></td>
+                <td th:text="${r.totalDonation}"></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+    </div>
 
 
-<h1>捐款哈燒排行榜</h1>
+    <div class="ranking-right-column">
+        <!-- 累計捐款金額 -->
+        <div class="donation-total-supercard">
+            <h2> 累計捐款金額 </h2>
+            <div id="donationAmount" class="donation-amount-glow">NT$ 0</div>
+            <p class="donation-caption">感謝每位天使的溫暖 ❤️</p>
+        </div>
 
-<div class="tabs">
-    <div class="tab active" onclick="showRank('personal-total')">個人總捐款</div>
-    <div class="tab" onclick="showRank('company-total')">企業總捐款</div>
-    <div class="tab" onclick="showRank('personal-monthly')">本月個人</div>
-    <div class="tab" onclick="showRank('company-monthly')">本月企業</div>
-    <div class="tab" onclick="showRank('new-donors')">新星榜</div>
-    <div class="tab" onclick="showRank('latest-donations')">最新捐款</div>
-</div>
+        <!-- Tab 切換 -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchAreaTab('b', 'new-donors', this)">新星榜</div>
+            <div class="tab" onclick="switchAreaTab('b', 'latest-donations', this)">最新捐款</div>
+        </div>
 
-
-<!-- 最新捐款排行榜 -->
-<div id="latest-donations" class="ranking-container">
-    <h2>最新捐款</h2>
+        <div id="new-donors" class="ranking-container active area-b">
+        <h2> 新星榜（首次捐款）</h2>
+    <table>
+        <thead><tr><th>#</th><th>姓名</th><th>金額</th></tr></thead>
+        <tbody>
+            <tr th:each="d, stat : ${newDonorList}">
+                <td th:text="${stat.count}"></td>
+                <td th:text="${d.identityData}"></td>
+                <td th:text="${d.donationIncome}"></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+        <div id="latest-donations" class="ranking-container area-b">
+        <h2>最新捐款</h2>
     <table>
         <thead><tr><th>#</th><th>姓名/企業</th><th>金額</th><th>時間</th></tr></thead>
         <tbody>
@@ -294,84 +120,17 @@
             </tr>
         </tbody>
     </table>
-</div>
+    </div>
+    </div>
 
-
-<!-- 個人捐款排行榜 -->
-<div id="personal-total" class="ranking-container active">
-    <h2>個人捐款排行榜（Top 20）</h2>
-    <table>
-        <thead><tr><th>#</th><th>姓名</th><th>金額</th></tr></thead>
-        <tbody>
-            <tr th:each="r, stat : ${personalTopList}">
-                <td th:text="${stat.count}"></td>
-                <td th:text="${r.identityData}"></td>
-                <td th:text="${r.totalDonation}"></td>
-            </tr>
-        </tbody>
-    </table>
 </div>
 
 
 
 
-<!-- 企業捐款排行榜 -->
-<div id="company-total" class="ranking-container">
-    <h2>企業捐款排行榜（Top 20）</h2>
-    <table>
-        <thead><tr><th>#</th><th>企業名稱</th><th>金額</th></tr></thead>
-        <tbody>
-            <tr th:each="r, stat : ${companyTopList}">
-                <td th:text="${stat.count}"></td>
-                <td th:text="${r.identityData}"></td>
-                <td th:text="${r.totalDonation}"></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 
-<!-- 本月個人捐款排行榜 -->
-<div id="personal-monthly" class="ranking-container">
-    <h2>本月個人捐款排行榜</h2>
-    <table>
-        <tbody>
-            <tr th:each="r, stat : ${monthlyPersonalTopList}">
-                <td th:text="${stat.count}"></td>
-                <td th:text="${r.identityData}"></td>
-                <td th:text="${r.totalDonation}"></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 
-<!-- 本月企業捐款排行榜 -->
-<div id="company-monthly" class="ranking-container">
-    <h2> 本月企業捐款排行榜</h2>
-    <table>
-        <tbody>
-            <tr th:each="r, stat : ${monthlyCompanyTopList}">
-                <td th:text="${stat.count}"></td>
-                <td th:text="${r.identityData}"></td>
-                <td th:text="${r.totalDonation}"></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 
-<!-- 新星榜 -->
-<div id="new-donors" class="ranking-container">
-    <h2> 新星榜（首次捐款）</h2>
-    <table>
-        <thead><tr><th>#</th><th>姓名</th><th>金額</th></tr></thead>
-        <tbody>
-            <tr th:each="d, stat : ${newDonorList}">
-                <td th:text="${stat.count}"></td>
-                <td th:text="${d.identityData}"></td>
-                <td th:text="${d.donationIncome}"></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 <!-- Footer Start -->
 <th:block th:replace="fragments/footer :: footer"></th:block>
 
@@ -400,14 +159,82 @@
 <!-- Login JavaScript -->
 <!-- 用戶類型切換 -->
 <script src="/js/jquery-3.2.1.min.js"></script>
+<!-- <script src="js/indexRank.js"></script> -->
 <script>
-    function showRank(rankId) {
-        document.querySelectorAll('.ranking-container').forEach(div => div.classList.remove('active'));
-        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+function switchAreaTab(area, rankId, tabElement) {
+    
+    const allTabs = document.querySelectorAll(`.tabs`);
+    const allRankingContainers = document.querySelectorAll(`.ranking-container`);
 
-        document.getElementById(rankId).classList.add('active');
-        event.target.classList.add('active');
+    
+    allTabs.forEach(tabGroup => {
+        tabGroup.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    });
+    tabElement.classList.add('active');
+
+   
+    allRankingContainers.forEach(div => {
+        if (div.classList.contains(`area-${area}`)) {
+            div.classList.remove('active');
+        }
+    });
+    document.getElementById(rankId).classList.add('active');
+}
+    
+    
+    //intime
+
+    let currentAmount = 0;
+
+    function animateDonationAmount(target) {
+        const element = document.getElementById('donationAmount');
+        const duration = 1000; // 總動畫時間（毫秒）
+        const frameRate = 60;
+        const totalFrames = Math.round(duration / (1000 / frameRate));
+        const increment = (target - currentAmount) / totalFrames;
+        let frame = 0;
+
+        function updateNumber() {
+            frame++;
+            currentAmount += increment;
+
+            // 加上 scale 動畫類
+            element.classList.add('animate');
+            element.textContent = 'NT$ ' + Math.floor(currentAmount).toLocaleString();
+
+            if (frame < totalFrames) {
+                requestAnimationFrame(updateNumber);
+            } else {
+                currentAmount = target;
+                element.textContent = 'NT$ ' + target.toLocaleString();
+                element.classList.remove('animate');
+            }
+        }
+
+        requestAnimationFrame(updateNumber);
     }
+
+    function fetchDonationTotal() {
+        fetch('/api/donation/total-amount')
+            .then(response => response.json())
+            .then(data => {
+                const target = data.totalAmount || 0;
+                if (target > currentAmount) {
+                    animateDonationAmount(target);
+                }
+            })
+            .catch(error => {
+                console.error('取得捐款金額失敗:', error);
+            });
+    }
+
+    // 頁面載入與定時更新
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchDonationTotal(); // 初始加載
+        setInterval(fetchDonationTotal, 60000); // 每分鐘更新一次
+    });
+    
+
 </script>
 
 </body>
