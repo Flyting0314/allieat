@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>點數發放明細</title>
+    <!-- 驗證 -->
+    <script src="./js/backstage_auth_js.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+    <link rel="stylesheet" href="css/style_backstage.css">
+    
+    <style>
+        /* 上方標題區域 */
+        .gradient-container {
+            color: white;
+            padding: 5px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* 大標題 */
+        .header-title {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* 主表格區域 */
+        .content-wrapper {
+            background: linear-gradient(135deg, #3a6186, #89253e);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .search-section {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            margin-left: 10px;
+        }
+        
+        .search-group label {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .search-group input,
+        .search-group select {
+            width: 180px;
+            height: 38px;
+            border-radius: 4px;
+            border: none;
+            padding: 8px 12px;
+        }
+        
+        .search-button {
+            height: 38px;
+            background-color: #5c9ce6;
+            border-color: #5c9ce6;
+            padding: 8px 15px;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            width: 70px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .pagination-container {
+            background-color: white;
+            padding: 15px;
+            border-top: 1px solid #dee2e6;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* 移除卡片頂部的邊距 */
+        .card-body {
+            padding-top: 0;
+        }
+
+        /* 返回上一頁按鈕樣式 */
+        .back-button-container {
+            margin: 10px 0 15px 0;
+        }
+
+        .back-button {
+            display: inline-block;
+            color: white;
+            background-color: #6c757d;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+
+        .back-button i {
+            margin-right: 5px;
+        }
+
+        /* 表格水平滾動樣式 */
+        .table-responsive {
+            overflow: visible; /* 允許下拉選單溢出 */
+            overflow-x: auto;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch; /* 為 iOS 裝置改善捲動 */
+        }
+
+        .table-responsive table {
+            min-width: 1200px; /* 根據欄位數量調整 */
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table th, .table td {
+            white-space: nowrap;  /* 防止文字換行 */
+            overflow: hidden;     /* 隱藏超出部分 */
+            max-width: 300px;     /* 設置最大寬度，可以根據實際需求調整 */
+        }
+
+        /* 禁用按鈕樣式 */
+        .btn-disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 左側側邊欄 -->
+            <div class="col-md-2 side-bar">
+                <a href="#">後台首頁</a>
+                <a href="#">合作店家管理</a>
+                
+                <!-- 可展開的受助者管理選項 -->
+                <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#recipientSubMenu" aria-expanded="false">
+                    受助者管理 <i class="fas fa-angle-down float-right mt-1"></i>
+                </a>
+                <div class="collapse" id="recipientSubMenu">
+                    <div class="sub-menu">
+                        <a href="#" class="sub-item">受助者管理</a>
+                        <a href="#" class="sub-item">受助者點數發放</a>
+                    </div>
+                </div>
+                
+                <a href="#">在冊單位管理</a>
+                <a href="#">捐款管理</a>
+                <a href="#">未領餐紀錄</a>
+            </div>
+    
+            <!-- 主要內容區域 -->
+            <div class="col-md-10">
+                <!-- 整個內容包裹在漸層容器中 -->
+                <div class="content-wrapper">
+                    <!-- 標題和搜尋區域 -->
+                    <div class="gradient-container">
+                        <div class="header-title mb-3">點數發放明細</div>
+                        
+                        <!-- 搜尋區域 -->
+                        <div class="search-section">
+                            <div class="search-group">
+                                <label>以受助者ID搜尋</label>
+                                <input type="text" id="search-member-id" placeholder="如1234">
+                            </div>
+                            
+                            <div class="search-group">
+                                <label>以姓名搜尋</label>
+                                <input type="text" id="search-name" placeholder="如王小明">
+                            </div>
+                            
+                            <div class="search-group">
+                                <label>依取得點數狀態查詢</label>
+                                <select id="search-points-status">
+                                    <option value="">所有</option>
+                                    <option value="1">已取得點數</option>
+                                    <option value="0">未取得點數</option>
+                                </select>
+                            </div>
+                            
+                            <button class="search-button" id="search-button">搜尋</button>
+                        </div>
+                    </div>
+
+                    <!-- 返回上一頁按鈕 -->
+                    <div class="back-button-container">
+                        <button class="back-button" id="back-button">
+                            <i class="fas fa-arrow-left"></i> 回上一頁
+                        </button>
+                    </div>
+    
+                    <!-- 表格區域保持白色卡片 -->
+                    <div class="table-container">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    點數發放明細ID 
+                                                    <button class="btn btn-link p-0 ml-2" onclick="toggleIdSort()">
+                                                        <i class="fas fa-sort-up" id="idSortIcon"></i>
+                                                    </button>
+                                                </div>
+                                            </th>
+                                            <th>點數發放時間</th>
+                                            <th>受助者ID</th>
+                                            <th>姓名</th>
+                                            <th>在冊單位</th>
+                                            <th>身分證字號</th>
+                                            <th>行動電話</th>
+                                            <th>本月取得點數</th>
+                                            <th>個人點數發放</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="paydetail-table">
+                                        <!-- 這裡會動態插入 paydetail 資料 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- 分頁功能整合到表格卡片中。返回上一頁按鈕預設隱藏  -->
+                        <div class="pagination-container">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button id="reset-search-btn" class="btn btn-secondary" onclick="resetSearch()" style="display: none;">
+                                    <i class="fas fa-undo mr-1"></i> 返回全部列表
+                                </button>
+                                <ul class="pagination mb-0" id="pagination">
+                                    <!-- 分頁將透過JavaScript動態生成 -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 點數發放浮動視窗 (使用Bootstrap模態框) -->
+    <div class="modal fade" id="paydetail-modal" tabindex="-1" role="dialog" aria-labelledby="paydetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paydetailModalLabel">點數發放</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>您正在為「受助者ID: <span id="paydetail-member-id"></span> <span id="paydetail-member-name"></span>」發放點數</p>
+                    <p>應發放點數: <span id="paydetail-payout-points"></span></p>
+                    <p>已發放點數: <span id="paydetail-current-points"></span></p>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="paydetail-points-input" placeholder="請輸入發放點數" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="paydetail-cancel-button">取消</button>
+                    <button type="button" class="btn btn-primary" id="paydetail-confirm-button">確定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 定義全域變數與分頁相關變數
+        let currentPage = 1;
+        const recordsPerPage = 7; // 統一設定為7筆
+        let totalPages = 1;
+        let allRecords = [];
+        let idSortAscending = true; // 排序方向全局變量
+    
+        document.addEventListener("DOMContentLoaded", function () {
+            // 啟用登入檢查
+            backstageAuth.requireLogin();
+    
+            // 初始化ID排序狀態
+            let idSortAscending = true;
+    
+            // 返回上一頁按鈕事件
+            document.getElementById('back-button').addEventListener('click', function() {
+                window.location.href = 'backstage_payrecord_management.html';
+            });
+    
+            const urlParams = new URLSearchParams(window.location.search);
+            const payRecordId = urlParams.get('payRecordId');
+    
+            if (payRecordId) {
+                // 使用統一的函數加載數據
+                fetchRecords(true, payRecordId);
+            } else {
+                console.error("缺少 payRecordId");
+                document.getElementById('paydetail-table').innerHTML = 
+                    '<tr><td colspan="9" class="text-center text-danger">缺少必要參數，無法載入資料</td></tr>';
+            }
+    
+            // 點擊發放點數按鈕事件已移動到 bindPointsButtonEvents 函數中
+    
+            // 確定按鈕事件
+            document.getElementById("paydetail-confirm-button").addEventListener("click", function () {
+                const points = document.getElementById("paydetail-points-input").value;
+                const pointsInt = parseInt(points, 10);
+                const currentPoints = parseInt(document.getElementById("paydetail-current-points").innerText);
+                const payoutPoints = parseInt(document.getElementById("paydetail-payout-points").innerText);
+                
+                // 檢查是否是有效的數字
+                if (isNaN(pointsInt) || pointsInt <= 0) {
+                    alert("請輸入大於 0 的點數！");
+                    return;
+                }
+                
+                // 檢查補發後是否超過應發點數
+                if (currentPoints + pointsInt > payoutPoints) {
+                    if (!confirm(`補發後點數將超過應發點數 ${payoutPoints}，是否確定發放？`)) {
+                        return;
+                    }
+                }
+    
+                // 呼叫發放點數的函數，並傳遞數字型態的 points
+                const payDetailId = $('#paydetail-modal').attr("data-paydetail-id");
+                grantPointsToMember(payDetailId, pointsInt);
+            });
+    
+            // 搜尋按鈕事件
+            document.getElementById('search-button').addEventListener('click', function() {
+                fetchRecords(false, payRecordId);
+            });
+            
+            // 為搜尋欄位綁定回車鍵事件
+            document.getElementById('search-member-id').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('search-button').click();
+                }
+            });
+            
+            document.getElementById('search-name').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('search-button').click();
+                }
+            });
+        });
+    
+        // 切換ID排序
+        window.toggleIdSort = function() {
+            idSortAscending = !idSortAscending;
+            
+            // 更新排序圖標
+            const icon = document.getElementById('idSortIcon');
+            icon.className = idSortAscending ? 'fas fa-sort-up' : 'fas fa-sort-down';
+            
+            // 獲取URL中的payoutId
+            const urlParams = new URLSearchParams(window.location.search);
+            const payoutId = urlParams.get('payRecordId');
+            
+            // 重新載入數據並按排序方向顯示
+            if (payoutId) {
+                fetchRecords(false, payoutId);
+            }
+        };
+    
+        // 發放點數函數
+        function grantPointsToMember(payDetailId, points) {
+            backstageAuth.authFetch("http://localhost:8080/paydetails/update-points", {
+                method: "POST",
+                body: {
+                    payDetailId: payDetailId,
+                    pointsExpensed: points
+                }
+            })
+            .then(response => {
+                const contentType = response.headers.get('content-type');
+    
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                }
+            })
+            .then(data => {
+                console.log("點數發放結果:", data);
+    
+                // 只有在成功時才更新頁面
+                if (data && data.message && data.message.includes('成功')) {
+                    alert(data.message);
+    
+                    // 立即更新頁面上的點數
+                    const row = document.querySelector(`button[data-paydetail-id="${payDetailId}"]`).closest('tr');
+                    const pointsCell = row.querySelector('td:nth-child(8)');
+                    const currentButton = row.querySelector('.grant-points-btn');
+    
+                    if (pointsCell && currentButton) {
+                        // 獲取應發放點數
+                        const payoutPoints = parseInt(currentButton.getAttribute("data-payout-points")) || 10000;
+                        
+                        // 更新已發放點數
+                        const currentPoints = parseInt(pointsCell.textContent);
+                        const newTotalPoints = currentPoints + points;
+                        pointsCell.textContent = newTotalPoints;
+    
+                        // 關鍵修改：只有當新的總點數達到或超過應發放點數時，才禁用按鈕
+                        if (newTotalPoints >= payoutPoints) {
+                            currentButton.disabled = true;
+                            currentButton.classList.remove('btn-primary');
+                            currentButton.classList.add('btn-disabled');
+                        } else {
+                            // 點數仍未達到應發放點數，按鈕保持可點擊狀態
+                            currentButton.disabled = false;
+                            currentButton.classList.add('btn-primary');
+                            currentButton.classList.remove('btn-disabled');
+                        }
+                    }
+                    
+                    // 關閉模態框
+                    $('#paydetail-modal').modal('hide');
+                    document.getElementById("paydetail-points-input").value = "";
+                } else {
+                    alert(data.message || '點數發放處理失敗');
+                }
+            })
+            .catch(error => {
+                console.error("發放點數時發生錯誤:", error);
+                alert("點數發放失敗：" + error.message);
+    
+                // 恢復原始點數
+                const row = document.querySelector(`button[data-paydetail-id="${payDetailId}"]`).closest('tr');
+                const pointsCell = row.querySelector('td:nth-child(8)');
+                if (pointsCell) {
+                    const originalPoints = parseInt(pointsCell.getAttribute('data-original-points') || pointsCell.textContent);
+                    pointsCell.textContent = originalPoints;
+                }
+            });
+        }
+    
+        // 獲取記錄資料
+        function fetchRecords(isInitialLoad = false, payoutId) {
+            // 獲取搜尋條件
+            const memberId = document.getElementById('search-member-id').value;
+            const name = document.getElementById('search-name').value;
+            const pointsStatus = document.getElementById('search-points-status').value;
+            
+            // 顯示載入中提示
+            document.getElementById('paydetail-table').innerHTML = '<tr><td colspan="9" class="text-center">載入中...</td></tr>';
+            
+            // 構建查詢參數
+            const queryParams = new URLSearchParams();
+            
+            // 檢查是否有搜尋條件
+            let hasSearchCriteria = false;
+            
+            // 只有在非初始載入且有搜尋條件時才添加篩選參數
+            if (!isInitialLoad) {
+                if (memberId && memberId.trim() !== '') {
+                    queryParams.append('memberId', memberId.trim());
+                    hasSearchCriteria = true;
+                }
+                
+                if (name && name.trim() !== '') {
+                    queryParams.append('name', name.trim());
+                    hasSearchCriteria = true;
+                }
+                
+                if (pointsStatus && pointsStatus !== '') {
+                    queryParams.append('pointsStatus', pointsStatus);
+                    hasSearchCriteria = true;
+                }
+            }
+            
+            // 控制重設按鈕的顯示
+            const resetButton = document.getElementById('reset-search-btn');
+            if (resetButton) {
+                resetButton.style.display = hasSearchCriteria ? 'block' : 'none';
+            }
+            
+            // 建立帶查詢參數的 URL
+            const url = `http://localhost:8080/paydetails/getByPayRecord/${payoutId}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+            
+            // 執行 API 請求
+            backstageAuth.authFetch(url)
+            .then(response => {
+                console.log('查詢參數:', queryParams.toString());
+                console.log('Request URL:', url);
+                
+                if (!response.ok) {
+                    throw new Error('網路回應不正確');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received data:', data);
+                
+                // 根據排序方向對數據進行排序
+                allRecords = idSortAscending
+                    ? data.sort((a, b) => a.payDetailId - b.payDetailId)
+                    : data.sort((a, b) => b.payDetailId - a.payDetailId);
+                
+                totalPages = Math.ceil(allRecords.length / recordsPerPage);
+                totalPages = totalPages === 0 ? 1 : totalPages;
+                
+                currentPage = 1;
+                displayRecords(currentPage);
+                updatePagination();
+            })
+            .catch(error => {
+                console.error("獲取資料時發生錯誤:", error);
+                document.getElementById('paydetail-table').innerHTML = 
+                    '<tr><td colspan="9" class="text-center text-danger">資料載入失敗，請稍後再試</td></tr>';
+            });
+        }
+    
+        // 顯示特定頁的記錄
+        function displayRecords(page) {
+            const tableBody = document.getElementById("paydetail-table");
+            tableBody.innerHTML = "";
+            
+            // 如果沒有記錄，顯示提示訊息
+            if (allRecords.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="9" class="text-center">沒有符合條件的記錄</td></tr>';
+                return;
+            }
+            
+            // 計算當前頁的資料範圍
+            const startIndex = (page - 1) * recordsPerPage;
+            const endIndex = Math.min(startIndex + recordsPerPage, allRecords.length);
+            
+            // 取得當前頁的資料
+            const currentRecords = allRecords.slice(startIndex, endIndex);
+            
+            // 生成表格行
+            currentRecords.forEach(detail => {
+                const row = document.createElement("tr");
+                
+                // 根據點數狀態設置按鈕樣式
+                const buttonClass = detail.pointsExpensed < detail.payoutPoints ? "btn-primary" : "btn-disabled";
+                
+                row.innerHTML = `
+                    <td>${detail.payDetailId}</td>
+                    <td>${formatTimestamp(detail.payDate)}</td>
+                    <td>${detail.memberId}</td>
+                    <td>${detail.name}</td>
+                    <td>${detail.organizationName}</td>
+                    <td>${detail.idNum}</td>
+                    <td>${detail.phone}</td>
+                    <td data-original-points="${detail.pointsExpensed}">${detail.pointsExpensed}</td>
+                    <td>
+                        <button 
+                            class="btn ${buttonClass} grant-points-btn" 
+                            data-paydetail-id="${detail.payDetailId}" 
+                            data-member-id="${detail.memberId}" 
+                            data-member-name="${detail.name}" 
+                            data-payout-points="${detail.payoutPoints}"
+                            ${detail.pointsExpensed < detail.payoutPoints ? "" : "disabled"}>
+                            發放點數
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // 重新綁定按鈕事件
+            bindPointsButtonEvents();
+        }
+    
+        // 更新分頁控制
+        function updatePagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            // 如果只有一頁，不顯示分頁控制
+            if (totalPages <= 1) {
+                return;
+            }
+            
+            // 前一頁按鈕
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="if(${currentPage} > 1) changePage(${currentPage - 1})">上一頁</a>`;
+            pagination.appendChild(prevLi);
+            
+            // 頁碼按鈕
+            // 最多顯示5個頁碼按鈕
+            const maxPagesToShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+            let endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+            
+            if (endPage - startPage < maxPagesToShow - 1) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageLi = document.createElement('li');
+                pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                pageLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>`;
+                pagination.appendChild(pageLi);
+            }
+            
+            // 下一頁按鈕
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="if(${currentPage} < ${totalPages}) changePage(${currentPage + 1})">下一頁</a>`;
+            pagination.appendChild(nextLi);
+        }
+    
+        // 切換頁面
+        function changePage(page) {
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                displayRecords(currentPage);
+                updatePagination();
+                
+                // 滾動到表格頂部
+                document.querySelector('.table-container').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    
+        // 清除搜尋條件並重新載入資料
+        function resetSearch() {
+            // 清空所有搜尋欄位
+            document.getElementById('search-member-id').value = '';
+            document.getElementById('search-name').value = '';
+            document.getElementById('search-points-status').value = '';
+            
+            // 獲取URL中的payoutId
+            const urlParams = new URLSearchParams(window.location.search);
+            const payoutId = urlParams.get('payRecordId');
+            
+            // 重新載入原始資料（不帶搜尋條件）
+            if (payoutId) {
+                fetchRecords(true, payoutId);
+            }
+            
+            // 隱藏重設按鈕
+            document.getElementById('reset-search-btn').style.display = 'none';
+        }
+    
+        // 格式化時間戳
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return "N/A";
+    
+            // 檢查 timestamp 是否為 Date 物件或字串
+            let formattedTimestamp = timestamp;
+            if (typeof timestamp === "string" && timestamp.indexOf(" ") > -1) {
+                formattedTimestamp = timestamp.replace(" ", "T") + ".000Z"; // 轉換為 ISO 格式
+            } else if (timestamp instanceof Date) {
+                formattedTimestamp = timestamp.toISOString();
+            }
+    
+            const date = new Date(formattedTimestamp);
+            return date.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
+        }
+    
+        // 為發放點數按鈕綁定事件
+        function bindPointsButtonEvents() {
+            // 點擊發放點數按鈕時顯示彈窗
+            document.querySelectorAll(".grant-points-btn").forEach(btn => {
+                if (!btn.classList.contains('btn-disabled')) {
+                    if (!btn.hasAttribute('data-event-bound')) {
+                        btn.setAttribute('data-event-bound', 'true');
+                        
+                        btn.addEventListener("click", function () {
+                            const payDetailId = this.getAttribute("data-paydetail-id");
+                            const memberId = this.getAttribute("data-member-id");
+                            const memberName = this.getAttribute("data-member-name");
+                            const payoutPoints = this.getAttribute("data-payout-points") || 10000; // 獲取應發點數
+                            
+                            // 獲取當前已發點數
+                            const row = this.closest('tr');
+                            const currentPoints = parseInt(row.querySelector('td:nth-child(8)').textContent) || 0;
+                            
+                            document.getElementById("paydetail-member-id").innerText = memberId;
+                            document.getElementById("paydetail-member-name").innerText = memberName;
+                            document.getElementById("paydetail-payout-points").innerText = payoutPoints;
+                            document.getElementById("paydetail-current-points").innerText = currentPoints;
+    
+                            // 計算剩餘可發放點數，並設置為預設值
+                            const remainingPoints = parseInt(payoutPoints) - currentPoints;
+                            document.getElementById("paydetail-points-input").value = Math.max(0, remainingPoints);
+    
+                            $('#paydetail-modal').modal('show').attr({
+                                "data-paydetail-id": payDetailId,
+                                "data-payout-points": payoutPoints
+                            });
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+
+
+
+
+    
+
+//=========================================以下為動態查詢功能相關javascript==========================================
+<script>
+
+
+// 在文檔載入完成後執行
+document.addEventListener("DOMContentLoaded", function () {
+    // 獲取URL中的payoutId
+    const urlParams = new URLSearchParams(window.location.search);
+    const payoutId = urlParams.get('payRecordId'); // URL參數保持不變，仍使用payRecordId作為參數名
+
+    // 如果有payoutId，則載入資料
+    if (payoutId) {
+        // 預設載入指定payoutId的所有資料
+        fetchRecords(true, payoutId);
+        
+        // 搜尋按鈕事件
+        document.getElementById('search-button').addEventListener('click', function() {
+            fetchRecords(false, payoutId);
+        });
+        
+        // 為搜尋欄位綁定回車鍵事件
+        document.getElementById('search-member-id').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('search-button').click();
+            }
+        });
+        
+        document.getElementById('search-name').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('search-button').click();
+            }
+        });
+    } else {
+        console.error("缺少 payRecordId");
+        document.getElementById('paydetail-table').innerHTML = 
+            '<tr><td colspan="9" class="text-center text-danger">缺少必要參數，無法載入資料</td></tr>';
+    }
+});
+
+// 獲取記錄資料
+function fetchRecords(isInitialLoad = false, payoutId) {
+    // 獲取搜尋條件
+    const memberId = document.getElementById('search-member-id').value;
+    const name = document.getElementById('search-name').value;
+    const pointsStatus = document.getElementById('search-points-status').value;
+    
+    // 顯示載入中提示
+    document.getElementById('paydetail-table').innerHTML = '<tr><td colspan="9" class="text-center">載入中...</td></tr>';
+    
+    // 構建查詢參數
+    const queryParams = new URLSearchParams();
+    
+    // 檢查是否有搜尋條件
+    let hasSearchCriteria = false;
+    
+    // 只有在非初始載入且有搜尋條件時才添加篩選參數
+    if (!isInitialLoad) {
+        if (memberId && memberId.trim() !== '') {
+            queryParams.append('memberId', memberId.trim());
+            hasSearchCriteria = true;
+        }
+        
+        if (name && name.trim() !== '') {
+            queryParams.append('name', name.trim());
+            hasSearchCriteria = true;
+        }
+        
+        if (pointsStatus && pointsStatus !== '') {
+            queryParams.append('pointsStatus', pointsStatus);
+            hasSearchCriteria = true;
+        }
+    }
+    
+    // 控制重設按鈕的顯示
+    const resetButton = document.getElementById('reset-search-btn');
+    if (resetButton) {
+        resetButton.style.display = hasSearchCriteria ? 'block' : 'none';
+    }
+    
+    // 建立帶查詢參數的 URL
+    const url = `http://localhost:8080/paydetails/getByPayRecord/${payoutId}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    
+    // 執行 API 請求
+    backstageAuth.authFetch(url)
+    .then(response => {
+        console.log('查詢參數:', queryParams.toString());
+        console.log('Request URL:', url);
+        
+        if (!response.ok) {
+            throw new Error('網路回應不正確');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Received data:', data);
+        
+        // 根據排序方向對數據進行排序
+        allRecords = idSortAscending
+            ? data.sort((a, b) => a.payDetailId - b.payDetailId)
+            : data.sort((a, b) => b.payDetailId - a.payDetailId);
+        
+        totalPages = Math.ceil(allRecords.length / recordsPerPage);
+        totalPages = totalPages === 0 ? 1 : totalPages;
+        
+        currentPage = 1;
+        displayRecords(currentPage);
+        updatePagination();
+    })
+    .catch(error => {
+        console.error("獲取資料時發生錯誤:", error);
+        document.getElementById('paydetail-table').innerHTML = 
+            '<tr><td colspan="9" class="text-center text-danger">資料載入失敗，請稍後再試</td></tr>';
+    });
+}
+
+// 顯示特定頁的記錄
+function displayRecords(page) {
+    const tableBody = document.getElementById("paydetail-table");
+    tableBody.innerHTML = "";
+    
+    // 如果沒有記錄，顯示提示訊息
+    if (allRecords.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="9" class="text-center">沒有符合條件的記錄</td></tr>';
+        return;
+    }
+    
+    // 計算當前頁的資料範圍
+    const startIndex = (page - 1) * recordsPerPage;
+    const endIndex = Math.min(startIndex + recordsPerPage, allRecords.length);
+    
+    // 取得當前頁的資料
+    const currentRecords = allRecords.slice(startIndex, endIndex);
+    
+    // 生成表格行
+    currentRecords.forEach(detail => {
+        const row = document.createElement("tr");
+        
+        // 根據點數狀態設置按鈕樣式
+        const buttonClass = detail.pointsExpensed < detail.payoutPoints ? "btn-primary" : "btn-disabled";
+        
+        row.innerHTML = `
+            <td>${detail.payDetailId}</td>
+            <td>${formatTimestamp(detail.payDate)}</td>
+            <td>${detail.memberId}</td>
+            <td>${detail.name}</td>
+            <td>${detail.organizationName}</td>
+            <td>${detail.idNum}</td>
+            <td>${detail.phone}</td>
+            <td data-original-points="${detail.pointsExpensed}">${detail.pointsExpensed}</td>
+            <td>
+                <button 
+                    class="btn ${buttonClass} grant-points-btn" 
+                    data-paydetail-id="${detail.payDetailId}" 
+                    data-member-id="${detail.memberId}" 
+                    data-member-name="${detail.name}" 
+                    ${detail.pointsExpensed < detail.payoutPoints ? "" : "disabled"}>
+                    發放點數
+                </button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+    
+    // 重新綁定按鈕事件
+    bindPointsButtonEvents();
+}
+
+// 更新分頁控制
+function updatePagination() {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+    
+    // 如果只有一頁，不顯示分頁控制
+    if (totalPages <= 1) {
+        return;
+    }
+    
+    // 前一頁按鈕
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="if(${currentPage} > 1) changePage(${currentPage - 1})">上一頁</a>`;
+    pagination.appendChild(prevLi);
+    
+    // 頁碼按鈕
+    // 最多顯示5個頁碼按鈕
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+    
+    if (endPage - startPage < maxPagesToShow - 1) {
+        startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const pageLi = document.createElement('li');
+        pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        pageLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>`;
+        pagination.appendChild(pageLi);
+    }
+    
+    // 下一頁按鈕
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="if(${currentPage} < ${totalPages}) changePage(${currentPage + 1})">下一頁</a>`;
+    pagination.appendChild(nextLi);
+}
+
+// 切換頁面
+function changePage(page) {
+    if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        displayRecords(currentPage);
+        updatePagination();
+        
+        // 滾動到表格頂部
+        document.querySelector('.table-container').scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+
+// 清除搜尋條件並重新載入資料(從搜尋結果回上一頁：paydetail列表)
+function resetSearch() {
+    // 清空所有搜尋欄位
+    document.getElementById('search-member-id').value = '';
+    document.getElementById('search-name').value = '';
+    document.getElementById('search-points-status').value = '';
+    
+    // 獲取URL中的payoutId
+    const urlParams = new URLSearchParams(window.location.search);
+    const payoutId = urlParams.get('payRecordId');
+    
+    // 重新載入原始資料（不帶搜尋條件）
+    if (payoutId) {
+        fetchRecords(true, payoutId);
+    }
+    
+    // 隱藏重設按鈕
+    document.getElementById('reset-search-btn').style.display = 'none';
+}
+
+// 格式化時間戳
+function formatTimestamp(timestamp) {
+    if (!timestamp) return "N/A";
+
+    // 檢查 timestamp 是否為 Date 物件或字串
+    let formattedTimestamp = timestamp;
+    if (typeof timestamp === "string" && timestamp.indexOf(" ") > -1) {
+        formattedTimestamp = timestamp.replace(" ", "T") + ".000Z"; // 轉換為 ISO 格式
+    } else if (timestamp instanceof Date) {
+        formattedTimestamp = timestamp.toISOString();
+    }
+
+    const date = new Date(formattedTimestamp);
+    return date.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
+}
+
+// 為發放點數按鈕綁定事件
+function bindPointsButtonEvents() {
+    // 點擊發放點數按鈕時顯示彈窗
+    document.querySelectorAll(".grant-points-btn").forEach(btn => {
+        if (!btn.classList.contains('btn-disabled')) {
+            if (!btn.hasAttribute('data-event-bound')) {
+                btn.setAttribute('data-event-bound', 'true');
+                
+                btn.addEventListener("click", function () {
+                    const payDetailId = this.getAttribute("data-paydetail-id");
+                    const memberId = this.getAttribute("data-member-id");
+                    const memberName = this.getAttribute("data-member-name");
+                    const payoutPoints = this.getAttribute("data-payout-points") || 10000; // 獲取應發點數
+                    
+                    // 獲取當前已發點數
+                    const row = this.closest('tr');
+                    const currentPoints = parseInt(row.querySelector('td:nth-child(8)').textContent) || 0;
+                    
+                    document.getElementById("paydetail-member-id").innerText = memberId;
+                    document.getElementById("paydetail-member-name").innerText = memberName;
+                    document.getElementById("paydetail-payout-points").innerText = payoutPoints;
+                    document.getElementById("paydetail-current-points").innerText = currentPoints;
+
+                    // 計算剩餘可發點數，並設置為預設值
+                    const remainingPoints = parseInt(payoutPoints) - currentPoints;
+                    document.getElementById("paydetail-points-input").value = Math.max(0, remainingPoints);
+
+                    $('#paydetail-modal').modal('show').attr("data-paydetail-id", payDetailId);
+                });
+            }
+        }
+    });
+}
+
+// 發放點數給會員
+// 更新 grantPointsToMember 函數，修改發放後按鈕狀態的判斷邏輯
+function grantPointsToMember(payDetailId, points) {
+    backstageAuth.authFetch("http://localhost:8080/paydetails/update-points", {
+        method: "POST",
+        body: {
+            payDetailId: payDetailId,
+            pointsExpensed: points
+        }
+    })
+    .then(response => {
+        const contentType = response.headers.get('content-type');
+
+        if (contentType && contentType.includes('application/json')) {
+            return response.json();
+        } else {
+            return response.text().then(text => {
+                throw new Error(text);
+            });
+        }
+    })
+    .then(data => {
+        console.log("點數發放結果:", data);
+
+        // 只有在成功時才更新頁面
+        if (data && data.message && data.message.includes('成功')) {
+            alert(data.message);
+
+            // 立即更新頁面上的點數
+            const row = document.querySelector(`button[data-paydetail-id="${payDetailId}"]`).closest('tr');
+            const pointsCell = row.querySelector('td:nth-child(8)');
+            const currentButton = row.querySelector('.grant-points-btn');
+
+            if (pointsCell && currentButton) {
+                // 獲取應發放點數
+                const payoutPoints = parseInt(currentButton.getAttribute("data-payout-points")) || 10000;
+                
+                // 更新已發放點數
+                const currentPoints = parseInt(pointsCell.textContent);
+                const newTotalPoints = currentPoints + points;
+                pointsCell.textContent = newTotalPoints;
+
+                // 只有當新的總點數達到或超過應發放點數時，才禁用按鈕
+                if (newTotalPoints >= payoutPoints) {
+                    currentButton.disabled = true;
+                    currentButton.classList.remove('btn-primary');
+                    currentButton.classList.add('btn-disabled');
+                } else {
+                    // 點數仍未達到應發放點數，按鈕保持可點擊狀態
+                    // 可選：更新剩餘可發放點數顯示
+                    console.log(`還可以補發 ${payoutPoints - newTotalPoints} 點`);
+                }
+            }
+        } else {
+            alert(data.message || '點數發放處理失敗');
+        }
+    })
+    .catch(error => {
+        console.error("發放點數時發生錯誤:", error);
+        alert("點數發放失敗：" + error.message);
+
+        // 恢復原始點數
+        const row = document.querySelector(`button[data-paydetail-id="${payDetailId}"]`).closest('tr');
+        const pointsCell = row.querySelector('td:nth-child(8)');
+        if (pointsCell) {
+            const originalPoints = parseInt(pointsCell.getAttribute('data-original-points') || pointsCell.textContent);
+            pointsCell.textContent = originalPoints;
+        }
+    });
+}
+
+
+
+
+
+
+// 切換點數發放明細ID排序
+function toggleIdSort() {
+    idSortAscending = !idSortAscending;
+    
+    // 更新排序圖標
+    const icon = document.getElementById('idSortIcon');
+    icon.className = idSortAscending ? 'fas fa-sort-up' : 'fas fa-sort-down';
+    
+    // 獲取URL中的payoutId
+    const urlParams = new URLSearchParams(window.location.search);
+    const payoutId = urlParams.get('payRecordId');
+    
+    // 重新載入數據並按排序方向顯示
+    if (payoutId) {
+        fetchRecords(false, payoutId);
+    }
+}
+
+//=========================================上面為動態查詢功能相關javascript==========================================
+
+    </script>
+
+</body>
+
+</html>

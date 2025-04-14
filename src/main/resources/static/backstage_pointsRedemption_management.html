@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>店家點數核銷管理</title>
+
+    <!-- 驗證 -->
+    <script src="./js/backstage_auth_js.js"></script>
+
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/style_backstage.css">
+    
+    <!-- 日期範圍選擇器相關的CSS和JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.css">
+
+    <!-- 引入必要的 JavaScript 庫 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
+    
+
+    <!-- 在 head 中加入 SweetAlert2 庫 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+    
+    <style>
+   /* 漸層容器擴展到整個內容區域 */
+.content-wrapper {
+    background: linear-gradient(135deg, #3a6186, #89253e);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* 大標題 */
+.header-title {
+    font-size: 30px; /* 可以根據需要調整大小 */
+    color: white;
+    font-weight: bold;
+    margin-bottom: 15px; /* 保持原有的底部間距 */
+}
+
+/* 表格內灰色小字 */
+.text-muted-small {
+    color: #6c757d; /* Bootstrap 的 muted 顏色 */
+    font-size: 0.85rem; /* 較小的字體大小 */
+}
+
+/* 表格容器 */
+.table-container {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.table-responsive table {
+    min-width: 1300px; /* 增加寬度以容納新的操作欄 */
+}
+
+.pagination-container {
+    background-color: white;
+    padding: 15px;
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 8px 8px;
+}
+
+/* 狀態徽章 */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-completed {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-pending {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* 載入動畫樣式 */
+.fa-spin {
+    animation: spin 1s infinite linear;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 月份控制樣式 */
+#currentMonthDisplay {
+    margin: 0 15px;
+    min-width: 120px;
+    text-align: center;
+}
+
+/* 排序按鈕樣式 */
+.btn-link {
+    color: white;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* 分頁容器樣式 */
+.pagination-container {
+    background-color: white;
+    padding: 15px;
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 8px 8px;
+}
+
+.pagination {
+    margin-bottom: 0;
+    justify-content: center;
+}
+
+.pagination .page-item .page-link {
+    color: #3a6186;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #3a6186;
+    border-color: #3a6186;
+    color: white;
+}
+
+/* 日期選擇器樣式優化 */
+.daterangepicker {
+    font-family: "Microsoft JhengHei", Arial, sans-serif;
+}
+
+.daterangepicker .calendar-table th,
+.daterangepicker .calendar-table td {
+    font-size: 14px;
+}
+
+/* 增加左右日曆的間距 */
+.daterangepicker .drp-calendar.left {
+    margin-right: 10px;
+}
+
+/* 選擇範圍的背景色 */
+.daterangepicker td.in-range {
+    background-color: #e8f4f9;
+}
+
+/* 選擇的日期的背景色 */
+.daterangepicker td.active {
+    background-color: #5c9ce6;
+}
+
+/* 調整底部按鈕樣式 */
+.daterangepicker .drp-buttons .btn {
+    font-size: 14px;
+    padding: 6px 12px;
+}
+
+.daterangepicker .drp-buttons .applyBtn {
+    background-color: #5c9ce6;
+    border-color: #5c9ce6;
+}
+
+/* ===========表格樣式/排版============ */
+
+/* 表格行高一致性 */
+.table-responsive table tr {
+    height: 55px; /* 根據需要調整 */
+}
+
+/* 尚未核銷文字樣式 */
+.text-muted-small {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+/* 確保文字和按鈕垂直居中 */
+.table td.align-middle {
+    vertical-align: middle !important;
+}
+
+/* 返回按鈕樣式 */
+.back-button {
+    display: inline-block;
+    color: white;
+    background-color: #6c757d;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+}
+
+/* ===========搜尋區域相關樣式=========== */
+
+/* 搜尋區域樣式 */
+.search-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.test-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.search-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-self: flex-end;
+    margin-left: auto; /* 讓搜尋區域靠右 */
+    width: 60%; /* 控制搜尋區域寬度 */
+}
+
+.search-row {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.field-with-label {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* 讓欄位平均分配寬度 */
+}
+
+.field-with-label label {
+    color: white;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.field-with-label input,
+.field-with-label select {
+    width: 100%;
+    height: 38px;
+    border-radius: 4px;
+    border: none;
+    padding: 8px 12px;
+}
+
+.field-with-buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    align-items: center;
+}
+
+.field-with-buttons select {
+    width: 110px; /* 固定核銷狀態寬度 */
+    flex-shrink: 0; /* 防止壓縮 */
+}
+
+.field-with-buttons button {
+    min-width: 90px; /* 確保按鈕有足夠寬度 */
+    height: 38px;
+}
+
+/* 搜尋按鈕 */
+.search-button {
+    height: 38px;
+    background-color: #5c9ce6;
+    border-color: #5c9ce6;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 0 15px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* 重置當月記錄按鈕 */
+#reset-historical-button {
+    background-color: #dc3545;
+}
+
+/* 修復歷史資料按鈕 */
+#fix-historical-button {
+    background-color: #eec451;
+}
+
+/* 表格區域修復 */
+.table-container {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-top: 15px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.table th, 
+.table td {
+    vertical-align: middle;
+    white-space: nowrap; /* 防止文字換行 */
+    padding: 12px 8px; /* 適當的內邊距 */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+/* 確保表格在小螢幕也能正常顯示 */
+@media (max-width: 992px) {
+    .search-form-container {
+        width: 100%;
+    }
+    
+    .search-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .field-with-buttons {
+        flex-wrap: wrap;
+    }
+    
+    .field-with-buttons select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .field-with-buttons button {
+        flex: 1;
+    }
+}
+
+
+
+/* 按鈕文字防止換行 */
+    .btn,
+    .search-button,
+    button {
+        white-space: nowrap; /* 防止文字換行 */
+    }
+
+    /* 確保按鈕有足夠寬度顯示完整文字 */
+    .field-with-buttons button,
+    .btn-primary,
+    .btn-success {
+        min-width: 90px; /* 設定最小寬度 */
+        white-space: nowrap;
+        overflow: visible; /* 允許文字溢出按鈕邊界 */
+    }
+
+    /* 搜尋按鈕特別處理 */
+    #search-button {
+        min-width: 90px;
+    }
+
+    /* 批次核銷按鈕特別處理 */
+    #batch-redemption-btn {
+        min-width: 100px; /* 可能需要更大的寬度 */
+    }
+
+
+/* =========年月選擇器========= */
+
+/* 年月選擇器樣式 */
+    #yearSelector, #monthSelector {
+        height: 38px;
+        border-radius: 4px;
+        border: none;
+        padding: 8px 12px;
+    }
+
+    #yearSelector {
+        width: 40%;
+    }
+
+    #monthSelector {
+        width: 60%;
+    }
+
+
+
+
+
+
+
+ </style>
+
+
+
+
+
+</head>
+
+
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 側邊欄 -->
+            <div class="col-md-2 side-bar">
+                <h4>攏呷霸-後台首頁</h4>
+                <a href="./backstage_homepage.html">後台首頁</a>
+                
+                <!-- 合作店家管理選項 -->
+                <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#storeSubMenu" aria-expanded="false">
+                    合作店家管理 <i class="fas fa-angle-down float-right mt-1"></i>
+                </a>
+                <div class="collapse" id="storeSubMenu">
+                    <div class="sub-menu">
+                        <a href="#" class="sub-item">合作店家管理</a>
+                        <a href="#" class="sub-item active">合作店家點數核銷</a>
+                    </div>
+                </div>
+                
+                <!-- 受助者管理選項 -->
+                <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#recipientSubMenu">
+                    受助者管理 <i class="fas fa-angle-down float-right mt-1"></i>
+                </a>
+                <div class="collapse" id="recipientSubMenu">
+                    <div class="sub-menu">
+                        <a href="backstage_member_management.html" class="sub-item">受助者管理</a>
+                        <a href="backstage_payrecord_management.html" class="sub-item">受助者點數發放</a>
+                    </div>
+                </div>
+                
+                <a href="./backstage_unit_management.html">在冊單位管理</a>
+                <a href="./backstage_donation_management.html">捐款管理</a>
+                <a href="#">未領餐紀錄</a>
+                <a class="btn btn-logout">登出</a>
+            </div>
+            
+            <!-- 主要內容區域 -->
+             
+            <div class="col-md-10">
+                <div class="content-wrapper">
+                    <!-- 標題和搜尋區域 -->
+                    <div class="gradient-container">
+                        <div class="header-title mb-3">合作店家點數核銷</div>
+                        
+                       
+
+<!-- 修改後的搜尋區域HTML -->
+<!-- 搜尋區域 -->
+<div class="search-section">
+    <!-- 左側測試按鈕區 -->
+    <div class="test-buttons">
+        <button class="search-button" id="reset-historical-button" onclick="resetCurrentMonthRecords()">重置當月記錄</button>
+        <button class="search-button" id="fix-historical-button" onclick="fixHistoricalRecords()">修復歷史資料</button>
+    </div>
+    
+    <!-- 搜尋欄位容器 -->
+    <div class="search-form-container">
+        <!-- 第一行搜尋欄位 -->
+        <div class="search-row">
+            <div class="field-with-label">
+                <label>店家ID</label>
+                <input type="text" id="search-store-id" placeholder="輸入店家ID">
+            </div>
+            
+            <!-- 新的年月選擇器 -->
+            <div class="field-with-label">
+                <label>核銷批次</label>
+                <div class="d-flex">
+                    <select id="yearSelector" class="form-control mr-2">
+                        <!-- 年份選項會動態生成 -->
+                    </select>
+                    <select id="monthSelector" class="form-control">
+                        <option value="1">1月</option>
+                        <option value="2">2月</option>
+                        <option value="3">3月</option>
+                        <option value="4">4月</option>
+                        <option value="5">5月</option>
+                        <option value="6">6月</option>
+                        <option value="7">7月</option>
+                        <option value="8">8月</option>
+                        <option value="9">9月</option>
+                        <option value="10">10月</option>
+                        <option value="11">11月</option>
+                        <option value="12">12月</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 第二行搜尋欄位 -->
+        <div class="search-row">
+            <div class="field-with-label">
+                <label>店家名稱</label>
+                <input type="text" id="search-store-name" placeholder="輸入店家名稱">
+            </div>
+            
+            <div class="field-with-label">
+                <label>核銷狀態</label>
+                <div class="field-with-buttons">
+                    <select id="search-status">
+                        <option value="">全部</option>
+                        <option value="0">未核銷</option>
+                        <option value="1">已核銷</option>
+                        <option value="2">核銷異常</option>
+                    </select>
+                    <button class="btn btn-primary" id="search-button">搜尋</button>
+                    <button class="btn btn-success" id="batch-redemption-btn" onclick="performBatchRedemption()">批次核銷</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+                    
+                    <div class="back-button-container" style="display: none; margin: 10px 0 15px 0;">
+                        <button class="back-button" id="back-button" style="display: inline-block; color: white; background-color: #6c757d; border: none; border-radius: 4px; padding: 8px 15px; text-decoration: none; font-size: 14px; transition: background-color 0.3s; cursor: pointer;">
+                            <i class="fas fa-arrow-left"></i> 回上一頁
+                        </button>
+                    </div>
+
+
+
+                    <!-- 表格區域 -->
+                    <div class="table-container">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>核銷ID</th>
+                                            <th>店家ID</th>
+                                            <th>店家名稱</th>
+                                            <th>核銷批次</th>
+                                            <th>應核銷點數</th>
+                                            <th>已核銷金額</th>
+                                            <th>核銷時間</th>
+                                            <th>狀態</th>
+                                            <th>操作</th>
+                                            <th>
+                                                <input type="checkbox" id="selectAllCheckbox">
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="points-redemption-table">
+                                        <tr>
+                                            <td colspan="10" class="text-center"><i class="fas fa-spinner fa-spin"></i> 資料載入中...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                      <!-- 分頁控制區塊 -->
+                        <div class="pagination-container">
+                            <ul class="pagination mb-0" id="pagination">
+                                <!-- 分頁按鈕將動態生成 -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 核銷點數模態框 -->
+    <div class="modal fade" id="redemptionModal" tabindex="-1" role="dialog" aria-labelledby="redemptionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="redemptionModalLabel">核銷點數並執行撥款</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="redemptionPoints">應核銷點數</label>
+                        <input type="number" class="form-control" id="redemptionPoints" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="redemptionCash">核銷金額</label>
+                        <input type="number" class="form-control" id="redemptionCash">
+                        <small class="form-text text-muted">一般情況下，核銷金額應與點數相同。</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirmRedemption">確認核銷</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+ <script>
+// 目前的月份與年份
+let currentYear;
+let currentMonth;
+let currentPage = 1;
+const recordsPerPage = 8;
+let totalPages = 1;
+let allRecords = [];
+let payoutIdSortAscending = true; // 排序方向：預設為升序（由小到大）
+
+// 初始化頁面
+document.addEventListener('DOMContentLoaded', () => {
+    // 檢查登入狀態
+    backstageAuth.requireLogin();
+
+    const backButton = document.getElementById('back-button');
+    if (backButton) {
+        backButton.addEventListener('click', handleBackButtonClick);
+    }
+    
+    
+
+    initializeMonthControls();
+    loadCurrentMonthData();
+    initYearMonthSelector(); // <-- 年月選擇器
+    bindSearchEvents();
+
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    
+
+    selectAllCheckbox.addEventListener('change', function() {
+    if (isSearchActive) {
+        // 搜尋模式：選取所有未核銷的記錄
+        const allUnredeemedIds = allRecords
+            .filter(item => item.status === 0)
+            .map(item => item.id);
+        
+        // 更新前端所有checkbox的狀態
+        document.querySelectorAll('.row-checkbox').forEach(checkbox => {
+            const redemptionId = parseInt(checkbox.dataset.redemptionId);
+            checkbox.checked = this.checked && allUnredeemedIds.includes(redemptionId);
+        });
+    } else {
+        // 非搜尋模式：選取所有頁面的未核銷記錄
+        const allUnredeemedIds = allRecords
+            .filter(item => item.status === 0)
+            .map(item => item.id);
+        
+        document.querySelectorAll('.row-checkbox').forEach(checkbox => {
+            const redemptionId = parseInt(checkbox.dataset.redemptionId);
+            checkbox.checked = this.checked && allUnredeemedIds.includes(redemptionId);
+        });
+    }
+}
+
+);
+    
+});
+
+
+
+
+// 初始化年月選擇器
+function initYearMonthSelector() {
+    const yearSelector = document.getElementById('yearSelector');
+    const monthSelector = document.getElementById('monthSelector');
+    
+    // 填充年份選項（例如，從2022年到當前年份）
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear - 2; year <= currentYear + 1; year++) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year + '年';
+        yearSelector.appendChild(option);
+    }
+    
+    // 設置當前年月為默認值
+    yearSelector.value = currentYear;
+    monthSelector.value = new Date().getMonth() + 1;
+    
+    // 添加事件監聽器
+    yearSelector.addEventListener('change', onYearMonthChanged);
+    monthSelector.addEventListener('change', onYearMonthChanged);
+}
+
+// 當年月選擇變更時
+function onYearMonthChanged() {
+    const yearSelector = document.getElementById('yearSelector');
+    const monthSelector = document.getElementById('monthSelector');
+    
+    const selectedYear = parseInt(yearSelector.value);
+    const selectedMonth = parseInt(monthSelector.value);
+    
+    // 更新全局變量
+    currentYear = selectedYear;
+    currentMonth = selectedMonth;
+    
+    // 更新顯示和載入數據
+    updateMonthDisplay();
+    loadMonthData(currentYear, currentMonth);
+}
+
+
+
+
+
+// 輔助函數：格式化日期時間（移除秒數）
+function formatDateTime(timestamp) {
+    if (!timestamp) return '尚未核銷';
+    
+    try {
+        // 處理各種可能的日期格式
+        let date;
+        if (typeof timestamp === 'number') {
+            date = new Date(timestamp);
+        } else if (typeof timestamp === 'string') {
+            if (timestamp.includes('T')) {
+                date = new Date(timestamp);
+            } else {
+                // 嘗試處理其他字串格式
+                date = new Date(parseInt(timestamp, 10));
+            }
+        } else {
+            return '日期格式錯誤';
+        }
+        
+        if (isNaN(date.getTime())) {
+            return '日期格式錯誤';
+        }
+        
+        // 格式化日期時間，但移除秒數
+        return date.toLocaleString('zh-TW', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (e) {
+        console.error('日期格式化錯誤:', e);
+        return '日期格式錯誤';
+    }
+}
+
+// 切換核銷ID排序方向
+function togglePayoutIdSort() {
+    payoutIdSortAscending = !payoutIdSortAscending;
+    
+    // 更新排序圖標
+    const icon = document.getElementById('payoutIdSortIcon');
+    if (icon) {
+        icon.className = payoutIdSortAscending ? 'fas fa-sort-up' : 'fas fa-sort-down';
+    }
+    
+    // 根據新的排序方向重新排序並顯示資料
+    if (allRecords && allRecords.length > 0) {
+        allRecords = payoutIdSortAscending
+            ? allRecords.sort((a, b) => a.id - b.id)
+            : allRecords.sort((a, b) => b.id - a.id);
+        
+        displayRecords(currentPage);
+    }
+}
+
+//============修復歷史資料按鈕功能================
+function fixHistoricalRecords() {
+  if (confirm('確定要執行歷史資料修復嗎？這個操作可能需要一些時間。')) {
+    backstageAuth.authFetch('http://localhost:8080/pointsRedemption/fixHistoricalRecords')
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+        // 重新載入當前頁面資料
+        loadMonthData(currentYear, currentMonth);
+      })
+      .catch(error => {
+        console.error('修復失敗:', error);
+        alert('修復失敗，請查看控制台獲取詳情');
+      });
+  }
+}
+
+
+
+
+
+// 新增月份控制按鈕
+function initializeMonthControls() {
+    // 取得當前日期
+    const now = new Date();
+    currentYear = now.getFullYear();
+    currentMonth = now.getMonth() + 1; // JavaScript 月份從 0 開始
+    
+   // 建立月份控制元素
+   const controlsHtml = `
+        <div class="d-flex align-items-center mb-3">
+            <button id="prevMonth" class="btn btn-outline-light mr-2">
+                <i class="fas fa-chevron-left"></i> 上個月
+            </button>
+            <h5 class="text-white mb-0" id="currentMonthDisplay">${currentYear}年${currentMonth}月</h5>
+            <button id="nextMonth" class="btn btn-outline-light ml-2">
+                下個月 <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    `;
+    
+    // 插入到標題下方
+    const headerTitle = document.querySelector('.header-title');
+    headerTitle.insertAdjacentHTML('afterend', controlsHtml);
+    
+    // 綁定事件
+    document.getElementById('prevMonth').addEventListener('click', goToPrevMonth);
+    document.getElementById('nextMonth').addEventListener('click', goToNextMonth);
+}
+
+// 上一個月按鈕事件
+function goToPrevMonth() {
+    currentMonth--;
+    if (currentMonth < 1) {
+        currentMonth = 12;
+        currentYear--;
+    }
+    updateMonthDisplay();
+    updateYearMonthSelector(); // 新增這行，更新選擇器
+    loadMonthData(currentYear, currentMonth);
+}
+
+// 下一個月按鈕事件
+function goToNextMonth() {
+    currentMonth++;
+    if (currentMonth > 12) {
+        currentMonth = 1;
+        currentYear++;
+    }
+    updateMonthDisplay();
+    updateYearMonthSelector(); // 新增這行，更新選擇器
+    loadMonthData(currentYear, currentMonth);
+}
+
+
+// 新增更新年月選擇器的函數
+function updateYearMonthSelector() {
+    const yearSelector = document.getElementById('yearSelector');
+    const monthSelector = document.getElementById('monthSelector');
+    
+    // 設置選擇器的值與當前年月一致
+    if (yearSelector && monthSelector) {
+        yearSelector.value = currentYear;
+        monthSelector.value = currentMonth;
+    }
+}
+
+
+
+
+// 更新月份顯示
+function updateMonthDisplay() {
+    document.getElementById('currentMonthDisplay').textContent = `${currentYear}年${currentMonth}月`;
+}
+
+// 載入當月資料
+function loadCurrentMonthData() {
+
+    document.querySelector('.back-button-container').style.display = 'none';
+    isSearchActive = false;
+
+    // 顯示載入中提示
+    const tableBody = document.getElementById('points-redemption-table');
+    tableBody.innerHTML = '<tr><td colspan="9" class="text-center"><i class="fas fa-spinner fa-spin"></i> 資料載入中...</td></tr>';
+
+    // 更新當前年月
+    const now = new Date();
+    currentYear = now.getFullYear();
+    currentMonth = now.getMonth() + 1;
+    
+    // 更新顯示
+    updateMonthDisplay();
+    updateYearMonthSelector(); // 新增這行，確保選擇器同步
+
+    
+    // 調用後端 API 獲取當月數據
+    backstageAuth.authFetch('http://localhost:8080/pointsRedemption/current')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('網路回應不正常');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 保存所有記錄
+            allRecords = data;
+            
+            // 計算總頁數
+            totalPages = Math.ceil(allRecords.length / recordsPerPage);
+            if (totalPages === 0) totalPages = 1;
+            
+            // 根據排序方向排序資料
+            sortRecords();
+            
+            // 顯示第一頁
+            currentPage = 1;
+            displayRecords(currentPage);
+            
+            // 更新分頁控制
+            updatePagination();
+            
+            // 更新當前月份顯示
+            const now = new Date();
+            currentYear = now.getFullYear();
+            currentMonth = now.getMonth() + 1;
+            updateMonthDisplay();
+        })
+        .catch(error => {
+            console.error('獲取數據失敗:', error);
+            showError('獲取當月數據失敗，請稍後再試');
+            tableBody.innerHTML = '<tr><td colspan="9" class="text-center text-danger">載入失敗，請重新整理頁面</td></tr>';
+        });
+}
+
+// 根據當前排序方向排序記錄
+function sortRecords() {
+    if (allRecords && allRecords.length > 0) {
+        allRecords = payoutIdSortAscending
+            ? allRecords.sort((a, b) => a.id - b.id)
+            : allRecords.sort((a, b) => b.id - a.id);
+    }
+}
+
+// 載入指定月份資料
+function loadMonthData(year, month) {
+
+    //每次載入新資料時隱藏返回按鈕
+    document.querySelector('.back-button-container').style.display = 'none';
+    isSearchActive = false;
+
+    // 格式化月份，確保是兩位數
+    const formattedMonth = month.toString().padStart(2, '0');
+    
+    // 顯示載入中提示
+    const tableBody = document.getElementById('points-redemption-table');
+    tableBody.innerHTML = '<tr><td colspan="9" class="text-center"><i class="fas fa-spinner fa-spin"></i> 資料載入中...</td></tr>';
+    
+    // 調用後端 API 獲取指定月份數據
+    backstageAuth.authFetch(`http://localhost:8080/pointsRedemption/byMonth?month=${year}-${formattedMonth}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('網路回應不正常');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 保存所有記錄
+            allRecords = data;
+            
+            // 計算總頁數
+            totalPages = Math.ceil(allRecords.length / recordsPerPage);
+            if (totalPages === 0) totalPages = 1;
+            
+            // 根據排序方向排序資料
+            sortRecords();
+            
+            // 顯示第一頁
+            currentPage = 1;
+            displayRecords(currentPage);
+            
+            // 更新分頁控制
+            updatePagination();
+        })
+        .catch(error => {
+            console.error('獲取數據失敗:', error);
+            showError(`獲取 ${year}年${month}月 數據失敗，請稍後再試`);
+            tableBody.innerHTML = `<tr><td colspan="9" class="text-center text-danger">載入 ${year}年${month}月 數據失敗</td></tr>`;
+        });
+}
+
+// 顯示特定頁的記錄
+// 在前端 displayRecords 函數中修改狀態顯示邏輯
+function displayRecords(page) {
+    const tableBody = document.getElementById('points-redemption-table');
+    tableBody.innerHTML = '';
+    
+    if (!allRecords || allRecords.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="10" class="text-center">該月份沒有核銷資料</td></tr>';
+        return;
+    }
+    
+    // 計算當前頁的記錄索引範圍
+    const startIndex = (page - 1) * recordsPerPage;
+    const endIndex = Math.min(startIndex + recordsPerPage, allRecords.length);
+    
+    // 顯示當前頁的記錄
+    for (let i = startIndex; i < endIndex; i++) {
+        const item = allRecords[i];
+        
+        // 格式化日期
+        const redemptionMonth = item.redemptionMonth ? new Date(item.redemptionMonth).toISOString().slice(0, 7) : '';
+        
+        // 處理核銷時間顯示
+        let displayTime = formatDateTime(item.paymentTime);
+        
+        // 根據資料庫狀態判斷實際狀態
+        let statusText, statusClass;
+        const pointsAmount = parseInt(item.pointsAmount || 0, 10);
+        const cashAmount = parseInt(item.cashAmount || 0, 10);
+        
+        if (item.status === 0) {
+            // 未核銷
+            statusText = '未核銷';
+            statusClass = 'status-pending';
+        } else if (item.status === 2) {
+            // 核銷異常 - 直接使用資料庫狀態2
+            statusText = '已核銷(金額異常)';
+            statusClass = 'status-warning';
+        } else {
+            // 已核銷
+            statusText = '已核銷';
+            statusClass = 'status-completed';
+        }
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="align-middle">${item.id || ''}</td>
+            <td class="align-middle">${item.storeId || ''}</td>
+            <td class="align-middle">${item.storeName || ''}</td>
+            <td class="align-middle">${redemptionMonth}</td>
+            <td class="align-middle">${pointsAmount}</td>
+            <td class="align-middle">${cashAmount}</td>
+            <td class="align-middle ${item.status === 0 ? 'text-muted-small' : ''}">
+                ${displayTime}
+            </td>
+            <td class="align-middle">
+                <span class="status-badge ${statusClass}">
+                    ${statusText}
+                </span>
+            </td>
+            <td class="align-middle text-center">
+                ${item.status === 0 || item.status === 2 ? 
+                    `<button class="btn btn-outline-primary btn-sm" onclick="openRedemptionModal(${item.id}, ${pointsAmount})">
+                        ${item.status === 0 ? '核銷點數' : '調整核銷'}
+                    </button>` : 
+                    '<span class="text-muted-small">已核銷</span>'}
+            </td>
+            <td class="align-middle text-center">
+                ${item.status === 0 ? 
+                    `<input type="checkbox" class="row-checkbox" data-redemption-id="${item.id}">` : 
+                    '<span class="text-muted">-</span>'}
+            </td>
+        `;
+        tableBody.appendChild(row);
+    }
+}
+
+
+
+
+// 更新分頁控制項
+function updatePagination() {
+    const pagination = document.getElementById('pagination');
+    if (!pagination) return;
+    
+    pagination.innerHTML = '';
+    
+    // 如果只有一頁，不顯示分頁控制
+    if (totalPages <= 1) {
+        return;
+    }
+    
+    // 前一頁按鈕
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="if(${currentPage} > 1) changePage(${currentPage - 1})">上一頁</a>`;
+    pagination.appendChild(prevLi);
+    
+    // 頁碼按鈕
+    // 最多顯示5個頁碼按鈕
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+    
+    if (endPage - startPage < maxPagesToShow - 1) {
+        startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const pageLi = document.createElement('li');
+        pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        pageLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>`;
+        pagination.appendChild(pageLi);
+    }
+    
+    // 下一頁按鈕
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="if(${currentPage} < ${totalPages}) changePage(${currentPage + 1})">下一頁</a>`;
+    pagination.appendChild(nextLi);
+}
+
+// 切換頁面
+function changePage(page) {
+    if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        displayRecords(currentPage);
+        updatePagination();
+    }
+}
+
+// 搜尋功能
+function bindSearchEvents() {
+    document.getElementById('search-button').addEventListener('click', performSearch);
+}
+
+
+// 添加全局變量以追踪搜尋狀態和原始資料
+let isSearchActive = false;
+let originalRecords = [];
+
+
+// 執行搜尋
+function performSearch() {
+    const storeId = document.getElementById('search-store-id').value.trim();
+    const storeName = document.getElementById('search-store-name').value.trim();
+    const status = document.getElementById('search-status').value;
+    
+    // 顯示載入中提示
+    const tableBody = document.getElementById('points-redemption-table');
+    tableBody.innerHTML = '<tr><td colspan="9" class="text-center"><i class="fas fa-spinner fa-spin"></i> 搜尋中...</td></tr>';
+    
+    // 如果尚未保存原始資料，先保存當前資料
+    if (!isSearchActive && allRecords.length > 0) {
+        originalRecords = [...allRecords];
+    }
+    
+   // 建立查詢參數 - 使用當前月份
+   let params = new URLSearchParams();
+    if (storeId !== '') {
+        params.append('storeId', storeId);
+    }
+    
+    if (storeName !== '') {
+        params.append('storeName', storeName);
+    }
+    
+    if (status !== '') {
+        params.append('status', status);
+    }
+
+    // 添加月份參數（確保用雙數字格式）
+    const formattedMonth = currentMonth.toString().padStart(2, '0');
+    params.append('month', `${currentYear}-${formattedMonth}`);
+    
+
+    // 發送搜尋請求
+    backstageAuth.authFetch(`http://localhost:8080/pointsRedemption/search?${params.toString()}`)
+        .then(response => {
+            // 首先檢查響應狀態
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw errorData;
+                });
+            }
+            return response.json();
+        })
+        .then(responseData => {
+            if (responseData.status === 'error') {
+                throw responseData;
+            }
+            
+            // 顯示返回按鈕，表示已進入搜尋模式
+            isSearchActive = true;
+            document.querySelector('.back-button-container').style.display = 'block';
+            
+            // 更新全局數據
+            allRecords = responseData.data;
+            
+            // 計算總頁數
+            totalPages = Math.ceil(allRecords.length / recordsPerPage);
+            if (totalPages === 0) totalPages = 1;
+            
+            // 根據當前排序方向排序
+            sortRecords();
+            
+            // 重置到第一頁
+            currentPage = 1;
+            
+            // 顯示結果
+            displayRecords(currentPage);
+            
+            // 更新分頁控制
+            updatePagination();
+            
+            // 顯示搜尋結果數量
+            if (allRecords.length === 0) {
+                showInfo('沒有符合條件的記錄');
+            } else {
+                showInfo(`找到 ${allRecords.length} 筆符合條件的記錄`);
+            }
+        })
+        .catch(error => {
+            console.error('搜尋失敗:', error);
+            
+            // 即使搜尋失敗，也顯示返回按鈕
+            isSearchActive = true;
+            document.querySelector('.back-button-container').style.display = 'block';
+            
+            // 處理後端返回的驗證錯誤
+            if (error.errors) {
+                // 將所有驗證錯誤合併為一個有格式的HTML字串
+                let errorMessages = '';
+                for (const key in error.errors) {
+                    errorMessages += `<div class="mb-1"><strong>${getFieldName(key)}:</strong> ${error.errors[key]}</div>`;
+                }
+                showErrorHtml('輸入驗證錯誤', errorMessages);
+            } else if (error.message) {
+                showError(error.message || '搜尋失敗，請稍後再試');
+            } else {
+                showError('搜尋失敗，請稍後再試');
+            }
+            
+            // 清空表格或顯示無結果訊息
+            tableBody.innerHTML = '<tr><td colspan="9" class="text-center text-danger">查詢出現問題，請修正搜尋條件後重試</td></tr>';
+        });
+}
+
+
+// 處理返回按鈕點擊事件
+function handleBackButtonClick() {
+    // 清空所有搜尋條件
+    document.getElementById('search-store-id').value = '';
+    document.getElementById('search-store-name').value = '';
+    document.getElementById('search-status').value = '';
+    
+    // 隱藏返回按鈕
+    document.querySelector('.back-button-container').style.display = 'none';
+    isSearchActive = false;
+    
+    // 重新載入當前月份資料而不是使用原始記錄
+    // 這確保我們獲取完整的分頁數據
+    loadMonthData(currentYear, currentMonth);
+}
+
+
+
+
+
+// 獲取欄位的中文名稱
+function getFieldName(fieldKey) {
+    const fieldNames = {
+        'storeId': '店家ID',
+        'storeName': '店家名稱',
+        'status': '核銷狀態',
+        'startDate': '開始日期',
+        'endDate': '結束日期',
+        'dateRange': '日期範圍'
+    };
+    
+    return fieldNames[fieldKey] || fieldKey;
+}
+
+
+
+// 顯示帶有HTML的錯誤消息(搜尋驗證錯誤提示)
+function showErrorHtml(title, htmlMessage) {
+    if (window.Swal) {
+        Swal.fire({
+            icon: 'error',
+            title: title,
+            html: htmlMessage,
+            confirmButtonText: '確定'
+        });
+    } else {
+        alert(title + ': ' + htmlMessage.replace(/<[^>]*>/g, ''));
+    }
+}
+
+
+
+
+
+
+// 開啟核銷模態框
+function openRedemptionModal(redemptionId, points) {
+    // 設置全局變量以便確認按鈕使用
+    window.currentRedemptionId = redemptionId;
+    
+    // 先從伺服器獲取當前完整的核銷記錄資訊
+    backstageAuth.authFetch(`http://localhost:8080/pointsRedemption/getById/${redemptionId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('獲取核銷記錄失敗');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("獲取到的核銷記錄:", data); // 調試用
+            
+            // 設置模態框中的點數值
+            const pointsAmount = parseInt(data.pointsAmount || points, 10);
+            document.getElementById('redemptionPoints').value = pointsAmount;
+            
+            // 根據狀態處理核銷金額顯示
+            let cashAmount;
+            
+            if (data.status === 0) {
+                // 未核銷：預設金額等於點數
+                cashAmount = pointsAmount;
+            } else {
+                // 已核銷但異常：僅顯示剩餘點數作為建議核銷金額
+                cashAmount = pointsAmount; // 只顯示剩餘點數
+            }
+            
+            document.getElementById('redemptionCash').value = cashAmount;
+            
+            // 根據狀態更新模態框標題
+            const modalTitle = document.getElementById('redemptionModalLabel');
+            modalTitle.textContent = data.status === 0 ? '核銷點數並執行撥款' : '調整核銷';
+            
+            // 若是調整核銷，額外顯示說明
+            if (data.status !== 0) {
+                const previousCashAmount = parseInt(data.cashAmount || 0, 10);
+                
+                // 檢查是否已有說明元素，避免重複添加
+                const existingNote = document.getElementById('redemption-note');
+                if (!existingNote) {
+                    const noteElem = document.createElement('div');
+                    noteElem.id = 'redemption-note';
+                    noteElem.className = 'alert alert-info mt-3';
+                    noteElem.innerHTML = `
+                        <strong>調整說明：</strong><br>
+                        已核銷金額: ${previousCashAmount} 點<br>
+                        剩餘點數: ${pointsAmount} 點<br>
+                        建議本次核銷金額: ${pointsAmount} 點
+                    `;
+                    document.querySelector('.modal-body').appendChild(noteElem);
+                } else {
+                    existingNote.innerHTML = `
+                        <strong>調整說明：</strong><br>
+                        已核銷金額: ${previousCashAmount} 點<br>
+                        剩餘點數: ${pointsAmount} 點<br>
+                        建議本次核銷金額: ${pointsAmount} 點
+                    `;
+                }
+            } else {
+                // 移除可能存在的說明元素
+                const existingNote = document.getElementById('redemption-note');
+                if (existingNote) {
+                    existingNote.remove();
+                }
+            }
+            
+            // 顯示模態框
+            $('#redemptionModal').modal('show');
+        })
+        .catch(error => {
+            console.error('獲取核銷記錄失敗:', error);
+            
+            // 如果API不存在或失敗，使用傳入的參數值
+            document.getElementById('redemptionPoints').value = points;
+            document.getElementById('redemptionCash').value = points;
+            
+            // 移除可能存在的說明元素
+            const existingNote = document.getElementById('redemption-note');
+            if (existingNote) {
+                existingNote.remove();
+            }
+            
+            $('#redemptionModal').modal('show');
+        });
+}
+
+
+
+
+// 確認核銷
+function confirmRedemption() {
+    const redemptionId = window.currentRedemptionId;
+    const pointsAmount = parseInt(document.getElementById('redemptionPoints').value, 10);
+    const cashAmount = parseInt(document.getElementById('redemptionCash').value, 10);
+    
+    // 強化驗證
+    if (!cashAmount || isNaN(cashAmount) || cashAmount <= 0) {
+        showError('請輸入有效的核銷金額，必須大於0');
+        return;
+    }
+    
+    // 確保核銷金額不超過剩餘點數
+    if (cashAmount > pointsAmount) {
+        showError('核銷金額不能超過剩餘點數');
+        return;
+    }
+    
+    // 如果金額小於點數，顯示確認提示 (部分核銷情況)
+    if (cashAmount < pointsAmount) {
+        Swal.fire({
+            title: '確認部分核銷?',
+            html: `
+                <div class="text-left">
+                    <p>您準備核銷 ${cashAmount} 點，而非全部剩餘點數 ${pointsAmount}。</p>
+                    <p>確認僅核銷部分點數？剩餘點數將保留在下次核銷。</p>
+                </div>
+            `,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '確認核銷',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitRedemption(redemptionId, cashAmount);
+            }
+        });
+        return;
+    }
+    
+    // 直接提交
+    submitRedemption(redemptionId, cashAmount);
+}
+
+
+
+// 提交核銷資料到後端
+function submitRedemption(redemptionId, cashAmount) {
+    // 創建請求數據
+    const redemptionData = {
+        cashAmount: cashAmount
+    };
+    
+    // 發送更新請求
+    backstageAuth.authFetch(`http://localhost:8080/pointsRedemption/update/${redemptionId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(redemptionData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(errorData => {
+                throw new Error(errorData.message || '核銷失敗');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        // 關閉模態框
+        $('#redemptionModal').modal('hide');
+        
+        // 顯示成功消息
+        showSuccess(data.message || '核銷成功');
+        
+        // 重新加載當前月份數據 - 確保能看到已核銷的資料
+        loadMonthData(currentYear, currentMonth);
+    })
+    .catch(error => {
+        console.error('核銷失敗:', error);
+        showError(error.message || '核銷失敗，請稍後再試');
+    });
+}
+
+// 顯示成功消息
+function showSuccess(message) {
+    // 使用 SweetAlert2 或類似工具來顯示美觀的成功消息
+    if (window.Swal) {
+        Swal.fire({
+            icon: 'success',
+            title: '成功',
+            text: message,
+            timer: 2000
+        });
+    } else {
+        alert(message);
+    }
+}
+
+// 顯示錯誤消息
+function showError(message) {
+    // 使用 SweetAlert2 或類似工具來顯示美觀的錯誤消息
+    if (window.Swal) {
+        Swal.fire({
+            icon: 'error',
+            title: '錯誤',
+            text: message
+        });
+    } else {
+        alert(message);
+    }
+}
+
+// 顯示提示信息
+function showInfo(message) {
+    if (window.Swal) {
+        Swal.fire({
+            icon: 'info',
+            title: '提示',
+            text: message,
+            timer: 2000,
+            timerProgressBar: true
+        });
+    } else {
+        alert(message);
+    }
+}
+
+// 綁定確認核銷按鈕事件
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('confirmRedemption').addEventListener('click', confirmRedemption);
+});
+
+
+
+// 批次核銷函數
+function performBatchRedemption() {
+    let selectedRedemptionIds;
+
+    if (isSearchActive) {
+        // 搜尋模式：選取所有未核銷的記錄ID
+        selectedRedemptionIds = allRecords
+            .filter(item => item.status === 0)
+            .map(item => item.id);
+    } else {
+        // 非搜尋模式：檢查全選按鈕狀態
+        const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+        
+        if (selectAllCheckbox.checked) {
+            // 如果全選按鈕被勾選，選取當前頁面所有未核銷的記錄ID
+            selectedRedemptionIds = allRecords
+                .filter(item => item.status === 0)
+                .map(item => item.id);
+        } else {
+            // 否則只選取手動勾選的記錄ID
+            selectedRedemptionIds = Array.from(document.querySelectorAll('.row-checkbox:checked'))
+                .map(checkbox => parseInt(checkbox.dataset.redemptionId));
+        }
+    }
+
+    if (selectedRedemptionIds.length === 0) {
+        showError('請至少選擇一筆記錄');
+        return;
+    }
+
+    Swal.fire({
+        title: `確定要核銷 ${selectedRedemptionIds.length} 筆記錄嗎？`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '確定核銷',
+        cancelButtonText: '取消'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            backstageAuth.authFetch('http://localhost:8080/pointsRedemption/batchRedemption', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(selectedRedemptionIds)
+            })
+            .then(response => response.json())
+            .then(data => {
+                showSuccess(`核銷完成：成功 ${data.successCount} 筆，失敗 ${data.failCount} 筆`);
+                
+                // 重新載入當前頁面資料
+                loadMonthData(currentYear, currentMonth);
+            })
+            .catch(error => {
+                console.error('批次核銷失敗:', error);
+                showError('批次核銷發生錯誤');
+            });
+        }
+    });
+}
+
+
+
+//===============開發測試用：紀錄重置按鈕===================
+function resetCurrentMonthRecords() {
+    Swal.fire({
+        title: '確定要重置當月所有核銷記錄嗎？',
+        text: '這將把所有當月記錄恢復到未核銷狀態，並退回店家原始點數！',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: '是的，重置！',
+        cancelButtonText: '取消'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            backstageAuth.authFetch('http://localhost:8080/pointsRedemption/resetCurrentMonthRecords', {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+                showSuccess(data.message);
+                // 重新載入當前月份資料
+                loadMonthData(currentYear, currentMonth);
+            })
+            .catch(error => {
+                console.error('重置失敗:', error);
+                showError('重置記錄失敗');
+            });
+        }
+    });
+}
+
+
+
+ </script>
+</body>
+</html>
