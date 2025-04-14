@@ -271,7 +271,7 @@ function confirmCheckout() {
     const orderPayload = {
         storeId: selectedFood.storeId,
         memberId: parseInt(memberId),
-        pickStat: 0,
+        pickStat: 2,  // 📌 2025/04/13 修改：預設為 2 未領取
         serveStat: 0,
         foodId: selectedFood.foodId,
         attachedId: selectedFood.attachedId || null,
@@ -280,9 +280,7 @@ function confirmCheckout() {
 
     fetch('/meal/order/submit', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderPayload)
     })
     .then(res => {
@@ -296,8 +294,9 @@ function confirmCheckout() {
             return;
         }
 
-        // ✅ 儲存訂單資訊
+        // 📌 2025/04/13 修改：補上 orderId，讓後續地圖頁與輪詢頁可讀取
         sessionStorage.setItem("orderSuccess", JSON.stringify({
+            orderId: data.orderId,                   // ✅ 這一行是新增的
             storeName: data.storeName,
             address: data.address,
             pickupCode: data.pickupCode,
@@ -307,15 +306,13 @@ function confirmCheckout() {
             details: data.details
         }));
 
-        // ✅ 清空前端購物車資料
+        // 📌 清除前端與後端購物車
         clearCartStorage();
-
-        // ✅ 清空後端 session 中的購物車
         fetch('/api/cart/clear', { method: 'POST' })
             .then(() => console.log("✅ 後端購物車已清空"))
             .catch(err => console.error("❌ 後端購物車清除失敗", err));
 
-        // ✅ 導向成功頁面
+        // 📌 導向成功頁（5 秒後會自動跳 pickup 地圖頁）
         window.location.href = "/success.html";
     })
     .catch(err => {
@@ -323,7 +320,6 @@ function confirmCheckout() {
         alert("❌ 訂單建立失敗，請稍後再試");
     });
 }
-
 
 // ✅ 清空購物車 function
 function clearCartStorage() {

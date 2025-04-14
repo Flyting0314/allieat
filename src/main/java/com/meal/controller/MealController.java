@@ -144,7 +144,7 @@ public class MealController {
         try {
             Integer storeId = (Integer) orderData.get("storeId");
             Integer memberId = (Integer) orderData.get("memberId");
-            Integer pickStat = (Integer) orderData.getOrDefault("pickStat", 0);
+            Integer pickStat = (Integer) orderData.getOrDefault("pickStat", 2);
             Integer serveStat = (Integer) orderData.getOrDefault("serveStat", 0);
 
             OrderFoodVO order = new OrderFoodVO();
@@ -205,6 +205,7 @@ public class MealController {
             result.put("pickupTime", null);
             result.put("storeLat", store.getLatitude());
             result.put("storeLng", store.getLongitude());
+            result.put("orderId", savedOrder.getOrderId()); // 📌 新增回傳 orderId 給前端輪詢使用
 
             List<OrderDetailDTO> detailDTOs = new ArrayList<>();
             for (OrderDetailVO detail : details) {
@@ -224,4 +225,150 @@ public class MealController {
             return result;
         }
     }
+ // ✅ 更新取餐狀態：0=已領取、1=無、2=未領取、3=已棄單
+    @PostMapping("/order/update-pick-status")
+    public ResponseEntity<?> updatePickupStatus(@RequestBody Map<String, Object> payload) {
+        try {
+            Integer orderId = (Integer) payload.get("orderId");
+            Integer pickStat = (Integer) payload.get("pickStat");
+
+            if (orderId == null || pickStat == null) {
+                return ResponseEntity.badRequest().body("缺少必要參數");
+            }
+
+            Optional<OrderFoodVO> optionalOrder = orderService.findOrderById(orderId);
+            if (optionalOrder.isEmpty()) {
+                return ResponseEntity.status(404).body("找不到訂單");
+            }
+
+            OrderFoodVO order = optionalOrder.get();
+            order.setPickStat(pickStat);
+            orderService.saveOrderOnly(order); // ✅ 使用已有的儲存方法
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("redirectToEvaluation", pickStat == 0); // ✅ 如果是已領取，前端可跳轉
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("伺服器錯誤：" + e.getMessage());
+        }
+    }
+    @PostMapping("/order/pickup-status")
+    public ResponseEntity<?> updatePickupStatus(@RequestParam Integer orderId, @RequestParam Integer pickStat) {
+        boolean updated = orderService.updatePickStat(orderId, pickStat);
+        if (updated) {
+            if (pickStat == 0) {
+                return ResponseEntity.ok(Collections.singletonMap("redirectTo", "/evaluate.html?orderId=" + orderId));
+            } else {
+                String msg;
+                switch (pickStat) {
+                    case 1 -> msg = "此訂單已標示為無法接單";
+                    case 2 -> msg = "顧客尚未取餐";
+                    case 3 -> msg = "訂單已被棄單";
+                    default -> msg = "狀態已更新";
+                }
+                return ResponseEntity.ok(Collections.singletonMap("message", msg));
+            }
+        } else {
+            return ResponseEntity.status(404).body(Collections.singletonMap("error", "訂單不存在"));
+        }
+    }
+
+    @PostMapping("/order/evaluate")
+    public Map<String, Object> evaluateOrder(@RequestBody Map<String, Object> data) {
+        Integer orderId = (Integer) data.get("orderId");
+        Integer rating = (Integer) data.get("rating");
+        String comment = (String) data.get("comment");
+
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // ➤ 儲存評價到 DB（請你根據 OrderFoodVO 加上欄位 comment、rating 等再實作）
+            orderService.saveEvaluation(orderId, rating, comment);
+
+            response.put("success", true);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+        }
+        return response;
+    }
+    @GetMapping("/order/all")
+    public List<Map<String, Object>> getAllOrders() {
+        List<OrderFoodVO> orders = orderService.getAllOrders(); // 你要在 Service 實作
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (OrderFoodVO o : orders) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("orderId", o.getOrderId());
+            map.put("memberId", o.getMember().getMemberId());
+            map.put("memberName", o.getMember().getName()); // 如果有
+            map.put("pickStat", o.getPickStat());
+            result.add(map);
+        }
+        return result;
+    }
+    @GetMapping("/order/page")
+    public Map<String, Object> getOrdersByPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+
+        List<OrderFoodVO> orders = orderService.getOrdersPaged(page, size);
+        long totalCount = orderService.getTotalOrderCount();
+
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        for (OrderFoodVO o : orders) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("orderId", o.getOrderId());
+            map.put("memberId", o.getMember().getMemberId());
+            map.put("memberName", o.getMember().getName());
+            map.put("pickStat", o.getPickStat());
+            resultList.add(map);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("total", totalCount);
+        result.put("orders", resultList);
+        return result;
+    }
+    @GetMapping("/order/wait-pickup")
+    public ResponseEntity<?> waitForPickup(@RequestParam Integer orderId) {
+        long timeout = 15_000;
+        long start = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() - start < timeout) {
+            Optional<OrderFoodVO> optional = orderService.findOrderById(orderId);
+            if (optional.isPresent() && optional.get().getPickStat() == 0) {
+                return ResponseEntity.ok(Map.of("pickedUp", true));
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+
+        return ResponseEntity.ok(Map.of("pickedUp", false));
+    }
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<?> getOrderSimpleInfo(@PathVariable Integer orderId) {
+        Optional<OrderFoodVO> optional = orderService.findOrderById(orderId);
+        if (optional.isEmpty()) {
+            return ResponseEntity.status(404).body(Map.of("error", "找不到訂單"));
+        }
+
+        OrderFoodVO order = optional.get();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("orderId", order.getOrderId());
+        response.put("storeName", order.getStore() != null ? order.getStore().getName() : "未知店家");
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
 }

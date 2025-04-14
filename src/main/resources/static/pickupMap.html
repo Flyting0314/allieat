@@ -171,7 +171,7 @@
         return d.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
       }
 
-
+      waitForPickup(); // ✅ 啟動輪詢
     });
 
     function initMap() {
@@ -226,6 +226,27 @@
     }
 
     window.initMap = initMap;
+
+    // ✅ 長輪詢監聽取餐狀態
+    function waitForPickup() {
+      const orderData = JSON.parse(sessionStorage.getItem("orderSuccess")) || {};
+      const orderId = orderData?.orderId;
+      if (!orderId) return;
+
+      fetch(`/meal/order/wait-pickup?orderId=${orderId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.pickedUp) {
+            window.location.href = `/evaluate.html?orderId=${orderId}`;
+          } else {
+            setTimeout(waitForPickup, 1000); // 每秒再問一次
+          }
+        })
+        .catch(err => {
+          console.error("❌ 無法查詢取餐狀態", err);
+          setTimeout(waitForPickup, 2000);
+        });
+    }
   </script>
 
   <!-- Google Maps API -->
