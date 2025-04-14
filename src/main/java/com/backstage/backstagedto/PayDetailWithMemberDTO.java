@@ -82,7 +82,7 @@ public class PayDetailWithMemberDTO {
     public String getIdNum() {
         return idNum;
     }
-
+ 
     public void setIdNum(String idNum) {
         this.idNum = idNum;
     }

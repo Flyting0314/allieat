@@ -32,7 +32,7 @@ import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional; //如果專案使用 Spring Boot 3.x
 
-
+ 
 
 
 @Service

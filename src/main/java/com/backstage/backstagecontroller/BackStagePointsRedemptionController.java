@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-
+ 
 
 @RestController
 @RequestMapping("/pointsRedemption")
