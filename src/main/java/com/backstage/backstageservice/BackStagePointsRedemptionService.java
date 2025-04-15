@@ -1,9 +1,4 @@
 package com.backstage.backstageservice;
-<<<<<<< HEAD
- 
-=======
-
->>>>>>> b791394 (1. 新增實體 ”店家點數核銷 PointsRedemption” 相關檔案：VO, Repository, Service,)
 import com.entity.PointsRedemptionVO;
 import com.entity.StoreVO;
 import com.store.model.StoreService;
