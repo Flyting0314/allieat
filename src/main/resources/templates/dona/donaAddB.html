@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
-<head >
-<link rel="icon" href="data:,">
 
-<th:block th:replace="fragments/header :: header"></th:block>
+<head>
+    <link rel="icon" href="data:,">
+
+    <th:block th:replace="fragments/header :: header"></th:block>
     <style>
         * {
             box-sizing: border-box;
@@ -86,14 +87,14 @@
             flex: 1;
             text-align: center;
             padding: 10px;
-            background-color: white ;
+            background-color: white;
             cursor: pointer;
             border: 1px solid #ddd;
             border-bottom: none;
         }
 
         .df-tab.df-active {
-            background-color:#e9ecef;
+            background-color: #e9ecef;
         }
 
         .df-panel {
@@ -341,14 +342,11 @@
                             <div class="df-input-group">
                                 <label class="df-required" for="identityData">捐款人姓名</label>
                                 <input type="text" class="df-input" th:field="*{identityData}" id="identityData"
-                                       placeholder="請輸入真實姓名"
-                                       onfocus="hideContent('identityDataError')"
-                                       oninput="hideContent('identityDataError')"
-                                       onblur="showError('identityDataError')">
-                            
+                                    placeholder="請輸入真實姓名" onfocus="hideContent('identityDataError')"
+                                    oninput="hideContent('identityDataError')" onblur="showError('identityDataError')">
+
                                 <!-- 錯誤訊息區塊 -->
-                                <div class="text-danger fw-bold mb-2"
-                                    th:if="${#fields.hasErrors('identityData')}"
+                                <div class="text-danger fw-bold mb-2" th:if="${#fields.hasErrors('identityData')}"
                                     th:errors="*{identityData}">
                                 </div>
                             </div>
@@ -357,14 +355,11 @@
                             <div class="df-input-group">
                                 <label class="df-required" for="email">Email</label>
                                 <input type="email" class="df-input" th:field="*{email}" id="email"
-                                       placeholder="請填寫有效的聯絡信箱,範例：abc@gmail.com"
-                                       onfocus="hideContent('emailError')"
-                                       oninput="hideContent('emailError')"
-                                       onblur="showError('emailError')">
-                                       
+                                    placeholder="請填寫有效的聯絡信箱,範例：abc@gmail.com" onfocus="hideContent('emailError')"
+                                    oninput="hideContent('emailError')" onblur="showError('emailError')">
+
                                 <!-- 錯誤訊息區塊 -->
-                                <div class="text-danger fw-bold mb-2"
-                                    th:if="${#fields.hasErrors('email')}"
+                                <div class="text-danger fw-bold mb-2" th:if="${#fields.hasErrors('email')}"
                                     th:errors="*{email}">
                                 </div>
                             </div>
@@ -372,13 +367,10 @@
                             <div class="df-input-group">
                                 <label class="df-required" for="phone">聯絡電話</label>
                                 <input type="tel" class="df-input" th:field="*{phone}" id="phone"
-                                       placeholder="範例：0901234567"
-                                       onfocus="hideContent('phoneError')"
-                                       oninput="hideContent('phoneError')"
-                                       onblur="showError('phoneError')">
+                                    placeholder="範例：0901234567" onfocus="hideContent('phoneError')"
+                                    oninput="hideContent('phoneError')" onblur="showError('phoneError')">
                                 <!-- 錯誤訊息區塊 -->
-                                <div class="text-danger fw-bold mb-2"
-                                    th:if="${#fields.hasErrors('phone')}"
+                                <div class="text-danger fw-bold mb-2" th:if="${#fields.hasErrors('phone')}"
                                     th:errors="*{phone}">
                                 </div>
                             </div>
@@ -423,18 +415,23 @@
                                         th:field="*{postalCode}" placeholder="郵遞區號" readonly>
                                     <select class="df-select" id="city-personal" name="county" th:field="*{county}">
                                         <option value="" selected>縣市</option>
-                                        
+
                                     </select>
                                     <select class="df-select" id="area-personal" name="district" th:field="*{district}">
                                         <option value="" selected>鄉鎮市區</option>
                                     </select>
                                 </div>
                                 <input type="text" class="df-input" name="address" th:field="*{address}"
-                                    placeholder="請輸入詳細地址" id="address-personal" oninput="hideContent('addressErrorPersonal')">
-                                <span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="error text-danger fw-bold mb-2"id="postalCode.errors"></span>
-<span th:if="${#fields.hasErrors('county')}" th:errors="*{county}" class="error text-danger fw-bold mb-2"></span>
-<span th:if="${#fields.hasErrors('district')}" th:errors="*{district}" class="error text-danger fw-bold mb-2"></span>
-<span id="addressErrorPersonal" th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error text-danger fw-bold mb-2"></span>
+                                    placeholder="請輸入詳細地址" id="address-personal"
+                                    oninput="hideContent('addressErrorPersonal')">
+                                <span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"
+                                    class="error text-danger fw-bold mb-2" id="postalCode.errors"></span>
+                                <span th:if="${#fields.hasErrors('county')}" th:errors="*{county}"
+                                    class="error text-danger fw-bold mb-2"></span>
+                                <span th:if="${#fields.hasErrors('district')}" th:errors="*{district}"
+                                    class="error text-danger fw-bold mb-2"></span>
+                                <span id="addressErrorPersonal" th:if="${#fields.hasErrors('address')}"
+                                    th:errors="*{address}" class="error text-danger fw-bold mb-2"></span>
                             </div>
 
 
@@ -472,8 +469,8 @@
                                     <label class="df-required" for="idNum">捐款人身分證</label>
                                     <input type="text" class="df-input" placeholder="A123456789" th:field="*{idNum}"
                                         id="idNum">
-                                    <span th:if="${#fields.hasErrors('idNum')}" th:errors="*{idNum}" class="error text-danger fw-bold mb-2"
-                                        id="idNum.errors"></span>
+                                    <span th:if="${#fields.hasErrors('idNum')}" th:errors="*{idNum}"
+                                        class="error text-danger fw-bold mb-2" id="idNum.errors"></span>
 
                                 </div>
                             </div>
@@ -495,20 +492,22 @@
                                 <span th:if="${#fields.hasErrors('anonymous')}" th:errors="*{anonymous}"
                                     class="error"></span>
 
-                                    <div style="margin-top: 12px;">
-                                        <label style="display: flex; align-items: flex-start;">
-                                            <input type="checkbox" th:field="*{agreePrivacy}" id="privacy-agreement-personal"
-                                                   disabled onclick="hideContent('agreePrivacyError')">
-                                            <span>
-                                                您已了解並同意本平台蒐集、處理及使用您的個人資料。
-                                                請閱讀「<span class="df-privacy-link" onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
-                                                <span style="color: red;">*</span>
-                                            </span>
-                                        </label>
+                                <div style="margin-top: 12px;">
+                                    <label style="display: flex; align-items: flex-start;">
+                                        <input type="checkbox" th:field="*{agreePrivacy}"
+                                            id="privacy-agreement-personal" disabled
+                                            onclick="hideContent('agreePrivacyError')">
+                                        <span>
+                                            您已了解並同意本平台蒐集、處理及使用您的個人資料。
+                                            請閱讀「<span class="df-privacy-link"
+                                                onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
+                                            <span style="color: red;">*</span>
+                                        </span>
+                                    </label>
                                     <!-- 錯誤訊息區塊 -->
                                     <span class="text-danger fw-bold" id="agreePrivacyErrorPersonal"
-      th:if="${#fields.hasErrors('agreePrivacy')}" 
-      th:errors="*{agreePrivacy}">請勾選同意條款</span>
+                                        th:if="${#fields.hasErrors('agreePrivacy')}"
+                                        th:errors="*{agreePrivacy}">請勾選同意條款</span>
                                 </div>
                             </div>
 
@@ -531,42 +530,33 @@
                             <div class="df-input-group">
                                 <label class="df-required" for="identityData">公司/機構名稱</label>
                                 <input type="text" class="df-input" th:field="*{identityData}" id="identityData-company"
-                                       placeholder="請輸入公司/機構名稱"
-                                       onfocus="hideContent('identityDataErrorCompany')"
-                                       oninput="hideContent('identityDataErrorCompany')"
-                                       onblur="showError('identityDataErrorCompany')">
+                                    placeholder="請輸入公司/機構名稱" onfocus="hideContent('identityDataErrorCompany')"
+                                    oninput="hideContent('identityDataErrorCompany')"
+                                    onblur="showError('identityDataErrorCompany')">
                                 <!-- 錯誤訊息區塊 -->
-                                <div class="text-danger fw-bold mb-2"
-                                    th:if="${#fields.hasErrors('identityData')}"
+                                <div class="text-danger fw-bold mb-2" th:if="${#fields.hasErrors('identityData')}"
                                     th:errors="*{identityData}">
                                 </div>
                             </div>
 
                             <div class="df-input-group">
                                 <label class="df-required" for="email-company">Email</label>
-                                <input type="email" class="df-input"
-                                       placeholder="請填寫有效的聯絡信箱,範例：abc@gmail.com"
-                                       th:field="*{email}" id="email-company"
-                                       onfocus="hideContent('emailErrorCompany')"
-                                       oninput="hideContent('emailErrorCompany')"
-                                       onblur="showError('emailErrorCompany')">
+                                <input type="email" class="df-input" placeholder="請填寫有效的聯絡信箱,範例：abc@gmail.com"
+                                    th:field="*{email}" id="email-company" onfocus="hideContent('emailErrorCompany')"
+                                    oninput="hideContent('emailErrorCompany')" onblur="showError('emailErrorCompany')">
                                 <!-- 錯誤訊息區塊 -->
-                                <div class="text-danger fw-bold mb-2"
-                                    th:if="${#fields.hasErrors('email')}"
+                                <div class="text-danger fw-bold mb-2" th:if="${#fields.hasErrors('email')}"
                                     th:errors="*{email}">
                                 </div>
                             </div>
 
                             <div class="df-input-group">
                                 <label class="df-required" for="phone-company">聯絡電話</label>
-                                <input type="tel" class="df-input" placeholder="範例：0901234567"
-                                       th:field="*{phone}" id="phone-company"
-                                       onfocus="hideContent('phoneErrorCompany')"
-                                       oninput="hideContent('phoneErrorCompany')"
-                                       onblur="showError('phoneErrorCompany')">
+                                <input type="tel" class="df-input" placeholder="範例：0901234567" th:field="*{phone}"
+                                    id="phone-company" onfocus="hideContent('phoneErrorCompany')"
+                                    oninput="hideContent('phoneErrorCompany')" onblur="showError('phoneErrorCompany')">
                                 <!-- 錯誤訊息區塊 -->
-                                <div class="text-danger fw-bold mb-2"
-                                    th:if="${#fields.hasErrors('phone')}"
+                                <div class="text-danger fw-bold mb-2" th:if="${#fields.hasErrors('phone')}"
                                     th:errors="*{phone}">
                                 </div>
                             </div>
@@ -585,13 +575,16 @@
                                     </select>
                                 </div>
                                 <input type="text" class="df-input" name="address" th:field="*{address}"
-    placeholder="請輸入詳細地址" id="address-company"
-    oninput="hideContent('addressErrorCompany')">
-                                <span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="error text-danger fw-bold mb-2"></span>
-<span th:if="${#fields.hasErrors('county')}" th:errors="*{county}" class="error text-danger fw-bold mb-2"></span>
-<span th:if="${#fields.hasErrors('district')}" th:errors="*{district}" class="error text-danger fw-bold mb-2"></span>
-<span id="addressErrorCompany" th:if="${#fields.hasErrors('address')}"
-      th:errors="*{address}" class="error text-danger fw-bold mb-2"></span>
+                                    placeholder="請輸入詳細地址" id="address-company"
+                                    oninput="hideContent('addressErrorCompany')">
+                                <span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"
+                                    class="error text-danger fw-bold mb-2"></span>
+                                <span th:if="${#fields.hasErrors('county')}" th:errors="*{county}"
+                                    class="error text-danger fw-bold mb-2"></span>
+                                <span th:if="${#fields.hasErrors('district')}" th:errors="*{district}"
+                                    class="error text-danger fw-bold mb-2"></span>
+                                <span id="addressErrorCompany" th:if="${#fields.hasErrors('address')}"
+                                    th:errors="*{address}" class="error text-danger fw-bold mb-2"></span>
                             </div>
 
 
@@ -623,9 +616,9 @@
                                 <div class="df-input-group">
                                     <label class="df-required" for="guiNum">統一編號</label>
                                     <input type="text" class="df-input" placeholder="12345678" th:field="*{guiNum}"
-                                        id="guiNum" >
-                                    <span th:if="${#fields.hasErrors('guiNum')}" th:errors="*{guiNum}" class="error text-danger fw-bold mb-2"
-                                        id="guiNum.errors"></span>
+                                        id="guiNum">
+                                    <span th:if="${#fields.hasErrors('guiNum')}" th:errors="*{guiNum}"
+                                        class="error text-danger fw-bold mb-2" id="guiNum.errors"></span>
                                 </div>
                             </div>
 
@@ -649,18 +642,18 @@
                                 <div style="margin-top: 12px;">
                                     <label style="display: flex; align-items: flex-start;">
                                         <input type="checkbox" th:field="*{agreePrivacy}" id="privacy-agreement-company"
-                                                disabled>
+                                            disabled>
                                         <span>
                                             您已了解並同意本平台蒐集、處理及使用您的個人資料。
                                             請閱讀「<span class="df-privacy-link"
-                                                        onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
+                                                onclick="openPrivacyLightbox()">個資運用告知聲明</span>」
                                             <span style="color: red;">*</span>
                                         </span>
                                     </label>
                                     <!-- 錯誤訊息區塊 -->
                                     <span id="agreePrivacyErrorCompany" class="text-danger fw-bold"
-      th:if="${showErrors} and ${#fields.hasErrors('agreePrivacy')}"
-      th:errors="*{agreePrivacy}">請勾選同意條款</span>
+                                        th:if="${showErrors} and ${#fields.hasErrors('agreePrivacy')}"
+                                        th:errors="*{agreePrivacy}">請勾選同意條款</span>
 
                                 </div>
                             </div>
@@ -715,11 +708,11 @@
             <p>七、資料安全維護措施：
                 <br>本平台將依據相關法令及內部規範，採取適當的安全措施保護您的個人資料。
             </p>
-            
+
             <label style="display: flex; align-items: flex-start; margin-top: 20px;">
-            <input type="checkbox" id="privacy-check-inside-company">
-            <span>我已閱讀並同意上述個資說明</span>
-        </label>
+                <input type="checkbox" id="privacy-check-inside-company">
+                <span>我已閱讀並同意上述個資說明</span>
+            </label>
 
             <div style="margin-top: 20px; text-align: center;">
                 <button onclick="closePrivacyLightbox()" class="df-button df-button-next"
@@ -760,7 +753,7 @@
             const el = document.getElementById(id);
             if (el) {
                 el.style.display = "none";
-                
+
             }
         }
 
@@ -963,8 +956,8 @@
             });
         });
 
- 
-        
+
+
         document.addEventListener("DOMContentLoaded", function () {
             const fields = document.querySelectorAll("input, select, textarea");
             fields.forEach(field => {
@@ -985,80 +978,80 @@
             const errorMsg = document.getElementById('agreePrivacyError'); // 錯誤訊息
             const internalCheckbox = document.getElementById("privacy-check-inside-company")
 
-//  燈箱內的勾選同步隱藏錯誤
-    internalCheckbox.addEventListener("change", function () {
-    if (this.checked) {
-        const isCompany = document.getElementById('company-form')?.classList.contains('df-visible');
-        const errorMsgId = isCompany ? 'agreePrivacyError' : 'agreePrivacyErrorPersonal';
-        const error = document.getElementById(errorMsgId);
-        if (error) {
-            error.style.display = "none";
-            error.innerText = "";
-        }
-    }
-});
+            //  燈箱內的勾選同步隱藏錯誤
+            internalCheckbox.addEventListener("change", function () {
+                if (this.checked) {
+                    const isCompany = document.getElementById('company-form')?.classList.contains('df-visible');
+                    const errorMsgId = isCompany ? 'agreePrivacyError' : 'agreePrivacyErrorPersonal';
+                    const error = document.getElementById(errorMsgId);
+                    if (error) {
+                        error.style.display = "none";
+                        error.innerText = "";
+                    }
+                }
+            });
             //  開啟燈箱
-window.openPrivacyLightbox = function () {
-    const modal = document.getElementById('privacy-lightbox');
-    const modalContent = modal.querySelector('.df-modal-content');
-    const personalForm = document.getElementById('personal-form');
-    const companyForm = document.getElementById('company-form');
-    const internalCheckbox = document.getElementById("privacy-check-inside-company");
+            window.openPrivacyLightbox = function () {
+                const modal = document.getElementById('privacy-lightbox');
+                const modalContent = modal.querySelector('.df-modal-content');
+                const personalForm = document.getElementById('personal-form');
+                const companyForm = document.getElementById('company-form');
+                const internalCheckbox = document.getElementById("privacy-check-inside-company");
 
-    modal.classList.add("df-visible");
-    document.body.style.overflow = "hidden";
+                modal.classList.add("df-visible");
+                document.body.style.overflow = "hidden";
 
-    const isCompany = companyForm?.classList.contains('df-visible');
-    const outsideCheckbox = document.getElementById(
-        isCompany ? 'privacy-agreement-company' : 'privacy-agreement-personal'
-    );
+                const isCompany = companyForm?.classList.contains('df-visible');
+                const outsideCheckbox = document.getElementById(
+                    isCompany ? 'privacy-agreement-company' : 'privacy-agreement-personal'
+                );
 
-    internalCheckbox.checked = outsideCheckbox.checked;
-};
+                internalCheckbox.checked = outsideCheckbox.checked;
+            };
 
 
-            
+
 
             //  關閉燈箱
-window.closePrivacyLightbox = function () {
-    const modal = document.getElementById("privacy-lightbox");
-    const content = modal.querySelector('.df-modal-content');
-    const hasScrolledToBottom = Math.ceil(content.scrollTop + content.clientHeight) >= content.scrollHeight;
-    const internalCheckbox = document.getElementById("privacy-check-inside-company");
+            window.closePrivacyLightbox = function () {
+                const modal = document.getElementById("privacy-lightbox");
+                const content = modal.querySelector('.df-modal-content');
+                const hasScrolledToBottom = Math.ceil(content.scrollTop + content.clientHeight) >= content.scrollHeight;
+                const internalCheckbox = document.getElementById("privacy-check-inside-company");
 
 
 
-    const isCompany = document.getElementById('company-form')?.classList.contains('df-visible');
-    const outsideCheckbox = document.getElementById(
-        isCompany ? 'privacy-agreement-company' : 'privacy-agreement-personal'
-    );
-    const errorMsgId = isCompany ? 'agreePrivacyErrorCompany' : 'agreePrivacyErrorPersonal';
-    const errorMsg = document.getElementById(errorMsgId);
+                const isCompany = document.getElementById('company-form')?.classList.contains('df-visible');
+                const outsideCheckbox = document.getElementById(
+                    isCompany ? 'privacy-agreement-company' : 'privacy-agreement-personal'
+                );
+                const errorMsgId = isCompany ? 'agreePrivacyErrorCompany' : 'agreePrivacyErrorPersonal';
+                const errorMsg = document.getElementById(errorMsgId);
 
-    modal.classList.remove("df-visible");
-    document.body.style.overflow = "";
+                modal.classList.remove("df-visible");
+                document.body.style.overflow = "";
 
-    outsideCheckbox.disabled = false;
-    outsideCheckbox.checked = internalCheckbox.checked;
+                outsideCheckbox.disabled = false;
+                outsideCheckbox.checked = internalCheckbox.checked;
 
-    if (internalCheckbox.checked) {
-        sessionStorage.setItem("noticeAgreed", "true");
-        if (errorMsg) {
-            errorMsg.style.display = "none";
-            errorMsg.innerText = "";
-        }
-    } else {
-        sessionStorage.removeItem("noticeAgreed");
-        outsideCheckbox.checked = false;
-        if (errorMsg) {
-            errorMsg.style.display = "block";
-        }
-    }
-};
+                if (internalCheckbox.checked) {
+                    sessionStorage.setItem("noticeAgreed", "true");
+                    if (errorMsg) {
+                        errorMsg.style.display = "none";
+                        errorMsg.innerText = "";
+                    }
+                } else {
+                    sessionStorage.removeItem("noticeAgreed");
+                    outsideCheckbox.checked = false;
+                    if (errorMsg) {
+                        errorMsg.style.display = "block";
+                    }
+                }
+            };
 
-        
 
-        }); 
+
+        });
         // JavaScript 更新區域與郵遞區號
         const addrData = [
             {
@@ -1545,7 +1538,7 @@ window.closePrivacyLightbox = function () {
                 ]
             }
         ];
-        
+
         function setupAddressDropdown(prefix, defaultCity = "", defaultArea = "") {
             const citySel = $(`#city-${prefix}`);
             const areaSel = $(`#area-${prefix}`);
@@ -1601,7 +1594,7 @@ window.closePrivacyLightbox = function () {
             setupAddressDropdown('company', '臺北市', '中正區');
             console.log("已設定臺北市 / 中正區 / 郵遞區號 100");
         });
-       
+
     </script>
 </body>
 

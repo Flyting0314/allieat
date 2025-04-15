@@ -331,3 +331,41 @@ strong {
         gap: 10px;
     }
 }
+
+.df-progress {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.df-stage {
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+}
+
+.df-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+    font-size: 12px;
+}
+
+.df-circle.df-current {
+    background-color: #DA9F5B;
+    color: white;
+}
+
+.df-circle.df-done {
+    background-color: #e0e0e0;
+    color: black;
+}
+
+.df-circle.df-done::after {
+    content: "✓";
+}
