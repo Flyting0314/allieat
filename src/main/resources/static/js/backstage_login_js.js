@@ -127,3 +127,6 @@ window.backstageAuth = {
     requireLogin,
     logout
 };
+
+window.addEventListener("load", function () {
+       backstageAuth.setupLoginPage();});
