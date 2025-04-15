@@ -8,5 +8,5 @@ import java.util.Map;
 
 public interface BackStageLoginService {
 
-    ResponseEntity<Map<String, Object>> findByAccount(AdminDTO admin);
+   Map<String, Object> findByAccount(AdminDTO admin);
 }
