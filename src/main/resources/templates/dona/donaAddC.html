@@ -5,8 +5,6 @@
 <link th:href="@{/css/donaC.css}" rel="stylesheet">
 
 
-
-
    
 </head>
 <body>
@@ -16,7 +14,8 @@
     <!-- Reservation Start -->
     <div class="container-fluid py-5">
         <div class="container">
-            <div class="row">
+            <div class="df-wrapper">
+                <div class="row">
                 <!-- 左側圖片與說明 -->
                 <div class="col-md-6">
                     <img src="/img/001.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
@@ -33,11 +32,20 @@
                     <p>支援 VISA、MasterCard、JCB</p>
     
                 <!-- 步驟指示器 -->
-                <div class="steps">
-                    <div class="step">
-                        <div class="step-circle completed"></div>
+                <div class="df-progress">
+                    <div class="df-stage">
+                        <div class="df-circle df-done"></div>
                         <div>選擇金額</div>
                     </div>
+                    <div class="df-stage">
+                        <div class="df-circle df-done"></div>
+                        <div>填寫資料</div>
+                    </div>
+                    <div class="df-stage">
+                        <div class="df-circle df-current">3</div>
+                        <div>線上付款</div>
+                    </div>
+                </div>
 
                     <form th:action="@{/dona/donaAddC}" method="post">
                         <h4>確認您的資料</h4>
@@ -75,7 +83,7 @@
 
 
                     </form>
-                </div>
+               
             </div>
         </div>
 
