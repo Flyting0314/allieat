@@ -5,7 +5,7 @@
         
         body {
     margin: 0;
-    padding: 30px;
+    padding: 0;
     background-color: #FAF3DD;
     font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
     color: #5a4636;
@@ -22,7 +22,7 @@
 h3, h4 {
     color: #da8f2e;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 
 
@@ -357,7 +357,7 @@ strong {
 }
 
 .df-circle.df-current {
-    background-color: #DA9F5B;
+    background-color: #ff0000;
     color: white;
 }
 
