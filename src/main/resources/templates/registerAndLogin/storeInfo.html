@@ -69,14 +69,14 @@
 					</div>
 
 					<div th:each="photo : ${photoList}"
-						th:if="${photo.photoType == 'STORE'}" style="text-align: center;">
+						th:if="${photo.photoType == 'KITCHEN'}" style="text-align: center;">
 						<p>店面環境照</p>
 						<img th:src="${photo.src}" alt="店面照片"
 							style="max-width: 200px; border-radius: 8px;" />
 					</div>
 
 					<div th:each="photo : ${photoList}"
-						th:if="${photo.photoType == 'KITCHEN'}"
+						th:if="${photo.photoType == 'STORE'}"
 						style="text-align: center;">
 						<p>廚房環境照</p>
 						<img th:src="${photo.src}" alt="廚房照片"

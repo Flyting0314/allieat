@@ -15,10 +15,19 @@ public class InfoPageInterceptor implements HandlerInterceptor {
        
 	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		HttpSession session = request.getSession();
-	    session.setAttribute("redirectFromProtected", true);
-	    response.sendRedirect("/registerAndLogin/login");
-	    return false;
+        HttpSession session = request.getSession(false); 
+
+        boolean isStoreLoggedIn = session != null && session.getAttribute("store") != null;
+        boolean isMemberLoggedIn = session != null && session.getAttribute("member") != null;
+
+        if (isStoreLoggedIn || isMemberLoggedIn) {
+         
+            return true;
+        }
+
+      
+        response.sendRedirect(request.getContextPath() + "/registerAndLogin/login");
+        return false;
     }
 	
 }
