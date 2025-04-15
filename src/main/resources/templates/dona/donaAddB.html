@@ -335,8 +335,8 @@
                     <!-- 個人捐款表單 -->
                     <div class="df-panel df-visible" id="personal-form">
                         <form th:action="@{/dona/donaAddB}" method="post" th:object="${donaReq}">
-                            <input type="hidden" name="companyDonor" value="false">
-                            <input type="hidden" name="donationType" value="0">
+                            <input type="hidden" name="companyDonor" th:value="*{companyDonor}">
+                            <input type="hidden" name="donationType" th:value="*{donationType}">
                             <!-- 基本資料區塊 -->
                             <div class="df-input-group">
                                 <label class="df-required" for="identityData">捐款人姓名</label>
@@ -525,8 +525,8 @@
                     <!-- 公司/機構捐款表單 -->
                     <div class="df-panel" id="company-form">
                         <form th:action="@{donaAddB}" method="post" th:object="${donaReq}">
-                            <input type="hidden" name="companyDonor" value="true">
-                            <input type="hidden" name="donationType" value="1">
+                            <input type="hidden" name="companyDonor" th:value="*{companyDonor}">
+                            <input type="hidden" name="donationType" th:value="*{donationType}">
                             <!-- 基本資料區塊 -->
                             <div class="df-input-group">
                                 <label class="df-required" for="identityData">公司/機構名稱</label>

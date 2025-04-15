@@ -471,7 +471,11 @@
 
             const value = parseInt(amount);
 
-            // ✅ 確保選取 `radio` 按鈕，即使是公司捐款
+            // 根據 tab 的選擇來決定是單筆（0）或定期（1）
+            const isRecurring = document.getElementById("tab-personal").classList.contains("donate-selected");
+            const isCompanyDonor = document.getElementById("tab-company").classList.contains("donate-selected");
+
+            // 強制選取 radio 按鈕
             const label = inputElement.closest("label.donate-option");
             const radio = label ? label.querySelector('input[type="radio"]') : null;
             if (radio) {
@@ -480,8 +484,8 @@
 
             if (!isNaN(value) && value >= 100) {
                 income.value = value;
-                donor.value = isCompany ? 'true' : 'false';
-                type.value = isCompany ? 1 : 0;
+                donor.value = isCompanyDonor ? 'true' : 'false';
+                type.value = isRecurring ? 1 : 0; 
                 if (error) {
                     error.innerText = "";
                     error.style.display = "none";
