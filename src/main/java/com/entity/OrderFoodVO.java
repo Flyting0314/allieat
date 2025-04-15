@@ -34,7 +34,7 @@ public class OrderFoodVO {
     @Column(name = "pickStat", columnDefinition = "TINYINT(1)", nullable = false)
     private Integer pickStat;
 
-    @Column(name = "pickTime", nullable = false)
+    @Column(name = "pickTime")
     private Timestamp pickTime;
 
     @Column(name = "createdTime", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

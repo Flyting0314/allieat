@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class StorePermissionInterceptor implements HandlerInterceptor {
 
-    private static final Pattern STORE_ID_PATTERN = Pattern.compile("/registerAndLogin/storeInfo/(\\d+)/food");
+    private static final Pattern STORE_ID_PATTERN = Pattern.compile("/registerAndLogin/storeInfo/(\\d+)");
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
