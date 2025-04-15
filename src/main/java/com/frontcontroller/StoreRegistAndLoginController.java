@@ -47,7 +47,10 @@ public class StoreRegistAndLoginController {
     
     //註冊顯示頁
     @GetMapping("")
-    public String registerPage(@ModelAttribute("store") StoreVO store, HttpSession session, Model model) {
+    public String registerPage(@ModelAttribute("store") StoreVO store, HttpSession session, Model model,SessionStatus sessionStatus) {
+    	sessionStatus.setComplete();
+    	session.removeAttribute("member");
+        session.removeAttribute("store");
         storeService.generatePhotoPreview(store, session, model); 
         model.addAttribute("hasSubmitted", false);
         return "registerAndLogin/storeRegister";

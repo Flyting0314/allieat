@@ -43,14 +43,17 @@ public class LoginController {
     private StoreLoginService storeLoginService;
     
 	@GetMapping("/register")
-	public String index() {
+	public String index(HttpSession session, Model model) {
+		 if (session.getAttribute("member") != null || session.getAttribute("store") != null) {
+		        return "redirect:/registerAndLogin/logout?redirectTo=register";
+		    }
 		return "registerAndLogin/registerAndLogin";
 	}
 	
     @GetMapping("/login")
-    public String showLoginPage() {
-    	
-        return "registerAndLogin/login"; // 對應 login.html
+    public String showLoginPage(Model model) {
+    	model.addAttribute("isLoggedIn", true);
+        return "registerAndLogin/login"; 
     }
 
     @PostMapping("/login")
@@ -66,13 +69,13 @@ public class LoginController {
                 model.addAttribute("error", "帳號或密碼錯誤！");
                 return "registerAndLogin/login";
             }
-            // ✅ 加入審核與啟用狀態檢查
+
             if (member.getReviewed() == 3) {
                 model.addAttribute("error", "帳號審核中，請耐心等候審核通知信件！");
                 return "registerAndLogin/login";
             } else if (member.getReviewed() == 2) {
-            	session.setAttribute("reuploadMember", member); // ✅ 設定補件 session
-                return "redirect:/registerAndLogin/reupload";  // ✅ 導向補件頁面
+            	session.setAttribute("reuploadMember", member); 
+                return "redirect:/registerAndLogin/reupload";  
             } else if (member.getReviewed() == 1 && member.getAccStat() == 0) {
                 model.addAttribute("error", "帳號已審核通過，請至信箱點擊啟用連結後再登入！");
                 return "registerAndLogin/login";
@@ -96,7 +99,7 @@ public class LoginController {
                 model.addAttribute("userType", userType);
                 return "registerAndLogin/login";
             }
-            // ✅ 加入審核與啟用狀態檢查
+
             if (store.getReviewed() == 3) {
                 model.addAttribute("error", "帳號審核中，請耐心等候審核通知信件！");
                 return "registerAndLogin/login";
@@ -115,12 +118,7 @@ public class LoginController {
             model.addAttribute("userType", userType);
             model.addAttribute("store", store);
             
-            // ✅ 檢查是否尚未設定營業資訊
-//            if (store.getOpTime() == null || store.getCloseTime() == null ||
-//                store.getLastOrder() == null || store.getPickTime() == null) {
-//                // ✅ 轉導到強制編輯頁面（或用參數控制進入編輯模式）
-//                return "redirect:/registerAndLogin/storeInfo?forceEdit=true";
-//            }
+
             if (store.getAccStat() == 1 &&
             	    storeLoginService.isStoreMissingOpeningInfo(store) &&
             	    !Boolean.TRUE.equals(forceEdit)) {
@@ -137,7 +135,7 @@ public class LoginController {
     }
     @GetMapping("/memberInfo")
     public String showMemberInfo(HttpSession session, Model model) {
-        MemberVO member = (MemberVO) session.getAttribute("member"); // 或 session.getAttribute("member")，看你用哪個名稱
+        MemberVO member = (MemberVO) session.getAttribute("member"); 
 
         if (member == null) {
             return "redirect:/registerAndLogin/login";
@@ -145,11 +143,9 @@ public class LoginController {
 
         model.addAttribute("member", member);
 
-        // 如果你要顯示歷史訂單或其他資料，可以加這些：
-//        List<MemberOrderRecordDTO> history = memberLoginService.getOrderRecords(member.getMemberId());
-//        model.addAttribute("payDetail", history);
 
-        return "registerAndLogin/memberInfo"; // 這裡對應到你的 HTML 模板名稱
+
+        return "registerAndLogin/memberInfo"; 
     }
     
     @PostMapping("/store/update")
@@ -162,11 +158,7 @@ public class LoginController {
             redirectAttrs.addFlashAttribute("error", "請先登入後再操作");
             return "redirect:/registerAndLogin/login";
         }
-//     // ✅ 使用 service 方法來檢查營業時間是否缺漏
-//        if (storeLoginService.isStoreMissingOpeningInfo(formInput)) {
-//            redirectAttrs.addFlashAttribute("error", "所有營業時間欄位皆為必填，請完整填寫後再儲存！");
-//            return "redirect:/registerAndLogin/storeInfo?forceEdit=true";
-//        }
+
         if (storeLoginService.isInvalidTimeOrder(formInput)) {
             redirectAttrs.addFlashAttribute("error", "營業時間順序有誤，請確認後再儲存！");
             return "redirect:/registerAndLogin/storeInfo?forceEdit=true";
@@ -191,7 +183,7 @@ public class LoginController {
             System.out.println("使用者未登入，導向登入頁面");
             return "redirect:/registerAndLogin/login";
         }
-     // ✅ 檢查是否尚未填營業資訊，導向強制編輯模式
+     
         if (store.getAccStat() == 1 &&
         	    storeLoginService.isStoreMissingOpeningInfo(store) &&
         	    !Boolean.TRUE.equals(forceEdit)) {
@@ -202,20 +194,11 @@ public class LoginController {
 
         model.addAttribute("store", store);
 
-        //  嘗試撈取 photoType = "COVER" 的封面照
+        
         System.out.println("查詢封面照: storeId=" + store.getStoreId());
         Optional<PhotoVO> coverPhotoOpt = photoRepository.findFirstByStoreStoreIdAndPhotoTypeOrderByUpdateTimeDesc(store.getStoreId(), "COVER");
 
-//        if (coverPhotoOpt.isPresent()) {
-//            System.out.println("封面照，photoId=" + coverPhotoOpt.get().getPhotoId());
-//            String base64Cover = Base64.getEncoder().encodeToString(coverPhotoOpt.get().getPhotoSrc());
-//            String coverPhotoUrl = "data:image/jpeg;base64," + base64Cover;
-//            model.addAttribute("coverPhotoUrl", coverPhotoUrl);
-//            System.out.println("已成功載入");
-//        } else {
-//            System.out.println("使用預設圖片");
-//            model.addAttribute("coverPhotoUrl", "/img/default-cover.png");
-//        }
+
         List<PhotoVO> photos = photoRepository.findByStoreStoreId(store.getStoreId());
         List<Map<String, String>> photoList = new ArrayList<>();
 
@@ -228,21 +211,22 @@ public class LoginController {
 
         model.addAttribute("photoList", photoList);
 
-        return "registerAndLogin/storeInfo"; //  保留 return，確保視圖正確渲染
+        return "registerAndLogin/storeInfo"; 
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate(); // 清除 session 
-        System.out.println("登出session 清空");
-        return "redirect:/registerAndLogin/login"; //  重導回登入頁面
+        session.invalidate();
+        return "redirect:/registerAndLogin/login"; 
     }
+    
+
     
     @GetMapping("/resendMail")
     public String showResendPage() {
-        return "registerAndLogin/resendMail"; // 對應上面那個 HTML 頁面
+        return "registerAndLogin/resendMail";
     }
- // ✅ 加在這邊就對了！
+ 
     @GetMapping("/redirectAfterLogin")
     public String redirectAfterLogin(HttpSession session) {
         if (session.getAttribute("member") != null) {
@@ -260,7 +244,7 @@ public class LoginController {
             return "redirect:/registerAndLogin/login";
         }
         model.addAttribute("member", member);
-        return "registerAndLogin/registerReupload"; // 對應 Thymeleaf reupload.html
+        return "registerAndLogin/registerReupload"; 
     }
 
     @PostMapping("/reupload")
@@ -282,7 +266,7 @@ public class LoginController {
         StoreVO store = (StoreVO) session.getAttribute("reuploadStore");
         if (store == null) return "redirect:/registerAndLogin/login";
         
-        // ✅ 這段記得加
+       
         List<PhotoVO> photos = photoRepository.findByStoreStoreId(store.getStoreId());
         List<Map<String, String>> photoList = new ArrayList<>();
         for (PhotoVO photo : photos) {
@@ -320,20 +304,4 @@ public class LoginController {
         }
     }
 }
-//  @GetMapping("/storeInfo")
-//  public String storeInfoPage(HttpSession session, Model model) {
-//      StoreVO store = (StoreVO) session.getAttribute("loggedInStore");
-//      if (store == null) 
-//      return "redirect:/registerAndLogin/login";
-//
-//      model.addAttribute("store", store);
-//
-//      // 店家照片（封面照）
-//      List<PhotoVO> photos = photoRepository.findByStoreOrderByUpdateTimeAsc(store);
-//      if (!photos.isEmpty()) {
-//          String base64Cover = Base64.getEncoder().encodeToString(photos.get(0).getPhotoSrc());
-//          model.addAttribute("coverPhoto", base64Cover);
-//      }
-//
-//      return "registerAndLogin/storeInfo";
-//  }
+

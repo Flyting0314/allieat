@@ -84,23 +84,28 @@
                         <label class="partner_form_label">店家地址</label>
                         <div class="partner_form_controls">
                             <!-- 縣市 -->
-                            <select class="partner_select" th:field="*{county}" id="citySelect">
-                                <option value="">請選擇縣市</option>
-                            </select>
-                            <div class="text-danger" th:if="${#fields.hasErrors('county')}" th:errors="*{county}"></div>
+<select class="partner_select" id="citySelect" th:field="*{county}">
+    <option value="">請選擇縣市</option>
+</select>
 
-                            <!-- 區域 -->
-                            <select class="partner_select" th:field="*{district}" id="districtSelect">
-                                <option value="">請選擇鄉鎮市區</option>
-                            </select>
-                            <div class="text-danger" th:if="${#fields.hasErrors('district')}" th:errors="*{district}">
-                            </div>
+<select class="partner_select" id="districtSelect" th:field="*{district}">
+    <option value="">請選擇鄉鎮市區</option>
+</select>
+
+<input type="text" id="zipcodeInput" th:field="*{postalCode}" class="partner_input" placeholder="郵遞區號">
+
+
+
+
+<!--                             <div class="text-danger" th:if="${#fields.hasErrors('district')}" th:errors="*{district}"> -->
+<!--                             </div> -->
 
                             <!-- 郵遞區號 -->
-                            <input type="text" th:field="*{postalCode}" class="partner_input" placeholder="郵遞區號"
-                                id="zipcodeInput">
-                            <div class="text-danger" th:if="${#fields.hasErrors('postalCode')}"
-                                th:errors="*{postalCode}"></div>
+<!--                             <input type="text" th:field="*{postalCode}" class="partner_input" placeholder="郵遞區號" -->
+<!--                                 id="zipcodeInput"> -->
+<!--                             <div class="text-danger" th:if="${#fields.hasErrors('postalCode')}" -->
+<!--                                 th:errors="*{postalCode}"></div> -->
+<div class="text-danger" th:if="${#fields.hasErrors('county')}" th:text="'請輸入縣市、鄉鎮市區、郵遞區號'"></div>
 
                             <!-- 詳細地址 -->
                             <input type="text" th:field="*{address}" class="partner_input" placeholder="詳細地址">
@@ -228,16 +233,24 @@
     <div id="noticeModal" class="modal"
         style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center;">
         <div class="modal-content"
-            style="background: white; padding: 20px; border-radius: 10px; width: 80%; max-height: 80%; overflow-y: auto;">
+            style="background: white; padding: 20px; border-radius: 10px; width: max-content; max-height: 80%; overflow-y: auto;">
             <h3>使用須知</h3>
             <p style="white-space: pre-wrap; font-size: 14px; line-height: 1.8;">
-                例如：請上傳真實店家資料，並確保資訊無誤，否則無法通過審核。
+                <p>一、攏呷霸待用餐平台（以下簡稱平台）內所稱點數，指由捐款人捐贈款項轉換為虛擬點數，並由平台將該點數核發至受助者會員帳號中，用以兌換與平台合作之店家所提供的待用餐點。</p> 
+
+				<p>二、申請加入待用餐合作店家： 具有政府立案相關營業登記的業者，得檢附相關證明文件至本平台網站申請頁面進行申請。</p> 
+				
+				<p>三、店家相關規定：</p> (一) 食品衛生：店家之店內環境、人員、設備、食材，皆應符合相關食品衛生之規定。 <br>(二) 資料異動：負責人、店名、地址等資料異動，請於15日內檢附相關資料聯繫本平台。 <br>(三) 核銷程序：店家需提供領據、匯款帳戶影本及回收之餐券予本局，辦理核銷事宜。於每月31日起進行前月份餐券之核銷，核銷至撥款約需2週時間。</p> 
+				
+				<p>四、請上傳真實店家資料，並確保資訊無誤，否則無法通過審核。</p>
+				
+				<p>五、若店家提供不實資訊或違反本平台規範，經查證屬實後，平台將保留停權或終止合作之權利。</p>
             </p>
             <label><input type="checkbox" id="noticeAgree"> 已閱讀且同意上述須知內容</label>
 
 
             <div style="margin-top: 20px; display: flex; justify-content: center;">
-                <button id="exitNotice" style="padding: 6px 12px;">離開燈箱</button>
+                <button id="exitNotice" style="padding: 6px 12px;">關閉</button>
             </div>
         </div>
     </div>
@@ -273,263 +286,27 @@
 
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        const viewNotice = document.getElementById('viewNotice');
+        const noticeModal = document.getElementById('noticeModal');
+        const noticeAgree = document.getElementById('noticeAgree');
+        const agreeCheck = document.getElementById('agreeCheck');
+        const exitNotice = document.getElementById('exitNotice');
+        const agreedHiddenInput = document.getElementById("agreedToTerms");
+        const errorMessage = document.getElementById("errorMessage");
 
-            const viewNotice = document.getElementById('viewNotice');
-            const noticeModal = document.getElementById('noticeModal');
-            const noticeAgree = document.getElementById('noticeAgree');
-            const agreeNotice = document.getElementById('agreeNotice');
-            const closeNotice = document.getElementById('closeNotice');
-            const agreeCheck = document.getElementById('agreeCheck');
-            const submitBtn = document.getElementById('submitBtn');
-            const exitNotice = document.getElementById('exitNotice');
-            const coverInput = document.getElementById('file_upload_cover');
-            const coverHint = document.getElementById('coverHint');
-            const kitchenInput = document.getElementById('file_upload_kitchen');
-            const kitchenHint = document.getElementById('kitchenHint');
-            const storeInput = document.getElementById('file_upload_store');
-            const storeHint = document.getElementById('storeHint');      
-            const agreedHiddenInput = document.getElementById("agreedToTerms");
+        const coverHint = document.querySelector(".cover-hint");
+        const kitchenHint = document.querySelector(".kitchen-hint");
+        const storeHint = document.querySelector(".store-hint");
 
-            // 儲存狀態
-            if (localStorage.getItem("agreedToTerms") === "true") {
-                agreeCheckbox.checked = true;
-                agreedHiddenInput.value = "true";
-            }
+        const coverPreview = document.getElementById("coverPhotoPreview");
+        const kitchenPreview = document.getElementById("kitchenPhotoPreview");
+        const storePreview = document.getElementById("storePhotoPreview");
 
-            // 
-            agreeCheckbox.addEventListener("change", function () {
-                localStorage.setItem("agreedToTerms", agreeCheckbox.checked);
-                agreedHiddenInput.value = agreeCheckbox.checked ? "true" : "false";
-            });
-            //上傳圖片後請重新輸入消失
-            if (coverInput && coverHint) {
-                coverInput.addEventListener('change', function () {
-                    if (coverInput.files.length > 0) {
-                        coverHint.style.display = 'none'; // 隱藏提示文字
-                    }
-                });
-            }
-            if (kitchenInput && kitchenHint) {
-                kitchenInput.addEventListener('change', function () {
-                    if (kitchenInput.files.length > 0) {
-                        kitchenHint.style.display = 'none';
-                    }
-                });
-            }
-            if (storeInput && storeHint) {
-                storeInput.addEventListener('change', function () {
-                    if (storeInput.files.length > 0) {
-                        storeHint.style.display = 'none';
-                    }
-                });
-            }
-            // checkbox與外部同步
-            viewNotice.addEventListener('click', function (e) {
-                e.preventDefault();
-                noticeModal.style.display = 'flex';
-                noticeAgree.checked = agreeCheck.checked;
-            });
+        const hasSubmitted = document.getElementById('hasSubmittedFlag')?.value === "true";
 
-            // 離開燈箱更新須知
-
-            exitNotice.addEventListener('click', function () {
-                const noticeModal = document.getElementById("noticeModal");
-                const errorMessage = document.getElementById("errorMessage");
-
-                if (noticeModal) {
-                    noticeModal.classList.add("hidden");
-                }
-
-                if (noticeAgree.checked) {
-                    agreeCheck.checked = true;
-                    document.getElementById('agreedToTerms').value = 'true';
-                    sessionStorage.setItem("noticeAgreed", "true");
-
-
-                    if (errorMessage) {
-                        errorMessage.classList.add("hidden");
-                    }
-                } else {
-                    agreeCheck.checked = false;
-                    document.getElementById('agreedToTerms').value = 'false';
-                    sessionStorage.removeItem("noticeAgreed");
-
-
-                    if (errorMessage) {
-                        errorMessage.classList.remove("hidden");
-                    }
-                }
-            });
-
-
-
-            // checkbox外部須知同步取消
-            noticeAgree.addEventListener('change', function () {
-                if (!noticeAgree.checked) {
-                    agreeCheck.checked = false;
-                    document.getElementById('agreedToTerms').value = 'false';
-                    sessionStorage.removeItem("noticeAgreed");
-                }
-                const errorMessage = document.querySelector('.text-danger[th\\:if*="errorMessage"]');
-                if (noticeAgree.checked && errorMessage) {
-                    errorMessage.style.display = 'none';
-                }
-            });
-            // 地址區錯誤訊息隱藏
-            document.querySelectorAll('.partner_select, .partner_input').forEach(function (field) {
-                field.addEventListener('change', function () {
-                    const errorDiv = field.nextElementSibling;
-                    if (errorDiv && errorDiv.classList.contains('text-danger')) {
-                        errorDiv.style.display = 'none';
-                    }
-                });
-
-                field.addEventListener('input', function () {
-                    const errorDiv = field.nextElementSibling;
-                    if (errorDiv && errorDiv.classList.contains('text-danger')) {
-                        errorDiv.style.display = 'none';
-                    }
-                });
-            });
-
-            // 圖片預覽
-            function previewImage(inputId, previewId) {
-                const input = document.getElementById(inputId);
-                const preview = document.getElementById(previewId);
-                if (input && preview) {
-                    input.addEventListener('change', function () {
-                        const file = input.files[0];
-                        if (file && file.type.startsWith('image/')) {
-                            const reader = new FileReader();
-                            reader.onload = function (e) {
-                                preview.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
-                            };
-                            reader.readAsDataURL(file);
-                        } else {
-                            preview.innerHTML = '';
-                        }
-                    });
-                }
-            }
-
-            previewImage('file_upload_cover', 'coverPhotoPreview');
-            previewImage('file_upload_kitchen', 'kitchenPhotoPreview');
-            previewImage('file_upload_store', 'storePhotoPreview');
-
-
-            function bindFileName(inputId, labelId) {
-                const input = document.getElementById(inputId);
-                const label = document.getElementById(labelId);
-
-                input.addEventListener('change', function () {
-                    if (input.files.length > 0) {
-                        label.textContent = input.files[0].name;
-                    } else {
-                        label.textContent = "尚未選擇檔案";
-                    }
-                });
-            }
-
-            bindFileName('file_upload_cover', 'coverFileName');
-            bindFileName('file_upload_kitchen', 'kitchenFileName');
-            bindFileName('file_upload_store', 'storeFileName');
-        });
-
-        const photoError = document.getElementById('photoError');
-
-        function clearPhotoErrorOnSelect(inputId) {
-            const input = document.getElementById(inputId);
-            if (input && photoError) {
-                input.addEventListener('change', function () {
-                    if (input.files.length > 0) {
-                        photoError.style.display = 'none';
-                    }
-                });
-            }
-        }
-
-        clearPhotoErrorOnSelect('file_upload_cover');
-        clearPhotoErrorOnSelect('file_upload_kitchen');
-        clearPhotoErrorOnSelect('file_upload_store');
-
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const hasSubmitted = document.getElementById('hasSubmittedFlag')?.value === "true";  // ✅ 取得 hasSubmitted 標記
-            const coverHint = document.querySelector(".cover-hint");  // ✅ 封面圖片的提示
-            const kitchenHint = document.querySelector(".kitchen-hint");
-            const storeHint = document.querySelector(".store-hint");
-
-            if (!hasSubmitted) {
-
-                if (coverHint) coverHint.style.display = 'none';
-                if (kitchenHint) kitchenHint.style.display = 'none';
-                if (storeHint) storeHint.style.display = 'none';
-            }
-
-            document.querySelectorAll("input[type=file]").forEach(input => {
-                input.addEventListener('change', function () {
-
-                    if (coverHint && input.id === "file_upload_cover") coverHint.style.display = 'none';
-                    if (kitchenHint && input.id === "file_upload_kitchen") kitchenHint.style.display = 'none';
-                    if (storeHint && input.id === "file_upload_store") storeHint.style.display = 'none';
-                });
-            });
-        });
-
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const coverHint = document.querySelector(".cover-hint");
-            const kitchenHint = document.querySelector(".kitchen-hint");
-            const storeHint = document.querySelector(".store-hint");
-            const coverPreview = document.getElementById("coverPhotoPreview");
-            const kitchenPreview = document.getElementById("kitchenPhotoPreview");
-            const storePreview = document.getElementById("storePhotoPreview");
-
-            function checkCoverPreview() {
-                if (!coverPreview.innerHTML.trim()) {
-                    if (coverHint) coverHint.style.display = 'none';
-                }
-            }
-
-            function checkKitchenPreview() {
-                if (!kitchenPreview.innerHTML.trim()) {
-                    if (kitchenHint) kitchenHint.style.display = 'none';
-                }
-            }
-
-            function checkStorePreview() {
-                if (!storePreview.innerHTML.trim()) {
-                    if (storeHint) storeHint.style.display = 'none';
-                }
-            }
-
-
-            checkCoverPreview();
-            checkKitchenPreview();
-            checkStorePreview();
-
-            document.querySelectorAll("input[type=file]").forEach(input => {
-                input.addEventListener('change', function () {
-                    if (input.id === "file_upload_cover") {
-                        checkCoverPreview();
-                    }
-                    if (input.id === "file_upload_kitchen") {
-                        checkKitchenPreview();
-                    }
-                    if (input.id === "file_upload_store") {
-                        checkStorePreview();
-                    }
-                });
-            });
-
-            document.getElementById('submitBtn').addEventListener('click', function () {
-                checkCoverPreview();
-                checkKitchenPreview();
-                checkStorePreview();
-            });
-        });
-
+        
         // 縣市、區域、郵遞區號對應資料
         const addrData = [
         {
@@ -1016,78 +793,286 @@
                 ]
             }
         ];
+        
+        
+        
+        
+        //  開啟燈箱
+        viewNotice.addEventListener('click', function (e) {
+            e.preventDefault();
+            noticeModal.style.display = 'flex';
+            noticeAgree.checked = agreeCheck.checked;
+        });
 
-        const citySelect = document.getElementById('citySelect');
-        const districtSelect = document.getElementById('districtSelect');
-        const zipInput = document.getElementById('zipcodeInput');
+        //  關閉燈箱
+        exitNotice.addEventListener('click', function () {
+            noticeModal.style.display = 'none';
 
-        // 頁面載入 → 填入城市、處理預設值
-        window.addEventListener('DOMContentLoaded', () => {
-            addrData.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.city;
-                option.textContent = item.city;
-                citySelect.appendChild(option);
-            });
-
-            const selectedCity = citySelect.value;
-            const selectedDistrict = districtSelect.value;
-            if (selectedCity) {
-                const cityObj = addrData.find(item => item.city === selectedCity);
-                if (cityObj) {
-                    districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
-                    cityObj.area.forEach(area => {
-                        const option = document.createElement('option');
-                        option.value = area.name;
-                        option.textContent = area.name;
-                        if (area.name === selectedDistrict) option.selected = true;
-                        districtSelect.appendChild(option);
-                    });
-                    const zipObj = cityObj.area.find(area => area.name === selectedDistrict);
-                    if (zipObj) zipInput.value = zipObj.zipcode;
-                }
+            if (noticeAgree.checked) {
+                agreeCheck.checked = true;
+                agreedHiddenInput.value = 'true';
+                sessionStorage.setItem("noticeAgreed", "true");
+                if (errorMessage) errorMessage.classList.add("hidden");
+            } else {
+                agreeCheck.checked = false;
+                agreedHiddenInput.value = 'false';
+                sessionStorage.removeItem("noticeAgreed");
+                if (errorMessage) errorMessage.classList.remove("hidden");
             }
         });
 
-        // 選縣市時 → 自動選第一區並帶郵遞區號
-        citySelect.addEventListener('change', () => {
-            const selectedCity = citySelect.value;
-            const cityObj = addrData.find(item => item.city === selectedCity);
-            districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
-            zipInput.value = '';
+        //  同步狀態
+        
+        if (localStorage.getItem("agreedToTerms") === "true") {
+            agreeCheck.checked = true;
+            agreedHiddenInput.value = "true";
+        } else {
+            agreeCheck.checked = false;
+            agreedHiddenInput.value = "false";
+        }
 
-            if (cityObj && cityObj.area.length > 0) {
-                cityObj.area.forEach((area, index) => {
-                    const option = document.createElement('option');
-                    option.value = area.name;
-                    option.textContent = area.name;
-                    if (index === 0) {
-                        option.selected = true;
-                        zipInput.value = area.zipcode;
+        //  記錄變更
+        agreeCheck.addEventListener("change", function () {
+            localStorage.setItem("agreedToTerms", agreeCheck.checked);
+            agreedHiddenInput.value = agreeCheck.checked ? "true" : "false";
+        });
+
+        noticeAgree.addEventListener('change', function () {
+            if (!noticeAgree.checked) {
+                agreeCheck.checked = false;
+                agreedHiddenInput.value = 'false';
+                sessionStorage.removeItem("noticeAgreed");
+            } else if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+        });
+
+        // 圖片預覽功能
+        function previewImage(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            if (input && preview) {
+                input.addEventListener('change', function () {
+                    const file = input.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            preview.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        preview.innerHTML = '';
                     }
-                    districtSelect.appendChild(option);
                 });
             }
+        }
+
+        previewImage('file_upload_cover', 'coverPhotoPreview');
+        previewImage('file_upload_kitchen', 'kitchenPhotoPreview');
+        previewImage('file_upload_store', 'storePhotoPreview');
+
+        //  檔案名稱顯示
+        function bindFileName(inputId, labelId) {
+            const input = document.getElementById(inputId);
+            const label = document.getElementById(labelId);
+            input?.addEventListener('change', function () {
+                label.textContent = input.files.length > 0 ? input.files[0].name : "尚未選擇檔案";
+            });
+        }
+
+        bindFileName('file_upload_cover', 'coverFileName');
+        bindFileName('file_upload_kitchen', 'kitchenFileName');
+        bindFileName('file_upload_store', 'storeFileName');
+
+        //  提示文字判斷
+        function checkHintAndPreview(preview, hint) {
+            if (!preview?.innerHTML.trim()) {
+                hint && (hint.style.display = 'none');
+            }
+        }
+
+        if (!hasSubmitted) {
+            checkHintAndPreview(coverPreview, coverHint);
+            checkHintAndPreview(kitchenPreview, kitchenHint);
+            checkHintAndPreview(storePreview, storeHint);
+        }
+        
+     // 自動隱藏錯誤提示=====
+        document.querySelectorAll('.partner_input, .partner_select').forEach(function (field) {
+            field.addEventListener('input', handleFieldChange);
+            field.addEventListener('change', handleFieldChange);
         });
 
-        // 選鄉鎮時 → 自動填入郵遞區號
-        districtSelect.addEventListener('change', () => {
-            const selectedCity = citySelect.value;
-            const selectedDistrict = districtSelect.value;
-            const cityObj = addrData.find(item => item.city === selectedCity);
+        function handleFieldChange(e) {
+            // 找到下方最近的 .text-danger 顯示錯誤訊息的元素
+            const parent = e.target.closest('.partner_form_controls');
+            if (!parent) return;
 
-            if (cityObj) {
-                const areaObj = cityObj.area.find(area => area.name === selectedDistrict);
-                zipInput.value = areaObj ? areaObj.zipcode : '';
-            } else {
-                zipInput.value = '';
+            const errorDiv = parent.querySelector('.text-danger');
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+        }
+        
+        
+        document.querySelector("input[name='address']")?.addEventListener('input', function () {
+            const error = this.nextElementSibling;
+            if (error?.classList.contains('text-danger')) {
+                error.style.display = 'none';
+            }
+        });
+
+        // 針對縣市選擇時清除整合錯誤
+        document.getElementById("citySelect")?.addEventListener('change', function () {
+            const countyError = this.closest('.partner_form_controls')?.querySelector('.text-danger');
+            if (countyError) {
+                countyError.style.display = 'none';
             }
         });
         
-        
 
-    </script>
+        function clearPhotoErrorOnSelect(inputId) {
+            const input = document.getElementById(inputId);
+            const photoError = document.getElementById('photoError');
+            if (input && photoError) {
+                input.addEventListener('change', function () {
+                    if (input.files.length > 0) {
+                        photoError.style.display = 'none';
+                        photoError.classList.add("hidden");
+                    }
+                });
+            }
+        }
+        clearPhotoErrorOnSelect('file_upload_cover');
+        clearPhotoErrorOnSelect('file_upload_kitchen');
+        clearPhotoErrorOnSelect('file_upload_store');
+        
+   
+ // ===== 還原 =====
+//     function clearPhotoErrorOnSelect(inputId) {
+//         const input = document.getElementById(inputId);
+//         const photoError = document.getElementById('photoError');
+//         if (input && photoError) {
+//             input.addEventListener('change', function () {
+//                 if (input.files.length > 0) {
+//                     photoError.style.display = 'none';
+//                     photoError.classList.add("hidden");
+//                 }
+//             });
+//         }
+//     }
+//     clearPhotoErrorOnSelect('file_upload_cover');
+//     clearPhotoErrorOnSelect('file_upload_kitchen');
+//     clearPhotoErrorOnSelect('file_upload_store');
+    
+ 
+
+
+
+    exitNotice.addEventListener('click', function () {
+        noticeModal.style.display = 'none';
+
+        if (noticeAgree.checked) {
+            agreeCheck.checked = true;
+            agreedHiddenInput.value = 'true';
+            localStorage.setItem("agreedToTerms", "true"); // ✅ 存入 localStorage
+            sessionStorage.setItem("noticeAgreed", "true");
+            if (errorMessage) errorMessage.classList.add("hidden");
+        } else {
+            agreeCheck.checked = false;
+            agreedHiddenInput.value = 'false';
+            localStorage.removeItem("agreedToTerms"); // ✅ 移除記憶
+            sessionStorage.removeItem("noticeAgreed");
+            if (errorMessage) errorMessage.classList.remove("hidden");
+        }
+        
+        
+        
+        
+        
+        
+        requestAnimationFrame(() => {
+            const citySelect = document.getElementById('citySelect');
+            const districtSelect = document.getElementById('districtSelect');
+            const zipInput = document.getElementById('zipcodeInput');
+console.log("🚀 citySelect =", citySelect);
+console.log("🚀 districtSelect =", districtSelect);
+console.log("🚀 zipInput =", zipInput);
+console.log("📦 addrData =", addrData);
+console.log("🏁 DOMContentLoaded triggered");
+            const selectedCity = citySelect.value;
+            const selectedDistrict = districtSelect.value;
+
+            // 初始化縣市選單
+            citySelect.innerHTML = '<option value="">請選擇縣市</option>';
+            addrData.forEach(item => {
+console.log("➡️ 加入城市:", item.city); // 👈 檢查是否有跑
+              const option = document.createElement("option");
+              option.value = item.city;
+              option.textContent = item.city;
+              if (item.city === selectedCity) option.selected = true;
+              citySelect.appendChild(option);
+            });
+
+            // 如果已選擇縣市，初始化鄉鎮市區與郵遞區號
+            if (selectedCity) {
+              const cityObj = addrData.find(item => item.city === selectedCity);
+              if (cityObj) {
+                districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
+                cityObj.area.forEach(area => {
+                  const option = document.createElement("option");
+                  option.value = area.name;
+                  option.textContent = area.name;
+                  if (area.name === selectedDistrict) option.selected = true;
+                  districtSelect.appendChild(option);
+                });
+
+                const selectedZip = cityObj.area.find(area => area.name === selectedDistrict)?.zipcode;
+                if (selectedZip) zipInput.value = selectedZip;
+              }
+            }
+
+            // 當縣市改變時，重新載入鄉鎮與郵遞區號
+            citySelect.addEventListener("change", function () {
+              const selectedCity = this.value;
+              const cityObj = addrData.find(item => item.city === selectedCity);
+              districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
+              zipInput.value = "";
+
+              if (cityObj) {
+                cityObj.area.forEach((area, index) => {
+                  const option = document.createElement("option");
+                  option.value = area.name;
+                  option.textContent = area.name;
+                  districtSelect.appendChild(option);
+                  if (index === 0) zipInput.value = area.zipcode;
+                });
+              }
+            });
+
+            // 當鄉鎮市區改變時，更新郵遞區號
+            districtSelect.addEventListener("change", function () {
+              const selectedCity = citySelect.value;
+              const selectedDistrict = this.value;
+              const cityObj = addrData.find(item => item.city === selectedCity);
+              if (cityObj) {
+                const areaObj = cityObj.area.find(area => area.name === selectedDistrict);
+                zipInput.value = areaObj ? areaObj.zipcode : "";
+              }
+            });
+        });
+        
+        
+        
+        
+    });
+    });
+//======dom結束=====
+
+
+
+
+            </script>
 
 </body>
-
 </html>

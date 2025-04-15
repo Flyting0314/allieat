@@ -5,7 +5,8 @@
 <link th:href="@{/css/login.css}" rel="stylesheet">
 </head>
 
-<body>
+<body th:attr="data-show-redirect=${session.redirectFromProtected}">
+
    <th:block th:replace="fragments/bodySection :: bodySection"></th:block>
 
 <div class="merchant_login_wrapper">
@@ -98,6 +99,22 @@
         });
     });
 </script>
+
+
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        let show = /*[[${session.redirectFromProtected}]]*/ false;
+
+        if (show) {
+
+            alert("請先登入才能進入會員專區，將為您跳轉至登入頁");
+
+            document.body.setAttribute("data-show-redirect", "false");
+        }
+    });
+</script>
+
+
 </body>
 
 </html>

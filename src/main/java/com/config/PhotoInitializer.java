@@ -34,7 +34,7 @@ public class PhotoInitializer implements CommandLineRunner {
             File[] photoFiles = folder.listFiles();
 
             if (photoFiles == null || photoFiles.length == 0) {
-                System.out.println("⚠️ 沒有圖片需要上傳");
+                System.out.println("沒有圖片上傳");
                 return;
             }
 
@@ -52,9 +52,9 @@ public class PhotoInitializer implements CommandLineRunner {
                 count++;
             }
 
-            System.out.println("✅ 啟動後自動更新圖片成功！");
+            System.out.println("自動更新成功！");
         } catch (Exception e) {
-            System.err.println("❌ 圖片初始化錯誤：" + e.getMessage());
+            System.err.println("錯誤：" + e.getMessage());
         }
     }
 }
