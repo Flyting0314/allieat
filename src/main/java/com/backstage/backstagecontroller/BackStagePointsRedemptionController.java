@@ -20,11 +20,6 @@ import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-<<<<<<< HEAD
- 
-=======
-
->>>>>>> b791394 (1. 新增實體 ”店家點數核銷 PointsRedemption” 相關檔案：VO, Repository, Service,)
 
 @RestController
 @RequestMapping("/pointsRedemption")
