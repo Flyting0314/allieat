@@ -1,6 +1,5 @@
 package com.backstage.backstageevent;
 
- 
 
 import org.springframework.context.ApplicationEvent;
 

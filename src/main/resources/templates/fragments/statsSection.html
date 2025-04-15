@@ -1,0 +1,51 @@
+<th:block th:fragment="statsSection">
+<!-- 數據統計區 Start -->
+<section class="py-5 text-center bg-light" id="stats-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+        <h1 class="text-primary counter" data-count="10329">0</h1>
+        <p class="font-weight-bold">累積餐點數</p>
+      </div>
+      <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+        <h1 class="text-success counter" data-count="4980">0</h1>
+        <p class="font-weight-bold">受助者人數</p>
+      </div>
+      <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+        <h1 class="text-warning counter" data-count="232">0</h1>
+        <p class="font-weight-bold">合作店家</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- 數據統計區 End -->
+
+<!-- AOS 動畫套件 -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+
+<!-- 數字動畫 Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+      const updateCount = () => {
+        const target = +counter.getAttribute('data-count');
+        const count = +counter.innerText;
+        const speed = 50;
+        const inc = Math.ceil(target / speed);
+        if (count < target) {
+          counter.innerText = count + inc;
+          setTimeout(updateCount, 20);
+        } else {
+          counter.innerText = target;
+        }
+      };
+      updateCount();
+    });
+  });
+</script>
+</th:block>

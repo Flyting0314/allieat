@@ -1,0 +1,40 @@
+1. 新增實體 ”店家點數核銷 PointsRedemption” 相關檔案：VO, Repository, Service,
+controller, eventListener, 前台html, 後台html
+
+2. 因應店家點數核銷前後台設計，新增內容至StoreRepository, StoreService,
+storeinfo.html（加入超連結）
+
+3. 後台網頁側邊欄更新：將側邊欄新 html 結構套用在 backstage_homepage.html，並加入側邊欄樣式至
+style_backstage.css。backstage_homepage.html中引入了 style_backstage.css 及
+font-awesome等跟側邊欄外觀有關之工具，請參照他的 html 結構和引入的工具，修改其他後台頁面側邊欄。
+
+4. 點數發放與點數明細 html 頁面修改
+
+# Conflicts:
+#	src/main/java/com/backstage/backstagecontroller/BackStagePointsRedemptionController.java
+#	src/main/java/com/backstage/backstageevent/RedemptionStorePointsUpdatedEvent.java
+#	src/main/java/com/backstage/backstageservice/BackStagePointsRedemptionService.java
+#	src/main/java/com/backstage/backstagrepository/PointsRedemptionRepository.java
+#	src/main/resources/static/backstage_homepage.html
+#	src/main/resources/static/backstage_pointsRedemption_management.html
+#	src/main/resources/static/css/style_backstage.css
+
+# 請輸入描述您變更的提交訊息。開頭是「#」的列
+# 皆會忽略。提交訊息空白則取消本次提交作業。
+#
+# 互動式重定基底動作正在進行中；至 d3c4e25
+# 上次完成的命令（完成 2 條指令）：
+#    pick 7a03915 1. 新增點數後台管理頁面 2. 修改會員後台管理頁面 3. 修改後台頁面的側邊欄樣式（新增店家點數核銷選項/ 點擊主選項後展開的子選項 css 有調整），增加 style_backstage.css 的樣式以作用在新的側邊欄上（現在可以在會員和點數管理頁面看到新的側邊欄樣式） 4. application.java 增加排程器的 annotation，讓系統可以使用排程功能
+#    pick b791394 1. 新增實體 ”店家點數核銷 PointsRedemption” 相關檔案：VO, Repository, Service, controller, eventListener, 前台html, 後台html
+# 未剩下任何指令。
+# 您在執行將分支 'master' 重定基底到 'd3c4e25' 的動作。
+#
+# 要提交的變更：
+#	修改：     src/main/java/com/backstage/backstagecontroller/BackStagePointsRedemptionController.java
+#	修改：     src/main/java/com/backstage/backstageevent/RedemptionStorePointsUpdatedEvent.java
+#	修改：     src/main/java/com/backstage/backstageservice/BackStagePointsRedemptionService.java
+#	修改：     src/main/java/com/backstage/backstagrepository/PointsRedemptionRepository.java
+#	修改：     src/main/resources/static/backstage_homepage.html
+#	修改：     src/main/resources/static/backstage_pointsRedemption_management.html
+#	修改：     src/main/resources/static/css/style_backstage.css
+#

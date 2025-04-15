@@ -1,5 +1,4 @@
 package com.backstage.backstagrepository;
- 
 import com.entity.PointsRedemptionVO;
 import com.entity.StoreVO;
 import org.springframework.data.jpa.repository.JpaRepository;
