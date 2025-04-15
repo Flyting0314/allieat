@@ -285,9 +285,13 @@
 
 
 
-    <script>
-    
+    <script th:inline="javascript">
+    const addrData = JSON.parse(/*[[${@addressData.getAllJson()}]]*/ '[]');
+    console.log(addrData);
     document.addEventListener('DOMContentLoaded', function () {
+        const citySelect = document.getElementById('citySelect');
+        const districtSelect = document.getElementById('districtSelect');
+        const zipInput = document.getElementById('zipcodeInput');
         const viewNotice = document.getElementById('viewNotice');
         const noticeModal = document.getElementById('noticeModal');
         const noticeAgree = document.getElementById('noticeAgree');
@@ -306,493 +310,9 @@
 
         const hasSubmitted = document.getElementById('hasSubmittedFlag')?.value === "true";
 
-        
-        // 縣市、區域、郵遞區號對應資料
-        const addrData = [
-        {
-                "city": "臺北市",
-                "area": [
-                    { "name": "中正區", "zipcode": "100" },
-                    { "name": "大同區", "zipcode": "103" },
-                    { "name": "中山區", "zipcode": "104" },
-                    { "name": "松山區", "zipcode": "105" },
-                    { "name": "大安區", "zipcode": "106" },
-                    { "name": "萬華區", "zipcode": "108" },
-                    { "name": "信義區", "zipcode": "110" },
-                    { "name": "士林區", "zipcode": "111" },
-                    { "name": "北投區", "zipcode": "112" },
-                    { "name": "內湖區", "zipcode": "114" },
-                    { "name": "南港區", "zipcode": "115" },
-                    { "name": "文山區", "zipcode": "116" }
-                ]
-            },
-            {
-                "city": "基隆市",
-                "area": [
-                    { "name": "仁愛區", "zipcode": "200" },
-                    { "name": "信義區", "zipcode": "201" },
-                    { "name": "中正區", "zipcode": "202" },
-                    { "name": "中山區", "zipcode": "203" },
-                    { "name": "安樂區", "zipcode": "204" },
-                    { "name": "暖暖區", "zipcode": "205" },
-                    { "name": "七堵區", "zipcode": "206" }
-                ]
-            },
-            {
-                "city": "新北市",
-                "area": [
-                    { "name": "萬里區", "zipcode": "207" },
-                    { "name": "金山區", "zipcode": "208" },
-                    { "name": "板橋區", "zipcode": "220" },
-                    { "name": "汐止區", "zipcode": "221" },
-                    { "name": "深坑區", "zipcode": "222" },
-                    { "name": "石碇區", "zipcode": "223" },
-                    { "name": "瑞芳區", "zipcode": "224" },
-                    { "name": "平溪區", "zipcode": "226" },
-                    { "name": "雙溪區", "zipcode": "227" },
-                    { "name": "貢寮區", "zipcode": "228" },
-                    { "name": "新店區", "zipcode": "231" },
-                    { "name": "坪林區", "zipcode": "232" },
-                    { "name": "烏來區", "zipcode": "233" },
-                    { "name": "永和區", "zipcode": "234" },
-                    { "name": "中和區", "zipcode": "235" },
-                    { "name": "土城區", "zipcode": "236" },
-                    { "name": "三峽區", "zipcode": "237" },
-                    { "name": "樹林區", "zipcode": "238" },
-                    { "name": "鶯歌區", "zipcode": "239" },
-                    { "name": "三重區", "zipcode": "241" },
-                    { "name": "新莊區", "zipcode": "242" },
-                    { "name": "泰山區", "zipcode": "243" },
-                    { "name": "林口區", "zipcode": "244" },
-                    { "name": "蘆洲區", "zipcode": "247" },
-                    { "name": "五股區", "zipcode": "248" },
-                    { "name": "八里區", "zipcode": "249" },
-                    { "name": "淡水區", "zipcode": "251" },
-                    { "name": "三芝區", "zipcode": "252" },
-                    { "name": "石門區", "zipcode": "253" }
-                ]
-            },
-            {
-                "city": "宜蘭縣",
-                "area": [
-                    { "name": "宜蘭", "zipcode": "260" },
-                    { "name": "頭城", "zipcode": "261" },
-                    { "name": "礁溪", "zipcode": "262" },
-                    { "name": "壯圍", "zipcode": "263" },
-                    { "name": "員山", "zipcode": "264" },
-                    { "name": "羅東", "zipcode": "265" },
-                    { "name": "三星", "zipcode": "266" },
-                    { "name": "大同", "zipcode": "267" },
-                    { "name": "五結", "zipcode": "268" },
-                    { "name": "冬山", "zipcode": "269" },
-                    { "name": "蘇澳", "zipcode": "270" },
-                    { "name": "南澳", "zipcode": "272" },
-                    { "name": "釣魚臺列嶼", "zipcode": "290" }
-                ]
-            },
-            {
-                "city": "新竹市",
-                "area": [
-                    { "name": "", "zipcode": "300" }
-                ]
-            },
-            {
-                "city": "新竹縣",
-                "area": [
-                    { "name": "竹北", "zipcode": "302" },
-                    { "name": "湖口", "zipcode": "303" },
-                    { "name": "新豐", "zipcode": "304" },
-                    { "name": "新埔", "zipcode": "305" },
-                    { "name": "關西", "zipcode": "306" },
-                    { "name": "芎林", "zipcode": "307" },
-                    { "name": "寶山", "zipcode": "308" },
-                    { "name": "竹東", "zipcode": "310" },
-                    { "name": "五峰", "zipcode": "311" },
-                    { "name": "橫山", "zipcode": "312" },
-                    { "name": "尖石", "zipcode": "313" },
-                    { "name": "北埔", "zipcode": "314" },
-                    { "name": "峨眉", "zipcode": "315" }
-                ]
-            },
-            {
-                "city": "桃園市",
-                "area": [
-                    { "name": "中壢區", "zipcode": "320" },
-                    { "name": "平鎮區", "zipcode": "324" },
-                    { "name": "龍潭區", "zipcode": "325" },
-                    { "name": "楊梅區", "zipcode": "326" },
-                    { "name": "新屋區", "zipcode": "327" },
-                    { "name": "觀音區", "zipcode": "328" },
-                    { "name": "桃園區", "zipcode": "330" },
-                    { "name": "龜山區", "zipcode": "333" },
-                    { "name": "八德區", "zipcode": "334" },
-                    { "name": "大溪區", "zipcode": "335" },
-                    { "name": "復興區", "zipcode": "336" },
-                    { "name": "大園區", "zipcode": "337" },
-                    { "name": "蘆竹區", "zipcode": "338" }
-                ]
-            },
-            {
-                "city": "苗栗縣",
-                "area": [
-                    { "name": "竹南", "zipcode": "350" },
-                    { "name": "頭份", "zipcode": "351" },
-                    { "name": "三灣", "zipcode": "352" },
-                    { "name": "南庄", "zipcode": "353" },
-                    { "name": "獅潭", "zipcode": "354" },
-                    { "name": "後龍", "zipcode": "356" },
-                    { "name": "通霄", "zipcode": "357" },
-                    { "name": "苑裡", "zipcode": "358" },
-                    { "name": "苗栗", "zipcode": "360" },
-                    { "name": "造橋", "zipcode": "361" },
-                    { "name": "頭屋", "zipcode": "362" },
-                    { "name": "公館", "zipcode": "363" },
-                    { "name": "大湖", "zipcode": "364" },
-                    { "name": "泰安", "zipcode": "365" },
-                    { "name": "銅鑼", "zipcode": "366" },
-                    { "name": "三義", "zipcode": "367" },
-                    { "name": "西湖", "zipcode": "368" },
-                    { "name": "卓蘭", "zipcode": "369" }
-                ]
-            },
-            {
-                "city": "臺中市",
-                "area": [
-                    { "name": "中區", "zipcode": "400" },
-                    { "name": "東區", "zipcode": "401" },
-                    { "name": "南區", "zipcode": "402" },
-                    { "name": "西區", "zipcode": "403" },
-                    { "name": "北區", "zipcode": "404" },
-                    { "name": "北屯區", "zipcode": "406" },
-                    { "name": "西屯區", "zipcode": "407" },
-                    { "name": "南屯區", "zipcode": "408" },
-                    { "name": "太平區", "zipcode": "411" },
-                    { "name": "大里區", "zipcode": "412" },
-                    { "name": "霧峰區", "zipcode": "413" },
-                    { "name": "烏日區", "zipcode": "414" },
-                    { "name": "豐原區", "zipcode": "420" },
-                    { "name": "后里區", "zipcode": "421" },
-                    { "name": "石岡區", "zipcode": "422" },
-                    { "name": "東勢區", "zipcode": "423" },
-                    { "name": "和平區", "zipcode": "424" },
-                    { "name": "新社區", "zipcode": "426" },
-                    { "name": "潭子區", "zipcode": "427" },
-                    { "name": "大雅區", "zipcode": "428" },
-                    { "name": "神岡區", "zipcode": "429" },
-                    { "name": "大肚區", "zipcode": "432" },
-                    { "name": "沙鹿區", "zipcode": "433" },
-                    { "name": "龍井區", "zipcode": "434" },
-                    { "name": "梧棲區", "zipcode": "435" },
-                    { "name": "清水區", "zipcode": "436" },
-                    { "name": "大甲區", "zipcode": "437" },
-                    { "name": "外埔區", "zipcode": "438" },
-                    { "name": "大安區", "zipcode": "439" }
-                ]
-            },
-            {
-                "city": "彰化縣",
-                "area": [
-                    { "name": "彰化", "zipcode": "500" },
-                    { "name": "芬園", "zipcode": "502" },
-                    { "name": "花壇", "zipcode": "503" },
-                    { "name": "秀水", "zipcode": "504" },
-                    { "name": "鹿港", "zipcode": "505" },
-                    { "name": "福興", "zipcode": "506" },
-                    { "name": "線西", "zipcode": "507" },
-                    { "name": "和美", "zipcode": "508" },
-                    { "name": "伸港", "zipcode": "509" },
-                    { "name": "員林", "zipcode": "510" },
-                    { "name": "社頭", "zipcode": "511" },
-                    { "name": "永靖", "zipcode": "512" },
-                    { "name": "埔心", "zipcode": "513" },
-                    { "name": "溪湖", "zipcode": "514" },
-                    { "name": "大村", "zipcode": "515" },
-                    { "name": "埔鹽", "zipcode": "516" },
-                    { "name": "田中", "zipcode": "520" },
-                    { "name": "北斗", "zipcode": "521" },
-                    { "name": "田尾", "zipcode": "522" },
-                    { "name": "埤頭", "zipcode": "523" },
-                    { "name": "溪州", "zipcode": "524" },
-                    { "name": "竹塘", "zipcode": "525" },
-                    { "name": "二林", "zipcode": "526" },
-                    { "name": "大城", "zipcode": "527" },
-                    { "name": "芳苑", "zipcode": "528" },
-                    { "name": "二水", "zipcode": "530" }
-                ]
-            },
-            {
-                "city": "南投縣",
-                "area": [
-                    { "name": "南投", "zipcode": "540" },
-                    { "name": "中寮", "zipcode": "541" },
-                    { "name": "草屯", "zipcode": "542" },
-                    { "name": "國姓", "zipcode": "544" },
-                    { "name": "埔里", "zipcode": "545" },
-                    { "name": "仁愛", "zipcode": "546" },
-                    { "name": "名間", "zipcode": "551" },
-                    { "name": "集集", "zipcode": "552" },
-                    { "name": "水里", "zipcode": "553" },
-                    { "name": "魚池", "zipcode": "555" },
-                    { "name": "信義", "zipcode": "556" },
-                    { "name": "竹山", "zipcode": "557" },
-                    { "name": "鹿谷", "zipcode": "558" }
-                ]
-            },
-            {
-                "city": "嘉義市",
-                "area": [
-                    { "name": "", "zipcode": "600" }
-                ]
-            },
-            {
-                "city": "嘉義縣",
-                "area": [
-                    { "name": "番路", "zipcode": "602" },
-                    { "name": "梅山", "zipcode": "603" },
-                    { "name": "竹崎", "zipcode": "604" },
-                    { "name": "阿里山", "zipcode": "605" },
-                    { "name": "中埔", "zipcode": "606" },
-                    { "name": "大埔", "zipcode": "607" },
-                    { "name": "水上", "zipcode": "608" },
-                    { "name": "鹿草", "zipcode": "611" },
-                    { "name": "太保", "zipcode": "612" },
-                    { "name": "朴子", "zipcode": "613" },
-                    { "name": "東石", "zipcode": "614" },
-                    { "name": "六腳", "zipcode": "615" },
-                    { "name": "新港", "zipcode": "616" },
-                    { "name": "民雄", "zipcode": "621" },
-                    { "name": "大林", "zipcode": "622" },
-                    { "name": "溪口", "zipcode": "623" },
-                    { "name": "義竹", "zipcode": "624" },
-                    { "name": "布袋", "zipcode": "625" }
-                ]
-            },
-            {
-                "city": "雲林縣",
-                "area": [
-                    { "name": "斗南", "zipcode": "630" },
-                    { "name": "大埤", "zipcode": "631" },
-                    { "name": "虎尾", "zipcode": "632" },
-                    { "name": "土庫", "zipcode": "633" },
-                    { "name": "褒忠", "zipcode": "634" },
-                    { "name": "東勢", "zipcode": "635" },
-                    { "name": "臺西", "zipcode": "636" },
-                    { "name": "崙背", "zipcode": "637" },
-                    { "name": "麥寮", "zipcode": "638" },
-                    { "name": "斗六", "zipcode": "640" },
-                    { "name": "林內", "zipcode": "643" },
-                    { "name": "古坑", "zipcode": "646" },
-                    { "name": "莿桐", "zipcode": "647" },
-                    { "name": "西螺", "zipcode": "648" },
-                    { "name": "二崙", "zipcode": "649" },
-                    { "name": "北港", "zipcode": "651" },
-                    { "name": "水林", "zipcode": "652" },
-                    { "name": "口湖", "zipcode": "653" },
-                    { "name": "四湖", "zipcode": "654" },
-                    { "name": "元長", "zipcode": "655" }
-                ]
-            },
-            {
-                "city": "臺南市",
-                "area": [
-                    { "name": "中西區", "zipcode": "700" },
-                    { "name": "東區", "zipcode": "701" },
-                    { "name": "南區", "zipcode": "702" },
-                    { "name": "北區", "zipcode": "704" },
-                    { "name": "安平區", "zipcode": "708" },
-                    { "name": "安南區", "zipcode": "709" },
-                    { "name": "永康區", "zipcode": "710" },
-                    { "name": "歸仁區", "zipcode": "711" },
-                    { "name": "新化區", "zipcode": "712" },
-                    { "name": "左鎮區", "zipcode": "713" },
-                    { "name": "玉井區", "zipcode": "714" },
-                    { "name": "楠西區", "zipcode": "715" },
-                    { "name": "南化區", "zipcode": "716" },
-                    { "name": "仁德區", "zipcode": "717" },
-                    { "name": "關廟區", "zipcode": "718" },
-                    { "name": "龍崎區", "zipcode": "719" },
-                    { "name": "官田區", "zipcode": "720" },
-                    { "name": "麻豆區", "zipcode": "721" },
-                    { "name": "佳里區", "zipcode": "722" },
-                    { "name": "西港區", "zipcode": "723" },
-                    { "name": "七股區", "zipcode": "724" },
-                    { "name": "將軍區", "zipcode": "725" },
-                    { "name": "學甲區", "zipcode": "726" },
-                    { "name": "北門區", "zipcode": "727" },
-                    { "name": "新營區", "zipcode": "730" },
-                    { "name": "後壁區", "zipcode": "731" },
-                    { "name": "白河區", "zipcode": "732" },
-                    { "name": "東山區", "zipcode": "733" },
-                    { "name": "六甲區", "zipcode": "734" },
-                    { "name": "下營區", "zipcode": "735" },
-                    { "name": "柳營區", "zipcode": "736" },
-                    { "name": "鹽水區", "zipcode": "737" },
-                    { "name": "善化區", "zipcode": "741" },
-                    { "name": "大內區", "zipcode": "742" },
-                    { "name": "山上區", "zipcode": "743" },
-                    { "name": "新市區", "zipcode": "744" },
-                    { "name": "安定區", "zipcode": "745" }
-                ]
-            },
-            {
-                "city": "高雄市",
-                "area": [
-                    { "name": "新興區", "zipcode": "800" },
-                    { "name": "前金區", "zipcode": "801" },
-                    { "name": "苓雅區", "zipcode": "802" },
-                    { "name": "鹽埕區", "zipcode": "803" },
-                    { "name": "鼓山區", "zipcode": "804" },
-                    { "name": "旗津區", "zipcode": "805" },
-                    { "name": "前鎮區", "zipcode": "806" },
-                    { "name": "三民區", "zipcode": "807" },
-                    { "name": "楠梓區", "zipcode": "811" },
-                    { "name": "小港區", "zipcode": "812" },
-                    { "name": "左營區", "zipcode": "813" },
-                    { "name": "仁武區", "zipcode": "814" },
-                    { "name": "大社區", "zipcode": "815" },
-                    { "name": "岡山區", "zipcode": "820" },
-                    { "name": "路竹區", "zipcode": "821" },
-                    { "name": "阿蓮區", "zipcode": "822" },
-                    { "name": "田寮區", "zipcode": "823" },
-                    { "name": "燕巢區", "zipcode": "824" },
-                    { "name": "橋頭區", "zipcode": "825" },
-                    { "name": "梓官區", "zipcode": "826" },
-                    { "name": "彌陀區", "zipcode": "827" },
-                    { "name": "永安區", "zipcode": "828" },
-                    { "name": "湖內區", "zipcode": "829" },
-                    { "name": "鳳山區", "zipcode": "830" },
-                    { "name": "大寮區", "zipcode": "831" },
-                    { "name": "林園區", "zipcode": "832" },
-                    { "name": "鳥松區", "zipcode": "833" },
-                    { "name": "大樹區", "zipcode": "840" },
-                    { "name": "旗山區", "zipcode": "842" },
-                    { "name": "美濃區", "zipcode": "843" },
-                    { "name": "六龜區", "zipcode": "844" },
-                    { "name": "內門區", "zipcode": "845" },
-                    { "name": "杉林區", "zipcode": "846" },
-                    { "name": "甲仙區", "zipcode": "847" },
-                    { "name": "桃源區", "zipcode": "848" },
-                    { "name": "那瑪夏區", "zipcode": "849" },
-                    { "name": "茂林區", "zipcode": "851" },
-                    { "name": "茄萣區", "zipcode": "852" }
-                ]
-            },
-            {
-                "city": "南海諸島",
-                "area": [
-                    { "name": "東沙", "zipcode": "817" },
-                    { "name": "南沙", "zipcode": "819" }
-                ]
-            },
-            {
-                "city": "澎湖縣",
-                "area": [
-                    { "name": "馬公", "zipcode": "880" },
-                    { "name": "西嶼", "zipcode": "881" },
-                    { "name": "望安", "zipcode": "882" },
-                    { "name": "七美", "zipcode": "883" },
-                    { "name": "白沙", "zipcode": "884" },
-                    { "name": "湖西", "zipcode": "885" }
-                ]
-            },
-            {
-                "city": "屏東縣",
-                "area": [
-                    { "name": "屏東", "zipcode": "900" },
-                    { "name": "三地門", "zipcode": "901" },
-                    { "name": "霧臺", "zipcode": "902" },
-                    { "name": "瑪家", "zipcode": "903" },
-                    { "name": "九如", "zipcode": "904" },
-                    { "name": "里港", "zipcode": "905" },
-                    { "name": "高樹", "zipcode": "906" },
-                    { "name": "鹽埔", "zipcode": "907" },
-                    { "name": "長治", "zipcode": "908" },
-                    { "name": "麟洛", "zipcode": "909" },
-                    { "name": "竹田", "zipcode": "911" },
-                    { "name": "內埔", "zipcode": "912" },
-                    { "name": "萬丹", "zipcode": "913" },
-                    { "name": "潮州", "zipcode": "920" },
-                    { "name": "泰武", "zipcode": "921" },
-                    { "name": "來義", "zipcode": "922" },
-                    { "name": "萬巒", "zipcode": "923" },
-                    { "name": "崁頂", "zipcode": "924" },
-                    { "name": "新埤", "zipcode": "925" },
-                    { "name": "南州", "zipcode": "926" },
-                    { "name": "林邊", "zipcode": "927" },
-                    { "name": "東港", "zipcode": "928" },
-                    { "name": "琉球", "zipcode": "929" },
-                    { "name": "佳冬", "zipcode": "931" },
-                    { "name": "新園", "zipcode": "932" },
-                    { "name": "枋寮", "zipcode": "940" },
-                    { "name": "枋山", "zipcode": "941" },
-                    { "name": "春日", "zipcode": "942" },
-                    { "name": "獅子", "zipcode": "943" },
-                    { "name": "車城", "zipcode": "944" },
-                    { "name": "牡丹", "zipcode": "945" },
-                    { "name": "恆春", "zipcode": "946" },
-                    { "name": "滿州", "zipcode": "947" }
-                ]
-            },
-            {
-                "city": "臺東縣",
-                "area": [
-                    { "name": "臺東", "zipcode": "950" },
-                    { "name": "綠島", "zipcode": "951" },
-                    { "name": "蘭嶼", "zipcode": "952" },
-                    { "name": "延平", "zipcode": "953" },
-                    { "name": "卑南", "zipcode": "954" },
-                    { "name": "鹿野", "zipcode": "955" },
-                    { "name": "關山", "zipcode": "956" },
-                    { "name": "海端", "zipcode": "957" },
-                    { "name": "池上", "zipcode": "958" },
-                    { "name": "東河", "zipcode": "959" },
-                    { "name": "成功", "zipcode": "961" },
-                    { "name": "長濱", "zipcode": "962" },
-                    { "name": "太麻里", "zipcode": "963" },
-                    { "name": "金峰", "zipcode": "964" },
-                    { "name": "大武", "zipcode": "965" },
-                    { "name": "達仁", "zipcode": "966" }
-                ]
-            },
-            {
-                "city": "花蓮縣",
-                "area": [
-                    { "name": "花蓮", "zipcode": "970" },
-                    { "name": "新城", "zipcode": "971" },
-                    { "name": "秀林", "zipcode": "972" },
-                    { "name": "吉安", "zipcode": "973" },
-                    { "name": "壽豐", "zipcode": "974" },
-                    { "name": "鳳林", "zipcode": "975" },
-                    { "name": "光復", "zipcode": "976" },
-                    { "name": "豐濱", "zipcode": "977" },
-                    { "name": "瑞穗", "zipcode": "978" },
-                    { "name": "萬榮", "zipcode": "979" },
-                    { "name": "玉里", "zipcode": "981" },
-                    { "name": "卓溪", "zipcode": "982" },
-                    { "name": "富里", "zipcode": "983" }
-                ]
-            },
-            {
-                "city": "金門縣",
-                "area": [
-                    { "name": "金沙", "zipcode": "890" },
-                    { "name": "金湖", "zipcode": "891" },
-                    { "name": "金寧", "zipcode": "892" },
-                    { "name": "金城", "zipcode": "893" },
-                    { "name": "烈嶼", "zipcode": "894" },
-                    { "name": "烏坵", "zipcode": "896" }
-                ]
-            },
-            {
-                "city": "連江縣",
-                "area": [
-                    { "name": "南竿", "zipcode": "209" },
-                    { "name": "北竿", "zipcode": "210" },
-                    { "name": "莒光", "zipcode": "211" },
-                    { "name": "東引", "zipcode": "212" }
-                ]
-            }
-        ];
+        addrData.forEach(cityObj => {
+            console.log(cityObj.city); 
+        });
         
         
         
@@ -968,7 +488,7 @@
  
 
 
-
+//====
     exitNotice.addEventListener('click', function () {
         noticeModal.style.display = 'none';
 
@@ -985,87 +505,88 @@
             sessionStorage.removeItem("noticeAgreed");
             if (errorMessage) errorMessage.classList.remove("hidden");
         }
+    });
         
+ //===       
         
+        console.log("City Select:", citySelect);
+        console.log("District Select:", districtSelect);
+        console.log("Zipcode Input:", zipInput);
         
-        
-        
-        
-        requestAnimationFrame(() => {
-            const citySelect = document.getElementById('citySelect');
-            const districtSelect = document.getElementById('districtSelect');
-            const zipInput = document.getElementById('zipcodeInput');
-console.log("🚀 citySelect =", citySelect);
-console.log("🚀 districtSelect =", districtSelect);
-console.log("🚀 zipInput =", zipInput);
-console.log("📦 addrData =", addrData);
-console.log("🏁 DOMContentLoaded triggered");
-            const selectedCity = citySelect.value;
-            const selectedDistrict = districtSelect.value;
+        if (citySelect && districtSelect && zipInput) {
+            const selectedCity = citySelect.getAttribute("data-selected") || "";
+            const selectedDistrict = districtSelect.getAttribute("data-selected") || "";
+            
+            console.log("Selected City:", selectedCity);
+            console.log("Selected District:", selectedDistrict);
 
             // 初始化縣市選單
-            citySelect.innerHTML = '<option value="">請選擇縣市</option>';
-            addrData.forEach(item => {
-console.log("➡️ 加入城市:", item.city); // 👈 檢查是否有跑
-              const option = document.createElement("option");
-              option.value = item.city;
-              option.textContent = item.city;
-              if (item.city === selectedCity) option.selected = true;
-              citySelect.appendChild(option);
-            });
-
-            // 如果已選擇縣市，初始化鄉鎮市區與郵遞區號
+            initCitySelect();
+            
+            // 如果有預選值，初始化地區選單
             if (selectedCity) {
-              const cityObj = addrData.find(item => item.city === selectedCity);
-              if (cityObj) {
-                districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
-                cityObj.area.forEach(area => {
-                  const option = document.createElement("option");
-                  option.value = area.name;
-                  option.textContent = area.name;
-                  if (area.name === selectedDistrict) option.selected = true;
-                  districtSelect.appendChild(option);
-                });
-
-                const selectedZip = cityObj.area.find(area => area.name === selectedDistrict)?.zipcode;
-                if (selectedZip) zipInput.value = selectedZip;
-              }
+                updateDistricts(selectedCity, selectedDistrict);
             }
 
-            // 當縣市改變時，重新載入鄉鎮與郵遞區號
+            // 縣市選擇變動
             citySelect.addEventListener("change", function () {
-              const selectedCity = this.value;
-              const cityObj = addrData.find(item => item.city === selectedCity);
-              districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
-              zipInput.value = "";
-
-              if (cityObj) {
-                cityObj.area.forEach((area, index) => {
-                  const option = document.createElement("option");
-                  option.value = area.name;
-                  option.textContent = area.name;
-                  districtSelect.appendChild(option);
-                  if (index === 0) zipInput.value = area.zipcode;
-                });
-              }
+                updateDistricts(this.value, "");
             });
 
-            // 當鄉鎮市區改變時，更新郵遞區號
+            // 鄉鎮市區選擇變動
             districtSelect.addEventListener("change", function () {
-              const selectedCity = citySelect.value;
-              const selectedDistrict = this.value;
-              const cityObj = addrData.find(item => item.city === selectedCity);
-              if (cityObj) {
-                const areaObj = cityObj.area.find(area => area.name === selectedDistrict);
-                zipInput.value = areaObj ? areaObj.zipcode : "";
-              }
+                updateZipcode(citySelect.value, this.value);
             });
-        });
+        }
         
+        // 初始化縣市選單
+        function initCitySelect() {
+            citySelect.innerHTML = '<option value="">請選擇縣市</option>';
+            addrData.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.city;
+                option.textContent = item.city;
+                if (item.city === citySelect.getAttribute("data-selected")) {
+                    option.selected = true;
+                }
+                citySelect.appendChild(option);
+            });
+        }
         
+        // 更新鄉鎮市區選單
+        function updateDistricts(city, selectedDistrict) {
+            const cityObj = addrData.find(item => item.city === city);
+            districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
+            
+            if (cityObj) {
+                cityObj.area.forEach(area => {
+                    const option = document.createElement("option");
+                    option.value = area.name;
+                    option.textContent = area.name;
+                    if (area.name === selectedDistrict) {
+                        option.selected = true;
+                    }
+                    districtSelect.appendChild(option);
+                });
+                
+                // 如果有選擇地區，更新郵遞區號
+                if (selectedDistrict) {
+                    updateZipcode(city, selectedDistrict);
+                } else if (cityObj.area.length > 0) {
+                    // 若沒有選擇地區但有地區可選，清空郵遞區號
+                    zipInput.value = "";
+                }
+            }
+        }
         
-        
-    });
+        // 更新郵遞區號
+        function updateZipcode(city, district) {
+            const cityObj = addrData.find(item => item.city === city);
+            if (cityObj) {
+                const areaObj = cityObj.area.find(area => area.name === district);
+                zipInput.value = areaObj ? areaObj.zipcode : "";
+            }
+        }
     });
 //======dom結束=====
 
