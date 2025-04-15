@@ -4,6 +4,7 @@ import com.entity.FoodVO;
 import com.store.model.StoreService;
 import com.entity.StoreVO;
 import com.attached.model.AttachedService;
+import com.backstage.backstagrepository.PhotoRepository;
 import com.cartfood.model.CarFoodDTO;
 import com.cartfood.model.CartFoodService;
 import com.cartfood.model.CartOrderService;
@@ -13,11 +14,14 @@ import com.entity.AttachedVO;
 import com.entity.OrderDetailId;
 import com.entity.OrderDetailVO;
 import com.entity.OrderFoodVO;
+import com.entity.PhotoVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import jakarta.servlet.http.HttpSession;
 import java.sql.Timestamp;
@@ -41,6 +45,9 @@ public class MealController {
 
     @Autowired
     private CartOrderService orderService;
+    
+    @Autowired
+    private PhotoRepository photoRepository;
 
     @GetMapping("/restaurant/{id}")
     public StoreVO getRestaurantInfo(@PathVariable Integer id) {
@@ -367,6 +374,22 @@ public class MealController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/photo/{storeId}/cover")
+    public ResponseEntity<byte[]> getCoverPhoto(@PathVariable Integer storeId) {
+        Optional<PhotoVO> photoOpt = photoRepository.findByStore_StoreIdAndPhotoType(storeId, "COVER");
+
+        if (photoOpt.isPresent()) {
+            byte[] photoBytes = photoOpt.get().getPhotoSrc();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG); // 根據實際格式選擇
+            return new ResponseEntity<>(photoBytes, headers, HttpStatus.OK);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
 
 
