@@ -417,7 +417,7 @@ body {
     animation: shineBg 6s infinite linear;
     z-index: 1;
     min-width: 280px;
-    max-width: 482px;
+    max-width: 670px;
 }
 
 .donation-total-supercard::before {

@@ -44,7 +44,7 @@ public class StoreLoginService {
         if (!op.isBefore(close)) return false;
         if (last.isBefore(op) || last.isAfter(close)) return false;
 
-        // ✅ 更新資料
+
         sessionStore.setOpTime(formInput.getOpTime());
         sessionStore.setCloseTime(formInput.getCloseTime());
         sessionStore.setLastOrder(formInput.getLastOrder());
@@ -54,12 +54,7 @@ public class StoreLoginService {
         storeRepository.save(sessionStore);
         return true;
     }
-//    public boolean isStoreMissingOpeningInfo(StoreVO store) {
-//        return store.getOpTime() == null ||
-//               store.getCloseTime() == null ||
-//               store.getLastOrder() == null ||
-//               store.getPickTime() == null;
-//    }
+
 
     public boolean isStoreMissingOpeningInfo(StoreVO store) {
         return isBlank(store.getOpTime()) ||

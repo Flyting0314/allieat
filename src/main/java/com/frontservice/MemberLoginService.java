@@ -66,7 +66,7 @@ public class MemberLoginService {
                 return "帳號狀態錯誤或無需補件";
             }
 
-            String savedFile = memberService.saveKycFile(file); // 重用原有邏輯
+            String savedFile = memberService.saveKycFile(file); 
             member.setKycImage(savedFile);
             member.setReviewed(3); // 補件後重新進入審核
             member.setRegTime(new Timestamp(System.currentTimeMillis()));
@@ -78,14 +78,6 @@ public class MemberLoginService {
         }
     }
     
-//    public int calculateDisplayPoints(MemberVO member) {
-//        List<OrderDetailVO> orderDetails = orderDetailRepository.findByMember_MemberId(member.getMemberId());
-//
-//        int usedPoints = orderDetails.stream()
-//            .mapToInt(OrderDetailVO::getPointsCost) // 這邊使用 orderDetail 裡的 pointsCost
-//            .sum();
-//
-//        return member.getPointsBalance() + usedPoints; // 加回使用過的點數顯示原本擁有的
-//    }
+
 
 }
