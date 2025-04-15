@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head> 
+    <meta charset="UTF-8">
+    <title>後台首頁</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/style_backstage.css">
+    
+    <!-- 正確的JavaScript加載順序 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+       <!-- 左側側邊欄 -->
+<div class="col-md-2 side-bar">
+    <h4>攏呷霸-後台首頁</h4>
+    <a href="./backstage_homepage.html" class="active">後台首頁</a>
+    
+    <!-- 可展開的合作店家管理選項 -->
+    <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#storeSubMenu" aria-expanded="false">
+        合作店家管理 <i class="fas fa-angle-down float-right mt-1"></i>
+    </a>
+    <div class="collapse" id="storeSubMenu">
+        <div class="sub-menu">
+            <a href="#" class="sub-item">合作店家管理</a>
+            <a href="./backstage_pointsRedemption_management.html" class="sub-item">合作店家點數核銷</a>
+        </div>
+    </div>
+    
+    <!-- 可展開的受助者管理選項 -->
+    <a href="javascript:void(0)" class="collapsible-menu" data-toggle="collapse" data-target="#recipientSubMenu" aria-expanded="false">
+        受助者管理 <i class="fas fa-angle-down float-right mt-1"></i>
+    </a>
+    <div class="collapse" id="recipientSubMenu">
+        <div class="sub-menu">
+            <a href="./backstage_member_management.html" class="sub-item">受助者管理</a>
+            <a href="./backstage_payrecord_management.html" class="sub-item">受助者點數發放</a>
+        </div>
+    </div>
+    
+
+
+    <a href="./backstage_unit_management.html">在冊單位管理</a>
+    <a href="./backstage_donation_management.html">捐款管理</a>
+    <a href="#">未領餐紀錄</a>
+    <a class="btn btn-logout">登出</a>
+</div>
+        <!-- 主內容 -->
+        <div class="col-md-10">
+            <!-- 四個統計資訊卡 -->
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h6>累計捐款總數</h6>
+                            <h5 id="totalDonations"></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h6>累計捐款人</h6>
+                            <h5 id="totalDonors"></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h6>最近一個月累計捐款</h6>
+                            <h5 id="monthlyDonations"></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h6>最近一個月新增捐款人</h6>
+                            <h5 id="newDonors"></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 圖表1 & 圖表2 並排 -->
+            <div class="row mt-4 mb-5">
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-header bg-gradient text-white">最近12個月累積捐款情形</div>
+                        <div class="card-body">
+                            <canvas id="donationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-header bg-gradient text-white">最近12個月愛心點領用情形</div>
+                        <div class="card-body">
+                            <canvas id="usageChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+                <a href="./backstage_newadmin.html" class="btn btn-success mr-2">新增管理員</a>
+                <a href="./backstage_changepassword.html" class="btn btn-outline-secondary">修改密碼</a>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<!--驗證用js-->
+<script src="./js/backstage_auth_js.js"></script>
+<script src="./js/backstage_homepage_js.js"></script>
+
+</body>
+</html>
