@@ -3,6 +3,7 @@ package com.backstage.backstagrepository;
 
 
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,7 +29,7 @@ public interface OrderFoodRepository extends JpaRepository<OrderFoodVO, Integer>
     """, nativeQuery = true)
     List<Object[]> findMonthlyPickedOrders();
 
-
+    List<OrderFoodVO> findByStoreStoreIdAndCreatedTimeBetween(Integer storeId, Timestamp start, Timestamp end);
 	 
 
 }

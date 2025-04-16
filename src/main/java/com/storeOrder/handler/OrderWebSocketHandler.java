@@ -22,6 +22,7 @@ public class OrderWebSocketHandler extends TextWebSocketHandler {
 		Integer storeId = getStoreIdFromQueryParam(session);
 		if (storeId != null) {
 			storeSessions.computeIfAbsent(storeId, k -> new CopyOnWriteArrayList<>()).add(session);
+			System.out.println("WebSocket 連線建立，storeId = " + storeId);
 		}
 	}
 
@@ -38,6 +39,7 @@ public class OrderWebSocketHandler extends TextWebSocketHandler {
 		if (sessions != null) {
 			for (WebSocketSession session : sessions) {
 				if (session.isOpen()) {
+					  System.out.println("✅ 發送訊息給 session");
 					session.sendMessage(new TextMessage(message));
 				}
 			}
