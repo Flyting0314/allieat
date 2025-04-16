@@ -1,6 +1,6 @@
 <th:block th:fragment="bodySection">
     <header>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <div class="container-fluid p-0 nav-bar">
             <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
                 <a th:href="@{/}" class="navbar-brand px-lg-4 m-0">
@@ -32,14 +32,14 @@
                                 <a th:href="@{/rank/top}" class="dropdown-item">哈燒排行榜</a>
                             </div>
                         </div>
-                        <a th:href="@{/map2}" class="nav-item nav-link">我要取餐 / 點餐</a>
+                        <a th:href="@{/map}" class="nav-item nav-link">我要取餐 / 點餐</a>
 
                         <!-- ✅ 登入 / 登出 切換 -->
                         <div class="nav-item dropdown"
                              th:if="${param.fromRegister != null or (session.member == null and session.store == null)}">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊 / 登入</a>
                             <div class="dropdown-menu text-capitalize dropdown-custom">
-                                <a th:href="@{/registerAndLogin/register(fromRegister=true)}" class="dropdown-item">註冊</a>
+                                <a th:href="@{/registerAndLogin/register}" class="dropdown-item">註冊</a>
                                 <a th:href="@{/registerAndLogin/login}" class="dropdown-item">登入</a>
                             </div>
                         </div>
@@ -81,27 +81,55 @@
 
     <!--登入狀態 JS 判斷 -->
     <script th:inline="javascript">
-        document.addEventListener("DOMContentLoaded", function () {
-            const memberBtn = document.getElementById('memberAreaBtn');
-            memberBtn?.addEventListener("click", function (event) {
-                const isMember = /*[[${session.member != null}]]*/ false;
-                const isStore = /*[[${session.store != null}]]*/ false;
+    document.addEventListener("DOMContentLoaded", function () {
+        const memberBtn = document.getElementById('memberAreaBtn');
+        memberBtn?.addEventListener("click", function (event) {
+            const isMember = /*[[${session.member != null}]]*/ false;
+            const isStore = /*[[${session.store != null}]]*/ false;
 
-                event.preventDefault();
+            event.preventDefault();
 
-                if (!isMember && !isStore) {
-                    if (confirm("請先登入才能進入會員專區，是否前往登入？")) {
-                        window.location.href = "/registerAndLogin/login";
-                    }
-                } else {
-                    if (isMember) {
-                        window.location.href = "/registerAndLogin/memberInfo";
-                    } else if (isStore) {
-                        window.location.href = "/registerAndLogin/storeInfo";
-                    }
+            if (!isMember && !isStore) {
+               
+            	Swal.fire({
+            	    title: '<span id="secretEasterTitle">尚未登入</span>',
+            	    html: `
+            	        <p>為了保護您的資訊，請先登入才能進入會員專區喔！</p>
+            	    `,
+            	    icon: 'info',
+            	    showCancelButton: true,
+            	    confirmButtonText: '好，帶我去登入',
+            	    cancelButtonText: '稍後再說',
+            	    confirmButtonColor: '#f6a600',
+            	    cancelButtonColor: '#aaa',
+            	    didOpen: () => {
+            	        
+            	        let pressTimer;
+            	        const title = document.getElementById('secretEasterTitle');
+            	        title.addEventListener('mousedown', () => {
+            	            pressTimer = setTimeout(() => {
+            	                window.location.href = '/backStage'; 
+            	            }, 1500); 
+            	        });
+            	        title.addEventListener('mouseup', () => clearTimeout(pressTimer));
+            	        title.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+            	    }
+            	}).then((result) => {
+            	    if (result.isConfirmed) {
+            	        window.location.href = "/registerAndLogin/login";
+            	    }
+            	});
+            } else {
+               
+                if (isMember) {
+                    window.location.href = "/registerAndLogin/memberInfo";
+                } else if (isStore) {
+                    window.location.href = "/registerAndLogin/storeInfo";
                 }
-            });
+            }
         });
-    </script>
+    });
+</script>
+
 </th:block>
 
