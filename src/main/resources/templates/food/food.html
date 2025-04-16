@@ -383,7 +383,7 @@ html, body {
 			.then(response => response.json())
 			.then(data => {
 				const container = document.getElementById("menuContainer");
-				data.forEach(food => {
+					data.forEach(food => {
 					const card = document.createElement('div');
 					card.classList.add('menu-item');
 					card.setAttribute('data-food-id', food.foodId);
@@ -411,12 +411,13 @@ html, body {
 			});
 
 		// 預覽更換圖片
-		document.getElementById('editPhotoInput').addEventListener('change', function () {
+		document.getElementById('editPhotoInput').addEventListener('change', function (event) {
 			const file = this.files[0];
+			const preview = document.getElementById('editPreviewImage');
 			if (file) {
 				const reader = new FileReader();
 				reader.onload = function (e) {
-					document.getElementById('editPreviewImage').src = e.target.result;
+					preview.src = e.target.result;
 				};
 				reader.readAsDataURL(file);
 			}
