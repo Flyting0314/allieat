@@ -20,7 +20,6 @@ public class BackStageAuditOrgController {
     
     @GetMapping("/orgAudit/image")
     public ResponseEntity<byte[]> getAuditImg(@RequestParam("orgId") Integer orgId){
-    	System.err.println(orgId);
 		return backStageAuditOrgService.getImgByOrgId(orgId);
     }
     
