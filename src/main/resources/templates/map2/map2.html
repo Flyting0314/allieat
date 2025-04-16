@@ -285,72 +285,76 @@
 
 <body>
 	<div class="container-fluid p-0 nav-bar">
-            <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
-                <a th:href="@{/index}" class="navbar-brand px-lg-4 m-0">
-                    <h1 class="m-0 display-4 text-uppercase text-white">
-                        <img th:src="@{/img/logo3.png}" width="80px" height="80px" alt="ALLiEAT Logo"
-                             style="vertical-align: middle; border-radius: 50%; object-fit: cover;">
-                        <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
-                    </h1>
-                </a>
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                    <div class="navbar-nav ml-auto p-4">
-                        <a th:href="@{/index}" class="nav-item nav-link active">關於我們</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">捐款專區</a>
-                            <div class="dropdown-menu text-capitalize">
-                                <a th:href="@{/dona/donaAddA}" class="dropdown-item">我要捐款</a>
-                                <a th:href="@{/dona/donaAddD}" class="dropdown-item">捐款查詢</a>
-                            </div>
-                        </div>
-                        <a th:href="@{/map}" class="nav-item nav-link">我要取餐 / 點餐</a>
+		<nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+			<a th:href="@{/index}" class="navbar-brand px-lg-4 m-0">
+				<h1 class="m-0 display-4 text-uppercase text-white">
+					<img th:src="@{/img/logo3.png}" width="80px" height="80px"
+						alt="ALLiEAT Logo"
+						style="vertical-align: middle; border-radius: 50%; object-fit: cover;">
+					<span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+				</h1>
+			</a>
+			<button type="button" class="navbar-toggler" data-toggle="collapse"
+				data-target="#navbarCollapse">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse justify-content-between"
+				id="navbarCollapse">
+				<div class="navbar-nav ml-auto p-4">
+					<a th:href="@{/index}" class="nav-item nav-link active">關於我們</a>
+					<div class="nav-item dropdown">
+						<a href="#" class="nav-link dropdown-toggle"
+							data-toggle="dropdown">捐款專區</a>
+						<div class="dropdown-menu text-capitalize">
+							<a th:href="@{/dona/donaAddA}" class="dropdown-item">我要捐款</a> <a
+								th:href="@{/dona/donaAddD}" class="dropdown-item">捐款查詢</a>
+						</div>
+					</div>
+					<a th:href="@{/map}" class="nav-item nav-link">我要取餐 / 點餐</a>
 
-                        <!-- ✅ 登入 / 登出 切換 -->
-                        <div class="nav-item dropdown" th:if="${session.member == null and session.store == null}">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊 / 登入</a>
-                            <div class="dropdown-menu text-capitalize">
-                                <a th:href="@{/registerAndLogin/register}" class="dropdown-item">註冊</a>
-                                <a th:href="@{/registerAndLogin/login}" class="dropdown-item">登入</a>
-                            </div>
-                        </div>
+					<!-- ✅ 登入 / 登出 切換 -->
+					<div class="nav-item dropdown"
+						th:if="${session.member == null and session.store == null}">
+						<a href="#" class="nav-link dropdown-toggle"
+							data-toggle="dropdown">註冊 / 登入</a>
+						<div class="dropdown-menu text-capitalize">
+							<a th:href="@{/registerAndLogin/register}" class="dropdown-item">註冊</a>
+							<a th:href="@{/registerAndLogin/login}" class="dropdown-item">登入</a>
+						</div>
+					</div>
 
-                        <a th:if="${session.member != null or session.store != null}"
-                           th:href="@{/registerAndLogin/logout}"
-                           class="nav-item nav-link">登出</a>
+					<a th:if="${session.member != null or session.store != null}"
+						th:href="@{/registerAndLogin/logout}" class="nav-item nav-link">登出</a>
 
-                        <!-- 會員專區按鈕 -->
-                        <a href="javascript:void(0)" id="memberAreaBtn" class="nav-item nav-link">會員專區</a>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </header>
+					<!-- 會員專區按鈕 -->
+					<a href="javascript:void(0)" id="memberAreaBtn"
+						class="nav-item nav-link">會員專區</a>
+				</div>
+			</div>
+		</nav>
+	</div>
+	</header>
 
-    <!-- Hero Section Start -->
-    <section id="hero">
-        <div class="container-fluid p-0 mb-5">
-            <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active" style="
-                        background-image: url(/img/圖片3.png);
-                        background-size: 110% auto;
-                        background-position: center 50px;
-                        height: 300px;
-                        filter: brightness(225%);">
-                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                            <h2 class="text-primary font-weight-medium m-0"></h2>
-                            <h1 class="display-1 text-white m-0"></h1>
-                            <h2 class="text-white m-0"></h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Hero Section End -->
+	<!-- Hero Section Start -->
+	<section id="hero">
+		<div class="container-fluid p-0 mb-5">
+			<div id="hero-carousel" class="carousel slide overlay-bottom"
+				data-ride="carousel">
+				<div class="carousel-inner">
+					<div class="carousel-item active"
+						style="background-image: url(/img/圖片3.png); background-size: 110% auto; background-position: center 50px; height: 300px; filter: brightness(225%);">
+						<div
+							class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+							<h2 class="text-primary font-weight-medium m-0"></h2>
+							<h1 class="display-1 text-white m-0"></h1>
+							<h2 class="text-white m-0"></h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Hero Section End -->
 
 	<!-- 美化後的地圖區域 -->
 	<div class="container-fluid py-5 bg-light">
@@ -367,67 +371,68 @@
 				<div class="col-md-4 mb-4">
 					<div class="card shadow-sm h-100">
 						<div class="card-body">
-	<h4 class="mb-3">搜尋餐廳</h4>
-	<div class="input-group mb-4 position-relative" style="width: 100%;">
-	<input id="search-input" class="form-control"
-		placeholder="輸入地點、地址或餐廳名稱..."
-		style="border-radius: 50px 0 0 50px; padding: 12px 20px; font-size: 1rem; height: 48px; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);">
-	<div class="input-group-append">
-		<button class="btn btn-primary"
-			style="border-radius: 0 50px 50px 0; padding: 0 20px; font-size: 1rem; height: 48px;">
-			<i class="fas fa-search"></i>
-		</button>
-	</div>
+							<h4 class="mb-3">搜尋餐廳</h4>
+							<div class="input-group mb-4 position-relative"
+								style="width: 100%;">
+								<input id="search-input" class="form-control"
+									placeholder="輸入地點、地址或餐廳名稱..."
+									style="border-radius: 50px 0 0 50px; padding: 12px 20px; font-size: 1rem; height: 48px; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);">
+								<div class="input-group-append">
+									<button class="btn btn-primary"
+										style="border-radius: 0 50px 50px 0; padding: 0 20px; font-size: 1rem; height: 48px;">
+										<i class="fas fa-search"></i>
+									</button>
+								</div>
 
 
-		<!-- 🔽 自動完成提示 -->
-		<ul id="autocomplete-suggestions"
-			class="list-group position-absolute w-100"
-			style="z-index: 1000; top: 100%; left: 0; display: none;"></ul>
-	</div>
+								<!-- 🔽 自動完成提示 -->
+								<ul id="autocomplete-suggestions"
+									class="list-group position-absolute w-100"
+									style="z-index: 1000; top: 100%; left: 0; display: none;"></ul>
+							</div>
 
-	<div id="restaurant-info" class="mt-4 d-none">
-		<h5 class="restaurant-name font-weight-bold"></h5>
-		<div class="restaurant-rating mb-2">
-			<div class="stars-outer">
-				<div class="stars-inner"></div>
-			</div>
-			<span class="rating-value ml-2"></span>
-		</div>
-		<p class="restaurant-address mb-1">
-			<i class="fas fa-map-marker-alt mr-2 text-primary"></i> <span></span>
-		</p>
-		<p class="restaurant-phone mb-1">
-			<i class="fas fa-phone mr-2 text-primary"></i> <span></span>
-		</p>
-		<p class="walking-time mb-3">
-			<i class="fas fa-walking mr-2 text-primary"></i> <span></span>
-		</p>
-		<!-- 前往導航：地圖導航 -->
-<button class="btn btn-primary btn-block mt-3"
-        onclick="showRouteInMap(selectRestaurant.location, selectRestaurant.name)">
-    <i class="fas fa-route mr-1"></i>前往導航
-</button>
+							<div id="restaurant-info" class="mt-4 d-none">
+								<h5 class="restaurant-name font-weight-bold"></h5>
+								<div class="restaurant-rating mb-2">
+									<div class="stars-outer">
+										<div class="stars-inner"></div>
+									</div>
+									<span class="rating-value ml-2"></span>
+								</div>
+								<p class="restaurant-address mb-1">
+									<i class="fas fa-map-marker-alt mr-2 text-primary"></i> <span></span>
+								</p>
+								<p class="restaurant-phone mb-1">
+									<i class="fas fa-phone mr-2 text-primary"></i> <span></span>
+								</p>
+								<p class="walking-time mb-3">
+									<i class="fas fa-walking mr-2 text-primary"></i> <span></span>
+								</p>
+								<!-- 前往導航：地圖導航 -->
+								<button class="btn btn-primary btn-block mt-3"
+									onclick="showRouteInMap(selectRestaurant.location, selectRestaurant.name)">
+									<i class="fas fa-route mr-1"></i>前往導航
+								</button>
 
-<!-- 前往點餐：跳轉到點餐頁 -->
-<button type="button" class="btn btn-success btn-block mt-2"
-        onclick="goToRestaurantPage(selectRestaurant.id || selectRestaurant.storeId, selectRestaurant.name)">
-    <i class="fas fa-utensils mr-1"></i>前往點餐
-</button>
-
-
-	</div>
-
-	<!-- ✅ 保留：愛心餐合作s列表 -->
-	<div class="nearby-restaurants mt-4">
-		<h5>附近愛心合作餐廳</h5>
-		<div class="list-group mt-3 restaurants-list">
-			<!-- 餐廳列表會由JS動態生成 -->
-		</div>
-	</div>
+								<!-- 前往點餐：跳轉到點餐頁 -->
+								<button type="button" class="btn btn-success btn-block mt-2"
+									onclick="goToRestaurantPage(selectRestaurant.id || selectRestaurant.storeId, selectRestaurant.name)">
+									<i class="fas fa-utensils mr-1"></i>前往點餐
+								</button>
 
 
-						
+							</div>
+
+							<!-- ✅ 保留：愛心餐合作s列表 -->
+							<div class="nearby-restaurants mt-4">
+								<h5>附近愛心合作餐廳</h5>
+								<div class="list-group mt-3 restaurants-list">
+									<!-- 餐廳列表會由JS動態生成 -->
+								</div>
+							</div>
+
+
+
 						</div>
 					</div>
 				</div>
@@ -460,8 +465,8 @@
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-md-6">
-							<img src="/api/placeholder/400/300" class="img-fluid rounded"
-								alt="餐廳照片">
+							<img id="restaurant-photo" class="img-fluid rounded" alt="餐廳封面" style="display: none;" />
+
 						</div>
 						<div class="col-md-6">
 							<h4 class="restaurant-name"></h4>
@@ -537,56 +542,75 @@
 	</div>
 
 	<!-- Footer Start -->
-	<footer class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
-        <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">聯絡我們</h4>
-                <p><i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號</p>
-                <p><i class="fa fa-phone-alt mr-2"></i>02-2222-5252</p>
-                <p class="m-0"><i class="fa fa-envelope mr-2"></i>allieat105@gmail.com</p>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">關注我們</h4>
-                <p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
-                <div class="d-flex justify-content-start">
-                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" th:href="@{#}"><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" th:href="@{#}"><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" th:href="@{#}"><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn btn-lg btn-outline-light btn-lg-square" th:href="@{#}"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">客服時間</h4>
-                <div>
-                    <h6 class="text-white text-uppercase">周一 - 週五</h6>
-                    <p>早上10:00 - 晚上21:00</p>
-                    <h6 class="text-white text-uppercase">週六 - 週日</h6>
-                    <p>早上11:00 - 晚上19:00</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">訂閱電子報</h4>
-                <p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
-                <div class="w-100">
-                    <div class="input-group">
-                        <input type="email" class="form-control border-light" style="padding: 25px;" placeholder="輸入您的信箱">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid text-center text-white mt-4 py-4 px-sm-3 px-md-5"
-             style="border-color: rgba(256, 256, 256, .1) !important;">
-            <p class="mb-2 text-white">
-                版權所有 &copy; <a class="font-weight-bold" th:href="@{#}">攏呷霸股份有限公司</a>. 保留所有權利
-            </p>
-            <p class="m-0 text-white">
-                網站設計由 <a class="font-weight-bold" th:href="@{https://htmlcodex.com}">攏呷霸股份有限公司 設計部</a> 設計
-            </p>
-        </div>
-    </footer>
+	<footer
+		class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
+		<div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">聯絡我們</h4>
+				<p>
+					<i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號
+				</p>
+				<p>
+					<i class="fa fa-phone-alt mr-2"></i>02-2222-5252
+				</p>
+				<p class="m-0">
+					<i class="fa fa-envelope mr-2"></i>allieat105@gmail.com
+				</p>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">關注我們</h4>
+				<p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
+				<div class="d-flex justify-content-start">
+					<a class="btn btn-lg btn-outline-light btn-lg-square mr-2"
+						th:href="@{#}"><i class="fab fa-twitter"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square mr-2"
+						th:href="@{#}"><i class="fab fa-facebook-f"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square mr-2"
+						th:href="@{#}"><i class="fab fa-linkedin-in"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square" th:href="@{#}"><i
+						class="fab fa-instagram"></i></a>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">客服時間</h4>
+				<div>
+					<h6 class="text-white text-uppercase">周一 - 週五</h6>
+					<p>早上10:00 - 晚上21:00</p>
+					<h6 class="text-white text-uppercase">週六 - 週日</h6>
+					<p>早上11:00 - 晚上19:00</p>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">訂閱電子報</h4>
+				<p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
+				<div class="w-100">
+					<div class="input-group">
+						<input type="email" class="form-control border-light"
+							style="padding: 25px;" placeholder="輸入您的信箱">
+						<div class="input-group-append">
+							<button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div
+			class="container-fluid text-center text-white mt-4 py-4 px-sm-3 px-md-5"
+			style="border-color: rgba(256, 256, 256, .1) !important;">
+			<p class="mb-2 text-white">
+				版權所有 &copy; <a class="font-weight-bold" th:href="@{#}">攏呷霸股份有限公司</a>.
+				保留所有權利
+			</p>
+			<p class="m-0 text-white">
+				網站設計由 <a class="font-weight-bold" th:href="@{https://htmlcodex.com}">攏呷霸股份有限公司
+					設計部</a> 設計
+			</p>
+		</div>
+	</footer>
 
 	<!-- Back to Top -->
 	<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
@@ -1138,72 +1162,80 @@ function goToRestaurantPage(storeId, name) {
 // 餐廳詳情模態視窗
 function showRestaurantModal(restaurant) {
     const modal = $('#restaurantDetailModal');
-    
-    // 設置餐廳資訊
+
+    // ✅ 補強 storeId，如果是 store.id 傳進來的話
+    if (!restaurant.storeId && restaurant.id) {
+        restaurant.storeId = restaurant.id;
+    }
+
+    // ✅ 設定圖片顯示
+    const photoImg = document.getElementById("restaurant-photo");
+    const imgUrl = `/meal/photo/${restaurant.storeId}/cover`;
+    const testImg = new Image();
+
+    testImg.onload = function () {
+        photoImg.src = imgUrl;
+        photoImg.style.display = "block";
+    };
+    testImg.onerror = function () {
+        console.warn("載入圖片失敗，改用預設圖：", imgUrl);
+        photoImg.src = "/img/default-restaurant.png"; // ✅ 使用預設圖
+        photoImg.style.display = "block";
+    };
+    testImg.src = imgUrl;
+
+    // ✅ 設定餐廳資訊
     modal.find('.restaurant-name').text(restaurant.name);
-    
-    // 設置評分
-    const starsInner = modal.find('.stars-inner');
-    const starPercentage = ((restaurant.rating || 4.5) / 5) * 100;
-    starsInner.css('width', `${starPercentage}%`);
-    modal.find('.rating-value').text(`${restaurant.rating || 4.5} / 5`);
-    
-    // 設置地址、電話、類別
-    modal.find('.restaurant-address span').text(restaurant.address);
-    modal.find('.restaurant-phone span').text(restaurant.phone || restaurant.phoneNumber);
+    modal.find('.restaurant-address span').text(restaurant.address || "地址未知");
+    modal.find('.restaurant-phone span').text(restaurant.phone || restaurant.phoneNumber || "無電話資訊");
     modal.find('.restaurant-category span').text(restaurant.category || '一般餐飲');
-    
-    // 設置標籤
+
+    // ✅ 星星評分
+    const starsInner = modal.find('.stars-inner');
+    const rating = parseFloat(restaurant.rating || 4.5);
+    const starPercentage = (rating / 5) * 100;
+    starsInner.css('width', `${starPercentage}%`);
+    modal.find('.rating-value').text(`${rating.toFixed(1)} / 5`);
+
+    // ✅ 標籤渲染
     const tagsContainer = modal.find('.restaurant-tags');
     tagsContainer.empty();
-    
     const tags = restaurant.tags || ['愛心合作店'];
     tags.forEach(tag => {
-        tagsContainer.append(`<span class="tag">${tag}</span>`);
+        tagsContainer.append(`<span class="badge badge-info mr-1">${tag}</span>`);
     });
-    
-    // 顯示模態視窗
-    modal.modal('show');
 
-    // 設置前往點餐按鈕事件
-    modal.find('.btn-restaurant').off('click').on('click', function() {
-        // 關閉模態視窗
+    // ✅ 前往點餐按鈕
+    modal.find('.btn-restaurant').off('click').on('click', function () {
         modal.modal('hide');
-        // 使用正確的 ID 跳轉到餐廳點餐頁面
-        goToRestaurantPage(restaurant.storeId || restaurant.id, restaurant.name);
+        goToRestaurantPage(restaurant.storeId, restaurant.name);
     });
-    
-    // 設置導航按鈕事件
-    modal.find('.btn-navigation').off('click').on('click', function() {
-        // 關閉模態視窗
+
+    // ✅ 前往導航按鈕
+    modal.find('.btn-navigation').off('click').on('click', function () {
         modal.modal('hide');
-        
-        // 如果有經緯度，使用經緯度顯示路線
         if (restaurant.latitude && restaurant.longitude) {
-            const destination = {
+            showRouteInMap({
                 lat: parseFloat(restaurant.latitude),
                 lng: parseFloat(restaurant.longitude)
-            };
-            showRouteInMap(destination, restaurant.name);
+            }, restaurant.name);
         } else if (restaurant.location) {
-            // 如果有 location 屬性，使用它
             showRouteInMap(restaurant.location, restaurant.name);
         } else {
-            // 如果沒有經緯度，使用地址轉換為經緯度
             const geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ 'address': restaurant.address }, function(results, status) {
-                if (status === 'OK' && results[0].geometry) {
-                    const destination = {
-                        lat: results[0].geometry.location.lat(),
-                        lng: results[0].geometry.location.lng()
-                    };
-                    showRouteInMap(destination, restaurant.name);
+            geocoder.geocode({ address: restaurant.address }, function (results, status) {
+                if (status === 'OK' && results[0]?.geometry) {
+                    const loc = results[0].geometry.location;
+                    showRouteInMap({ lat: loc.lat(), lng: loc.lng() }, restaurant.name);
                 } else {
-                    alert('無法找到該地址的位置：' + restaurant.address);
+                    alert('無法解析地址：' + restaurant.address);
                 }
             });
         }
     });
+
+    // ✅ 顯示模態視窗
+    modal.modal('show');
 }
 
     // 格式化路線指引文字

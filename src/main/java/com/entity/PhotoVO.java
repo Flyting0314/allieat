@@ -94,6 +94,11 @@ public class PhotoVO {
 				+ "photoSrc=" + Arrays.toString(photoSrc) +"\n"
 				+ "updateTime=" + updateTime ;
 	}
+
+	public Object getPhoto() {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
     
 }
