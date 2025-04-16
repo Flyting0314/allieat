@@ -3,7 +3,7 @@
 
         <div class="container-fluid p-0 nav-bar">
             <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
-                <a th:href="@{/index}" class="navbar-brand px-lg-4 m-0">
+                <a th:href="@{/}" class="navbar-brand px-lg-4 m-0">
                     <h1 class="m-0 display-4 text-uppercase text-white">
                         <img th:src="@{/img/logo3.png}" width="80px" height="80px" alt="ALLiEAT Logo"
                              style="vertical-align: middle; border-radius: 50%; object-fit: cover;">
@@ -15,7 +15,15 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav ml-auto p-4">
-                        <a th:href="@{/index}" class="nav-item nav-link active">關於我們</a>
+                    <div class="nav-item dropdown">
+ <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">關於我們</a>
+                        <div class="dropdown-menu text-capitalize dropdown-custom">
+                                <a th:href="@{/}" class="dropdown-item">首頁</a>
+                                <a th:href="@{/}" class="dropdown-item">使用須知</a>
+                                <a th:href="@{/}" class="dropdown-item">常見問題</a>
+                                <a th:href="@{/}" class="dropdown-item">聯絡我們</a>
+                            </div>
+                            </div>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">捐款專區</a>
                             <div class="dropdown-menu text-capitalize dropdown-custom">
@@ -24,20 +32,21 @@
                                 <a th:href="@{/rank/top}" class="dropdown-item">哈燒排行榜</a>
                             </div>
                         </div>
-                        <a th:href="@{/map}" class="nav-item nav-link">我要取餐 / 點餐</a>
+                        <a th:href="@{/map2}" class="nav-item nav-link">我要取餐 / 點餐</a>
 
                         <!-- ✅ 登入 / 登出 切換 -->
-                        <div class="nav-item dropdown" th:if="${session.member == null and session.store == null}">
+                        <div class="nav-item dropdown"
+                             th:if="${param.fromRegister != null or (session.member == null and session.store == null)}">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊 / 登入</a>
                             <div class="dropdown-menu text-capitalize dropdown-custom">
-                                <a th:href="@{/registerAndLogin/register}" class="dropdown-item">註冊</a>
+                                <a th:href="@{/registerAndLogin/register(fromRegister=true)}" class="dropdown-item">註冊</a>
                                 <a th:href="@{/registerAndLogin/login}" class="dropdown-item">登入</a>
                             </div>
                         </div>
 
-                        <a th:if="${session.member != null or session.store != null}"
-                           th:href="@{/registerAndLogin/logout}"
-                           class="nav-item nav-link">登出</a>
+                         <a th:if="${param.fromRegister == null and (session.member != null or session.store != null)}"
+                           th:href="@{/registerAndLogin/logout}" class="nav-item nav-link">登出</a>
+
 
                         <!-- 會員專區按鈕 -->
                         <a href="javascript:void(0)" id="memberAreaBtn" class="nav-item nav-link">會員專區</a>
@@ -70,20 +79,21 @@
     </section>
     <!-- Hero Section End -->
 
-    <!-- ✅ 登入狀態 JS 判斷 -->
+    <!--登入狀態 JS 判斷 -->
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
-            document.querySelector('#memberAreaBtn').addEventListener("click", function (event) {
-                let isMember = /*[[${session.member != null}]]*/ false;
-                let isStore = /*[[${session.store != null}]]*/ false;
+            const memberBtn = document.getElementById('memberAreaBtn');
+            memberBtn?.addEventListener("click", function (event) {
+                const isMember = /*[[${session.member != null}]]*/ false;
+                const isStore = /*[[${session.store != null}]]*/ false;
+
+                event.preventDefault();
 
                 if (!isMember && !isStore) {
-                    event.preventDefault();
                     if (confirm("請先登入才能進入會員專區，是否前往登入？")) {
                         window.location.href = "/registerAndLogin/login";
                     }
                 } else {
-                    event.preventDefault();
                     if (isMember) {
                         window.location.href = "/registerAndLogin/memberInfo";
                     } else if (isStore) {

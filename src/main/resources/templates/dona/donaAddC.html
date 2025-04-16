@@ -5,8 +5,6 @@
 <link th:href="@{/css/donaC.css}" rel="stylesheet">
 
 
-
-
    
 </head>
 <body>
@@ -16,7 +14,8 @@
     <!-- Reservation Start -->
     <div class="container-fluid py-5">
         <div class="container">
-            <div class="row">
+            <div class="df-wrapper">
+                <div class="row">
                 <!-- 左側圖片與說明 -->
                 <div class="col-md-6">
                     <img src="/img/001.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
@@ -29,18 +28,27 @@
         
                 <!-- 右側捐款流程 -->   
                 <div class="col-md-6">
-                    <h3>信用卡捐款</h3>
+                    <h3 class="text-danger fw-bold">信用卡捐款</h3>
                     <p>支援 VISA、MasterCard、JCB</p>
     
                 <!-- 步驟指示器 -->
-                <div class="steps">
-                    <div class="step">
-                        <div class="step-circle completed"></div>
+                <div class="df-progress">
+                    <div class="df-stage">
+                        <div class="df-circle df-done"></div>
                         <div>選擇金額</div>
                     </div>
+                    <div class="df-stage">
+                        <div class="df-circle df-done"></div>
+                        <div>填寫資料</div>
+                    </div>
+                    <div class="df-stage">
+                        <div class="df-circle df-current">3</div>
+                        <div>線上付款</div>
+                    </div>
+                </div>
 
                     <form th:action="@{/dona/donaAddC}" method="post">
-                        <h4>確認您的資料</h4>
+                        <h4 class="text-danger fw-bold">確認您的資料</h4>
                         <div>
                             <p><strong>捐款類型：</strong><span th:if="${donaReq.donationType != null}">
                                     <span th:if="${donaReq.donationType != 1}">單筆捐款</span>
@@ -65,20 +73,6 @@
                             </p>
                         </div>
 
-                        <!-- <h4>信用卡資料</h4>
-                        <div>
-                            <label>信用卡號碼</label>
-                            <input type="text" name="cardNumber" placeholder="請輸入16位卡號" />
-                        </div>
-                        <div>
-                            <label>有效日期</label>
-                            <input type="text" name="cardExpiry" placeholder="MM/YY" class="form-control"
-                                id="cardExpiry" maxlength="5" />
-                        </div>
-                        <div>
-                            <label>CVC</label>
-                            <input type="text" name="cardCvv" placeholder="3-4位安全碼" />
-                        </div> -->
 
                         <!-- 按鈕 -->
                         <div class="df-actions">
@@ -89,7 +83,7 @@
 
 
                     </form>
-                </div>
+               
             </div>
         </div>
 

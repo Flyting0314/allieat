@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-TW" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>點數核銷管理 - 攏呷霸 ALLiEAT</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        /* 主體容器樣式 */
+        .points-management-wrapper {
+            display: flex;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 2000px;
+            width: 95%;
+        }
+        
+        /* 側邊導航欄 */
+        .store_sidebar {
+            width: 240px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            margin-right: 20px;
+            flex-shrink: 0;
+            height: fit-content;
+        }
+        
+        /* 側邊導航項目 */
+        .store_sidebar_item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #333;
+            text-decoration: none;
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .store_sidebar_item:hover {
+            background-color: #f5f5f9;
+        }
+        
+        .store_sidebar_item.store_active {
+            background-color: #f0f0f5;
+            font-weight: 500;
+        }
+        
+        /* 側邊導航圖標 */
+        .store_sidebar_icon {
+            margin-right: 10px;
+            color: #555;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* 下拉箭頭圖標 */
+        .store_dropdown_icon {
+            margin-left: auto;
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+        
+        /* 主內容區域 */
+        .store_main_content {
+            flex-grow: 1;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 30px;
+            position: relative;
+        }
+        
+        /* 頁面標題 */
+        .store_page_title {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        /* 表格容器 */
+        .store_table_container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        /* 表格樣式 */
+        .store_order_table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .store_order_table th {
+            background-color: #f5f5f9;
+            color: #444;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            white-space: nowrap;
+        }
+        
+        .store_order_table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+        
+        /* 狀態徽章 */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        /* 分頁容器 */
+        .store_pagination_container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            align-items: center;
+        }
+        
+        .store_pagination_group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .store_pagination_button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            margin: 0 5px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            background-color: white;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .store_pagination_button:hover {
+            background-color: #f5f5f9;
+        }
+        
+        .store_pagination_button.store_page_active {
+            background-color: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+        
+        .store_pagination_text {
+            color: #666;
+            font-size: 14px;
+            margin-right: 15px;
+        }
+        
+        /* 無資料提示 */
+        .no-data-message {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* 載入中動畫 */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            padding: 30px;
+        }
+        
+        .loading-spinner i {
+            font-size: 2rem;
+            color: #2196F3;
+            animation: spin 1s infinite linear;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
+        /* ====畫面排版=== */
+        /* 讓表格內文字不換行 */
+        .store_order_table td {
+            white-space: nowrap;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        /* 增加中間畫面區域的高度，設置最小高度確保 header 和 footer 不會太近 */
+        .points-management-wrapper {
+            display: flex;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 2000px;
+            width: 95%;
+            min-height: 600px; /* 設置最小高度 */
+        }
+
+        /* 確保表格容器可以水平滾動 */
+        .store_table_container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+            margin-bottom: 30px; /* 增加底部間距 */
+        }
+
+        /* 增加表格底部間距 */
+        .store_order_table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        /* 增加主內容區域的最小高度 */
+        .store_main_content {
+            flex-grow: 1;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 30px;
+            position: relative;
+            min-height: 500px; /* 增加最小高度 */
+        }
+
+        /* 調整無數據時的顯示 */
+        .no-data-message {
+            text-align: center;
+            padding: 50px; /* 增加上下間距 */
+            color: #666;
+            font-style: italic;
+        }
+
+        /* 調整載入中動畫的顯示 */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            padding: 50px; /* 增加上下間距 */
+        }
+
+
+    </style>
+</head>
+
+<body>
+  <!-- Navbar Start -->
+  <header>
+    <div class="container-fluid p-0 nav-bar">
+        <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+            <a href="/index" class="navbar-brand px-lg-4 m-0">
+                <h1 class="m-0 display-4 text-uppercase text-white">
+                    <img src="/img/logo3.png" width="80px" height="80px" alt="ALLiEAT Logo"
+                         style="vertical-align: middle; border-radius: 50%; object-fit: cover;">
+                    <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+                </h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                <div class="navbar-nav ml-auto p-4">
+                    <a href="/index" class="nav-item nav-link active">關於我們</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">捐款專區</a>
+                        <div class="dropdown-menu text-capitalize">
+                            <a href="/dona/donaAddA" class="dropdown-item">我要捐款</a>
+                            <a href="/dona/donaAddD" class="dropdown-item">捐款查詢</a>
+                        </div>
+                    </div>
+                    <a href="/map" class="nav-item nav-link">我要取餐 / 點餐</a>
+
+                    <!-- ✅ 登入 / 登出 切換 -->
+                    
+
+                    <a href="/registerAndLogin/logout"
+                       class="nav-item nav-link">登出</a>
+
+                    <!-- 會員專區按鈕 -->
+                    <a href="javascript:void(0)" id="memberAreaBtn" class="nav-item nav-link">會員專區</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+  <!-- Navbar End -->
+
+    <!-- Hero Section Start -->
+    <section id="hero">
+      <div class="container-fluid p-0 mb-5">
+          <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
+              <div class="carousel-inner">
+                  <div class="carousel-item active" style="
+                      background-image: url(/img/圖片3.png);
+                      background-size: 110% auto;
+                      background-position: center 50px;
+                      height: 300px;
+                      filter: brightness(225%);">
+                      <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                          <h2 class="text-primary font-weight-medium m-0"></h2>
+                          <h1 class="display-1 text-white m-0"></h1>
+                          <h2 class="text-white m-0"></h2>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+  <!-- Hero Section End -->
+
+      <!-- ✅ 登入狀態 JS 判斷 -->
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelector('#memberAreaBtn').addEventListener("click", function (event) {
+                let isMember = false;
+                let isStore = true;
+
+                if (!isMember && !isStore) {
+                    event.preventDefault();
+                    if (confirm("請先登入才能進入會員專區，是否前往登入？")) {
+                        window.location.href = "/registerAndLogin/login";
+                    }
+                } else {
+                    event.preventDefault();
+                    if (isMember) {
+                        window.location.href = "/registerAndLogin/memberInfo";
+                    } else if (isStore) {
+                        window.location.href = "/registerAndLogin/storeInfo";
+                    }
+                }
+            });
+        });
+    </script>
+
+
+
+<!-- Order Management Content Start -->
+<div class="container">
+    <div class="points-management-wrapper">
+        <!-- 側邊欄 -->
+        <div class="store_sidebar">
+            <a th:href="@{/registerAndLogin/storeInfo/{storeId}(storeId=${store.storeId})}" class="store_sidebar_item">
+                <i class="fas fa-store store_sidebar_icon"></i>
+                店家資訊管理
+            </a>
+            
+            <!-- 餐點管理 Dropdown 開始 -->
+            <a href="javascript:void(0);" class="store_sidebar_item" onclick="toggleDropdown(this)">
+                <i class="fas fa-utensils store_sidebar_icon"></i>
+                餐點管理
+                <i class="fas fa-chevron-down store_dropdown_icon"></i>
+            </a>
+            <div class="vendor_dropdown_menu" style="display: none; margin-left: 40px; padding-top: 5px;">
+                <a th:href="@{/registerAndLogin/storeInfo/{storeId}/menuEdit(storeId=${store.storeId})}" class="dropdown-item">菜單</a>
+                <a th:href="@{/registerAndLogin/storeInfo/{storeId}/food(storeId=${store.storeId})}" class="dropdown-item">編輯菜單</a>
+            </div>
+            <!-- 餐點管理 Dropdown 結束 -->
+            
+            <a href="#" class="store_sidebar_item store_active">
+                <i class="fas fa-dollar-sign store_sidebar_icon"></i>
+                核銷點數管理
+            </a>
+            
+            <a href="#" class="store_sidebar_item">
+                <i class="fas fa-clipboard-list store_sidebar_icon"></i>
+                訂單管理
+            </a>
+            
+            <a href="#" class="store_sidebar_item">
+                <i class="fas fa-question-circle store_sidebar_icon"></i>
+                常見問題
+            </a>
+        </div>
+        
+        <!-- 主要內容 -->
+        <div class="store_main_content">
+            <h1 class="store_page_title">點數核銷管理</h1>
+            
+            <!-- 表格 -->
+            <div class="store_table_container">
+                <table class="store_order_table">
+                    <thead>
+                        <tr>
+                            <th>核銷ID</th>
+                            <th>核銷批次</th>
+                            <th>尚應核銷點數</th>
+                            <th>已核銷金額</th>
+                            <th>現金轉入時間</th>
+                            <th>狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody id="redemption-table-body">
+                        <!-- 資料將由 JavaScript 動態載入 -->
+                        <tr>
+                            <td colspan="6" class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 分頁控制 -->
+            <div class="store_pagination_container">
+                <span class="store_pagination_text" id="pagination-info">載入中...</span>
+                <div class="store_pagination_group" id="pagination-controls">
+                    <button class="store_pagination_button" id="prev-page-btn" disabled>
+                        <i class="fas fa-angle-left"></i>
+                    </button>
+                    <!-- 頁碼按鈕將由 JavaScript 動態生成 -->
+                    <button class="store_pagination_button" id="next-page-btn" disabled>
+                        <i class="fas fa-angle-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Order Management Content End -->
+
+<!-- Footer Start -->
+	
+<footer class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
+  <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+      <div class="col-lg-3 col-md-6 mb-5">
+          <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">聯絡我們</h4>
+          <p><i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號</p>
+          <p><i class="fa fa-phone-alt mr-2"></i>02-2222-5252</p>
+          <p class="m-0"><i class="fa fa-envelope mr-2"></i>allieat105@gmail.com</p>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-5">
+          <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">關注我們</h4>
+          <p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
+          <div class="d-flex justify-content-start">
+              <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+              <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+              <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+              <a class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-5">
+          <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">客服時間</h4>
+          <div>
+              <h6 class="text-white text-uppercase">周一 - 週五</h6>
+              <p>早上10:00 - 晚上21:00</p>
+              <h6 class="text-white text-uppercase">週六 - 週日</h6>
+              <p>早上11:00 - 晚上19:00</p>
+          </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-5">
+          <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">訂閱電子報</h4>
+          <p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
+          <div class="w-100">
+              <div class="input-group">
+                  <input type="email" class="form-control border-light" style="padding: 25px;" placeholder="輸入您的信箱">
+                  <div class="input-group-append">
+                      <button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="container-fluid text-center text-white mt-4 py-4 px-sm-3 px-md-5"
+       style="border-color: rgba(256, 256, 256, .1) !important;">
+      <p class="mb-2 text-white">
+          版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>. 保留所有權利
+      </p>
+      <p class="m-0 text-white">
+          網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司 設計部</a> 設計
+      </p>
+  </div>
+</footer>
+
+<!-- Footer End -->
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
+class="fa fa-angle-double-up"></i></a>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// 全局變數
+let currentPage = 1;
+const recordsPerPage = 10;
+let totalPages = 1;
+let allRecords = [];
+
+// 頁面載入時執行
+document.addEventListener('DOMContentLoaded', function() {
+    // 獲取店家ID（假設從 URL 或其他方式獲取）
+    const storeId = getStoreId();
+    
+    // 載入資料
+    loadRedemptionData(storeId);
+    
+    // 綁定分頁事件
+    document.getElementById('prev-page-btn').addEventListener('click', function() {
+        if (currentPage > 1) {
+            currentPage--;
+            displayRecords(currentPage);
+            updatePagination();
+        }
+    });
+    
+    document.getElementById('next-page-btn').addEventListener('click', function() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayRecords(currentPage);
+            updatePagination();
+        }
+    });
+});
+
+// 從 URL 獲取店家 ID
+function getStoreId() {
+    // 從 URL 路徑或其他方式獲取店家 ID
+    // 這裡使用硬編碼作為示例，實際應該從 URL 或其他地方獲取
+    const pathParts = window.location.pathname.split('/');
+    // 假設路徑格式為 /store/points-redemption/{storeId}
+    for (let i = 0; i < pathParts.length; i++) {
+        if (pathParts[i] === 'storeInfo' && i + 1 < pathParts.length) {
+            return pathParts[i + 1];
+        }
+    }
+    return null; // 如果找不到店家 ID，返回 null
+}
+
+// 載入店家點數核銷資料
+function loadRedemptionData(storeId) {
+    // 顯示載入中
+    document.getElementById('redemption-table-body').innerHTML = `
+        <tr>
+            <td colspan="6" class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+            </td>
+        </tr>
+    `;
+    
+    // 調用後端 API 獲取數據
+    fetch(`/pointsRedemption/frontend/current/${storeId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('網路回應不正常');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 保存獲取到的數據
+            allRecords = data;
+            
+            // 計算總頁數
+            totalPages = Math.ceil(allRecords.length / recordsPerPage);
+            if (totalPages === 0) totalPages = 1;
+            
+            // 顯示第一頁
+            currentPage = 1;
+            displayRecords(currentPage);
+            
+            // 更新分頁控制
+            updatePagination();
+        })
+        .catch(error => {
+            console.error('獲取數據失敗:', error);
+            
+            // 顯示錯誤訊息
+            document.getElementById('redemption-table-body').innerHTML = `
+                <tr>
+                    <td colspan="6" class="no-data-message">
+                        載入資料時發生錯誤，請稍後再試
+                    </td>
+                </tr>
+            `;
+            
+            // 更新分頁信息
+            document.getElementById('pagination-info').textContent = '無法載入資料';
+        });
+}
+
+// 顯示特定頁的記錄
+function displayRecords(page) {
+    const tableBody = document.getElementById('redemption-table-body');
+    tableBody.innerHTML = '';
+    
+    if (!allRecords || allRecords.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="no-data-message">
+                    目前沒有核銷記錄
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    // 計算當前頁的記錄索引範圍
+    const startIndex = (page - 1) * recordsPerPage;
+    const endIndex = Math.min(startIndex + recordsPerPage, allRecords.length);
+    
+    // 顯示當前頁的記錄
+    for (let i = startIndex; i < endIndex; i++) {
+        const item = allRecords[i];
+        
+        // 格式化日期
+        const redemptionMonth = item.redemptionMonth ? new Date(item.redemptionMonth).toISOString().slice(0, 7) : '';
+        
+        // 處理核銷時間顯示
+        let displayTime = formatDateTime(item.paymentTime) || '尚未核銷';
+        
+        // 根據狀態判斷顯示
+        let statusText, statusClass;
+        
+        if (item.status === 0) {
+            // 未核銷
+            statusText = '未核銷';
+            statusClass = 'status-pending';
+        } else if (item.status === 2) {
+            // 核銷異常
+            statusText = '已核銷(金額異常)';
+            statusClass = 'status-warning';
+        } else {
+            // 已核銷
+            statusText = '已核銷';
+            statusClass = 'status-completed';
+        }
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.id || ''}</td>
+            <td>${redemptionMonth || ''}</td>
+            <td>${item.pointsAmount || 0}</td>
+            <td>${item.cashAmount || 0}</td>
+            <td>${displayTime}</td>
+            <td>
+                <span class="status-badge ${statusClass}">
+                    ${statusText}
+                </span>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    }
+}
+
+// 更新分頁控制項
+function updatePagination() {
+    // 更新分頁信息文字
+    const paginationInfo = document.getElementById('pagination-info');
+    const startRecord = allRecords.length === 0 ? 0 : (currentPage - 1) * recordsPerPage + 1;
+    const endRecord = Math.min(currentPage * recordsPerPage, allRecords.length);
+    paginationInfo.textContent = `顯示 ${startRecord}-${endRecord} 筆，共 ${allRecords.length} 筆`;
+    
+    // 更新前後頁按鈕狀態
+    document.getElementById('prev-page-btn').disabled = currentPage === 1;
+    document.getElementById('next-page-btn').disabled = currentPage === totalPages;
+    
+    // 獲取分頁控制容器
+    const paginationControls = document.getElementById('pagination-controls');
+    
+    // 清除現有的頁碼按鈕（保留前後頁按鈕）
+    const pageButtons = paginationControls.querySelectorAll('.store_pagination_button:not(#prev-page-btn):not(#next-page-btn)');
+    pageButtons.forEach(button => button.remove());
+    
+    // 添加頁碼按鈕
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+    
+    if (endPage - startPage < maxPagesToShow - 1) {
+        startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    // 獲取下一頁按鈕元素
+    const nextPageBtn = document.getElementById('next-page-btn');
+    
+    // 創建並插入頁碼按鈕
+    for (let i = startPage; i <= endPage; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.className = `store_pagination_button ${i === currentPage ? 'store_page_active' : ''}`;
+        pageButton.textContent = i;
+        pageButton.addEventListener('click', function() {
+            currentPage = i;
+            displayRecords(currentPage);
+            updatePagination();
+        });
+        
+        // 將頁碼按鈕插入到下一頁按鈕之前
+        paginationControls.insertBefore(pageButton, nextPageBtn);
+    }
+}
+
+// 格式化日期時間
+function formatDateTime(timestamp) {
+    if (!timestamp) return null;
+    
+    try {
+        // 處理各種可能的日期格式
+        let date;
+        if (typeof timestamp === 'number') {
+            date = new Date(timestamp);
+        } else if (typeof timestamp === 'string') {
+            if (timestamp.includes('T')) {
+                date = new Date(timestamp);
+            } else {
+                // 嘗試處理其他字串格式
+                date = new Date(parseInt(timestamp, 10));
+            }
+        } else {
+            return '日期格式錯誤';
+        }
+        
+        if (isNaN(date.getTime())) {
+            return '日期格式錯誤';
+        }
+        
+        // 格式化日期時間
+        return date.toLocaleString('zh-TW', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (e) {
+        console.error('日期格式化錯誤:', e);
+        return '日期格式錯誤';
+    }
+}
+
+// 切換下拉選單
+function toggleDropdown(element) {
+    const submenu = element.nextElementSibling;
+    if (submenu) {
+        submenu.style.display = submenu.style.display === 'none' ? 'block' : 'none';
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 package com.backstage.backstagedto;
 
-
+ 
 public class MemberSearchDTO {
     private String name;
     private Integer memberId;

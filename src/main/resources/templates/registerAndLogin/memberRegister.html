@@ -3,10 +3,9 @@
 
 <head>
 
-<th:block th:replace="fragments/header :: header"></th:block>
-<link th:href="@{/css/memberRegister.css}" rel="stylesheet">
-<style>
-
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <link th:href="@{/css/memberRegister.css}" rel="stylesheet">
+    <style>
         #pointModal {
             display: none;
             position: fixed;
@@ -32,6 +31,83 @@
             max-height: 90vh;
             overflow-y: auto;
         }
+
+        /* 通用燈箱樣式 */
+        .df-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .df-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .df-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+        }
+
+        /* 共用燈箱外層 */
+        .df-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        /* 共用內容盒子 */
+        .df-modal .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* 通用按鈕樣式（你可依照自己專案已有的 button 類別合併） */
+        .df-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .df-button-next {
+            background-color: #DA9F5B;
+            color: white;
+        }
+
+        
     </style>
 
 </head>
@@ -188,7 +264,7 @@
                     <label class="verification_form_label"></label>
                     <div class="verification_form_controls">
                         <label>
-                            <input type="checkbox" id="agreePoint">
+                            <input type="checkbox" id="agreePoint" onclick="return false;">
                             您已了解並同意本平台依「<a href='#' id="viewPointNotice">愛心點數使用說明</a>」
                             發送與管理捐款轉換之點數，供您於合作店家兌換待用餐點等公益服務。
                         </label>
@@ -200,9 +276,9 @@
                     <label class="verification_form_label"></label>
                     <div class="verification_form_controls">
                         <label>
-                            <input type="checkbox" id="agreeCheck" name="agreeCheck" onclick="return false">
+                            <input type="checkbox" id="agreeCheck" onclick="return false;">
                             您已了解並同意本平台蒐集、處理及使用您的個人資料。請閱讀
-                            「<a href="#" id="viewPrivacyNotice">個資運用告知聲明</a>」
+                            「<a href="#" id="viewPrivacyNotice">個資運用告知聲明</a>」。
                         </label>
                         <input type="hidden" name="agreedToTerms" id="agreedToTerms" value="false">
                     </div>
@@ -223,44 +299,44 @@
         </div>
     </div>
     <!-- 愛心點數燈箱 -->
-    <div id="pointModal" class="modal" style="display:none">
-        <div class="modal-content" style="">
+    <div id="pointModal" class="df-modal" style="display: none;">
+        <div class="df-modal-content">
             <h3>愛心點數使用說明</h3>
-            <p>(一)什麼是愛心點數？
-                <br>愛心點數是由攏呷霸愛心平台(以下稱本平台)根據捐款人所捐贈之金額，一比一轉換後所發放的公益點數。點數將由本平台核發至受助者的會員帳號中，供其使用。
+            <p>(一)什麼是愛心點數？<br>
+                愛心點數是由攏呷霸愛心平台(以下稱本平台)根據捐款人所捐贈之金額，一比一轉換後所發放的公益點數。點數將由本平台核發至受助者的會員帳號中，供其使用。
+            </p>
+            <p>(二)用途與使用方式<br>
+                可用於兌換合作店家的待用餐點。於店家出示會員資訊，或透過平台選擇兌換項目。
+            </p>
+            <p>(三)點數有效期限<br>
+                自核發日起六個月內有效，逾期未使用將回收重新分配。
+            </p>
+            <p>(四)注意事項<br>
+                1. 限本人使用，不得轉讓、轉售、兌現。<br>
+                2. 若有冒用、違規情事，平台有權取消資格。<br>
+                3. 店家名單與使用規則依公告為準。
+            </p>
+            <p>(五)其他說明<br>
+                為保障所有受助者權益，請妥善使用點數並配合規定。
             </p>
 
-            <p>(二)用途與使用方式
-                <br>愛心點數可用於兌換本平台合作店家所提供的待用餐點。受助者可於指定合作店家出示會員資訊，或是透過本平台選擇兌換項目。
-            </p>
-            
-            <p>(三)點數有效期限
-                <br>愛心點數自核發日起計算，有效期限為 【6個月】，逾期未使用將自動失效，點數將回收後重新分配予其他有需要的對象。
-            </p>
-            
-            <p>(四)注意事項
-                <br> 1.愛心點數僅限受助者本人使用，不得轉讓、轉售、兌現或作為任何商業用途。
-                <br>2.如發現重複申請、冒用身份、非法兌換或其他違規情事，平台有權取消點數與帳號資格。
-                <br>3.點數兌換服務之合作店家、兌換方式與使用規則，將依平台公告內容為準，並得隨時調整。
-            </p>
-            
-            <p>(五)其他說明
-                <br>為保障所有受助者的權益，請務必妥善使用愛心點數，並配合平台相關規定，共同維護資源的公平與透明。
-            </p>
-            
-            <div style="margin-top: 20px; text-align: center;">
-                <button onclick="closePrivacyLightbox()" class="df-button df-button-next"
-                    style="width: 150px;">關閉</button>
+            <div style="margin-top: 20px; text-align: flex-start;">
+                <label style="display: block; margin-bottom: 10px;">
+                    <input type="checkbox" id="pointAgree">
+                    我已閱讀並同意上述個資說明
+                </label>
+                <div style="text-align: center; margin-top: 0;">
+				    <button id="agreePointBtn" class="df-button df-button-next" style="width: 150px; display: inline-block;">關閉</button>
+				</div>
+
             </div>
         </div>
     </div>
 
     <!-- 個資燈箱 -->
-    <div id="privacyModal" class="modal"
-        style="display:none; position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
-        <div class="modal-content"
-            style="background: white; padding: 20px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+    <div id="privacyModal" class="df-modal" style="display:none;">
+    <div class="df-modal-content">
+        <span class="df-modal-close">&times;</span>
             <h3>個資運用告知聲明</h3>
 
             <p>感謝您使用攏呷霸愛心平台(以下稱本平台)，為了保障您的權益，請您詳細閱讀以下說明：</p>
@@ -300,10 +376,16 @@
                 <br>本平台將依內部資訊安全規範與相關法令，採取適當技術與管理措施，妥善保存並保障您的個人資料安全，避免未經授權之存取、洩露、變更或損毀。
             </p>
 
-            <div style="margin-top: 20px; text-align: center;">
-                <button onclick="closePrivacyLightbox()" class="df-button df-button-next"
-                    style="width: 150px;">關閉</button>
+            <div style="margin-top: 0; text-align: flex-start;">
+                <label>
+                    <input type="checkbox" id="privacyAgree"> 我已閱讀並同意上述個資說明
+                </label>
+                <br>
+                <div style="text-align: center; margin-top: 20px;">
+				    <button id="agreePrivacyBtn" class="df-button df-button-next" style="width: 150px;">關閉</button>
+				</div>
             </div>
+
         </div>
     </div>
 
@@ -403,7 +485,7 @@
                         noticeModal.style.display = 'none';
                         if (errorMessage) errorMessage.classList.add("hidden");
                     } else {
-                        alert('請勾選同意使用須知');
+
                     }
                 });
             }
@@ -1073,24 +1155,41 @@
         const agreePointBtn = document.getElementById('agreePointBtn');
         const closePoint = document.getElementById('closePoint');
 
-        viewPointNotice.addEventListener('click', function (e) {
+        // 統一開啟燈箱函式
+        function openModal(modalId, checkboxId, mainCheckbox) {
+            const modal = document.getElementById(modalId);
+            const checkbox = document.getElementById(checkboxId);
+
+            modal.scrollTop = 0; // 回到頂部
+            checkbox.checked = mainCheckbox.checked; // 若主畫面已勾選，燈箱內也同步
+            modal.style.display = 'flex';
+        }
+
+        // 愛心點數燈箱開啟
+        document.getElementById('viewPointNotice').addEventListener('click', function (e) {
             e.preventDefault();
-            pointModal.style.display = 'flex';
-            pointAgree.checked = agreePoint.checked;
+            openModal('pointModal', 'pointAgree', document.getElementById('agreePoint'));
         });
 
-        agreePointBtn.addEventListener('click', function () {
-            if (pointAgree.checked) {
-                agreePoint.checked = true;
-                pointModal.style.display = 'none';
-            } else {
-                alert('請勾選同意使用須知');
+        // 愛心點數關閉
+        document.getElementById('agreePointBtn').addEventListener('click', function () {
+            const agree = document.getElementById('pointAgree');
+            const agreeTarget = document.getElementById('agreePoint');
+
+            // 有勾選才同步主畫面
+            if (agree.checked) {
+                agreeTarget.checked = true;
             }
+
+            // 不論有沒有勾選，都可以關燈箱
+            document.getElementById('pointModal').style.display = 'none';
         });
 
-        closePoint.addEventListener('click', function () {
-            pointModal.style.display = 'none';
-            pointAgree.checked = false;
+        // 關閉燈箱按鈕通用功能
+        document.querySelectorAll('.df-modal-close').forEach(btn => {
+            btn.addEventListener('click', function () {
+                this.closest('.df-modal').style.display = 'none';
+            });
         });
 
         // 個資燈箱控制
@@ -1105,7 +1204,69 @@
             privacyModal.style.display = 'flex';
             privacyAgree.checked = agreeCheck.checked;
         });
+
+        // 通用打開燈箱函式
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            modal.style.display = 'flex';
+
+            // 滾動條自動捲到最上面
+            const content = modal.querySelector('.df-modal-content');
+            if (content) content.scrollTop = 0;
+        }
+
+        // 通用關閉燈箱函式（綁定關閉按鈕 class）
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.df-modal-close').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const modal = btn.closest('.df-modal');
+                    if (modal) modal.style.display = 'none';
+                });
+            });
+        });
+
+        // 個資燈箱開啟
+        document.getElementById('viewPrivacyNotice').addEventListener('click', function (e) {
+            e.preventDefault();
+            openModal('privacyModal', 'privacyAgree', document.getElementById('agreeCheck'));
+        });
+
+        // 個資燈箱按下同意後
+        document.getElementById('agreePrivacyBtn').addEventListener('click', function () {
+            const agree = document.getElementById('privacyAgree');
+            const agreeTarget = document.getElementById('agreeCheck');
+            const agreedToTerms = document.getElementById('agreedToTerms');
+
+            // 有勾選才同步主畫面
+            if (agree.checked) {
+                agreeTarget.checked = true;
+                agreedToTerms.value = 'true';
+            }
+
+            // 不論有沒有勾選，都可以關燈箱
+            document.getElementById('privacyModal').style.display = 'none';
+        });
+
+        function validateAgreement() {
+            const agreePoint = document.getElementById("agreePoint");
+            const agreeCheck = document.getElementById("agreeCheck");
+            const agreedToTerms = document.getElementById("agreedToTerms");
+
+            if (!agreePoint.checked) {
+                return false;
+            }
+
+            if (!agreeCheck.checked || agreedToTerms.value !== 'true') {
+                return false;
+            }
+
+            return true;
+        }
+
     </script>
+
+
 
 
 

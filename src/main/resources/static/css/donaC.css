@@ -5,7 +5,7 @@
         
         body {
     margin: 0;
-    padding: 30px;
+    padding: 0;
     background-color: #FAF3DD;
     font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
     color: #5a4636;
@@ -22,7 +22,7 @@
 h3, h4 {
     color: #da8f2e;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 
 
@@ -330,4 +330,42 @@ strong {
         flex-direction: column;
         gap: 10px;
     }
+}
+
+.df-progress {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.df-stage {
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+}
+
+.df-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+    font-size: 12px;
+}
+
+.df-circle.df-current {
+    background-color: #ff0000;
+    color: white;
+}
+
+.df-circle.df-done {
+    background-color: #e0e0e0;
+    color: black;
+}
+
+.df-circle.df-done::after {
+    content: "✓";
 }

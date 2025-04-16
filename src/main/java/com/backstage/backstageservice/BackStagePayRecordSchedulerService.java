@@ -54,7 +54,7 @@ public class BackStagePayRecordSchedulerService {
  @Autowired
  private BackStagePayDetailService payDetailService; // 注入 PayDetailService
 
- 										//暫時改成100分鐘檢查一次！
+ 										//暫時改成100分鐘檢查一次！這邊可自由調整！
  @Scheduled(fixedRate = 6000000) // 60000 毫秒 = 1分鐘 
  @Transactional
  public void checkAndDistributePoints() {
@@ -77,7 +77,7 @@ public class BackStagePayRecordSchedulerService {
 
  private void distributePointsForPayRecord(PayRecordVO payRecord) {
      try {
-         List<MemberVO> activeMembers = memberRepository.findByAccStat(1); // 假設 1 代表啟用狀態
+         List<MemberVO> activeMembers = memberRepository.findByAccStat(1); //  1 代表會員帳號為啟用狀態
 
          int totalPointsDistributed = 0;
 

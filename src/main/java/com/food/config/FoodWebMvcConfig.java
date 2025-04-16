@@ -11,6 +11,6 @@ public class FoodWebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new StorePermissionInterceptor())
-                .addPathPatterns("/registerAndLogin/storeInfo/*/food/**"); // 要攔的路徑
+                .addPathPatterns("/registerAndLogin/storeInfo/**"); // 要攔的路徑
     }
 }

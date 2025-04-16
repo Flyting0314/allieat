@@ -2,11 +2,7 @@ package com.frontservice;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -130,13 +126,23 @@ public class DonaService {
             );
         }
 
-        // 創建 Timestamp（根據年份、月份、日期）
+
+    
+     
+        public List<DonaVO> findByEmailAndPhone(String email, String phone) {
+            return donorRepository.findByEmailAndPhone(email, phone);
+        }
+        
+        public List<DonaVO> findDonations(String email, String phone, Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
+            Timestamp startTime = createTimestamp(startYear, startMonth, 1);
+            Timestamp endTime = createTimestamp(endYear, endMonth, 31);
+            return donorRepository.findByEmailAndPhoneWithOptionalDate(email, phone, startTime, endTime);
+        }
+
         public Timestamp createTimestamp(Integer year, Integer month, Integer day) {
             if (year != null && month != null && day != null) {
                 return Timestamp.valueOf(String.format("%04d-%02d-%02d 00:00:00", year, month, day));
             }
-            return null; // 如果某項為 null，返回 null
+            return null;
         }
-    
-
 }

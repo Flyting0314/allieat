@@ -46,7 +46,7 @@ public class PayRecordUpdateDTO implements Serializable {
     public Integer getPayoutPoints() {
         return payoutPoints;
     }
-
+ 
     public void setPayoutPoints(Integer payoutPoints) {
         this.payoutPoints = payoutPoints;
     }

@@ -1,6 +1,6 @@
 package com.entity;
 
-
+ 
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -84,8 +84,8 @@ public class StoreVO implements Serializable{
 	@Column(name = "accStat",columnDefinition = "TINYINT(1)")
 	private Integer accStat=0;
 	
-	@Min(value = 0, message = "未")
-    @Max(value = 1, message = "有")
+	@Min(value = 0, message = "啟用狀態填寫數字:0=尚未營業; 1=營業中; 2=暫停接單")
+    @Max(value = 2, message = "啟用狀態填寫數字:0=尚未營業; 1=營業中; 2=暫停接單")
 	@Column(name = "opStat",columnDefinition = "TINYINT(1)")
 	private Integer opStat=0;
 	

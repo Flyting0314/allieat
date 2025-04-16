@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.backstage.backstagrepository.MemberRepository;
 import com.entity.MemberVO;
-
+ 
 @Service
 public class BackstageMemberEmailService {
     @Autowired

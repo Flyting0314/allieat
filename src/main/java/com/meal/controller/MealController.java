@@ -1,8 +1,23 @@
 package com.meal.controller;
 
-import com.entity.FoodVO;
-import com.store.model.StoreService;
-import com.entity.StoreVO;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.attached.model.AttachedService;
 import com.backstage.backstagrepository.PhotoRepository;
 import com.cartfood.model.CarFoodDTO;
@@ -11,9 +26,11 @@ import com.cartfood.model.CartOrderService;
 import com.cartfood.model.MemberServiceImpl;
 import com.cartfood.model.OrderDetailDTO;
 import com.entity.AttachedVO;
+import com.entity.FoodVO;
 import com.entity.OrderDetailId;
 import com.entity.OrderDetailVO;
 import com.entity.OrderFoodVO;
+
 import com.entity.PhotoVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +40,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+
 import jakarta.servlet.http.HttpSession;
-import java.sql.Timestamp;
-import java.util.*;
 
 @RestController
 @RequestMapping("/meal")
 public class MealController {
-
+	
+	@Autowired
+	private OrderNotifyService orderNotifyService;
+	
     @Autowired
     private CartFoodService foodService;
 
@@ -201,6 +220,9 @@ public class MealController {
 
             orderService.saveOrderDetails(details);
             System.out.println("✅ 所有有效訂單明細已儲存，共 " + details.size() + " 筆");
+            
+            //  WebSocket 推播通知對應店家
+            orderNotifyService.notifyStoreNewOrder(savedOrder);
 
             // ✅ 清空 session 購物車
             session.removeAttribute("cart");

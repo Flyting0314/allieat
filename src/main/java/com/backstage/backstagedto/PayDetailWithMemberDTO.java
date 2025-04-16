@@ -20,7 +20,8 @@ public class PayDetailWithMemberDTO {
     private Integer pointsExpensed;     // 本月取得點數
     private Integer payoutId;           // 點數發放ID，顯示在頁面上
     private Integer pointsBalance;   // 對應 MemberVO的點數，因為paydetail允許人工補發點數，並且會回填member的總累積點數
-
+    private Integer payoutPoints;      // 應發放點數，用於前端判斷是否允許補發
+    
     public PayDetailWithMemberDTO() {
     }
 
@@ -30,6 +31,9 @@ public class PayDetailWithMemberDTO {
         this.pointsExpensed = payDetail.getPointsExpensed();
         this.memberId = payDetail.getMember().getMemberId();
         this.pointsBalance = payDetail.getMember().getPointsBalance();
+        if(payDetail.getPayRecordVO() != null) {
+            this.payoutPoints = payDetail.getPayRecordVO().getPayoutPoints();
+        }
     }
     
     
@@ -78,7 +82,7 @@ public class PayDetailWithMemberDTO {
     public String getIdNum() {
         return idNum;
     }
-
+ 
     public void setIdNum(String idNum) {
         this.idNum = idNum;
     }
@@ -113,6 +117,15 @@ public class PayDetailWithMemberDTO {
 
     public void setPointsBalance(Integer pointsBalance) {
         this.pointsBalance = pointsBalance;
+    }
+    
+    
+    public Integer getPayoutPoints() {
+        return payoutPoints;
+    }
+    
+    public void setPayoutPoints(Integer payoutPoints) {
+        this.payoutPoints = payoutPoints;
     }
 }
 

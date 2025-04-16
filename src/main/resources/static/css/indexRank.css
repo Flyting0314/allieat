@@ -1,3 +1,309 @@
+.tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { padding: 10px; cursor: pointer; background: lightgray; border-radius: 5px; }
+        .tab.active { background: darkgray; color: white; }
+        .ranking-container { display: none; }
+        .ranking-container.active { display: block; }
+        /* 基本重置樣式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
+            
+        }
+        
+        body {
+            background-color: #f5f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 登入頁面主體樣式 */
+        .merchant_login_wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 0;
+            margin-top: 20px;
+        }
+        
+        /* 登入容器樣式 */
+        .merchant_login_container {
+            background-color: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 登入標題樣式 */
+        .merchant_login_title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #333;
+            text-align: center;
+        }
+        
+        /* 表單組樣式 */
+        .merchant_form_group {
+            margin-bottom: 20px;
+        }
+        
+        /* 表單標籤樣式 */
+        .merchant_form_label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        /* 表單輸入欄位樣式 */
+        .merchant_form_input {
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: #f5f5f9;
+            color: #333;
+            transition: border-color 0.3s;
+        }
+        
+        .merchant_form_input:focus {
+            border-color: #4285f4;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+        }
+        
+        /* 登入按鈕樣式 */
+        .merchant_login_btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .merchant_login_btn:hover {
+            background-color: #3367d6;
+        }
+        
+        /* 記住我選項樣式 */
+        .merchant_remember_container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .merchant_remember_checkbox {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        .merchant_remember_label {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        /* 忘記密碼連結樣式 */
+        .merchant_forgot_link {
+            font-size: 14px;
+            color: #4285f4;
+            text-decoration: none;
+            float: right;
+        }
+        
+        .merchant_forgot_link:hover {
+            text-decoration: underline;
+        }
+        
+        /* 分隔線樣式 */
+        .merchant_divider {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 30px 0;
+        }
+        
+        /* 註冊連結容器 */
+        .merchant_register_container {
+            text-align: center;
+        }
+        
+        .merchant_register_text {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .merchant_register_link {
+            color: #4285f4;
+            text-decoration: none;
+            font-weight: 500;
+            
+        }
+        
+        .merchant_register_link:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        /* 登入選項區塊樣式 */
+        .merchant_login_options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+        
+        /* 響應式調整 */
+        @media (max-width: 576px) {
+            .merchant_login_container {
+                padding: 30px 20px;
+                margin: 0 15px;
+            }
+        }
+        /* 主體背景 */
+
+
+/* 排行區塊統一卡片樣式 */
+.ranking-container {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 900px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* 標題 */
+.ranking-container h2 {
+    font-size: 1.5rem;
+    color: #f59d23;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #fbe0b9;
+    padding-bottom: 10px;
+}
+
+/* 表格樣式 */
+.ranking-container table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+
+.ranking-container th, .ranking-container td {
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+.ranking-container th {
+    background-color: #fff3e6;
+    color: #555;
+    font-weight: 600;
+}
+
+.ranking-container tbody tr:hover {
+    background-color: #fff7f0;
+}
+
+/* 分頁切換 tab */
+.tabs {
+    display: flex;
+    gap: -25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+
+.tab {
+    background-color: #fff3e0;
+    color: #c77000;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab:hover, .tab.active {
+    background-color: #f59d23;
+    color: #fff;
+    border: 2px solid #f59d23;
+}
+
+.ranking-and-total-wrapper {
+    display: flex;
+    gap: 30px;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 90%;
+    max-width: 1400px;
+    margin: auto;
+}
+
+.ranking-container {
+    flex: 1.5;
+}
+
+.ranking-left-column {
+    flex: 2;
+}
+
+.ranking-left-column,
+.ranking-right-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.donation-total-supercard {
+    flex: 1;
+}
+
+.donation-total-section {
+    flex: 1;
+    padding: 30px 20px;
+    background-color: #fff9e6;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    min-width: 280px;
+    max-width: 380px;
+    animation: fadeIn 1s ease-in;
+}
+
+@media (max-width: 768px) {
+    .ranking-and-total-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .donation-total-section {
+        margin-top: 20px;
+        width: 100%;
+    }
+}
+
+
 body {
             font-family: 'Helvetica Neue', sans-serif;
             background-color: #fffaf0;
@@ -30,8 +336,153 @@ body {
         .donation-amount.animate {
             transform: scale(1.15);
         }
+        
+        .donation-total-section {
+    flex: 1;
+    background: linear-gradient(145deg, #fff4d2, #ffe9ba);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(245, 157, 35, 0.25);
+    text-align: center;
+    padding: 40px 20px;
+    min-width: 280px;
+    max-width: 380px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 1s ease-in;
+    transition: transform 0.3s ease-in-out;
+}
+
+.donation-total-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 10%, transparent 70%);
+    animation: pulse 5s infinite ease-in-out;
+    z-index: 0;
+}
+
+.donation-total-section h2 {
+    font-size: 22px;
+    color: #5e4300;
+    z-index: 1;
+    position: relative;
+}
+
+.donation-amount {
+    font-size: 56px;
+    font-weight: bold;
+    color: #ff8a00;
+    transition: transform 0.3s ease;
+    z-index: 1;
+    position: relative;
+    text-shadow: 0 0 8px rgba(255, 150, 0, 0.6);
+}
+
+.donation-amount.animate {
+    transform: scale(1.2);
+    animation: glow 0.8s ease-in-out;
+}
+
+@keyframes glow {
+    0%   { text-shadow: 0 0 10px rgba(255, 200, 0, 0.6); }
+    50%  { text-shadow: 0 0 20px rgba(255, 150, 0, 1); }
+    100% { text-shadow: 0 0 10px rgba(255, 200, 0, 0.6); }
+}
+
+@keyframes pulse {
+    0%   { transform: scale(1); opacity: 1; }
+    50%  { transform: scale(1.05); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 1; }
+}
+        
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
+        
+        .donation-total-supercard {
+    position: relative;
+    flex: 1;
+    background: linear-gradient(135deg, #ffe59d, #fff9d3);
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(255, 174, 0, 0.4);
+    padding: 40px 0px;
+    text-align: center;
+    overflow: hidden;
+    animation: shineBg 6s infinite linear;
+    z-index: 1;
+    min-width: 280px;
+    max-width: 670px;
+}
+
+.donation-total-supercard::before {
+    content: "";
+    position: absolute;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent 70%);
+    animation: rotateLight 20s linear infinite;
+    z-index: 0;
+}
+
+.donation-total-supercard h2 {
+    font-size: 22px;
+    color: #5a3200;
+    margin-bottom: 20px;
+    font-weight: bold;
+    z-index: 1;
+    position: relative;
+}
+
+.donation-amount-glow {
+    font-size: 55px;
+    font-weight: 900;
+    color: #ff8800;
+    text-shadow: 0 0 20px rgba(255, 180, 0, 0.8);
+    transition: transform 0.3s ease;
+    z-index: 1;
+    position: relative;
+}
+
+.donation-amount-glow.animate {
+    transform: scale(1.2);
+    animation: textFlash 0.8s ease-in-out;
+}
+
+.donation-caption {
+    font-size: 16px;
+    color: #6e4b00;
+    margin-top: 20px;
+    z-index: 1;
+    position: relative;
+    font-style: italic;
+}
+
+@keyframes rotateLight {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes shineBg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes textFlash {
+    0% { text-shadow: 0 0 10px #ffbf00; }
+    50% { text-shadow: 0 0 30px #ff9100; }
+    100% { text-shadow: 0 0 10px #ffbf00; }
+}
+
+
+
+
+

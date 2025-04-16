@@ -25,6 +25,7 @@ import com.frontservice.MemberRegistAndLoginService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
+
 @Controller
 @RequestMapping("/registerAndLogin/register/member")
 @SessionAttributes("member") 
@@ -46,7 +47,10 @@ public class MemberRegistAndLoginController {
 
 
     @GetMapping({"", "/"})
-    public String registerPage(@ModelAttribute("member") MemberVO member, Model model) {
+    public String registerPage(@ModelAttribute("member") MemberVO member, Model model, HttpSession session,SessionStatus sessionStatus) {
+    	 sessionStatus.setComplete();
+    	session.removeAttribute("member");
+        session.removeAttribute("store");
         List<OrganizationVO> orgList = organizationRepository.findByStatus(1); // 只撈啟用的單位
 
         OrganizationVO selectedOrg = member.getOrganization();
