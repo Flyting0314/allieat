@@ -25,7 +25,7 @@ public class EmailRestController {
     @Autowired
     private MemberRepository memberRepository;
 
-    // ✅ 通用驗證連結
+    // 通用驗證連結
     @GetMapping("/verify")
     public Map<String, String> verify(@RequestParam("token") String token) {
         Map<String, String> response = new HashMap<>();
@@ -44,7 +44,7 @@ public class EmailRestController {
         return response;
     }
 
-    // ✅ 重新寄送驗證信（店家 / 會員合併）
+    // 重新寄送驗證信（店家 / 會員合併）
     @PostMapping("/resend")
     public Map<String, String> resendVerification(@RequestParam("email") String email) {
         Map<String, String> response = new HashMap<>();

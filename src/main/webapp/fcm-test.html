@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>Firebase 推播測試頁</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+	<h1>🔔 Firebase 推播測試</h1>
+	<p>這是用來測試 FCM 推播是否正常的頁面。</p>
+	<p id="token" style="word-break: break-all; color: green;"></p>
+
+	<!-- Firebase SDK -->
+	<script
+		src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+	<script
+		src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
+
+	<script>
+    // ✅ 替換成你的專案設定
+    firebase.initializeApp({
+      apiKey: "AIzaSyA68z34B-2gMTza5XihaqtGUeNlKi3-pVU",
+      authDomain: "allieat-notification.firebaseapp.com",
+      projectId: "allieat-notification",
+      messagingSenderId: "613984391786",
+      appId: "1:613984391786:web:f5fc9510d0ef5f972d3013"
+    });
+
+    const messaging = firebase.messaging();
+
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      .then(reg => {
+    		return messaging.getToken({
+      			vapidKey: "BMhduGYc_FYGv9W9jCouQGGJlIkDi71agZasPO1ufaui5qXbVIY35W4_MVmw1P3GlcV026ifk5sS1bOLQNDidUY",
+      			serviceWorkerRegistration: reg // ✅ 修正變數名 + 合併呼叫
+    		});
+  	  })
+      .then(token => {
+        console.log("✅ Token:", token);
+        document.getElementById("token").textContent = `你的 FCM token：${token}`;
+        // 🔁 可用 fetch 傳回後端與訂單綁定
+      })
+      .catch(err => {
+        console.error("❌ 無法取得 token", err);
+        document.getElementById("token").textContent = "⚠️ 無法取得 token，請檢查瀏覽器權限或 Firebase 設定";
+      });
+
+    messaging.onMessage(payload => {
+      console.log("📨 前景推播訊息：", payload);
+      alert(`${payload.notification.title}\n${payload.notification.body}`);
+    });
+  </script>
+</body>
+</html>

@@ -15,7 +15,7 @@ import com.entity.PhotoVO;
 import com.entity.StoreVO;
 
 @RestController
-@RequestMapping("/backStage") // ✅ 改這一行，讓 Intercepter 能攔住
+@RequestMapping("/backStage") 
 public class AdminStoreReviewRestController {
 
     @Autowired
@@ -27,25 +27,25 @@ public class AdminStoreReviewRestController {
     @Autowired
     private PhotoRepository photoRepository;
 
-    // ✅ 取得所有店家
+    // 取得所有店家
     @GetMapping("/stores")
     public List<StoreVO> getAllStores() {
         return storeRepository.findAll();
     }
 
-    // ✅ 取得待審核的店家
+    // 取得待審核的店家
     @GetMapping("/stores/reviewing")
     public List<StoreVO> getPendingStores() {
         return storeRepository.findByReviewedIn(List.of(0, 3));
     }
 
-    // ✅ 取得單一店家詳細資料
+    // 取得單一店家詳細資料
     @GetMapping("/store/{storeId}")
     public StoreVO getStoreById(@PathVariable int storeId) {
         return storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("找不到店家資料"));
     }
 
-    // ✅ 取得店家照片（轉 base64）
+    // 取得店家照片（轉 base64）
     @GetMapping("/store/{storeId}/photos")
     public Map<String, String> getStorePhotos(@PathVariable int storeId) {
         List<PhotoVO> photos = photoRepository.findByStoreStoreId(storeId);
@@ -67,7 +67,7 @@ public class AdminStoreReviewRestController {
         return result;
     }
 
-    // ✅ 店家審核（通過/退件/補件）
+    // 店家審核（通過/退件/補件）
     @PutMapping("/store/{storeId}/review")
     public String reviewStore(@PathVariable int storeId, @RequestParam String approved) {
         Optional<StoreVO> storeOpt = storeRepository.findById(storeId);
@@ -97,7 +97,7 @@ public class AdminStoreReviewRestController {
         return "店家審核完成";
     }
 
-    // ✅ 切換啟用/停用狀態
+    // 切換啟用/停用狀態
     @PutMapping("/store/{storeId}/toggleStatus")
     public String toggleStoreStatus(@PathVariable int storeId) {
         Optional<StoreVO> storeOpt = storeRepository.findById(storeId);
