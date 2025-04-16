@@ -414,6 +414,44 @@ public class MealController {
         }
     }
 
+    @GetMapping("/photo/{foodId}")
+    public ResponseEntity<byte[]> getFoodPhoto(@PathVariable Integer foodId) {
+        FoodVO food = foodService.getFoodById(foodId);
+        if (food == null || food.getPhoto() == null || food.getPhoto().isBlank()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            // ✅ 組成完整圖片路徑（根據資料庫存的檔名）
+            String basePath = "src/main/resources/static";
+            String relativePath = food.getPhoto().startsWith("/") ? food.getPhoto() : "/img/upload/" + food.getPhoto();
+            String fullPath = basePath + relativePath;
+
+            java.nio.file.Path path = java.nio.file.Paths.get(fullPath);
+            if (!java.nio.file.Files.exists(path)) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // ✅ 根據副檔名決定 Content-Type
+            String lower = food.getPhoto().toLowerCase();
+            MediaType contentType = MediaType.IMAGE_JPEG;
+            if (lower.endsWith(".png")) {
+                contentType = MediaType.IMAGE_PNG;
+            } else if (lower.endsWith(".webp")) {
+                contentType = MediaType.parseMediaType("image/webp");
+            }
+
+            byte[] imageBytes = java.nio.file.Files.readAllBytes(path);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(contentType);
+
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
 
 
 

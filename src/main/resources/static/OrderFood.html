@@ -634,6 +634,7 @@ function displayRestaurantInfo(restaurant) {
 }
 
 // 顯示主餐列表
+// 顯示主餐列表
 function displayFoodList(foodList) {
     if (!foodList || foodList.length === 0) {
         document.getElementById('foodList').innerHTML = `
@@ -645,14 +646,16 @@ function displayFoodList(foodList) {
         `;
         return;
     }
-    
+
     let foodListHtml = '';
-    
+
     foodList.forEach(food => {
+        console.log("🟡 foodId =", food.foodId, typeof food.foodId); // 檢查foodId的類型和值
+        
         // 確定庫存狀態和相應的類別
         let stockStatus = 'high';
         let stockClass = 'stock-high';
-        
+
         if (food.amount <= 5) {
             stockStatus = 'low';
             stockClass = 'stock-low';
@@ -660,23 +663,24 @@ function displayFoodList(foodList) {
             stockStatus = 'medium';
             stockClass = 'stock-medium';
         }
-        
-        // 處理圖片路徑，預加載圖片以避免閃爍
-        let foodImage = 'https://via.placeholder.com/300x200?text=餐點圖片';
-        
-        // 如果食物有圖片，設置適當的路徑
-      if (food.photo && food.photo !== 'null' && food.photo !== 'undefined') {
-    foodImage = `/food/images/${food.photo}`;
-}
 
-        
+        // 修正：將foodId轉換為純數字
+        const foodId = parseInt(food.foodId);
+        const photoPath = food.photo && food.photo.startsWith('/')
+        ? food.photo 
+        : `/img/upload/${food.photo}`;
+
+        const fallback = '/img/default-food.png';
+
         foodListHtml += `
             <div class="col-md-4 mb-4">
-                <div class="food-card" data-food-id="${food.foodId}">
+                <div class="food-card" data-food-id="${foodId}">
                     <div class="food-image">
-                        <img src="${foodImage}" alt="${food.name}" 
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=無餐點圖片';">
+                        <img src="${photoPath}" 
+                             alt="${food.name}" 
+                             onerror="this.onerror=null;this.src='${fallback}'">
                     </div>
+
                     <div class="food-details">
                         <h3 class="food-title">${food.name}</h3>
                         <p class="food-points">${food.cost} 點</p>
@@ -684,7 +688,7 @@ function displayFoodList(foodList) {
                             <span class="stock-indicator ${stockClass}"></span>
                             <span>庫存: ${food.amount} 個</span>
                         </div>
-                        <button class="select-food-btn" data-food-id="${food.foodId}" 
+                        <button class="select-food-btn" data-food-id="${foodId}" 
                                 ${food.amount <= 0 ? 'disabled' : ''}>
                             ${food.amount <= 0 ? '已售完' : '選取餐點'}
                         </button>
@@ -693,25 +697,27 @@ function displayFoodList(foodList) {
             </div>
         `;
     });
-    
+
     document.getElementById('foodList').innerHTML = foodListHtml;
-    
+
     // 添加選取餐點按鈕的點擊事件
     document.querySelectorAll('.select-food-btn').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const foodId = this.getAttribute('data-food-id');
-            // 找到選中的餐點
-            const selectedFood = foodList.find(food => food.foodId == foodId);
-            
+            const selectedFood = foodList.find(food => parseInt(food.foodId) == foodId);
+
             if (selectedFood) {
-                // 提供視覺反饋
                 this.textContent = '已選取';
                 this.classList.add('selected');
+
+                // 在存儲前確保selectedFood包含正確的foodId
+                const updatedSelectedFood = {
+                    ...selectedFood,
+                    foodId: parseInt(selectedFood.foodId)
+                };
                 
-                // 將選中的餐點信息存儲到本地存儲中
-                localStorage.setItem('selectedFood', JSON.stringify(selectedFood));
-                
-                // 跳轉到附餐頁面
+                localStorage.setItem('selectedFood', JSON.stringify(updatedSelectedFood));
+
                 setTimeout(() => {
                     window.location.href = `/orderattached.html?foodId=${foodId}`;
                 }, 500);
@@ -719,6 +725,7 @@ function displayFoodList(foodList) {
         });
     });
 }
+
 
         // 在頁面底部添加購物車圖示
         document.addEventListener('DOMContentLoaded', function() {
