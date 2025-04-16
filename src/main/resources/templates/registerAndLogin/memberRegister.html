@@ -103,7 +103,7 @@
         }
 
         .df-button-next {
-            background-color: #e74c3c;
+            background-color: #DA9F5B;
             color: white;
         }
 
@@ -264,7 +264,7 @@
                     <label class="verification_form_label"></label>
                     <div class="verification_form_controls">
                         <label>
-                            <input type="checkbox" id="agreePoint" disabled>
+                            <input type="checkbox" id="agreePoint" onclick="return false;">
                             您已了解並同意本平台依「<a href='#' id="viewPointNotice">愛心點數使用說明</a>」
                             發送與管理捐款轉換之點數，供您於合作店家兌換待用餐點等公益服務。
                         </label>
@@ -276,9 +276,9 @@
                     <label class="verification_form_label"></label>
                     <div class="verification_form_controls">
                         <label>
-                            <input type="checkbox" id="agreeCheck" name="agreeCheck" disabled>
+                            <input type="checkbox" id="agreeCheck" onclick="return false;">
                             您已了解並同意本平台蒐集、處理及使用您的個人資料。請閱讀
-                            「<a href="#" id="viewPrivacyNotice">個資運用告知聲明</a>」
+                            「<a href="#" id="viewPrivacyNotice">個資運用告知聲明</a>」。
                         </label>
                         <input type="hidden" name="agreedToTerms" id="agreedToTerms" value="false">
                     </div>
@@ -320,12 +320,14 @@
                 為保障所有受助者權益，請妥善使用點數並配合規定。
             </p>
 
-            <div style="margin-top: 20px; text-align: center;">
+            <div style="margin-top: 20px; text-align: flex-start;">
                 <label style="display: block; margin-bottom: 10px;">
                     <input type="checkbox" id="pointAgree">
-                    我已閱讀並同意上述內容
+                    我已閱讀並同意上述個資說明
                 </label>
-                <button id="agreePointBtn" class="df-button df-button-next" style="width: 150px;">關閉</button>
+                <div style="text-align: center; margin-top: 0;">
+				    <button id="agreePointBtn" class="df-button df-button-next" style="width: 150px; display: inline-block;">關閉</button>
+				</div>
 
             </div>
         </div>
@@ -333,7 +335,8 @@
 
     <!-- 個資燈箱 -->
     <div id="privacyModal" class="df-modal" style="display:none;">
-        <div class="modal-content">
+    <div class="df-modal-content">
+        <span class="df-modal-close">&times;</span>
             <h3>個資運用告知聲明</h3>
 
             <p>感謝您使用攏呷霸愛心平台(以下稱本平台)，為了保障您的權益，請您詳細閱讀以下說明：</p>
@@ -373,12 +376,14 @@
                 <br>本平台將依內部資訊安全規範與相關法令，採取適當技術與管理措施，妥善保存並保障您的個人資料安全，避免未經授權之存取、洩露、變更或損毀。
             </p>
 
-            <div style="margin-top: 20px; text-align: center;">
+            <div style="margin-top: 0; text-align: flex-start;">
                 <label>
-                    <input type="checkbox" id="privacyAgree"> 我已閱讀並同意
+                    <input type="checkbox" id="privacyAgree"> 我已閱讀並同意上述個資說明
                 </label>
-                <br><br>
-                <button id="agreePrivacyBtn" class="df-button df-button-next" style="width: 150px;">關閉</button>
+                <br>
+                <div style="text-align: center; margin-top: 20px;">
+				    <button id="agreePrivacyBtn" class="df-button df-button-next" style="width: 150px;">關閉</button>
+				</div>
             </div>
 
         </div>
