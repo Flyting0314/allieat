@@ -109,6 +109,30 @@ public interface DonorRepository extends JpaRepository<DonaVO, Integer> {
  	    
  	   @Query("SELECT SUM(d.donationIncome) FROM DonaVO d")
  	  Long sumAllDonationIncome();
-//======================
+//======================捐款查詢用
+ 	  @Query("""
+ 		        SELECT d FROM DonaVO d 
+ 		        WHERE d.phone = :phone AND d.email = :email
+ 		        ORDER BY d.createdTime DESC
+ 		    """)
+ 		    List<DonaVO> findByEmailAndPhone(@Param("email") String email,
+ 		                                     @Param("phone") String phone);
+ 	  
+ 	  
+ 	 @Query("""
+ 		    SELECT d FROM DonaVO d 
+ 		    WHERE d.phone = :phone AND d.email = :email
+ 		    AND (:startTime IS NULL OR d.createdTime >= :startTime) 
+ 		    AND (:endTime IS NULL OR d.createdTime <= :endTime)
+ 		    ORDER BY d.createdTime DESC
+ 		""")
+ 		List<DonaVO> findByEmailAndPhoneWithOptionalDate(@Param("email") String email,
+ 		                                                 @Param("phone") String phone,
+ 		                                                 @Param("startTime") Timestamp startTime,
+ 		                                                 @Param("endTime") Timestamp endTime);
+
+//====================== 	   
+ 	   
+ 	   
  	}
 

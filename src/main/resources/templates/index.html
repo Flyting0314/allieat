@@ -55,6 +55,15 @@
   text-align: center;
   animation: floatUpDown 2s ease-in-out infinite alternate;
 }
+.floating-donation-box p{
+
+font-family: 'Noto Sans TC', sans-serif;
+        color: #d92626;
+        font-size: 25px;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+}
 
 .floating-donation-amount {
   font-weight: bold;
@@ -428,6 +437,7 @@ function animateAmount(el, target, duration) {
 
 
 <div class="floating-donation-box">
+<p>🔥目前累積捐款🔥</p>
   <div class="floating-donation-amount" id="donationAmountBox">NT$ 0</div>
   <a th:href="@{/dona/donaAddA}" class="floating-donation-btn">
     <i class="fas fa-heart"></i> 立即捐款
