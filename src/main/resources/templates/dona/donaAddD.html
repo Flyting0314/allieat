@@ -1,138 +1,260 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
-<th:block th:replace="fragments/header :: header"></th:block>
+    <th:block th:replace="fragments/header :: header"></th:block>
     <style>
-        /* 確保表格響應式，手機版可以左右滑動 */
-        .table-responsive {
-            overflow-x: auto;
-        }
+       body {
+    background-color: #fffaf0;
+    font-family: 'Roboto', 'Microsoft JhengHei', sans-serif;
+}
 
-        /* 查詢區塊美化 */
-        .search-box {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-        }
+/* 表單區塊統一樣式 */
+.search-box {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    padding: 30px;
+    margin-bottom: 40px;
+    
+}
 
-        /* 查詢按鈕 */
-        .btn-search {
-            width: 100%;
-        }
+/* 表單欄位間距統一 */
+.search-box .form-label {
+    font-weight: 500;
+    color: #333;
+}
 
-        /* 表格標題置中 */
-        th {
-            text-align: center;
-            white-space: nowrap;
-        }
+.search-box select,
+.search-box input {
+    font-size: 0.95rem;
+    padding: 6px 12px;
+}
 
-        /* 版面間距 */
-        .container {
-            margin-top: 30px;
-            margin-bottom: 50px;
-        }
+.col-12.text-end.mt-2 {
+    display: flex;
+    justify-content: center;
+}
+.btn-search {
+    width: 10%;
+    background-color: #f4a261;
+    border: none;
+    color: white;
+    font-weight: 500;
+    border-radius: 8px;
+    display: block;
+}
+
+.btn-search:hover {
+    background-color: #e76f51;
+}
+
+/* 錯誤訊息 */
+.error {
+    font-size: 0.85rem;
+    color: #d62828;
+    margin-top: 2px;
+}
+
+/* 表格卡片風格 */
+.donation-container {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* 表格樣式統一 */
+table thead {
+    background-color: #fef3e0;
+    color: #333;
+    font-weight: 600;
+}
+
+table td, table th {
+    vertical-align: middle;
+    font-size: 0.95rem;
+}
+
+table tbody tr:hover {
+    background-color: #fdf6f0;
+}
+
+
+
+
+/* 排序箭頭 */
+.sort-icon {
+    font-size: 0.85em;
+    margin-left: 4px;
+    color: #aaa;
+}
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.form-label {
+    font-weight: 500;
+}
+
+.input-group select {
+    min-width: 100px;
+    margin-right: 10px;
+}
+
+.d-flex.gap-2 select {
+    min-width: 90px;
+}
+@media (max-width: 768px) {
+    .btn-search {
+        width: 10%;
+    }
+}
+
+/* 美化日期選擇下拉選單 */
+.select-box {
+    appearance: none; /* 隱藏原生樣式 */
+    background-color: #fffaf0; /* 柔和背景 */
+    border: 2px solid #f4a261; /* 橘色邊框 */
+    border-radius: 8px; /* 圓角 */
+    padding: 8px 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 陰影效果 */
+    transition: all 0.3s ease-in-out;
+}
+
+/* 下拉選單 hover 效果 */
+.select-box:hover {
+    background-color: #fef3e0;
+    border-color: #e76f51;
+}
+
+/* 下拉選單箭頭 */
+.select-box::after {
+    content: "▼";
+    font-size: 0.8rem;
+    color: #f4a261;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* 讓選單更有質感 */
+.select-box:focus {
+    outline: none;
+    border-color: #e76f51;
+    box-shadow: 0 0 8px rgba(244, 162, 97, 0.5);
+}
+
+
     </style>
-    </head>
+</head>
 <body>
-<!-- Navbar Start -->
-   <th:block th:replace="fragments/bodySection :: bodySection"></th:block>
-<!-- Hero Section End -->
-<!-- 🔹 捐款查詢表單 -->
-<div class="container">
-    <h3 class="mb-3">我要捐款 / 捐款查詢</h3>
 
+<!-- Navbar -->
+<th:block th:replace="fragments/bodySection :: bodySection"></th:block>
+<div class="container">
     <div class="search-box">
-        <form th:action="@{/dona/donaAddD}" method="post" th:object="${donaReq}">
-            <div class="row g-3">
-                <!-- 日期選擇 -->
-                <div class="col-md-4">
-                <label class="form-label">請輸入查詢日期</label>
-                <div class="input-group">
-                    <select class="form-select" name="startYear">
-                        <option value="" selected>年</option>
-<option th:each="year : ${#numbers.sequence(2000, 2030)}" th:value="${year}" th:text="${year}"></option>                    </select>
-                    <select class="form-select" name="startMonth">
-                        <option value="" selected>月</option>
-                        <option th:each="month : ${#numbers.sequence(1, 12)}" th:value="${month}" th:text="${month}"></option>
-                    </select>
-                </div>
+<form th:action="@{/dona/search}" method="post" th:object="${donaReq}">
+    <div class="row gy-3 gx-4 align-items-end">
+
+        <!-- 起始日期 -->
+        <div class="col-md-6 col-lg-3">
+            <label class="form-label">請輸入查詢日期（起）</label>
+            <div class="d-flex gap-2">
+                <select class="form-select select-box" name="startYear">
+                    <option value="">年</option>
+                    <option th:each="year : ${#numbers.sequence(2000, 2030)}"
+                            th:value="${year}" th:text="${year}"></option>
+                </select>
+                <select class="form-select select-box" name="startMonth">
+                    <option value="">月</option>
+                    <option th:each="month : ${#numbers.sequence(1, 12)}"
+                            th:value="${month}" th:text="${month}"></option>
+                </select>
             </div>
-
-            <div class="col-md-4">
-                <label class="form-label">至</label>
-                <div class="input-group">
-                    <select class="form-select" name="endYear">
-                        <option value="" selected>年</option>
-                                                <option th:each="year : ${#numbers.sequence(2000, 2030)}" th:value="${year}" th:text="${year}"></option>
-
-                    </select>
-                    <select class="form-select" name="endMonth">
-                        <option value="" selected>月</option>
-                                                <option th:each="month : ${#numbers.sequence(1, 12)}" th:value="${month}" th:text="${month}"></option>
-
-                    </select>
-                </div>
-            </div>
-
-                <!-- 捐款抬頭 -->
-                <div class="col-md-4">
-                     <label class="form-label">捐款抬頭*</label>
-                <input type="text" class="form-control" th:field="*{salutation}" placeholder="請輸入捐款抬頭">
-                <span th:if="${#fields.hasErrors('salutation')}" th:errors="*{salutation}" class="error"></span>
-            </div>
-                </div>
-
-                <!-- 身分證 -->
-                <div class="col-md-4">
-                 <label class="form-label">身分證</label>
-                <input type="text" class="form-control" th:field="*{idNum}" placeholder="請輸入身分證號碼">
-                    <span th:if="${#fields.hasErrors('idNum')}" th:errors="*{idNum}" class="error"></span>
-                </div>
-                
-                 <!-- 統編 -->
-                <div class="col-md-4">
-                  <label class="form-label">統編</label>
-                <input type="text" class="form-control" th:field="*{guiNum}" placeholder="請輸入統一編號">
-                    <span th:if="${#fields.hasErrors('guiNum')}" th:errors="*{guiNum}" class="error"></span>
-                </div>
-
-                <!-- 查詢按鈕 -->
-                <div class="col-md-4 align-self-end">
-                    <button type="submit" class="btn btn-primary btn-search">查詢</button>
-                </div>
-                <div th:if="${errorMessage}" class="alert alert-danger mt-3" role="alert" style="font-weight:bold;">
-            <span th:text="${errorMessage}"></span>
         </div>
+
+        <!-- 結束日期 -->
+        <div class="col-md-6 col-lg-3">
+            <label class="form-label">至</label>
+            <div class="d-flex gap-2">
+                <select class="form-select select-box" name="endYear">
+                    <option value="">年</option>
+                    <option th:each="year : ${#numbers.sequence(2000, 2030)}"
+                            th:value="${year}" th:text="${year}"></option>
+                </select>
+                <select class="form-select select-box" name="endMonth">
+                    <option value="">月</option>
+                    <option th:each="month : ${#numbers.sequence(1, 12)}"
+                            th:value="${month}" th:text="${month}"></option>
+                </select>
             </div>
-        </form>
+        </div>
+<!-- 電話 -->
+        <div class="col-md-6 col-lg-3" >
+            <label class="form-label ">電話*</label>
+            <input type="text" class="form-control select-box" th:field="*{phone}" placeholder="請輸入電話">
+            <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error"></span>
+        </div>
+        <!-- 信箱 -->
+        <div class="col-md-6 col-lg-3">
+            <label class="form-label">信箱*</label>
+            <input type="email" class="form-control select-box" th:field="*{email}" placeholder="請輸入信箱">
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></span>
+        </div>
+
+        <!-- 查詢按鈕 -->
+        <div class="col-12 text-end mt-2">
+            <button type="submit" class="btn btn-search">查詢</button>
+        </div>
+
+        <!-- 錯誤訊息 -->
+        <div class="col-12" th:if="${errorMessage}">
+            <div class="alert alert-danger fw-bold" th:text="${errorMessage}"></div>
+        </div>
+    </div>
+</form>
+
+ </div>
+</div>
+
+<div class="container donation-container">
+    <div class="table-responsive">
+    <div class="container">
+    <div class="donation-container">
+        <table class="table table-striped table-hover text-center">
+            <thead class="table-primary">
+    <tr>
+        <th><span class="sortable" data-column="0" data-type="text" data-sort="none">捐款日期 <span class="sort-icon">↕️</span></span></th>
+        <th><span class="sortable" data-column="1" data-type="number" data-sort="none">收據編號 <span class="sort-icon">↕️</span></span></th>
+        <th><span class="sortable" data-column="2" data-type="text" data-sort="none">姓名／公司／機構 <span class="sort-icon">↕️</span></span></th>
+        <th>捐款抬頭</th>
+        <th><span class="sortable" data-column="4" data-type="number" data-sort="none">捐款金額 <span class="sort-icon">↕️</span></span></th>
+    </tr>
+</thead>
+<tbody>
+    <tr th:if="${#lists.isEmpty(donaList)}">
+        <td colspan="5" class="text-center text-muted">目前沒有符合條件的捐款紀錄</td>
+    </tr>
+    <tr th:each="dona : ${donaList}">
+        <td th:text="${#dates.format(dona.createdTime, 'yyyy/MM/dd HH:mm')}">YYYY/MM/DD</td>
+        <td th:text="${dona.donationRecordId}">0000001</td>
+        <td th:text="${dona.identityData}">王OO／企業</td>
+        <td th:text="${dona.salutation}">抬頭</td>
+        <td th:text="${dona.donationIncome}">金額</td>
+    </tr>
+</tbody>
+        </table>
+            </div>
+</div>
     </div>
 </div>
 
-<!-- 捐款查詢結果表格 -->
-<div class="container">
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-primary">
-                 <tr>
-                    <th scope="col"><input type="checkbox"></th>
-                    <th scope="col"><span class="sortable" style="cursor:pointer;" data-column="1" data-type="text" data-sort="none">捐款日期 <span class="sort-icon">↕️</span></span></th>
-                    <th scope="col"><span class="sortable" style="cursor:pointer;" data-column="2" data-type="number" data-sort="none">收據編號 <span class="sort-icon">↕️</span></span></th>
-                    <th scope="col">捐款抬頭</th>
-                    <th scope="col"><span class="sortable" style="cursor:pointer;" data-column="4" data-type="number" data-sort="none">捐款金額 <span class="sort-icon">↕️</span></span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="dona : ${donaList}">
-                    <td><input type="checkbox"></td>
-                    <td th:text="${#dates.format(dona.createdTime, 'yyyy/MM/dd HH:mm')}">YYYY/MM/DD</td>
-                    <td th:text="${dona.donationRecordId}">0000001</td>
-                    <td th:text="${dona.salutation}">捐款抬頭</td>
-                    <td th:text="${dona.donationIncome}">捐款金額</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+
 <!-- Footer Start -->
 <th:block th:replace="fragments/footer :: footer"></th:block>
      <!-- Footer End -->

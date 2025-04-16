@@ -166,7 +166,7 @@ public class DonaController {
     @PostMapping("/complete")
     public String completeForm(SessionStatus status) {
     	status.setComplete(); // 清除會話中的 donaReq
-        return "redirect:/dona/donaAddD";
+        return "redirect:/dona/search";
     }
 
 	// 顯示修改表單
@@ -214,53 +214,68 @@ public class DonaController {
 	
 	
 	// 顯示捐款查詢頁面
-    @GetMapping("/donaAddD")
+    @GetMapping("/search")
     public String showSelectPage(Model model) {
         model.addAttribute("donaReq", new DonaReq()); 
         return "dona/donaAddD"; 
     }
 
- // 處理查詢表單並返回結果
-    @PostMapping("/donaAddD")
-    public String handleSelect(
+    @PostMapping("/search")
+    public String searchDonation(@RequestParam String phone,
+            @RequestParam String email,
             @RequestParam(required = false) Integer startYear,
             @RequestParam(required = false) Integer startMonth,
             @RequestParam(required = false) Integer endYear,
             @RequestParam(required = false) Integer endMonth,
-            @ModelAttribute DonaReq donaReq,
             Model model) {
-        
-        Timestamp startTime = donaService.createTimestamp(startYear, startMonth, 1);  // 開始
-        Timestamp endTime = donaService.createTimestamp(endYear, endMonth, 31);      // 結束
-   
-        boolean hasSalutation = donaReq.getSalutation() != null && !donaReq.getSalutation().isBlank();
-        boolean hasId = donaReq.getIdNum() != null && !donaReq.getIdNum().isBlank();
-        boolean hasGui = donaReq.getGuiNum() != null && !donaReq.getGuiNum().isBlank();
-    
-        if (!hasSalutation || (!hasId && !hasGui)) {
-            model.addAttribute("errorMessage", "請輸入捐款抬頭，並輸入身分證或統一編號其中一項");
-            model.addAttribute("donaList", List.of()); 
-            return "dona/donaAddD"; 
-        }
-       
-        List<DonaVO> filteredDonaList = donaService.searchDonas(donaReq, startTime, endTime);
-        model.addAttribute("donaList", filteredDonaList); 
-        return "dona/donaAddD"; 
-    }
 
-
+List<DonaVO> donaList = donaService.findDonations(email, phone, startYear, startMonth, endYear, endMonth);
+model.addAttribute("donaList", donaList);
+return "dona/donaAddD"; 
+}
     
-    @PostMapping("/getOne")
-    public String getOneDona(@RequestParam Integer donationRecordId, Model model) {
-    	DonaVO dona = donaService.findById(donationRecordId);
-        if (dona != null) {
-            model.addAttribute("dona", dona); 
-        } else {
-            model.addAttribute("errorMessage", "找不到對應的捐款紀錄"); 
-        }
-        model.addAttribute("donaList", donaService.getAllDonas()); 
-        return "dona/select_page"; 
-    }
+    
+ // 處理查詢表單並返回結果
+//    @PostMapping("/donaAddD")
+//    public String handleSelect(
+//            @RequestParam(required = false) Integer startYear,
+//            @RequestParam(required = false) Integer startMonth,
+//            @RequestParam(required = false) Integer endYear,
+//            @RequestParam(required = false) Integer endMonth,
+//            @ModelAttribute DonaReq donaReq,
+//            Model model) {
+//        
+//        Timestamp startTime = donaService.createTimestamp(startYear, startMonth, 1);  // 開始
+//        Timestamp endTime = donaService.createTimestamp(endYear, endMonth, 31);      // 結束
+//   
+//        boolean hasSalutation = donaReq.getSalutation() != null && !donaReq.getSalutation().isBlank();
+//        boolean hasId = donaReq.getIdNum() != null && !donaReq.getIdNum().isBlank();
+//        boolean hasGui = donaReq.getGuiNum() != null && !donaReq.getGuiNum().isBlank();
+//    
+//        if (!hasSalutation || (!hasId && !hasGui)) {
+//            model.addAttribute("errorMessage", "請輸入捐款抬頭，並輸入身分證或統一編號其中一項");
+//            model.addAttribute("donaList", List.of()); 
+//            return "dona/donaAddD"; 
+//        }
+//       
+//        List<DonaVO> filteredDonaList = donaService.searchDonas(donaReq, startTime, endTime);
+//        model.addAttribute("donaList", filteredDonaList); 
+//        return "dona/donaAddD"; 
+//    }
+//
+//
+//    
+//    @PostMapping("/getOne")
+//    public String getOneDona(@RequestParam Integer donationRecordId, Model model) {
+//    	DonaVO dona = donaService.findById(donationRecordId);
+//        if (dona != null) {
+//            model.addAttribute("dona", dona); 
+//        } else {
+//            model.addAttribute("errorMessage", "找不到對應的捐款紀錄"); 
+//        }
+//        model.addAttribute("donaList", donaService.getAllDonas()); 
+//        return "dona/select_page"; 
+//    }
 
     
 	@PostMapping("/delete/{donationRecordId}")
