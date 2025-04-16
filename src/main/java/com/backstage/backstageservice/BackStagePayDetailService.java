@@ -235,8 +235,8 @@ public class BackStagePayDetailService {
 			if (pointsStatus != null && !pointsStatus.trim().isEmpty()) {
 				if ("1".equals(pointsStatus)) { // 已取得點數
 					predicates.add(cb.greaterThan(root.get("pointsExpensed"), 0));
-				} else if ("0".equals(pointsStatus)) { // 未取得點數
-					predicates.add(cb.equal(root.get("pointsExpensed"), 0));
+				} else if ("0".equals(pointsStatus)) { // 取得點數異常：未取得或不等於應得點數
+			        predicates.add(cb.notEqual(root.get("pointsExpensed"), payRecordJoin.get("payoutPoints")));
 				}
 			}
 			

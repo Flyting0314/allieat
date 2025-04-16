@@ -1,18 +1,12 @@
 package com.backstage.backstagecontroller;
  
-
-
 import jakarta.validation.Valid;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-//import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-//import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import com.backstage.backstagedto.PayRecordUpdateDTO;
@@ -20,14 +14,11 @@ import com.backstage.backstageservice.BackStagePayDetailService;
 import com.backstage.backstageservice.BackStagePayRecordService;
 import com.entity.PayRecordVO;
 
-//import java.sql.Timestamp;
 import java.time.LocalDate;
-//import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 
 
 
@@ -41,22 +32,14 @@ public class BackStagePayRecordController {
 
     @Autowired
     private BackStagePayDetailService payDetailService;
-
-
-    // ======（舊  list all ）定義 GET /payrecords/listAll 路徑的 API 端點
-//    @GetMapping("/listAll") 
-//    public List<PayRecordVO> getAllPayRecordsDesc() {
-//        // 呼叫 Service 層的方法來獲取按 payoutId 降冪排序的所有 PayRecord
-//        return payRecordService.getAllPayRecordsDesc();
-//    }
-//    
+ 
     @GetMapping
     public String payRecord(Model model) {
     	
     	return("payrecordmaking");
     }
    
-  //============新  list all ====================
+  //============ list all ====================
     @GetMapping("/listAll")
     public ResponseEntity<List<PayRecordVO>> getAllPayRecords(
         @RequestParam(required = false) Integer payoutId,
@@ -76,12 +59,10 @@ public class BackStagePayRecordController {
         
         return ResponseEntity.ok(records);
     }
+      
     
     
-   
-    
-    
-    //人工更新payrecord
+    //========= 人工更新payrecord：修改發放時間、點數等 ==========
     @PutMapping("/update/{payoutId}")
     public ResponseEntity<Map<String, String>> updatePayRecord(
             @PathVariable String payoutId,
@@ -158,5 +139,31 @@ public class BackStagePayRecordController {
         }
     }
 
+    
+    
+    
+  //=============== 獲取平台資金狀態 ===============
+    @GetMapping("/platform-funds")
+    public ResponseEntity<Map<String, Object>> getPlatformFunds() {
+        // 獲取平台資金信息
+        Integer availableFunds = payRecordService.calculateAvailableFunds();
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("availableFunds", availableFunds);
+        
+        return ResponseEntity.ok(response);
+    }
+    
+    //=============== 獲取啟用狀態會員數量 ===============
+    @GetMapping("/active-member-count")
+    public ResponseEntity<Map<String, Integer>> getActiveMemberCount() {
+        // 獲取啟用狀態的會員數量
+        Integer count = payRecordService.countActiveMember();
+        
+        Map<String, Integer> response = new HashMap<>();
+        response.put("count", count);
+        
+        return ResponseEntity.ok(response);
+    }
     
 }

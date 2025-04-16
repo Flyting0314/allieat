@@ -212,7 +212,7 @@
                                 <select id="search-points-status">
                                     <option value="">所有</option>
                                     <option value="1">已取得點數</option>
-                                    <option value="0">未取得點數</option>
+                                    <option value="0">取得點數異常</option>
                                 </select>
                             </div>
                             
@@ -310,6 +310,7 @@
         let idSortAscending = true; // 排序方向全局變量
     
         document.addEventListener("DOMContentLoaded", function () {
+            
             // 啟用登入檢查
             backstageAuth.requireLogin();
     
@@ -323,6 +324,25 @@
     
             const urlParams = new URLSearchParams(window.location.search);
             const payRecordId = urlParams.get('payRecordId');
+            // 如果有 payRecordId，則嘗試從 localStorage 獲取父表記錄詳情
+            const parentRecordInfo = JSON.parse(localStorage.getItem('parentPayRecordInfo'));
+            
+            if (parentRecordInfo) {
+                const headerInfoContainer = document.createElement('div');
+                headerInfoContainer.className = 'alert alert-info mb-3';
+                headerInfoContainer.innerHTML = `
+                    <strong>您正在查看：</strong>
+                    點數發放ID ${parentRecordInfo.payoutId} 
+                    於 ${formatTimestamp(parentRecordInfo.payoutDate)} 
+                    完成的發放明細
+                `;
+                
+                // 插入到頁面頂部
+                const contentWrapper = document.querySelector('.content-wrapper');
+                contentWrapper.insertBefore(headerInfoContainer, contentWrapper.firstChild);
+            }
+
+
     
             if (payRecordId) {
                 // 使用統一的函數加載數據
@@ -399,79 +419,99 @@
     
         // 發放點數函數
         function grantPointsToMember(payDetailId, points) {
-            backstageAuth.authFetch("http://localhost:8080/paydetails/update-points", {
-                method: "POST",
-                body: {
-                    payDetailId: payDetailId,
-                    pointsExpensed: points
-                }
-            })
-            .then(response => {
-                const contentType = response.headers.get('content-type');
-    
-                if (contentType && contentType.includes('application/json')) {
-                    return response.json();
-                } else {
-                    return response.text().then(text => {
-                        throw new Error(text);
-                    });
-                }
-            })
-            .then(data => {
-                console.log("點數發放結果:", data);
-    
-                // 只有在成功時才更新頁面
-                if (data && data.message && data.message.includes('成功')) {
-                    alert(data.message);
-    
-                    // 立即更新頁面上的點數
-                    const row = document.querySelector(`button[data-paydetail-id="${payDetailId}"]`).closest('tr');
-                    const pointsCell = row.querySelector('td:nth-child(8)');
-                    const currentButton = row.querySelector('.grant-points-btn');
-    
-                    if (pointsCell && currentButton) {
-                        // 獲取應發放點數
-                        const payoutPoints = parseInt(currentButton.getAttribute("data-payout-points")) || 10000;
-                        
-                        // 更新已發放點數
-                        const currentPoints = parseInt(pointsCell.textContent);
-                        const newTotalPoints = currentPoints + points;
-                        pointsCell.textContent = newTotalPoints;
-    
-                        // 關鍵修改：只有當新的總點數達到或超過應發放點數時，才禁用按鈕
-                        if (newTotalPoints >= payoutPoints) {
-                            currentButton.disabled = true;
-                            currentButton.classList.remove('btn-primary');
-                            currentButton.classList.add('btn-disabled');
-                        } else {
-                            // 點數仍未達到應發放點數，按鈕保持可點擊狀態
-                            currentButton.disabled = false;
-                            currentButton.classList.add('btn-primary');
-                            currentButton.classList.remove('btn-disabled');
-                        }
-                    }
-                    
-                    // 關閉模態框
-                    $('#paydetail-modal').modal('hide');
-                    document.getElementById("paydetail-points-input").value = "";
-                } else {
-                    alert(data.message || '點數發放處理失敗');
-                }
-            })
-            .catch(error => {
-                console.error("發放點數時發生錯誤:", error);
-                alert("點數發放失敗：" + error.message);
-    
-                // 恢復原始點數
-                const row = document.querySelector(`button[data-paydetail-id="${payDetailId}"]`).closest('tr');
-                const pointsCell = row.querySelector('td:nth-child(8)');
-                if (pointsCell) {
-                    const originalPoints = parseInt(pointsCell.getAttribute('data-original-points') || pointsCell.textContent);
-                    pointsCell.textContent = originalPoints;
-                }
+    // 從父表資訊中取得 payoutId
+    const parentRecordInfo = JSON.parse(localStorage.getItem('parentPayRecordInfo'));
+    const payoutId = parentRecordInfo ? parentRecordInfo.payoutId : null;
+
+    backstageAuth.authFetch("http://localhost:8080/paydetails/update-points", {
+        method: "POST",
+        body: {
+            payDetailId: payDetailId,
+            pointsExpensed: points
+        }
+    })
+    .then(response => {
+        const contentType = response.headers.get('content-type');
+
+        if (contentType && contentType.includes('application/json')) {
+            return response.json();
+        } else {
+            return response.text().then(text => {
+                throw new Error(text);
             });
         }
+    })
+    .then(data => {
+        console.log("點數發放結果:", data);
     
+        // 只有在成功時才更新頁面
+        if (data && data.message && data.message.includes('成功')) {
+            alert(data.message);
+
+            // 立即更新頁面上的點數
+            const row = document.querySelector(`button[data-paydetail-id="${payDetailId}"]`).closest('tr');
+            const pointsCell = row.querySelector('td:nth-child(8)');
+            const currentButton = row.querySelector('.grant-points-btn');
+
+            if (pointsCell && currentButton) {
+                // 獲取應發放點數
+                const payoutPoints = parseInt(currentButton.getAttribute("data-payout-points")) || 10000;
+                
+                // 更新已發放點數
+                const currentPoints = parseInt(pointsCell.textContent);
+                const newTotalPoints = currentPoints + points;
+                pointsCell.textContent = newTotalPoints;
+
+                // 只有當新的總點數達到或超過應發放點數時，才禁用按鈕
+                if (newTotalPoints >= payoutPoints) {
+                    currentButton.disabled = true;
+                    currentButton.classList.remove('btn-primary');
+                    currentButton.classList.add('btn-disabled');
+                } else {
+                    console.log(`還可以補發 ${payoutPoints - newTotalPoints} 點`);
+                }
+            }
+            
+            // 關閉模態框
+            $('#paydetail-modal').modal('hide');
+            
+            // 清空輸入框
+            document.getElementById("paydetail-points-input").value = "";
+
+            // 導向父表並高亮
+            if (payoutId) {
+                localStorage.setItem('highlightedPayRecordId', payoutId);
+                window.location.href = 'backstage_payrecord_management.html';
+            }
+        } else {
+            alert(data.message || '點數發放處理失敗');
+        }
+    })
+    .catch(error => {
+        console.error("發放點數時發生錯誤:", error);
+        
+        // 只有在錯誤訊息中包含特定文字時才顯示alert
+        if (error.message.includes("人工補發的點數不能超過設定的發放點數上限")) {
+            alert(error.message);
+        }
+
+        // 恢復原始點數
+        const row = document.querySelector(`button[data-paydetail-id="${payDetailId}"]`).closest('tr');
+        const pointsCell = row.querySelector('td:nth-child(8)');
+        if (pointsCell) {
+            const originalPoints = parseInt(pointsCell.getAttribute('data-original-points') || pointsCell.textContent);
+            pointsCell.textContent = originalPoints;
+        }
+    });
+}
+
+
+
+
+
+
+
+
         // 獲取記錄資料
         function fetchRecords(isInitialLoad = false, payoutId) {
             // 獲取搜尋條件
@@ -771,81 +811,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// 獲取記錄資料
-function fetchRecords(isInitialLoad = false, payoutId) {
-    // 獲取搜尋條件
-    const memberId = document.getElementById('search-member-id').value;
-    const name = document.getElementById('search-name').value;
-    const pointsStatus = document.getElementById('search-points-status').value;
-    
-    // 顯示載入中提示
-    document.getElementById('paydetail-table').innerHTML = '<tr><td colspan="9" class="text-center">載入中...</td></tr>';
-    
-    // 構建查詢參數
-    const queryParams = new URLSearchParams();
-    
-    // 檢查是否有搜尋條件
-    let hasSearchCriteria = false;
-    
-    // 只有在非初始載入且有搜尋條件時才添加篩選參數
-    if (!isInitialLoad) {
-        if (memberId && memberId.trim() !== '') {
-            queryParams.append('memberId', memberId.trim());
-            hasSearchCriteria = true;
-        }
-        
-        if (name && name.trim() !== '') {
-            queryParams.append('name', name.trim());
-            hasSearchCriteria = true;
-        }
-        
-        if (pointsStatus && pointsStatus !== '') {
-            queryParams.append('pointsStatus', pointsStatus);
-            hasSearchCriteria = true;
-        }
-    }
-    
-    // 控制重設按鈕的顯示
-    const resetButton = document.getElementById('reset-search-btn');
-    if (resetButton) {
-        resetButton.style.display = hasSearchCriteria ? 'block' : 'none';
-    }
-    
-    // 建立帶查詢參數的 URL
-    const url = `http://localhost:8080/paydetails/getByPayRecord/${payoutId}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-    
-    // 執行 API 請求
-    backstageAuth.authFetch(url)
-    .then(response => {
-        console.log('查詢參數:', queryParams.toString());
-        console.log('Request URL:', url);
-        
-        if (!response.ok) {
-            throw new Error('網路回應不正確');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Received data:', data);
-        
-        // 根據排序方向對數據進行排序
-        allRecords = idSortAscending
-            ? data.sort((a, b) => a.payDetailId - b.payDetailId)
-            : data.sort((a, b) => b.payDetailId - a.payDetailId);
-        
-        totalPages = Math.ceil(allRecords.length / recordsPerPage);
-        totalPages = totalPages === 0 ? 1 : totalPages;
-        
-        currentPage = 1;
-        displayRecords(currentPage);
-        updatePagination();
-    })
-    .catch(error => {
-        console.error("獲取資料時發生錯誤:", error);
-        document.getElementById('paydetail-table').innerHTML = 
-            '<tr><td colspan="9" class="text-center text-danger">資料載入失敗，請稍後再試</td></tr>';
-    });
-}
+
 
 // 顯示特定頁的記錄
 function displayRecords(page) {
@@ -1022,76 +988,7 @@ function bindPointsButtonEvents() {
     });
 }
 
-// 發放點數給會員
-// 更新 grantPointsToMember 函數，修改發放後按鈕狀態的判斷邏輯
-function grantPointsToMember(payDetailId, points) {
-    backstageAuth.authFetch("http://localhost:8080/paydetails/update-points", {
-        method: "POST",
-        body: {
-            payDetailId: payDetailId,
-            pointsExpensed: points
-        }
-    })
-    .then(response => {
-        const contentType = response.headers.get('content-type');
 
-        if (contentType && contentType.includes('application/json')) {
-            return response.json();
-        } else {
-            return response.text().then(text => {
-                throw new Error(text);
-            });
-        }
-    })
-    .then(data => {
-        console.log("點數發放結果:", data);
-
-        // 只有在成功時才更新頁面
-        if (data && data.message && data.message.includes('成功')) {
-            alert(data.message);
-
-            // 立即更新頁面上的點數
-            const row = document.querySelector(`button[data-paydetail-id="${payDetailId}"]`).closest('tr');
-            const pointsCell = row.querySelector('td:nth-child(8)');
-            const currentButton = row.querySelector('.grant-points-btn');
-
-            if (pointsCell && currentButton) {
-                // 獲取應發放點數
-                const payoutPoints = parseInt(currentButton.getAttribute("data-payout-points")) || 10000;
-                
-                // 更新已發放點數
-                const currentPoints = parseInt(pointsCell.textContent);
-                const newTotalPoints = currentPoints + points;
-                pointsCell.textContent = newTotalPoints;
-
-                // 只有當新的總點數達到或超過應發放點數時，才禁用按鈕
-                if (newTotalPoints >= payoutPoints) {
-                    currentButton.disabled = true;
-                    currentButton.classList.remove('btn-primary');
-                    currentButton.classList.add('btn-disabled');
-                } else {
-                    // 點數仍未達到應發放點數，按鈕保持可點擊狀態
-                    // 可選：更新剩餘可發放點數顯示
-                    console.log(`還可以補發 ${payoutPoints - newTotalPoints} 點`);
-                }
-            }
-        } else {
-            alert(data.message || '點數發放處理失敗');
-        }
-    })
-    .catch(error => {
-        console.error("發放點數時發生錯誤:", error);
-        alert("點數發放失敗：" + error.message);
-
-        // 恢復原始點數
-        const row = document.querySelector(`button[data-paydetail-id="${payDetailId}"]`).closest('tr');
-        const pointsCell = row.querySelector('td:nth-child(8)');
-        if (pointsCell) {
-            const originalPoints = parseInt(pointsCell.getAttribute('data-original-points') || pointsCell.textContent);
-            pointsCell.textContent = originalPoints;
-        }
-    });
-}
 
 
 

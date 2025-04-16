@@ -922,54 +922,71 @@ window.changeAccountStatus = function(element, memberId) {
     }
 }
 
-// 顯示照片預覽模態框
-window.showImageModal = function(imageUrl) {
+
+// 顯示照片或文件預覽模態框
+window.showImageModal = function(fileUrl) {
     const modal = document.getElementById('memberManagement-imageModal');
     const modalImg = document.getElementById('memberManagement-modalImage');
     
     // 確保使用完整的 URL (包含域名)
-    if (!imageUrl.startsWith('http')) {
+    if (!fileUrl.startsWith('http')) {
         // 使用當前域名作為基礎
         const base = window.location.origin;
-        imageUrl = base + imageUrl;
+        fileUrl = base + fileUrl;
     }
     
-    console.log("顯示圖片:", imageUrl); // 添加日誌以便調試
+    console.log("顯示檔案:", fileUrl);
     
-    // 先隱藏圖片，等加載完成後再顯示，避免位置閃爍
-    modalImg.style.display = 'none';
+    // 取得檔案副檔名
+    const fileExtension = fileUrl.split('.').pop().toLowerCase();
     
-    // 顯示模態框
-    modal.style.display = "block";
-    modalImg.src = imageUrl;
+    // 定義需要處理的檔案類型
+    const imageTypes = ['jpg', 'jpeg', 'png', 'bmp'];
+    const pdfType = ['pdf'];
     
-    // 圖片加載完成後顯示並置中
-    modalImg.onload = function() {
-        modalImg.style.display = 'block';
+    // 檢查檔案類型
+    if (imageTypes.includes(fileExtension)) {
+        // 圖片類型：使用模態框顯示
+        modalImg.style.display = 'none';
+        modal.style.display = "block";
+        modalImg.src = fileUrl;
         
-        // 計算並設置圖片的垂直位置以達到居中效果
-        const windowHeight = window.innerHeight;
-        const imgHeight = modalImg.offsetHeight;
+        // 圖片加載完成後顯示並置中
+        modalImg.onload = function() {
+            modalImg.style.display = 'block';
+            
+            // 計算並設置圖片的垂直位置以達到居中效果
+            const windowHeight = window.innerHeight;
+            const imgHeight = modalImg.offsetHeight;
+            
+            if (imgHeight < windowHeight) {
+                const topMargin = Math.max(0, (windowHeight - imgHeight) / 2);
+                modalImg.style.marginTop = topMargin + 'px';
+            } else {
+                modalImg.style.marginTop = '30px'; // 如果圖片較大，保留上方空間
+            }
+        };
         
-        if (imgHeight < windowHeight) {
-            const topMargin = Math.max(0, (windowHeight - imgHeight) / 2);
-            modalImg.style.marginTop = topMargin + 'px';
-        } else {
-            modalImg.style.marginTop = '30px'; // 如果圖片較大，保留上方空間
-        }
-    };
-    
-    // 關閉模態框的事件處理
-    const closeBtn = document.getElementsByClassName('memberManagement-close')[0];
-    closeBtn.onclick = function() {
-        modal.style.display = "none";
-    }
-    
-    // 點擊模態框背景也可以關閉
-    modal.onclick = function(event) {
-        if (event.target === modal) {
+        // 關閉模態框的事件處理
+        const closeBtn = document.getElementsByClassName('memberManagement-close')[0];
+        closeBtn.onclick = function() {
             modal.style.display = "none";
         }
+        
+        // 點擊模態框背景也可以關閉
+        modal.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    } else if (pdfType.includes(fileExtension)) {
+        // PDF 檔案：在新視窗中打開
+        window.open(fileUrl, '_blank');
+        return;
+    } else {
+        // 其他未知類型的檔案：提示不支援
+        alert('不支援此檔案類型的預覽');
+        return;
     }
 }
 

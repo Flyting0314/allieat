@@ -9,6 +9,13 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+
+
 @Repository
 public interface PointsRedemptionRepository extends 
     JpaRepository<PointsRedemptionVO, Integer>, 
@@ -47,6 +54,22 @@ public interface PointsRedemptionRepository extends
     // 根據兌換月和狀態查詢所有記錄
     List<PointsRedemptionVO> findByRedemptionMonthAndStatus(Date redemptionMonth, Integer status);
     
+    
+    /**
+     * 根據狀態獲取點數兌換金額總和
+     * @param status 狀態值(0:未核銷, 1:已核銷, 2:核銷異常)
+     * @return 對應狀態的點數兌換金額總和
+     */
+    @Query("SELECT COALESCE(SUM(pr.cashAmount), 0) FROM PointsRedemptionVO pr WHERE pr.status = :status")
+    Integer sumCashAmountByStatus(@Param("status") Integer status);
+    
+    /**
+     * 根據多個狀態獲取點數兌換金額總和
+     * @param statuses 狀態值數組(1:已核銷, 2:核銷異常)
+     * @return 符合狀態的點數兌換金額總和
+     */
+    @Query("SELECT COALESCE(SUM(pr.cashAmount), 0) FROM PointsRedemptionVO pr WHERE pr.status IN :statuses")
+    Integer sumCashAmountByStatuses(@Param("statuses") Integer[] statuses);
   
 
 }

@@ -58,6 +58,12 @@ public class BackStageMemberManageService {
         return memberRepository.findAllById(memberIds);
     }
 
+    
+    
+  
+    
+    
+    
     // ======= 查詢所有會員（方法有調整）==========
     public List<MemberVO> getAllMembers() {
         List<MemberVO> members = memberRepository.findAll();
