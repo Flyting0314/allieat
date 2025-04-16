@@ -124,7 +124,7 @@ public class MemberRegistAndLoginController {
                                       SessionStatus status,
                                       RedirectAttributes redirectAttributes) {
         if (member == null || member.getKycImage() == null) {
-            return "redirect:/registerAndLogin/register/member/";
+            return "redirect:/registerAndLogin/register/member";
         }
 
         try {
