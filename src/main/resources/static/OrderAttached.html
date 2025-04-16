@@ -831,7 +831,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById('mainDishTitle').textContent = food.name || '未知餐點';
                 document.getElementById('mainDishPrice').textContent = `${food.cost || 0} 點`;
                 const img = document.getElementById('mainDishImage');
-                img.src = food.photo ? `/food/images/${food.photo}` : 'https://via.placeholder.com/300x200?text=餐點圖片';
+                img.src = `/meal/photo/${food.foodId}`
                 img.alt = food.name || '主餐圖片';
                 document.title = `${food.name} - 攏呷霸 ALLiEAT`;
             })
