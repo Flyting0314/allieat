@@ -20,7 +20,7 @@ import jakarta.validation.constraints.NotNull;
 public class OrganizationVO implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "organizationId ", updatable = false)
+	@Column(name = "organizationId", updatable = false)
 	@NotNull(message = "請選擇註冊單位")
     private Integer organizationId;
 	
