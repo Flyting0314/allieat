@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="zh-Hant">
-<head> 
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>受助者點數發放</title>
@@ -400,6 +400,9 @@
         </div>
     </div>
 
+
+
+
 <!-- 排程設定模態框 -->
 <div class="modal fade" id="batchDistributeModal" tabindex="-1" role="dialog" aria-labelledby="batchDistributeModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -411,11 +414,14 @@
                 </button>
             </div>
             <div class="modal-body">
+                <!-- 新增: 可用資金顯示區域 -->
+                <div class="alert alert-info">
+                    <i class="fas fa-coins mr-2"></i>
+                    <strong>目前平台可用資金：NT$ <span id="available-funds">0</span></strong>
+                </div>
+
                 <div class="alert alert-secondary">
                     <i class="fas fa-info-circle"></i> 此為點數自動排程發放系統，您可以修改系統的排程
-                </div>
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i> 本次操作將從下月起生效，並一直被接下來的月份沿用
                 </div>
                 <div class="form-group">
                     <label for="distributeDayOfMonth">發放日（每月）</label>
@@ -428,7 +434,16 @@
                 </div>
                 <div class="form-group">
                     <label for="batchPointsInput">發放點數（每人）</label>
-                    <input type="number" class="form-control" id="batchPointsInput" placeholder="請輸入點數數量" min="10" step="10" value="9000">
+                    <input type="number" class="form-control" id="batchPointsInput" placeholder="請輸入點數數量" step="500" value="10000">
+                    <small class="form-text text-muted">
+                        目前啟用狀態會員數：<span id="active-member-count">0</span> 位
+                        <br>
+                        預計發放總點數：<span id="total-points-preview">0</span> 點
+                    </small>
+                </div>
+                <!-- 新增: 資金不足警告 -->
+                <div id="funds-warning" class="alert alert-danger" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i> 警告：預計發放總點數超過平台可用資金！
                 </div>
             </div>
             <div class="modal-footer">
@@ -438,6 +453,9 @@
         </div>
     </div>
 </div>
+
+
+
 
 <!-- 批量點數確認浮動視窗 -->
 <div class="modal fade" id="confirmBatchModal" tabindex="-1" role="dialog" aria-labelledby="confirmBatchModalLabel" aria-hidden="true">
@@ -530,7 +548,7 @@
 
 // 全局變數定義
 let currentPage = 1;
-const recordsPerPage = 10;
+const recordsPerPage = 8; //每頁幾筆資料
 let totalPages = 1;
 let allRecords = [];
 let originalRecords = []; // 保存原始數據，以便返回
@@ -806,11 +824,30 @@ function togglePayoutIdSort() {
  */
 
 // 查看點數發放明細
-function viewDetails(payRecordId) {
-    // window.location.href = `payDetailWebV2.html?payRecordId=${payRecordId}`;
-    window.location.href = `backstage_paydetail.html?payRecordId=${payRecordId}`;
+// function viewDetails(payRecordId) {
+//    // 將完整的記錄存入 localStorage
+//    localStorage.setItem('parentPayRecordInfo', JSON.stringify(record));
 
-  }
+//     // 跳轉到明細頁面
+//     window.location.href = `backstage_paydetail.html?payRecordId=${record.payoutId}`;
+//     // window.location.href = `backstage_paydetail.html?payRecordId=${payRecordId}`;
+
+
+//   }
+
+
+//=========新跳轉寫法 查看明細頁面==============
+// 查看點數發放明細
+function viewDetails(currentRecord) {
+    // 將完整的記錄存入 localStorage
+    localStorage.setItem('parentPayRecordInfo', JSON.stringify(currentRecord));
+    
+    // 跳轉到明細頁面
+    window.location.href = `backstage_paydetail.html?payRecordId=${currentRecord.payoutId}`;
+}
+
+
+
   
   // 立刻發放點數
   function executePay(payoutId) { 
@@ -970,39 +1007,171 @@ function viewDetails(payRecordId) {
     document.getElementById("payrecord-modal-overlay").style.display = "none";
   }
   
+
   // 顯示排程設定模態框
-  function showBatchDistributeModal() {
-    document.getElementById('distributeDayOfMonth').value = '10';
+function showBatchDistributeModal() {
+    // 初始化設定值
+    document.getElementById('distributeDayOfMonth').value = '21';
     document.getElementById('distributeTime').value = '10:00';
-    document.getElementById('batchPointsInput').value = '9000';
+    document.getElementById('batchPointsInput').value = '10000';
     
+    // 獲取平台可用資金
+    fetchPlatformFunds();
+    
+    // 獲取啟用狀態的會員數量
+    fetchActiveMemberCount();
+    
+    // 顯示模態框
     $('#batchDistributeModal').modal('show');
-  }
+    
+    // 綁定點數輸入事件，用於計算預計發放總點數
+    document.getElementById('batchPointsInput').addEventListener('input', calculateTotalPoints);
+}
+
+
+
+// 獲取平台可用資金
+function fetchPlatformFunds() {
+    backstageAuth.authFetch('http://localhost:8080/payrecord/platform-funds')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('無法獲取平台資金狀態');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // 顯示可用資金
+        document.getElementById('available-funds').textContent = data.availableFunds.toLocaleString();
+        
+        // 儲存可用資金到全局變數，用於後續計算
+        window.availableFunds = data.availableFunds;
+        
+        // 如果已經輸入了點數，重新計算並檢查資金是否足夠
+        calculateTotalPoints();
+    })
+    .catch(error => {
+        console.error('無法獲取平台資金狀態:', error);
+        document.getElementById('available-funds').textContent = '獲取失敗';
+    });
+}
+
+
+// 獲取啟用狀態的會員數量
+function fetchActiveMemberCount() {
+    backstageAuth.authFetch('http://localhost:8080/payrecord/active-member-count')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('無法獲取啟用會員數量');
+        }
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById('active-member-count').textContent = data.count.toLocaleString();
+        
+        // 儲存會員數量到全局變數，用於後續計算
+        window.activeMemberCount = data.count;
+        
+        // 如果已經輸入了點數，重新計算
+        calculateTotalPoints();
+    })
+    .catch(error => {
+        console.error('無法獲取啟用會員數量:', error);
+        document.getElementById('active-member-count').textContent = '獲取失敗';
+    });
+}
+
+// 計算預計發放總點數
+function calculateTotalPoints() {
+    const pointsPerMember = parseInt(document.getElementById('batchPointsInput').value) || 0;
+    const memberCount = window.activeMemberCount || 0;
+    
+    // 計算總點數
+    const totalPoints = pointsPerMember * memberCount;
+    document.getElementById('total-points-preview').textContent = totalPoints.toLocaleString();
+    
+    // 檢查可用資金是否足夠
+    if (window.availableFunds !== undefined) {
+        if (totalPoints > window.availableFunds) {
+            // 可用資金不足，顯示警告
+            document.getElementById('funds-warning').style.display = 'block';
+            document.getElementById('confirmBatchDistribute').disabled = true;
+        } else {
+            // 可用資金充足，隱藏警告
+            document.getElementById('funds-warning').style.display = 'none';
+            document.getElementById('confirmBatchDistribute').disabled = false;
+        }
+    }
+    
+    return totalPoints;
+}
+
+
   
   // 在文檔載入完成後執行
-  document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById('confirmBatchDistribute').addEventListener('click', function() {
-      const dayOfMonth = document.getElementById('distributeDayOfMonth').value;
-      const time = document.getElementById('distributeTime').value;
-      const points = document.getElementById('batchPointsInput').value;
-      
-      if (parseInt(dayOfMonth) < 1 || parseInt(dayOfMonth) > 28) {
-        alert("發放日必須介於1-28之間");
-        return;
-      }
-      
-      document.getElementById('confirmBatchInfo').innerHTML = `您將更改系統每月自動發放點數排程為 每月${dayOfMonth}日 ${time}，並每月對每位會員發放 ${points} 點`;
-      
-      $('#batchDistributeModal').modal('hide');
-      $('#confirmBatchModal').modal('show');
-    });
+document.addEventListener("DOMContentLoaded", function () {
+    // 獲取確認按鈕元素
+    const confirmButton = document.getElementById('confirmBatchDistribute');
+    
+    // 如果已經綁定過事件，先移除，防止重複綁定
+    if (confirmButton) {
+        // 創建一個新的按鈕元素替換舊的，移除所有之前的事件監聽器
+        const newButton = confirmButton.cloneNode(true);
+        confirmButton.parentNode.replaceChild(newButton, confirmButton);
+        
+        // 為新按鈕添加事件監聽器
+        newButton.addEventListener('click', function() {
+            const dayOfMonth = document.getElementById('distributeDayOfMonth').value;
+            const time = document.getElementById('distributeTime').value;
+            const points = document.getElementById('batchPointsInput').value;
+            const totalPoints = calculateTotalPoints();
+            const availableFunds = window.availableFunds || 0;
+            
+            if (parseInt(dayOfMonth) < 1 || parseInt(dayOfMonth) > 28) {
+                alert("發放日必須介於1-28之間");
+                return;
+            }
+            
+            // 構建確認信息
+            let confirmMessage = `您將更改系統每月自動發放點數排程為 每月${dayOfMonth}日 ${time}，並每月對每位會員發放 ${points} 點`;
+            
+            // 添加總點數和可用資金比較
+            confirmMessage += `<br><br>啟用狀態會員數：${window.activeMemberCount?.toLocaleString() || 0} 位`;
+            confirmMessage += `<br>預計發放總點數：${totalPoints.toLocaleString()} 點`;
+            confirmMessage += `<br>目前可用資金：NT$ ${availableFunds.toLocaleString()}`;
+            
+            if (totalPoints > availableFunds) {
+                confirmMessage += `<br><br><span class="text-danger"><strong>警告：預計發放總點數超過平台可用資金！</strong></span>`;
+            }
+            
+            // 檢查元素是否存在再設置內容
+            const confirmInfoElement = document.getElementById('confirmBatchInfo');
+            if (confirmInfoElement) {
+                confirmInfoElement.innerHTML = confirmMessage;
+            }
+            
+            $('#batchDistributeModal').modal('hide');
+            $('#confirmBatchModal').modal('show');
+        });
+    }
+    
+    // 同樣方法處理finalConfirmBatchDistribute按鈕
+    const finalConfirmButton = document.getElementById('finalConfirmBatchDistribute');
+    if (finalConfirmButton) {
+        const newFinalButton = finalConfirmButton.cloneNode(true);
+        finalConfirmButton.parentNode.replaceChild(newFinalButton, finalConfirmButton);
+        
+        newFinalButton.addEventListener('click', function() {
+            setupSchedule();
+        });
+    }
+});
   
-    // 批量發放排程最終確認按鈕事件綁定
-    document.getElementById('finalConfirmBatchDistribute').addEventListener('click', function() {
-        setupSchedule();
-    });
-  });
-  
+
+
+
+
+
+
   // 設定排程API調用
   function setupSchedule() {
     const dayOfMonth = parseInt(document.getElementById('distributeDayOfMonth').value);
@@ -1048,7 +1217,7 @@ function viewDetails(payRecordId) {
         // 3秒後重新載入資料
         setTimeout(() => {
           fetchRecords();
-        }, 3000);
+        }, 5000);
       } else {
         throw new Error(result.message || '設定排程失敗');
       }
@@ -1071,6 +1240,7 @@ function viewDetails(payRecordId) {
  */
 
 // 顯示特定頁的記錄
+
 function displayRecords(page) {
   const tableBody = document.getElementById("payrecord-table");
   tableBody.innerHTML = "";
@@ -1088,12 +1258,20 @@ function displayRecords(page) {
   // 取得當前頁的資料
   const currentRecords = allRecords.slice(startIndex, endIndex);
   
+  // 檢查是否有高亮的記錄
+  const highlightedId = localStorage.getItem('highlightedPayRecordId');
+  
   // 生成表格行
   currentRecords.forEach(record => {
       const row = document.createElement("tr");
+      
+      // 如果這筆記錄是剛剛更新的，加上高亮類別
+      const highlightClass = record.payoutId == highlightedId ? 'table-info' : ''; // 藍色
+      row.className = highlightClass;
+      
       row.innerHTML = `
           <td>${record.payoutId}</td>
-            <td>${record.totalPoints === null || record.totalPoints === 0 ? '<span class="text-muted-small">未發放</span>' : record.totalPoints.toLocaleString()}</td>
+          <td>${record.totalPoints === null || record.totalPoints === 0 ? '<span class="text-muted-small">未發放</span>' : record.totalPoints.toLocaleString()}</td>
           <td>${formatTimestamp(record.scheduleTime)}</td>
           <td>${record.payoutDate ? formatTimestamp(record.payoutDate) : '<span class="text-muted-small">尚未發放</span>'}</td>
           <td>${formatStatusWithBadge(record.status)}</td>
@@ -1107,15 +1285,27 @@ function displayRecords(page) {
             `<button class="btn btn-outline-primary btn-sm" onclick="editRecord(${record.payoutId}, ${record.payoutPoints}, '${record.scheduleTime}', ${record.status})">修改</button>` : 
             `<span class="text-muted-small">已發放</span>`}
           </td>
-          <td>
-            ${record.status === 1 ? 
-            `<button class="btn btn-outline-primary btn-sm" onclick="viewDetails(${record.payoutId})">查看</button>` : 
-            `<button class="btn btn-outline-secondary btn-sm" disabled>查看</button>`}
-          </td>
+          
+   <td>
+    ${record.status === 1 ? 
+    `<button class="btn btn-outline-primary btn-sm" onclick='viewDetails(${JSON.stringify(record).replace(/'/g, "\\'")})')>查看</button>` : 
+    `<button class="btn btn-outline-secondary btn-sm" disabled>查看</button>`}
+</td>
       `;
       tableBody.appendChild(row);
   });
+
+  // 3秒後移除高亮
+  if (highlightedId) {
+      setTimeout(() => {
+          localStorage.removeItem('highlightedPayRecordId');
+          fetchRecords(true); // 重新載入並移除高亮
+      }, 10000);
+  }
 }
+
+
+
 
 // 更新分頁控制
 function updatePagination() {

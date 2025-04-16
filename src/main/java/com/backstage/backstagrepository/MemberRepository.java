@@ -49,6 +49,12 @@ public interface MemberRepository extends JpaRepository<MemberVO, Integer> {
 	//撈照片，用organizationId找
 	@Query(value = "SELECT kycImage FROM member WHERE organizationId = :organizationId AND reviewed = 3", nativeQuery = true)
 	String findPendingPicByOrgId(@Param("organizationId") Integer organizationId);
+	
+	
+	 //計算指定審核狀態和帳戶狀態的會員數量
+	 //reviewed 審核狀態 (1=已審核) accStat 帳戶狀態 (1=啟用)的會員數量 
+	@Query("SELECT COUNT(m) FROM MemberVO m WHERE m.reviewed = :reviewed AND m.accStat = :accStat")
+	Integer countByReviewedAndAccStat(@Param("reviewed") Integer reviewed, @Param("accStat") Integer accStat);
 
 }
 

@@ -16,9 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.backstage.backstagedto.PayRecordUpdateDTO;
+import com.backstage.backstagrepository.DonationRepository;
 import com.backstage.backstagrepository.MemberRepository;
 import com.backstage.backstagrepository.PayDetailRepository;
 import com.backstage.backstagrepository.PayRecordRepository;
+import com.backstage.backstagrepository.PointsRedemptionRepository;
+import com.entity.DonationVO;
 import com.entity.MemberVO;
 import com.entity.PayDetailVO;
 import com.entity.PayRecordVO;
@@ -49,6 +52,12 @@ public class BackStagePayRecordService {
 
    @Autowired
    	private PayDetailRepository payDetailRepository;
+   
+   	@Autowired
+   	private DonationRepository donationRepository;
+   
+   	@Autowired
+   	private PointsRedemptionRepository pointsRedemptionRepository;
 
     
     public PayRecordVO addPayRecord(PayRecordVO payRecordVO) {
@@ -235,11 +244,7 @@ public class BackStagePayRecordService {
     }
   
     
-    
-    
-    
-    
-    
+       
 
     
     // ======= 人工手動更新 payRecord 時，輸入時間參數的驗證方法 =======
@@ -290,5 +295,44 @@ public class BackStagePayRecordService {
     	    
     	    return entityManager.createQuery(query).getResultList();
     	}
+    
+    
+    
+    //===========計算平台目前可用資金=============
+    
+    public Integer calculateAvailableFunds() {
+        // 1. 獲取捐款總額 (由於只有一筆資料，直接獲取)
+        DonationVO donation = donationRepository.findById(1).orElse(null);
+        Integer totalDonation = (donation != null) ? donation.getAmount() : 0;
+        
+        // 2. 獲取已核銷(status=1)和核銷異常(status=2)的點數兌換金額總和
+        Integer redeemedAmount = pointsRedemptionRepository.sumCashAmountByStatuses(new Integer[]{1, 2});
+        redeemedAmount = (redeemedAmount != null) ? redeemedAmount : 0;
+        System.out.println("已用資金: " + redeemedAmount);
+        
+        // 3. 計算可用資金
+        Integer availableFunds = totalDonation - redeemedAmount;
+        
+        return availableFunds;
+    }
+    
+    
+    
+    
+    
+    //=============== 新增：計算啟用狀態會員數量 ===============
+    /**
+     * 計算啟用狀態的會員數量
+     * 啟用狀態：審核通過(reviewed=1)且帳戶啟用(accStat=1)
+     * @return 啟用狀態的會員數量
+     */
+    public Integer countActiveMember() {
+        return memberRepository.countByReviewedAndAccStat(1, 1);
+    }
+    
+    
+    
+    
+    
     
 }
