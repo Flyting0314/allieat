@@ -12,6 +12,8 @@ public interface StoreOrderService {
 	void completeOrder(Integer orderId);
 
 	void updateOrderStatus(Integer orderId, String type);
+
+	void readyForPickup(Integer orderId);
 	
 }
 

@@ -9,13 +9,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.backstage.backstagrepository.OrderDetailRepository;
 import com.backstage.backstagrepository.OrderFoodRepository;
 import com.backstage.backstagrepository.StoreRepository;
 import com.entity.OrderDetailVO;
 import com.entity.OrderFoodVO;
 import com.entity.StoreVO;
 import com.storeOrder.dto.StoreOrderDTO;
+import com.storeOrder.service.FcmService;
 import com.storeOrder.service.StoreOrderService;
 
 @Service
@@ -26,6 +26,9 @@ public class StoreOrderServiceImpl implements StoreOrderService {
     
     @Autowired
     private StoreRepository storeRepository;
+    
+    @Autowired
+    private FcmService fcmService;
     
     @Override
     public void completeOrder(Integer orderId) {
@@ -86,6 +89,8 @@ public class StoreOrderServiceImpl implements StoreOrderService {
                 break;
             case "ready":
                 order.setPickStat(2);
+                orderFoodRepository.save(order); // 先存取餐狀態
+                readyForPickup(orderId);          // 再推播通知
                 break;
             case "pickedUp":
                 order.setPickStat(1);
@@ -145,5 +150,23 @@ public class StoreOrderServiceImpl implements StoreOrderService {
         return result;
     }
 
+	// fcm專用
+	@Override
+	public void readyForPickup(Integer orderId) {
+        OrderFoodVO order = orderFoodRepository.findById(orderId).orElse(null);
+        if (order != null) {
+            // 更新成可取餐
+            order.setPickStat(2); // 你原本的 pickStat=2 就是可取餐
+            orderFoodRepository.save(order);
+
+            // 推播通知
+            String fcmToken = order.getFcmToken();
+            if (fcmToken != null) {
+                fcmService.sendPickupNotification(fcmToken, order.getStore().getName(), order.getOrderId());
+            }
+        }
+    }
+	
+	
 }
 
