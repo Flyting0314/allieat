@@ -43,6 +43,9 @@ public class OrderFoodVO {
     // 2025/04/13 新增：與訂單明細(OrderDetailVO)建立一對多關聯
     @OneToMany(mappedBy = "orderFood", cascade = CascadeType.ALL)
     private Set<OrderDetailVO> orderDetails;
+    
+    @Column(name = "fcm_token")
+    private String fcmToken;
 
     // Getter & Setter
     public Integer getOrderId() {
@@ -124,4 +127,14 @@ public class OrderFoodVO {
     public void setOrderDetails(Set<OrderDetailVO> orderDetails) {
         this.orderDetails = orderDetails;
     }
+
+	public String getFcmToken() {
+		return fcmToken;
+	}
+
+	public void setFcmToken(String fcmToken) {
+		this.fcmToken = fcmToken;
+	}
+    
+    
 } 

@@ -47,7 +47,7 @@
 			    <i class="fas fa-dollar-sign vendor_sidebar_icon"></i>
 			    核銷點數管理
 			</a>
-				 <a href="#" class="vendor_sidebar_item"> <i
+				 <a href="/storeOrder_ws.html" class="vendor_sidebar_item"> <i
 					class="fas fa-clipboard-list vendor_sidebar_icon"></i> 訂單管理
 				</a> 
 				<a href="#" class="vendor_sidebar_item"> <i
@@ -317,6 +317,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+	// 這邊幫我把storeId存到localstorage裡
+	document.addEventListener('DOMContentLoaded', function() {
+	  const storeId = document.querySelector('input[name="storeId"]').value;
+	  if (storeId) {
+	    localStorage.setItem('storeId', storeId);
+	    console.log('storeId 已經存到 localStorage:', storeId);
+	  }
+	});
 </script>
 
 	<!-- Footer Start -->

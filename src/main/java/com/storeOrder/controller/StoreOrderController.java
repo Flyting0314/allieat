@@ -1,57 +1,56 @@
 package com.storeOrder.controller;
 
-import com.backstage.backstagrepository.OrderFoodRepository;
-import com.entity.OrderFoodVO;
-import com.storeOrder.dto.StoreOrderDTO;
-import com.storeOrder.dto.StoreOrderDTO.FoodItem;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.storeOrder.dto.StoreOrderDTO;
+import com.storeOrder.service.StoreOrderService;
 
 @RestController
 @RequestMapping("/registerAndLogin/storeInfo/{storeId}/orders")
 public class StoreOrderController {
 
     @Autowired
-    private OrderFoodRepository orderFoodRepository;
+    private StoreOrderService storeOrderService ;
 
-    // 取得今天該店家的所有訂單
+    // 取得"今天"該店家的所有訂單
     @GetMapping("/today")
     public ResponseEntity<List<StoreOrderDTO>> getTodayOrders(@PathVariable Integer storeId) {
-        LocalDate today = LocalDate.now();
-        Timestamp startOfDay = Timestamp.valueOf(today.atStartOfDay());
-        Timestamp startOfTomorrow = Timestamp.valueOf(today.plusDays(1).atStartOfDay());
-
-        List<OrderFoodVO> orders = orderFoodRepository.findByStoreStoreIdAndCreatedTimeBetween(storeId, startOfDay, startOfTomorrow);
-
-        List<StoreOrderDTO> result = orders.stream().map(order -> {
-            StoreOrderDTO dto = new StoreOrderDTO();
-            dto.setOrderId(order.getOrderId());
-            dto.setCreatedTime(order.getCreatedTime());
-            dto.setServeStat(order.getServeStat());
-            dto.setPickStat(order.getPickStat());
-
-            if (order.getServeStat() != null && order.getServeStat() == 1) {
-                dto.setPickupDeadline(Timestamp.from(order.getCreatedTime().toInstant().plus(1, ChronoUnit.HOURS)));
-            }
-
-            List<FoodItem> foodItems = order.getOrderDetails().stream().map(detail -> {
-                FoodItem item = new FoodItem();
-                item.setFoodName(detail.getFood().getName());
-                item.setQuantity(detail.getAmount());
-                return item;
-            }).collect(Collectors.toList());
-
-            dto.setFoodItems(foodItems);
-            return dto;
-        }).collect(Collectors.toList());
-
+        List<StoreOrderDTO> result = storeOrderService.getTodayOrders(storeId);
         return ResponseEntity.ok(result);
+    }
+    
+    // 訂單完成
+    @PutMapping("/{orderId}/complete")
+    public ResponseEntity<String> completeOrder(
+            @PathVariable Integer storeId,
+            @PathVariable Integer orderId) {
+        storeOrderService.completeOrder(orderId);
+        return ResponseEntity.ok("訂單完成並已加點數");
+    }
+    
+    // 修改訂單狀態，
+    @PutMapping("/{orderId}/{type}")
+    public ResponseEntity<String> updateOrderStatus(
+        @PathVariable Integer storeId,
+        @PathVariable Integer orderId,
+        @PathVariable String type) {
+        storeOrderService.updateOrderStatus(orderId, type);
+        return ResponseEntity.ok("訂單狀態更新成功: " + type);
+    }
+    
+    // fcm專用
+    @PutMapping("/pickup-ready/{orderId}")
+    public String readyForPickup(@PathVariable Integer orderId) {
+        storeOrderService.readyForPickup(orderId);
+        return "✅ 已設定為可取餐，推播已發送";
     }
 }
