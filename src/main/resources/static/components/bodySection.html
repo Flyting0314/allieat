@@ -30,7 +30,10 @@
               <a href="/rank/top" class="dropdown-item">哈燒排行榜</a>
             </div>
           </div>
+
+
           <a href="/map2" class="nav-item nav-link">我要取餐 / 點餐</a>
+
           <div class="nav-item dropdown login-section">
   <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊 / 登入</a>
   <div class="dropdown-menu text-capitalize dropdown-custom">
@@ -116,11 +119,55 @@
             }
           });
         } else {
-          window.location.href = isMember
+          window.location.href = isMember1
             ? "/registerAndLogin/memberInfo"
             : "/registerAndLogin/storeInfo";
         }
       });
     }
   })();
+</script>
+
+<script>
+  (function () {
+		  const orderFoodBtn = document.getElementById('orderFoodBtn'); // ✅ 修正變數名
+		  if (orderFoodBtn) {
+		    orderFoodBtn.addEventListener("click", function (event) {
+		      event.preventDefault();
+
+		      const isMember = window.isMember;
+		      const isStore = window.isStore;
+
+		      if (!isMember && !isStore) {
+		        Swal.fire({
+		          title: '<span id="secretEasterTitle">尚未登入</span>',
+		          html: '<p>請先登入才能進入點餐畫面喔！</p>',
+		          icon: 'info',
+		          showCancelButton: true,
+		          confirmButtonText: '好，帶我去登入',
+		          cancelButtonText: '稍後再說',
+		          confirmButtonColor: '#f6a600',
+		          cancelButtonColor: '#aaa',
+		          didOpen: () => {
+		            let pressTimer;
+		            const title = document.getElementById('secretEasterTitle');
+		            title.addEventListener('mousedown', () => {
+		              pressTimer = setTimeout(() => {
+		                window.location.href = '/backStage';
+		              }, 1500);
+		            });
+		            title.addEventListener('mouseup', () => clearTimeout(pressTimer));
+		            title.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+		          }
+		        }).then((result) => {
+		          if (result.isConfirmed) {
+		            window.location.href = "/registerAndLogin/login";
+		          }
+		        });
+		      } else {
+		        window.location.href = "/map2";
+		      }
+		    });
+		  }
+		})();
 </script>
