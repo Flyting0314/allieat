@@ -48,6 +48,10 @@ fetchComponent("footer-container", "/components/footer.html");
 
 //<head>
 //<meta charset="utf-8">
+//<script th:inline="javascript">
+//  window.isMember = /*[[${session.member != null}]]*/ false;
+//  window.isStore = /*[[${session.store != null}]]*/ false;
+//</script>
 //<style>
 
 //======放法========
@@ -74,9 +78,3 @@ fetchComponent("footer-container", "/components/footer.html");
 //<script src="/components/loader.js" defer></script>
 //<!-- JavaScript Libraries -->
 
-
-//======放法====自己的JS的最開頭====
-//<script>
-//fetchComponent("header-container", "/components/header.html");
-//fetchComponent("bodySection-container", "/components/bodySection.html");
-//fetchComponent("footer-container", "/components/footer.html");
