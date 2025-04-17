@@ -1,16 +1,18 @@
 
 
 // 📁 /components/loader.js
-function fetchComponent(componentId, url) {
-	fetch(url, {
-	    headers: { "Accept": "text/html; charset=UTF-8" } 
-	  })
+
+function fetchComponent(componentId, url, callback) {
+  fetch(url, {
+    headers: { "Accept": "text/html; charset=UTF-8" }
+  })
     .then(response => response.text())
     .then(html => {
       const container = document.getElementById(componentId);
       if (!container) return;
       container.innerHTML = html;
 
+      // 處理 <script>
       container.querySelectorAll("script").forEach(oldScript => {
         const newScript = document.createElement("script");
         if (oldScript.src) {
@@ -22,26 +24,48 @@ function fetchComponent(componentId, url) {
         document.body.appendChild(newScript);
       });
 
+      // 處理 <style>
       container.querySelectorAll("style").forEach(oldStyle => {
         const newStyle = document.createElement("style");
         newStyle.textContent = oldStyle.textContent;
         document.head.appendChild(newStyle);
       });
 
+      // 處理 <link>
       container.querySelectorAll("link[rel='stylesheet']").forEach(oldLink => {
         const newLink = document.createElement("link");
         newLink.rel = "stylesheet";
         newLink.href = oldLink.href;
         document.head.appendChild(newLink);
       });
+
+      if (typeof callback === 'function') {
+        callback(); // ✅ 呼叫回調函數
+      }
     });
 }
 
-// 全站共通組件載入
+// 共通組件載入
 fetchComponent("header-container", "/components/header.html");
-fetchComponent("bodySection-container", "/components/bodySection.html");
 fetchComponent("footer-container", "/components/footer.html");
 
+// ✅ 這裡針對 bodySection 加登入狀態判斷
+fetchComponent("bodySection-container", "/components/bodySection.html", () => {
+  fetch("/registerAndLogin/api/login-status")
+    .then(res => res.json())
+    .then(data => {
+      window.isMember = data.isMember;
+      window.isStore = data.isStore;
+
+      if (data.isMember || data.isStore) {
+        document.querySelectorAll('.login-section').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.logout-section').forEach(el => el.style.display = 'inline-block');
+      } else {
+        document.querySelectorAll('.login-section').forEach(el => el.style.display = 'inline-block');
+        document.querySelectorAll('.logout-section').forEach(el => el.style.display = 'none');
+      }
+    });
+});
 
 
 //=====放法=====
