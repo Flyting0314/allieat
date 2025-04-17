@@ -1,0 +1,106 @@
+<section class="hero-section">
+  <div class="container-fluid p-0 nav-bar">
+    <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+      <a href="/" class="navbar-brand px-lg-4 m-0">
+        <h1 class="m-0 display-4 text-uppercase text-white">
+          <img src="/img/logo3.png" width="80px" height="80px" alt="ALLiEAT Logo"
+               style="vertical-align: middle; border-radius: 50%; object-fit: cover;">
+          <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+        </h1>
+      </a>
+      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+        <div class="navbar-nav ml-auto p-4">
+          <div class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">關於我們</a>
+            <div class="dropdown-menu text-capitalize dropdown-custom">
+              <a href="/" class="dropdown-item">首頁</a>
+              <a href="/" class="dropdown-item">使用須知</a>
+              <a href="/" class="dropdown-item">常見問題</a>
+              <a href="/" class="dropdown-item">聯絡我們</a>
+            </div>
+          </div>
+          <div class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">捐款專區</a>
+            <div class="dropdown-menu text-capitalize dropdown-custom">
+              <a href="/dona/donaAddA" class="dropdown-item">我要捐款</a>
+              <a href="/dona/search" class="dropdown-item">捐款查詢</a>
+              <a href="/rank/top" class="dropdown-item">哈燒排行榜</a>
+            </div>
+          </div>
+          <a href="/map" class="nav-item nav-link">我要取餐 / 點餐</a>
+          <a href="/registerAndLogin" class="nav-item nav-link">註冊 / 登入</a>
+          <a href="/registerAndLogin/logout" class="nav-item nav-link">登出</a>
+          <a href="javascript:void(0)" id="memberAreaBtn" class="nav-item nav-link">會員專區</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="container-fluid p-0 mb-5">
+    <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active" style="
+            background-image: url(/img/圖片3.png);
+            background-size: 110% auto;
+            background-position: center 50px;
+            height: 300px;
+            filter: brightness(225%);">
+          <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+            <h2 class="text-primary font-weight-medium m-0"></h2>
+            <h1 class="display-1 text-white m-0"></h1>
+            <h2 class="text-white m-0"></h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const memberBtn = document.getElementById('memberAreaBtn');
+    if (memberBtn) {
+      memberBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        const isMember = window.isMember;
+        const isStore = window.isStore;
+
+        if (!isMember && !isStore) {
+          Swal.fire({
+            title: '<span id="secretEasterTitle">尚未登入</span>',
+            html: '<p>為了保護您的資訊，請先登入才能進入會員專區喔！</p>',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: '好，帶我去登入',
+            cancelButtonText: '稍後再說',
+            confirmButtonColor: '#f6a600',
+            cancelButtonColor: '#aaa',
+            didOpen: () => {
+              let pressTimer;
+              const title = document.getElementById('secretEasterTitle');
+              title.addEventListener('mousedown', () => {
+                pressTimer = setTimeout(() => {
+                  window.location.href = '/backStage';
+                }, 1500);
+              });
+              title.addEventListener('mouseup', () => clearTimeout(pressTimer));
+              title.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = "/registerAndLogin/login";
+            }
+          });
+        } else {
+          window.location.href = isMember
+            ? "/registerAndLogin/memberInfo"
+            : "/registerAndLogin/storeInfo";
+        }
+      });
+    }
+  })();
+</script>
