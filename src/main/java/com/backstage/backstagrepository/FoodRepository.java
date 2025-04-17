@@ -11,4 +11,6 @@ import com.entity.FoodVO;
 @Repository
 public interface FoodRepository extends JpaRepository<FoodVO, Integer> {
     List<FoodVO> findByStore_StoreId(Integer storeId);
+    
+    List<FoodVO> findByStore_StoreIdAndStatus(Integer storeId, Integer status);
 }

@@ -215,7 +215,9 @@ public class MealController {
                 detail.setFood(food);
                 detail.setAmount(quantity);
                 detail.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-                detail.setPointsCost(pointsCost != null ? pointsCost : food.getCost());
+                int unitCost = pointsCost != null ? pointsCost : food.getCost();
+                detail.setPointsCost(unitCost * quantity);
+
                 detail.setNote(item.get("note") != null ? (String) item.get("note") : null);
 
                 details.add(detail);
@@ -469,6 +471,7 @@ public class MealController {
         Map<String, Integer> inventoryMap = new HashMap<>();
 
         for (FoodVO food : foods) {
+            if (food.getStatus() != 1) continue; // ❗排除停用與刪除
             String foodName = food.getName();
             Integer amount = food.getAmount() != null ? food.getAmount() : 0;
             inventoryMap.merge(foodName, amount, Integer::sum);
@@ -484,6 +487,7 @@ public class MealController {
 
         return ResponseEntity.ok(inventoryList);
     }
+
     
     
     

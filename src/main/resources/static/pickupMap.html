@@ -148,7 +148,7 @@
             <p><strong>備註：</strong>${detail.note || "無"}</p>
           `;
           container.appendChild(itemDiv);
-          total += (detail.pointsCost || 0) * (detail.quantity || 1);
+          total += (detail.pointsCost || 0);
         });
         document.getElementById("totalPoints").textContent = `🧾 訂單總點數：${total} 點`;
       } else {
