@@ -1,294 +1,87 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <title>取餐地點 - 攏呷霸 ALLiEAT</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      display: flex;
-      padding: 30px;
-    }
-    .store-info {
-      width: 25%;
-      padding: 20px;
-      border: 2px dashed #aaaaff;
-      border-radius: 10px;
-      background-color: #ffffff;
-      margin-right: 30px;
-    }
-    .store-info h2 {
-      margin: 0;
-      font-size: 20px;
-      color: #333;
-    }
-    .store-info p {
-      margin-top: 8px;
-      font-size: 16px;
-      color: #555;
-    }
-    .store-info a {
-      color: #0077cc;
-      text-decoration: underline;
-    }
-    .order-item {
-      background-color: #f9f9f9;
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-    .order-item p {
-      margin: 4px 0;
-    }
-    .total-points {
-      font-weight: bold;
-      margin-top: 15px;
-      font-size: 18px;
-      color: #444;
-    }
-    #map {
-      width: 75%;
-      height: 500px;
-      border-radius: 10px;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>取餐地圖 - ALLiEAT</title>
 </head>
 <body>
-  <div id="header-placeholder"></div>
-  <div id="body-section-placeholder"></div>
-  <div class="container">
-    <div class="store-info">
-      <h2 id="storeName">店家名稱</h2>
-      <p id="storeAddress">店家地址</p>
-      <p><a id="googleMapLink" href="#" target="_blank">在 Google 地圖中開啟</a></p>
-      <div class="order-detail" style="margin-top: 20px;">
-        <h3>訂單明細</h3>
-        <div id="orderDetails">載入中...</div>
-        <div class="total-points" id="totalPoints"></div>
-      </div>
-    </div>
-    <div id="map"></div>
-  </div>
-  <div id="footer-placeholder"></div>
+  <h1>等待取餐通知中...</h1>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
 
   <script>
-    function loadFragment(id, path) {
-      fetch(path)
-        .then(res => res.text())
-        .then(html => {
-          const container = document.getElementById(id);
-          container.innerHTML = html;
-          container.style.display = 'block';
-          convertThAttributes(container);
-        })
-        .catch(err => {
-          console.error(`❌ ${path} 載入失敗`, err);
-          const fallback = document.createElement('div');
-          fallback.style.color = 'red';
-          fallback.textContent = `⚠️ 無法載入 ${path}`;
-          document.getElementById(id).appendChild(fallback);
-        });
-    }
+    document.addEventListener("DOMContentLoaded", async () => {
+      console.log("🚀 頁面已載入，開始Firebase初始化");
 
-    function convertThAttributes(container) {
-      container.querySelectorAll('[th\\:href]').forEach(el => {
-        const val = el.getAttribute('th:href');
-        if (val?.startsWith('@{') && val.endsWith('}')) {
-          el.setAttribute('href', val.slice(2, -1));
-          el.removeAttribute('th:href');
-        }
-      });
-      container.querySelectorAll('[th\\:src]').forEach(el => {
-        const val = el.getAttribute('th:src');
-        if (val?.startsWith('@{') && val.endsWith('}')) {
-          el.setAttribute('src', val.slice(2, -1));
-          el.removeAttribute('th:src');
-        }
-      });
-    }
+      // 🔔 請求通知權限
+      const permission = await Notification.requestPermission();
+      console.log("🔔 通知權限：", permission);
 
-    loadFragment("header-placeholder", "/header.html");
-    loadFragment("body-section-placeholder", "/bodySection.html");
-    loadFragment("footer-placeholder", "/footer.html");
-  </script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const orderDataStr = sessionStorage.getItem("orderSuccess");
-      if (!orderDataStr) {
-        alert("⚠️ 無法取得訂單資訊，將跳回首頁！");
-        location.href = "/index.html";
+      if (permission !== "granted") {
+        alert("⚠️ 請允許通知功能，才能在餐點完成時收到提醒！");
         return;
       }
-      const orderData = JSON.parse(orderDataStr);
-      document.getElementById("storeName").textContent = orderData.storeName || "未知店家";
-      document.getElementById("storeAddress").textContent = orderData.address || "未提供地址";
-      const encodedAddress = encodeURIComponent(orderData.address || "");
-      document.getElementById("googleMapLink").href =
-        `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-      const container = document.getElementById("orderDetails");
-      container.innerHTML = "";
-      let total = 0;
-      if (orderData.details && orderData.details.length > 0) {
-        orderData.details.forEach(detail => {
-          const itemDiv = document.createElement("div");
-          itemDiv.classList.add("order-item");
-          itemDiv.innerHTML = `
-            <p><strong>主餐：</strong>${detail.foodName || "未提供"}</p>
-            <p><strong>數量：</strong>${detail.quantity ?? "-"}</p>
-            <p><strong>使用點數：</strong>${detail.pointsCost ?? "-"}</p>
-            <p><strong>成立時間：</strong>${formatDateTime(detail.createdTime) || "-"}</p>
-            <p><strong>備註：</strong>${detail.note || "無"}</p>
-          `;
-          container.appendChild(itemDiv);
-          total += (detail.pointsCost || 0) * (detail.quantity || 1);
-        });
-        document.getElementById("totalPoints").textContent = `🧾 訂單總點數：${total} 點`;
-      } else {
-        container.innerHTML = "<p>❌ 找不到訂單明細</p>";
-      }
-      function formatDateTime(timestamp) {
-        const d = new Date(timestamp);
-        return d.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" });
-      }
-      waitForPickup();
-    });
 
-    function initMap() {
-      const orderData = JSON.parse(sessionStorage.getItem("orderSuccess")) || {};
-      const defaultLocation = { lat: 25.0330, lng: 121.5654 };
-      const storeLat = parseFloat(orderData.storeLat);
-      const storeLng = parseFloat(orderData.storeLng);
-      const hasCoords = !isNaN(storeLat) && !isNaN(storeLng);
-      if (hasCoords) {
-        renderMap({ lat: storeLat, lng: storeLng });
-      } else {
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ address: orderData.address }, (results, status) => {
-          if (status === "OK" && results[0]) {
-            const loc = results[0].geometry.location;
-            renderMap({ lat: loc.lat(), lng: loc.lng() });
+      // ✅ 初始化 Firebase
+      firebase.initializeApp({
+        apiKey: "AIzaSyA68z34B-2gMTza5XihaqtGUeNlKi3-pVU",
+        authDomain: "allieat-notification.firebaseapp.com",
+        projectId: "allieat-notification",
+        messagingSenderId: "613984391786",
+        appId: "1:613984391786:web:f5fc9510d0ef5f972d3013"
+      });
+
+      const messaging = firebase.messaging();
+
+      // ✅ 註冊 service worker 並取得 token
+      navigator.serviceWorker.register("/firebase-messaging-sw.js")
+        .then(reg => {
+          console.log("✅ Service Worker註冊成功");
+          return messaging.getToken({
+            vapidKey: "BMhduGYc_FYGv9W9jCouQGGJlIkDi71agZasPO1ufaui5qXbVIY35W4_MVmw1P3GlcV026ifk5sS1bOLQNDidUY",
+            serviceWorkerRegistration: reg
+          });
+        })
+        .then(token => {
+          console.log("✅ 拿到token：", token);
+
+          // ✅ 傳 token 到後端，關聯訂單資訊
+          const orderData = JSON.parse(sessionStorage.getItem("orderSuccess")) || {};
+          const orderId = orderData?.orderId;
+          console.log("📦 orderId：", orderId);
+
+          if (token && orderId) {
+            fetch("/api/fcm/register-token", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token, orderId })
+            })
+            .then(response => {
+              if (response.ok) {
+                console.log("✅ Token已成功送到後端");
+              } else {
+                console.error("❌ Token送到後端失敗，狀態碼：", response.status);
+              }
+            })
+            .catch(err => {
+              console.error("❌ 傳送token到後端時出錯：", err);
+            });
           } else {
-            console.warn("⚠️ 地址轉換失敗，使用預設位置");
-            renderMap(defaultLocation);
-          }
-        });
-      }
-    }
-
-    function renderMap(location) {
-      const orderData = JSON.parse(sessionStorage.getItem("orderSuccess")) || {};
-      const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 16,
-        center: location,
-      });
-      const marker = new google.maps.Marker({
-        position: location,
-        map: map,
-      });
-      const infoWindow = new google.maps.InfoWindow({
-        content: `
-          <div>
-            <strong>${orderData?.storeName || '店家名稱'}</strong><br/>
-            取餐號碼：${orderData?.pickupCode || '------'}<br/>
-            取餐時間：店家接單後會通知您
-          </div>
-        `
-      });
-      marker.addListener("click", () => infoWindow.open(map, marker));
-      infoWindow.open(map, marker);
-    }
-
-    window.initMap = initMap;
-
-    function waitForPickup() {
-      const orderData = JSON.parse(sessionStorage.getItem("orderSuccess")) || {};
-      const orderId = orderData?.orderId;
-      if (!orderId) return;
-      fetch(`/meal/order/wait-pickup?orderId=${orderId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.pickedUp) {
-            window.location.href = `/evaluate.html?orderId=${orderId}`;
-          } else {
-            setTimeout(waitForPickup, 1000);
+            console.error("❌ token 或 orderId 不存在，無法傳送");
           }
         })
         .catch(err => {
-          console.error("❌ 無法查詢取餐狀態", err);
-          setTimeout(waitForPickup, 2000);
+          console.error("❌ 無法取得 token：", err);
         });
-    }
-    
-    
-  </script>
-  <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
 
-<script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    // 🔔 請求通知權限
-    const permission = await Notification.requestPermission();
-    if (permission !== "granted") {
-      alert("⚠️ 請允許通知功能，才能在餐點完成時收到提醒！");
-      return;
-    }
-
-    // ✅ 初始化 Firebase
-    firebase.initializeApp({
-      apiKey: "AIzaSyA68z34B-2gMTza5XihaqtGUeNlKi3-pVU",
-      authDomain: "allieat-notification.firebaseapp.com",
-      projectId: "allieat-notification",
-      messagingSenderId: "613984391786",
-      appId: "1:613984391786:web:f5fc9510d0ef5f972d3013"
-    });
-
-    const messaging = firebase.messaging();
-
-    // ✅ 註冊 service worker 並取得 token
-    navigator.serviceWorker.register("/firebase-messaging-sw.js")
-      .then(reg => {
-        return messaging.getToken({
-          vapidKey: "BMhduGYc_FYGv9W9jCouQGGJlIkDi71agZasPO1ufaui5qXbVIY35W4_MVmw1P3GlcV026ifk5sS1bOLQNDidUY",
-          serviceWorkerRegistration: reg
-        });
-      })
-      .then(token => {
-        console.log("✅ FCM token:", token);
-
-        // ✅ 傳 token 到後端，關聯訂單資訊
-        const orderData = JSON.parse(sessionStorage.getItem("orderSuccess")) || {};
-        const orderId = orderData?.orderId;
-        if (token && orderId) {
-          fetch("/api/fcm/register-token", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token, orderId })
-          });
-        }
-      })
-      .catch(err => {
-        console.error("❌ 無法取得 token：", err);
+      // 🔔 處理前景推播訊息（例如：取餐通知）
+      messaging.onMessage(payload => {
+        console.log("📨 收到前景推播訊息：", payload);
+        alert(`🔔 ${payload.notification.title}\n${payload.notification.body}`);
       });
-
-    // 🔔 處理前景推播訊息（例如：取餐通知）
-    messaging.onMessage(payload => {
-      console.log("📨 前景推播訊息：", payload);
-      alert(`🔔 ${payload.notification.title}\n${payload.notification.body}`);
     });
-  });
-</script>
-  
-  <script async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwk4bH6RdOWmqwmrpdYu7-NKZin0St0vQ&libraries=places&callback=initMap&region=TW&language=zh-TW">
   </script>
 </body>
 </html>
