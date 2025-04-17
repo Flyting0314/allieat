@@ -14,6 +14,4 @@ import com.entity.OrderDetailVO;
 public interface OrderDetailRepository extends JpaRepository<OrderDetailVO, OrderDetailId> {
 	List<OrderDetailVO> findByOrderId(Integer orderId);
 
-	
-
 }
