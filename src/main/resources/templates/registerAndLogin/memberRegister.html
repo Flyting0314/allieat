@@ -32,6 +32,7 @@
             max-height: 90vh;
             overflow-y: auto;
         }
+
     </style>
 
 </head>
@@ -70,6 +71,7 @@
 <div class="text-danger" th:if="${#fields.hasErrors('organization.organizationId')}" th:errors="*{organization.organizationId}"></div>
 
 
+
                 </div>
 </div>
                 <div class="verification_form_group">
@@ -90,44 +92,48 @@
 
 
                 <div class="verification_form_group">
-                    <label class="verification_form_label">戶籍地址</label>
-                    <div class="verification_form_controls">
-                        <div class="verification_address_group">
-                            <select id="permCitySelect" class="verification_select"></select>
-                            <select id="permDistrictSelect" class="verification_select"></select>
-                            <input type="text" id="permZipcodeInput" class="verification_input" readonly
-                                placeholder="郵遞區號" />
-                        </div>
-                        <input type="text" th:field="*{permAddr}" id="permDetail" class="verification_input"
-                            placeholder="請輸入詳細地址" />
-                        <div class="text-danger" th:if="${#fields.hasErrors('permAddr')}" th:errors="*{permAddr}"></div>
-                    </div>
-                </div>
+    <label class="verification_form_label">戶籍地址</label>
+    <div class="verification_form_controls">
+        <div class="verification_address_group">
+            <select id="permCitySelect" class="verification_select"></select>
+            <select id="permDistrictSelect" class="verification_select"></select>
+            <input type="text" id="permZipcodeInput" class="verification_input" readonly placeholder="郵遞區號" />
+        </div>
+        <input type="text" th:field="*{permAddr}" id="permDetail" class="verification_input" placeholder="請輸入詳細地址" />
+<div id="permAddrError"
+     class="text-danger"
+     style="display:none;"
+     th:if="${#fields.hasErrors('permAddr')}"
+     th:errors="*{permAddr}">
+</div>
+    </div>
+</div>
 
 
                 <div class="verification_form_group">
-                    <label class="verification_form_label">通訊地址</label>
-                    <div class="verification_form_controls">
-                        <div class="verification_address_group">
-                            <select id="commCitySelect" class="verification_select"></select>
-                            <select id="commDistrictSelect" class="verification_select"></select>
-                            <input type="text" id="commZipcodeInput" class="verification_input" readonly
-                                placeholder="郵遞區號" />
-                        </div>
+    <label class="verification_form_label">通訊地址</label>
+    <div class="verification_form_controls">
+        <div class="verification_address_group">
+            <select id="commCitySelect" class="verification_select"></select>
+            <select id="commDistrictSelect" class="verification_select"></select>
+            <input type="text" id="commZipcodeInput" class="verification_input" readonly placeholder="郵遞區號" />
+        </div>
+        <input type="text" th:field="*{address}" id="commDetail" class="verification_input" placeholder="請輸入詳細地址" />
+<div id="addressError"
+     class="text-danger"
+     th:if="${#fields.hasErrors('address')}"
+     th:errors="*{address}">
+</div>
 
-                        <input type="text" th:field="*{address}" id="commDetail" class="verification_input"
-                            placeholder="請輸入詳細地址" />
-                        <div class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
 
-                        <!-- 同上選項：放在詳細地址下方，對齊 -->
-                        <div style="margin-top: 14px;">
-                            <label style="font-weight: normal; font-size: 14px;">
-                                <input type="checkbox" id="sameAsPerm" style="margin-right: 4px;">
-                                同上
-                            </label>
-                        </div>
-                    </div>
-                </div>
+        <div style="margin-top: 14px;">
+            <label style="font-weight: normal; font-size: 14px;">
+                <input type="checkbox" id="sameAsPerm" style="margin-right: 4px;">
+                同上
+            </label>
+        </div>
+    </div>
+</div>
 
 
                 <div class="verification_form_group">
@@ -169,6 +175,7 @@
                     <label class="verification_form_label">上傳證明文件</label>
                     <div class="verification_form_controls">
                         <input type="file" name="kycFile" class="form-control" />
+                        <input type="hidden" name="existingKycImage" th:value="${member.kycImage}">
                         <div class="kyc-preview-container">
                             <div th:if="${member.kycImage != null}">
                                 <a th:href="@{'/member/' + ${member.kycImage}}" target="_blank">點此預覽上傳檔案</a>
@@ -210,8 +217,10 @@
                     </div>
                 </div>
 
-                <!-- <div id="errorMessage" class="text-danger" th:classappend="${errorMessage} ? '' : 'hidden'" th:text="${errorMessage}"></div> -->
-                <div id="errorMessage" class="text-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+                
+                <div class="text-danger text mt-2"
+     id="agreementError"
+     th:if="${errorMessage}" th:text="${errorMessage}"></div>
 
 
 
@@ -350,306 +359,290 @@ width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center;
 
 
 
-    <script th:inline="javascript">
-    const addrData = JSON.parse(/*[[${@addressData.getAllJson()}]]*/ '[]');
-    console.log(addrData);
-        document.addEventListener('DOMContentLoaded', function () {
+<script th:inline="javascript">
+	const addrData = JSON.parse(/*[[${@addressData.getAllJson()}]]*/ '[]');
+	console.log(addrData);
+	document.addEventListener('DOMContentLoaded', function () {
+		setupAddressSelect("permCitySelect", "permDistrictSelect", "permZipcodeInput", "permAddrError");
+	    setupAddressSelect("commCitySelect", "commDistrictSelect", "commZipcodeInput", "addressError");
 
-        	
-        	
-        	
-        	//====
-        		        // 愛心點數燈箱控制
-        const viewPointNotice = document.getElementById('viewPointNotice');
-	const pointModal = document.getElementById('pointModal');
-	const pointAgree = document.getElementById('pointAgree');
-	const agreePoint = document.getElementById('agreePoint'); // 表單checkbox
-	const exitPoint = document.getElementById('exitPoint');
+	        	//====
+	        		        // 愛心點數燈箱控制
+	    const viewPointNotice = document.getElementById('viewPointNotice');
+		const pointModal = document.getElementById('pointModal');
+		const pointAgree = document.getElementById('pointAgree');
+		const agreePoint = document.getElementById('agreePoint'); // 表單checkbox
+		const exitPoint = document.getElementById('exitPoint');
+		
+		addrData.forEach(cityObj => {
+		    console.log(cityObj.city); 
+		});
+		
+		
+		  //  預覽與錯誤清除
+	    const fileInput = document.querySelector('input[name="kycFile"]');
+	    const previewContainer = document.querySelector('.kyc-preview-container');
+	    const kycError = document.getElementById('kycError');
+
+	    if (fileInput && previewContainer) {
+	        fileInput.addEventListener('change', function () {
+	            previewContainer.innerHTML = '';
+	            const file = fileInput.files[0];
+	            if (!file) return;
+
+	            const fileURL = URL.createObjectURL(file);
+	            const extension = file.name.split('.').pop().toLowerCase();
+
+	            const link = document.createElement('a');
+	            link.href = fileURL;
+	            link.target = '_blank';
+	            link.textContent = '點此預覽上傳檔案';
+	            previewContainer.appendChild(link);
+
+	            if (['png', 'jpg', 'jpeg'].includes(extension)) {
+	                const img = document.createElement('img');
+	                img.src = fileURL;
+	                img.alt = '預覽圖';
+	                img.style.maxWidth = '200px';
+	                img.style.marginTop = '10px';
+	                previewContainer.appendChild(img);
+	            }
+
+	            if (kycError) {
+	                kycError.style.display = 'none';
+	                clearGeneralErrors();
+	            }
+	        });
+	        if (fileInput && fileInput.files.length === 0 && previewContainer) {
+	            previewContainer.innerHTML = '';
+	        }
+	    }
+	//===須知區
+		function updateAgreementErrorVisibility() {
+			const agreeCheck = document.getElementById('agreeCheck');   
+			const agreePoint = document.getElementById('agreePoint');   
+			const errorDiv = document.getElementById('agreementError');
+		    const agreedToTerms = document.getElementById('agreedToTerms');
+		    const errorMessage = document.getElementById('errorMessage');
+			if (agreeCheck?.checked && agreePoint?.checked && errorDiv) {
+				errorDiv.style.display = 'none';
+			}
+		}
+		
+		document.getElementById('agreeCheck')?.addEventListener('change', updateAgreementErrorVisibility);
+		document.getElementById('agreePoint')?.addEventListener('change', updateAgreementErrorVisibility);
+		
+		// 須知燈箱開啟
+		document.getElementById('viewPrivacyNotice')?.addEventListener('click', function (e) {
+			e.preventDefault();
+			privacyModal.style.display = 'flex';
+			privacyAgree.checked = agreeCheck.checked;
+		});
+		
+		// 須知燈箱關閉
+		document.getElementById('closePrivacy')?.addEventListener('click', function () {
+			privacyModal.style.display = 'none';
+			agreeCheck.checked = privacyAgree.checked;
+			agreedToTerms.value = privacyAgree.checked ? 'true' : 'false';
+			if (privacyAgree.checked) {
+				sessionStorage.setItem("privacyAgreed", "true");
+			} else {
+				sessionStorage.removeItem("privacyAgreed");
+			}
+			updateAgreementErrorVisibility();
+		});
+		
+		// 點數燈箱開啟
+		document.getElementById('viewPointNotice')?.addEventListener('click', function (e) {
+			e.preventDefault();
+			pointModal.style.display = 'flex';
+			pointAgree.checked = agreePoint.checked;
+		});
+		
+		// 點數燈箱關閉
+		document.getElementById('exitPoint')?.addEventListener('click', function () {
+			pointModal.style.display = 'none';
+			agreePoint.checked = pointAgree.checked;
+			if (pointAgree.checked) {
+				sessionStorage.setItem("pointAgreed", "true");
+			} else {
+				sessionStorage.removeItem("pointAgreed");
+			}
+			updateAgreementErrorVisibility();
+		});
+		
+		// 初始化（還原勾選狀態）
+		if (sessionStorage.getItem("pointAgreed") === "true") {
+			agreePoint.checked = true;
+		}
+		if (sessionStorage.getItem("privacyAgreed") === "true") {
+			agreeCheck.checked = true;
+			agreedToTerms.value = 'true';
+		}
+
+	//========
+
+	//在冊單位
+		const organizationSelect = document.getElementById("organizationSelect");
+		if (organizationSelect) {
+		    organizationSelect.addEventListener("change", function () {
+		        const errorDiv = organizationSelect.parentElement.querySelector('.text-danger');
+		        if (errorDiv) errorDiv.style.display = 'none';
+		    });
+		}
+		const select = document.getElementById("organizationSelect");
+		if (select && select.value === "-1") {
+		    document.getElementById("otherOrganizationInput").style.display = "block";
+		}
+	
+
+	
+	function handleOrgChange(selectElement) {
+		const selectedValue = selectElement.value;
+		const hiddenField = document.getElementById("organizationIdField");
+		const otherInput = document.getElementById("otherOrganizationInput");
+		
+
+ 		hiddenField.value = selectedValue;
+
+ 		if (selectedValue === "-1") {
+     		otherInput.style.display = "block";
+ 		} else {
+			otherInput.style.display = "none";
+		}
+	}
 	
 	
 	
-	addrData.forEach(cityObj => {
-	    console.log(cityObj.city); 
+    
+    
+
+	
+	
+          
+
+
+
+            // 清除錯誤=====
+    document.querySelectorAll('.verification_input').forEach(input => {
+        input.addEventListener('input', function () {
+            const errorDiv = input.parentElement.querySelector('.text-danger');
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+        });
+    });
+
+    ['permCitySelect', 'permDistrictSelect', 'commCitySelect', 'commDistrictSelect'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', () => {
+                clearFieldError(el);
+                clearGeneralErrors();
+            });
+        }
+    });
+    
+    
+    function setupAddressSelect(cityId, districtId, zipId, errorDivId) {
+	    const citySelect = document.getElementById(cityId);
+	    const districtSelect = document.getElementById(districtId);
+	    const zipInput = document.getElementById(zipId);
+	    const errorDiv = document.getElementById(errorDivId);
+
+    // 載入縣市==
+    citySelect.innerHTML = '<option value="">請選擇縣市</option>'; // 取消預設值
+	addrData.forEach(item => {
+	    const option = document.createElement('option');
+	    option.value = item.city;
+	    option.textContent = item.city;
+	    citySelect.appendChild(option);
 	});
 
-
-
-viewPointNotice.addEventListener('click', function (e) {
-    e.preventDefault();
-    pointModal.style.display = 'flex';
-    pointAgree.checked = agreePoint.checked;
-});
-
-exitPoint.addEventListener('click', function () {
-    pointModal.style.display = 'none';
-    agreePoint.checked = pointAgree.checked;
-    if (pointAgree.checked) {
-        sessionStorage.setItem("pointAgreed", "true");
-    } else {
-        sessionStorage.removeItem("pointAgreed");
+    // 載入預設值
+    const selectedCity = citySelect.value;
+    const selectedDistrict = districtSelect.value;
+    if (selectedCity) {
+        const cityObj = addrData.find(item => item.city === selectedCity);
+        if (cityObj) {
+            districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
+            cityObj.area.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area.name;
+                option.textContent = area.name;
+                if (area.name === selectedDistrict) option.selected = true;
+                districtSelect.appendChild(option);
+            });
+            const zipObj = cityObj.area.find(area => area.name === selectedDistrict);
+            if (zipObj) zipInput.value = zipObj.zipcode;
+        }
     }
-});
 
-if (sessionStorage.getItem("pointAgreed") === "true") {
-    agreePoint.checked = true;
-}
-
-        // 個資燈箱控制
-       const viewPrivacyNotice = document.getElementById('viewPrivacyNotice');
-const privacyModal = document.getElementById('privacyModal');
-const privacyAgree = document.getElementById('privacyAgree');
-const agreePrivacyBtn = document.getElementById('agreePrivacyBtn');
-
-
-
-viewPrivacyNotice.addEventListener('click', function (e) {
-    e.preventDefault();
-    privacyModal.style.display = 'flex';
-    privacyAgree.checked = agreeCheck.checked;
-});
-
-
-
-
-closePrivacy.addEventListener('click', function () {
-    privacyModal.style.display = 'none';
-    agreeCheck.checked = privacyAgree.checked;
-    agreedToTerms.value = privacyAgree.checked ? 'true' : 'false';
-    if (privacyAgree.checked) {
-        sessionStorage.setItem("privacyAgreed", "true");
-    } else {
-        sessionStorage.removeItem("privacyAgreed");
-    }
-});
-
-if (sessionStorage.getItem("privacyAgreed") === "true") {
-    agreeCheck.checked = true;
-    agreedToTerms.value = 'true';
-}
-
-
-
-//在冊單位 select 切換清除錯誤
-const organizationSelect = document.getElementById("organizationSelect");
-if (organizationSelect) {
-    organizationSelect.addEventListener("change", function () {
-        const errorDiv = organizationSelect.parentElement.querySelector('.text-danger');
+    // === 互動式錯誤清除 ===
+    citySelect.addEventListener('change', () => {
+        const selectedCity = citySelect.value;
+        const cityObj = addrData.find(item => item.city === selectedCity);
+        districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
+        zipInput.value = '';
+        if (cityObj && cityObj.area.length > 0) {
+            cityObj.area.forEach((area, index) => {
+                const option = document.createElement('option');
+                option.value = area.name;
+                option.textContent = area.name;
+                if (index === 0) {
+                    option.selected = true;
+                    zipInput.value = area.zipcode;
+                }
+                districtSelect.appendChild(option);
+            });
+        }
+        // 清除錯誤
         if (errorDiv) errorDiv.style.display = 'none';
     });
-}
-const select = document.getElementById("organizationSelect");
-if (select && select.value === "-1") {
-    document.getElementById("otherOrganizationInput").style.display = "block";
-}
-});
 
-function handleOrgChange(selectElement) {
- const selectedValue = selectElement.value;
- const hiddenField = document.getElementById("organizationIdField");
- const otherInput = document.getElementById("otherOrganizationInput");
-
- hiddenField.value = selectedValue;
-
- if (selectedValue === "-1") {
-     otherInput.style.display = "block";
- } else {
-     otherInput.style.display = "none";
- }
-}
-document.getElementById("organizationSelect").addEventListener("change", function () {
-const errorDiv = document.getElementById("orgErrorMessage");
-if (errorDiv) {
-    errorDiv.style.display = "none";  
-}
-        	//====
-            //  預覽與錯誤清除
-            const fileInput = document.querySelector('input[name="kycFile"]');
-            const previewContainer = document.querySelector('.kyc-preview-container');
-            const kycError = document.getElementById('kycError');
-
-            if (fileInput && previewContainer) {
-                fileInput.addEventListener('change', function () {
-                    previewContainer.innerHTML = '';
-                    const file = fileInput.files[0];
-                    if (!file) return;
-
-                    const fileURL = URL.createObjectURL(file);
-                    const extension = file.name.split('.').pop().toLowerCase();
-
-                    const link = document.createElement('a');
-                    link.href = fileURL;
-                    link.target = '_blank';
-                    link.textContent = '點此預覽上傳檔案';
-                    previewContainer.appendChild(link);
-
-                    if (['png', 'jpg', 'jpeg'].includes(extension)) {
-                        const img = document.createElement('img');
-                        img.src = fileURL;
-                        img.alt = '預覽圖';
-                        img.style.maxWidth = '200px';
-                        img.style.marginTop = '10px';
-                        previewContainer.appendChild(img);
-                    }
-
-                    if (kycError) {
-                        kycError.style.display = 'none';
-                    }
-                });
-            }
-
-            // 須知
-            const agreeCheck = document.getElementById('agreeCheck');
-            const viewNotice = document.getElementById('viewNotice');
-            const noticeModal = document.getElementById('noticeModal');
-            const noticeAgree = document.getElementById('noticeAgree');
-            const agreeNotice = document.getElementById('agreeNotice');
-            const closeNotice = document.getElementById('closeNotice');
-            const agreedToTerms = document.getElementById('agreedToTerms');
-            const errorMessage = document.getElementById('errorMessage');
-
-            if (viewNotice) {
-                viewNotice.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    noticeModal.style.display = 'flex';
-                    noticeAgree.checked = agreeCheck.checked;
-                });
-            }
-
-            if (agreeNotice) {
-                agreeNotice.addEventListener('click', function () {
-                    if (noticeAgree.checked) {
-                        agreeCheck.checked = true;
-                        agreedToTerms.value = 'true';
-                        noticeModal.style.display = 'none';
-                        if (errorMessage) errorMessage.classList.add("hidden");
-                    } else {
-                        alert('請勾選同意使用須知');
-                    }
-                });
-            }
-
-            if (closeNotice) {
-                closeNotice.addEventListener('click', function () {
-                    noticeModal.style.display = 'none';
-                    noticeAgree.checked = false;
-                });
-            }
-
-            // 輸入清除錯誤
-            document.querySelectorAll('.verification_input').forEach(input => {
-                input.addEventListener('input', function () {
-                    const errorDiv = input.parentElement.querySelector('.text-danger');
-                    if (errorDiv) {
-                        errorDiv.style.display = 'none';
-                    }
-                });
-            });
-
-            //在冊單位 select 切換清除錯誤
-            const organizationSelect = document.getElementById("organizationSelect");
-            if (organizationSelect) {
-                organizationSelect.addEventListener("change", function () {
-                    const errorDiv = organizationSelect.parentElement.querySelector('.text-danger');
-                    if (errorDiv) errorDiv.style.display = 'none';
-                });
-            }
-            const select = document.getElementById("organizationSelect");
-            if (select && select.value === "-1") {
-                document.getElementById("otherOrganizationInput").style.display = "block";
-            }
-        });
-
-        function handleOrgChange(selectElement) {
-            const selectedValue = selectElement.value;
-            const hiddenField = document.getElementById("organizationIdField");
-            const otherInput = document.getElementById("otherOrganizationInput");
-
-            hiddenField.value = selectedValue;
-
-            if (selectedValue === "-1") {
-                otherInput.style.display = "block";
-            } else {
-                otherInput.style.display = "none";
-            }
+    districtSelect.addEventListener('change', () => {
+        const selectedCity = citySelect.value;
+        const selectedDistrict = districtSelect.value;
+        const cityObj = addrData.find(item => item.city === selectedCity);
+        if (cityObj) {
+            const areaObj = cityObj.area.find(area => area.name === selectedDistrict);
+            zipInput.value = areaObj ? areaObj.zipcode : '';
+        } else {
+            zipInput.value = '';
         }
-        document.getElementById("organizationSelect").addEventListener("change", function () {
-            const errorDiv = document.getElementById("orgErrorMessage");
-            if (errorDiv) {
-                errorDiv.style.display = "none";
-            }
-        });
+        // 清除錯誤
+        if (errorDiv) errorDiv.style.display = 'none';
 
-        function setupAddressSelect(cityId, districtId, zipId) {
-            const citySelect = document.getElementById(cityId);
-            const districtSelect = document.getElementById(districtId);
-            const zipInput = document.getElementById(zipId);
+        // ✅ 加在這裡：補到詳細地址欄位
+        
+       
 
-            // 載入縣市
-            addrData.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.city;
-                option.textContent = item.city;
-                citySelect.appendChild(option);
-            });
+		document.getElementById('permDetail')?.addEventListener('input', function () {
+		    const isSame = document.getElementById('sameAsPerm')?.checked;
+		    if (isSame) {
+		        const permCity = document.getElementById('permCitySelect').value;
+		        const permDistrict = document.getElementById('permDistrictSelect').value;
+		        const permZipcode = document.getElementById('permZipcodeInput').value;
+		        const permDetail = document.getElementById('permDetail').value;
+		        const commDetail = document.getElementById('commDetail');
+		        if (commDetail) {
+		        	const permCityText = document.querySelector('#permCitySelect option:checked')?.textContent || '';
+		        	const permDistrictText = document.querySelector('#permDistrictSelect option:checked')?.textContent || '';
+		        	commDetail.value = permZipcode + permCityText + permDistrictText + permDetail;
+		        }
+		    }
+		});
+    });
+    
+ 
+}
+    
 
-            // 載入預設值
-            const selectedCity = citySelect.value;
-            const selectedDistrict = districtSelect.value;
-            if (selectedCity) {
-                const cityObj = addrData.find(item => item.city === selectedCity);
-                if (cityObj) {
-                    districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
-                    cityObj.area.forEach(area => {
-                        const option = document.createElement('option');
-                        option.value = area.name;
-                        option.textContent = area.name;
-                        if (area.name === selectedDistrict) option.selected = true;
-                        districtSelect.appendChild(option);
-                    });
-                    const zipObj = cityObj.area.find(area => area.name === selectedDistrict);
-                    if (zipObj) zipInput.value = zipObj.zipcode;
-                }
-            }
+            //=========
 
-            // 選縣市時 → 自動填入第一區並帶入郵遞區號
-            citySelect.addEventListener('change', () => {
-                const selectedCity = citySelect.value;
-                const cityObj = addrData.find(item => item.city === selectedCity);
-                districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
-                zipInput.value = '';
-                if (cityObj && cityObj.area.length > 0) {
-                    cityObj.area.forEach((area, index) => {
-                        const option = document.createElement('option');
-                        option.value = area.name;
-                        option.textContent = area.name;
-                        if (index === 0) {
-                            option.selected = true;
-                            zipInput.value = area.zipcode;
-                        }
-                        districtSelect.appendChild(option);
-                    });
-                }
-            });
+    
 
-            // 選鄉鎮時 → 填入郵遞區號
-            districtSelect.addEventListener('change', () => {
-                const selectedCity = citySelect.value;
-                const selectedDistrict = districtSelect.value;
-                const cityObj = addrData.find(item => item.city === selectedCity);
-                if (cityObj) {
-                    const areaObj = cityObj.area.find(area => area.name === selectedDistrict);
-                    zipInput.value = areaObj ? areaObj.zipcode : '';
-                } else {
-                    zipInput.value = '';
-                }
-            });
-        }
 
-        // 呼叫：DOM 加載完就啟用
-        window.addEventListener('DOMContentLoaded', () => {
-            setupAddressSelect("permCitySelect", "permDistrictSelect", "permZipcodeInput");
-            setupAddressSelect("commCitySelect", "commDistrictSelect", "commZipcodeInput");
-        });
 
         // 縣市、區域、郵遞區號對應資料
         
@@ -663,28 +656,29 @@ if (errorDiv) {
         document.getElementById('sameAsPerm').addEventListener('change', function () {
             const isChecked = this.checked;
 
-            // 戶籍欄位
             const permCity = document.getElementById('permCitySelect').value;
             const permDistrict = document.getElementById('permDistrictSelect').value;
             const permZipcode = document.getElementById('permZipcodeInput').value;
             const permDetail = document.getElementById('permDetail').value;
 
-            // 通訊欄位
             const commCitySelect = document.getElementById('commCitySelect');
             const commDistrictSelect = document.getElementById('commDistrictSelect');
             const commZipcodeInput = document.getElementById('commZipcodeInput');
             const commDetailInput = document.getElementById('commDetail');
 
             if (isChecked) {
-                // 套用戶籍地址值
+                // 套用戶籍地址（只有 value 不包含詳細文字）
                 commCitySelect.value = permCity;
-                commCitySelect.dispatchEvent(new Event('change')); // 觸發縣市改變事件
+                commCitySelect.dispatchEvent(new Event('change'));
+
                 setTimeout(() => {
                     commDistrictSelect.value = permDistrict;
                     commDistrictSelect.dispatchEvent(new Event('change'));
-                }, 100); // 等待鄉鎮更新完才選擇
+                }, 100);
 
                 commZipcodeInput.value = permZipcode;
+
+                // ✅ 僅複製詳細地址，不包含前綴
                 commDetailInput.value = permDetail;
 
                 // 鎖定欄位
@@ -693,13 +687,13 @@ if (errorDiv) {
                 commZipcodeInput.disabled = true;
                 commDetailInput.readOnly = true;
             } else {
-                // 清除並解鎖
                 commCitySelect.disabled = false;
                 commDistrictSelect.disabled = false;
                 commZipcodeInput.disabled = false;
                 commDetailInput.readOnly = false;
             }
         });
+
 
         
         const restoreAddress = (cityId, districtId, zipId, cityKey, districtKey) => {
@@ -713,6 +707,7 @@ if (errorDiv) {
             citySelect.dispatchEvent(new Event('change'));
             setTimeout(() => {
                 if (savedDistrict) {
+                	districtSelect.disabled = false;
                     districtSelect.value = savedDistrict;
                     districtSelect.dispatchEvent(new Event('change'));
                 }
@@ -741,9 +736,16 @@ if (errorDiv) {
 
         
         const sameAsPerm = document.getElementById('sameAsPerm');
+     // ✅ 先還原值，再勾選 checkbox 執行自動帶入
+        restoreAddress("permCitySelect", "permDistrictSelect", "permZipcodeInput", "permCity", "permDistrict");
+        restoreAddress("commCitySelect", "commDistrictSelect", "commZipcodeInput", "commCity", "commDistrict");
+
         if (sessionStorage.getItem("sameAsPermChecked") === "true") {
             sameAsPerm.checked = true;
-            sameAsPerm.dispatchEvent(new Event('change'));
+            // ✅ 放進 setTimeout 確保通訊欄位已經先還原才觸發自動覆蓋
+            setTimeout(() => {
+                sameAsPerm.dispatchEvent(new Event('change'));
+            }, 150);
         }
         sameAsPerm?.addEventListener('change', function () {
             sessionStorage.setItem("sameAsPermChecked", this.checked);
@@ -751,8 +753,71 @@ if (errorDiv) {
         
         
         
-        
+        /**
+         * 通用清除錯誤樣式與訊息
+         * @param {HTMLElement} element 欲清除錯誤的欄位元素
+         */
+        function clearFieldError(element) {
+            if (!element) return;
 
+            // 1. 移除紅框樣式
+            element.classList.remove('is-invalid');
+
+            // 2. 找出同層級的錯誤訊息區塊
+            const parent = element.closest('.verification_form_controls');
+            if (parent) {
+            	const errorDivs = parent.querySelectorAll('.text-danger');
+            	errorDivs.forEach(div => div.classList.add('hidden'));
+
+            }
+        }
+         
+         document.querySelectorAll('.verification_input').forEach(input => {
+        	    input.addEventListener('input', () => clearFieldError(input));clearGeneralErrors();
+        	});
+         
+         ['permCitySelect', 'permDistrictSelect', 'commCitySelect', 'commDistrictSelect'].forEach(id => {
+        	    const el = document.getElementById(id);
+        	    if (el) el.addEventListener('change', () => clearFieldError(el));
+        	});
+         
+         document.getElementById('sameAsPerm')?.addEventListener('change', function () {
+        	    if (this.checked) {
+        	        const commDetail = document.getElementById('commDetail');
+        	        clearFieldError(commDetail);
+        	    }
+        	});
+         
+         document.getElementById('closePrivacy')?.addEventListener('click', function () {
+        	    if (document.getElementById('privacyAgree').checked) {
+        	        const agreeCheck = document.getElementById('agreeCheck');
+        	        clearFieldError(agreeCheck);
+        	        clearGeneralErrors();
+        	    }
+        	});
+         function clearGeneralErrors() {
+        	    const generalError = document.getElementById('errorMessage');
+        	    if (generalError) generalError.style.display = 'none';
+        	}
+         fileInput?.addEventListener('change', function () {
+        	    clearFieldError(fileInput);
+        	    clearGeneralErrors();
+        	});
+         document.getElementById('closePrivacy')?.addEventListener('click', function () {
+        	    if (document.getElementById('privacyAgree').checked) {
+        	        clearFieldError(document.getElementById('agreeCheck'));
+        	        clearGeneralErrors();
+        	    }
+        	});
+         
+         document.getElementById('permDetail')?.addEventListener('input', () => {
+        	 const errorDiv = document.getElementById('permAddrError');
+        	    if (errorDiv) errorDiv.style.display = 'none';
+        	});
+        	document.getElementById('commDetail')?.addEventListener('input', () => {
+        	    document.getElementById('addressError')?.classList.add('hidden');
+        	});
+        });
     </script>
 
 
