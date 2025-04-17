@@ -500,8 +500,11 @@
 	<script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
 	<!-- 地圖相關腳本 -->
+	
+	let stores = [];
 	<script>
     // 整合地圖JavaScript
+ 
     let map;
     let currentPosition;
     let selectRestaurant;
@@ -917,6 +920,10 @@ function addRestaurantsList() {
 
     if (typeof stores !== 'undefined' && stores.length > 0) {
         stores.forEach((store, index) => {
+
+        	 // 如果 store.status 不是 1，直接跳過，不加入列表
+        	//if (store.status !== 1) return; // 0: 停用、1: 啟用、2: 刪除
+        	
             const restaurantItem = document.createElement('a');
             restaurantItem.href = '#';
             restaurantItem.className = 'list-group-item list-group-item-action restaurant-item';
@@ -1730,7 +1737,12 @@ $(document).on('click', '.restaurant-item', function(e) {
 });
 
 
+
+
 </script>
+
+
+
 
 	<!-- Contact Javascript File -->
 	<script src="mail/jqBootstrapValidation.min.js"></script>

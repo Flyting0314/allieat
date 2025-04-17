@@ -558,13 +558,12 @@ function loadRestaurantInfo(restaurantId) {
 }
 
 // 加載主餐列表
+// 加載主餐列表
 function loadFoodList(restaurantId) {
     console.log('正在獲取餐點信息，餐廳ID:', restaurantId);
-    
-    fetch(`/meal/food/store/dto?storeId=${restaurantId}`)
 
+    fetch(`/meal/food/store/dto?storeId=${restaurantId}`)
         .then(response => {
-            console.log('菜單API響應狀態:', response.status);
             if (!response.ok) {
                 throw new Error(`伺服器回應狀態碼: ${response.status}`);
             }
@@ -572,8 +571,11 @@ function loadFoodList(restaurantId) {
         })
         .then(foodList => {
             console.log('獲取到的餐點列表:', foodList);
-            
-            if (foodList.length === 0) {
+
+            // ✅ 篩選僅顯示 status 為 1（啟用）的餐點
+            const activeFoods = foodList.filter(food => food.status === 1);
+
+            if (activeFoods.length === 0) {
                 document.getElementById('foodList').innerHTML = `
                     <div class="col-12">
                         <div class="alert alert-info" role="alert">
@@ -582,7 +584,7 @@ function loadFoodList(restaurantId) {
                     </div>
                 `;
             } else {
-                displayFoodList(foodList);
+                displayFoodList(activeFoods);
             }
         })
         .catch(error => {

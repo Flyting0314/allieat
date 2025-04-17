@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <title>訂單成功 - 攏呷霸 ALLiEAT</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap CSS & FontAwesome (必要才能正確顯示 navbar 和 icon) -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
   <style>
     .order-success-page {
       font-family: 'Arial', sans-serif;
@@ -56,68 +61,68 @@
     }
   </style>
 </head>
-<body class="order-success-page">
-<!-- Navbar Start -->
-<div class="container-fluid p-0 nav-bar">
-    <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
-        <a href="/index.html" class="navbar-brand px-lg-4 m-0">
-            <h1 class="m-0 display-4 text-uppercase text-white">
-                <img src="/img/logo3.png" width="80px" height="80px" alt="ALLiEAT Logo"
-                     style="vertical-align: middle; border-radius: 50%; object-fit: cover;">
-                <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
-            </h1>
-        </a>
-        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-            <div class="navbar-nav ml-auto p-4">
-                <a href="/index" class="nav-item nav-link active">關於我們</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">捐款專區</a>
-                    <div class="dropdown-menu text-capitalize">
-                        <a href="/dona/donaAddA" class="dropdown-item">我要捐款</a>
-                        <a href="dona/donaAddD" class="dropdown-item">捐款查詢</a>
-                    </div>
-                </div>
-                <a href="/map2" class="nav-item nav-link">我要取餐 / 點餐</a>
+<body>
 
-                <!-- 登入 / 登出選項，靜態頁面無法動態切換 -->
-                <a href="/registerAndLogin" class="nav-item nav-link">註冊/登入</a>
-                <!-- 可選：硬寫一個登出/會員專區按鈕，依實際需求顯示 -->
-                <a href="/registerAndLogin/logout" class="nav-item nav-link">登出</a>
-                <a href="/member" id="memberAreaBtn" class="nav-item nav-link">會員專區</a>
+<!-- ✅ Navbar Start，補上 header 包起來 -->
+<header>
+  <div class="container-fluid p-0 nav-bar">
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3">
+      <a href="/index.html" class="navbar-brand px-lg-4 m-0">
+        <h1 class="m-0 display-4 text-uppercase text-white">
+          <img src="/img/logo3.png" width="80px" height="80px" alt="ALLiEAT Logo"
+               style="vertical-align: middle; border-radius: 50%; object-fit: cover;">
+          <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+        </h1>
+      </a>
+      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+        <div class="navbar-nav ml-auto p-4">
+          <a href="/index" class="nav-item nav-link active">關於我們</a>
+          <div class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">捐款專區</a>
+            <div class="dropdown-menu text-capitalize">
+              <a href="/dona/donaAddA" class="dropdown-item">我要捐款</a>
+              <a href="/dona/donaAddD" class="dropdown-item">捐款查詢</a>
             </div>
+          </div>
+          <a href="/map2" class="nav-item nav-link">我要取餐 / 點餐</a>
+          <a href="/registerAndLogin" class="nav-item nav-link">註冊/登入</a>
+          <a href="/registerAndLogin/logout" class="nav-item nav-link">登出</a>
+          <a href="/member" id="memberAreaBtn" class="nav-item nav-link">會員專區</a>
         </div>
+      </div>
     </nav>
-</div>
+  </div>
 </header>
+<!-- ✅ Navbar End -->
 
 <!-- Hero Section Start -->
 <section id="hero">
-    <div class="container-fluid p-0 mb-5">
-        <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active" style="
-                    background-image: url(/img/圖片3.png);
-                    background-size: 110% auto;
-                    background-position: center 50px;
-                    height: 300px;
-                    filter: brightness(225%);">
-                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                        <h2 class="text-primary font-weight-medium m-0"></h2>
-                        <h1 class="display-1 text-white m-0"></h1>
-                        <h2 class="text-white m-0"></h2>
-                    </div>
-                </div>
-            </div>
+  <div class="container-fluid p-0 mb-5">
+    <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active" style="
+          background-image: url(/img/圖片3.png);
+          background-size: 110% auto;
+          background-position: center 50px;
+          height: 300px;
+          filter: brightness(225%);">
+          <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+            <h2 class="text-primary font-weight-medium m-0"></h2>
+            <h1 class="display-1 text-white m-0"></h1>
+            <h2 class="text-white m-0"></h2>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </section>
 <!-- Hero Section End -->
 
-  
-
+<!-- ✅ 訂單成功內容 -->
+<div class="order-success-page">
   <div class="card">
     <h1>訂單已送出</h1>
     <h2>請準時至 <span id="storeName"></span> 取餐</h2>
@@ -127,12 +132,51 @@
     <button class="btn-home" onclick="goHome()">回首頁</button>
     <button class="btn-map" onclick="goToMap()">查看取餐地圖</button>
   </div>
+</div>
 
-  <div id="footer-placeholder"></div>
+<!-- Footer Start -->
+<!-- (保持原樣，不改動) -->
+<!-- ... 請貼上你的 footer 區塊 ... -->
 
-  <!-- Footer Start -->
+<!-- Bootstrap JS (讓 navbar dropdown 與 collapsible 正常) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const data = JSON.parse(sessionStorage.getItem("orderSuccess"));
+    if (data) {
+      const fullData = {
+        ...data,
+        orderId: data.orderId || localStorage.getItem("lastOrderId") || null
+      };
+      sessionStorage.setItem("orderSuccess", JSON.stringify(fullData));
+      document.getElementById("storeName").textContent = fullData.storeName || "未知餐廳";
+      document.getElementById("storeAddress").textContent = fullData.address || "未提供地址";
+      document.getElementById("pickupCode").textContent = fullData.pickupCode || "------";
+      document.getElementById("pickupTime").textContent = "店家接單後會通知您";
+      setTimeout(() => {
+        console.log("✅ 導頁前儲存的經緯度：", fullData.storeLat, fullData.storeLng);
+        window.location.href = "/pickupMap.html";
+      }, 5000);
+    } else {
+      alert("⚠️ 無訂單資料，請重新下單！");
+      window.location.href = "/map2";
+    }
+  });
+
+  function goHome() {
+    window.location.href = "/index.html";
+  }
+
+  function goToMap() {
+    window.location.href = "/pickupMap.html";
+  }
+</script>
+
+<!-- Footer Start -->
 	<div
-		class="container-fluid footer text-white pt-5 px-0 position-relative overlay-top">
+		class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
 		<div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
 			<div class="col-lg-3 col-md-6 mb-5">
 				<h4 class="text-white text-uppercase mb-4"
@@ -200,37 +244,6 @@
 		</div>
 	</div>
 	<!-- Footer End -->
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const data = JSON.parse(sessionStorage.getItem("orderSuccess"));
-      if (data) {
-        const fullData = {
-          ...data,
-          orderId: data.orderId || localStorage.getItem("lastOrderId") || null
-        };
-        sessionStorage.setItem("orderSuccess", JSON.stringify(fullData));
-        document.getElementById("storeName").textContent = fullData.storeName || "未知餐廳";
-        document.getElementById("storeAddress").textContent = fullData.address || "未提供地址";
-        document.getElementById("pickupCode").textContent = fullData.pickupCode || "------";
-        document.getElementById("pickupTime").textContent = "店家接單後會通知您";
-        setTimeout(() => {
-          console.log("✅ 導頁前儲存的經緯度：", fullData.storeLat, fullData.storeLng);
-          window.location.href = "/pickupMap.html";
-        }, 5000);
-      } else {
-        alert("⚠️ 無訂單資料，請重新下單！");
-        window.location.href = "/map2";
-      }
-    });
-
-    function goHome() {
-      window.location.href = "/index.html";
-    }
-
-    function goToMap() {
-      window.location.href = "/pickupMap.html";
-    }
-  </script>
+	
 </body>
 </html>
