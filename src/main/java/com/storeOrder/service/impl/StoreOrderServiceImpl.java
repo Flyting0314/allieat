@@ -89,8 +89,7 @@ public class StoreOrderServiceImpl implements StoreOrderService {
                 break;
             case "ready":
                 order.setPickStat(2);
-                orderFoodRepository.save(order); // 先存取餐狀態
-                readyForPickup(orderId);          // 再推播通知
+                readyForPickup(orderId);
                 break;
             case "pickedUp":
                 order.setPickStat(1);
@@ -156,7 +155,6 @@ public class StoreOrderServiceImpl implements StoreOrderService {
         OrderFoodVO order = orderFoodRepository.findById(orderId).orElse(null);
         if (order != null) {
             // 更新成可取餐
-            order.setPickStat(2); // 你原本的 pickStat=2 就是可取餐
             orderFoodRepository.save(order);
 
             // 推播通知
