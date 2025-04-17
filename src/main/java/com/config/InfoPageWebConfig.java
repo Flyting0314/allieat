@@ -16,6 +16,6 @@ public class InfoPageWebConfig implements WebMvcConfigurer{
     	
         
     	registry.addInterceptor(infoPageInterceptor)
-                .addPathPatterns("/registerAndLogin/storeInfo","/registerAndLogin/memberInfo");
+                .addPathPatterns("/registerAndLogin/storeInfo","/registerAndLogin/memberInfo","/map2");
     }
 }

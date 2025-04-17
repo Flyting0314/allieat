@@ -27,6 +27,9 @@ public class InfoPageInterceptor implements HandlerInterceptor {
 
       
         response.sendRedirect(request.getContextPath() + "/registerAndLogin/login");
+        
+        response.sendRedirect(request.getContextPath() + "/registerAndLogin/login?from=map2");
+        
         return false;
     }
 	

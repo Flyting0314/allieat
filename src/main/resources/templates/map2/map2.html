@@ -280,6 +280,28 @@
 .pac-container {
 	display: none !important;
 }
+
+/* 庫存指示燈樣式 */
+.stock-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.stock-high {
+  background-color: #28a745; /* 綠色 */
+}
+
+.stock-medium {
+  background-color: #ffc107; /* 黃色 */
+}
+
+.stock-low {
+  background-color: #dc3545; /* 紅色 */
+}
+
 </style>
 </head>
 
@@ -469,26 +491,36 @@
 
 						</div>
 						<div class="col-md-6">
-							<h4 class="restaurant-name"></h4>
-							<div class="restaurant-rating mb-2">
-								<div class="stars-outer">
-									<div class="stars-inner"></div>
-								</div>
-								<span class="rating-value ml-2"></span>
-							</div>
-							<p class="restaurant-address mb-1">
-								<i class="fas fa-map-marker-alt mr-2 text-primary"></i> <span></span>
-							</p>
-							<p class="restaurant-phone mb-1">
-								<i class="fas fa-phone mr-2 text-primary"></i> <span></span>
-							</p>
-							<p class="restaurant-category mb-1">
-								<i class="fas fa-utensils mr-2 text-primary"></i> <span></span>
-							</p>
-							<div class="restaurant-tags mt-2">
-								<!-- 標籤會在這裡動態生成 -->
-							</div>
-						</div>
+  <h4 class="restaurant-name"></h4>
+
+  <div class="restaurant-rating mb-2">
+    <div class="stars-outer">
+      <div class="stars-inner"></div>
+    </div>
+    <span class="rating-value ml-2"></span>
+  </div>
+
+  <p class="restaurant-address mb-1">
+    <i class="fas fa-map-marker-alt mr-2 text-primary"></i> <span></span>
+  </p>
+
+  <p class="restaurant-phone mb-1">
+    <i class="fas fa-phone mr-2 text-primary"></i> <span></span>
+  </p>
+
+  <p class="restaurant-category mb-1">
+    <i class="fas fa-utensils mr-2 text-primary"></i> <span></span>
+  </p>
+
+  <p class="restaurant-inventory mb-1">
+    <i class="fas fa-boxes mr-2 text-primary"></i> 總庫存：<span></span>
+  </p>
+
+  <div class="restaurant-inventory-list mt-2">
+    <!-- 餐點庫存項目會由 JS 動態插入 -->
+  </div>
+</div>
+
 					</div>
 
 					<hr>
@@ -897,7 +929,8 @@ tempSearchMarker = new google.maps.Marker({
                         location: storeLocation,
                         id: store.storeId || store.id, // 確保使用正確的 ID
                         category: store.category || '餐飲',
-                        tags: store.tags || ['愛心合作店']
+                        tags: store.tags || ['愛心合作店'],
+                        amount: store.amount || '庫存',
                     };
                     
                     // 直接顯示模態視窗，而不是在地圖上顯示信息窗口
@@ -1189,6 +1222,52 @@ function showRestaurantModal(restaurant) {
     modal.find('.restaurant-address span').text(restaurant.address || "地址未知");
     modal.find('.restaurant-phone span').text(restaurant.phone || restaurant.phoneNumber || "無電話資訊");
     modal.find('.restaurant-category span').text(restaurant.category || '一般餐飲');
+ // 先清空
+    // 查詢庫存資料
+modal.find('.restaurant-inventory span').text('查詢中...');
+modal.find('.restaurant-inventory-list').empty();
+
+fetch(`/meal/store/${restaurant.storeId}/inventory`)
+.then(res => res.json())
+.then(data => {
+  const inventoryListEl = modal.find('.restaurant-inventory-list');
+  inventoryListEl.empty();
+
+  // 計算總庫存
+  const total = data.reduce((sum, item) => sum + (item.amount || 0), 0);
+  modal.find('.restaurant-inventory span').text(`${total} 份`);
+
+  if (Array.isArray(data)) {
+    data.forEach(item => {
+      const foodName = item.foodName || '未知品項';
+      const amount = item.amount || 0;
+
+      // ✅ 判斷庫存狀態
+      let stockClass = 'stock-high';
+      if (amount <= 5) {
+        stockClass = 'stock-low';
+      } else if (amount <= 15) {
+        stockClass = 'stock-medium';
+      }
+
+      // ✅ 顯示指示燈
+      const html = `
+        <p class="mb-1">
+          <span class="stock-indicator ${stockClass}"></span>
+          <i class="fas fa-utensil-spoon text-success mr-2"></i>
+          ${foodName}：${amount} 份
+        </p>`;
+      inventoryListEl.append(html);
+    });
+  }
+})
+.catch(err => {
+  console.error('取得庫存失敗', err);
+  modal.find('.restaurant-inventory span').text('無法取得');
+});
+
+
+
 
     // ✅ 星星評分
     const starsInner = modal.find('.stars-inner');

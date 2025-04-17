@@ -224,6 +224,15 @@ public class MealController {
             orderService.saveOrderDetails(details);
             System.out.println("✅ 所有有效訂單明細已儲存，共 " + details.size() + " 筆");
             
+            for (OrderDetailVO detail : details) {
+                FoodVO food = detail.getFood();
+                int currentAmount = food.getAmount() != null ? food.getAmount() : 0;
+                int newAmount = Math.max(currentAmount - detail.getAmount(), 0);
+                food.setAmount(newAmount);
+                foodService.addFood(food); // ⚠️ 確保這個方法已實作在 service 中
+            }
+            
+            
             //  WebSocket 推播通知對應店家
             orderNotifyService.notifyStoreNewOrder(savedOrder);
 
@@ -452,9 +461,34 @@ public class MealController {
         }
     }
 
+    
+    //20250417 瑋國新增庫存控制器
+    @GetMapping("/store/{storeId}/inventory")
+    public ResponseEntity<?> getInventoryByStore(@PathVariable Integer storeId) {
+        List<FoodVO> foods = foodService.getFoodsByStoreId(storeId);
+        Map<String, Integer> inventoryMap = new HashMap<>();
+
+        for (FoodVO food : foods) {
+            String foodName = food.getName();
+            Integer amount = food.getAmount() != null ? food.getAmount() : 0;
+            inventoryMap.merge(foodName, amount, Integer::sum);
+        }
+
+        List<Map<String, Object>> inventoryList = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : inventoryMap.entrySet()) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("foodName", entry.getKey());
+            item.put("amount", entry.getValue());
+            inventoryList.add(item);
+        }
+
+        return ResponseEntity.ok(inventoryList);
+    }
+    
+    
+    
+
+    }
 
 
 
-
-
-}

@@ -30,9 +30,16 @@
               <a href="/rank/top" class="dropdown-item">哈燒排行榜</a>
             </div>
           </div>
-          <a href="/map" class="nav-item nav-link">我要取餐 / 點餐</a>
-          <a href="/registerAndLogin" class="nav-item nav-link">註冊 / 登入</a>
-          <a href="/registerAndLogin/logout" class="nav-item nav-link">登出</a>
+          <a href="javascript:void(1)" id="orderFoodBtn" class="nav-item nav-link">我要取餐 / 點餐</a>
+          <div class="nav-item dropdown login-section">
+  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊 / 登入</a>
+  <div class="dropdown-menu text-capitalize dropdown-custom">
+    <a href="/registerAndLogin/register" class="dropdown-item">註冊</a>
+    <a href="/registerAndLogin/login" class="dropdown-item">登入</a>
+  </div>
+</div>
+<a href="/registerAndLogin/logout" class="nav-item nav-link logout-section" style="display: none;">登出</a>
+
           <a href="javascript:void(0)" id="memberAreaBtn" class="nav-item nav-link">會員專區</a>
         </div>
       </div>
@@ -44,10 +51,11 @@
       <div class="carousel-inner">
         <div class="carousel-item active" style="
             background-image: url(/img/圖片3.png);
-            background-size: 110% auto;
-            background-position: center 50px;
-            height: 300px;
-            filter: brightness(225%);">
+            background-size: cover;
+            background-position: center;
+    background-repeat: no-repeat;
+    height: 300px;
+    filter: brightness(225%);">
           <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
             <h2 class="text-primary font-weight-medium m-0"></h2>
             <h1 class="display-1 text-white m-0"></h1>
@@ -58,7 +66,19 @@
     </div>
   </div>
 </section>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const isLoggedIn = window.isMember || window.isStore;
 
+    if (isLoggedIn) {
+      document.querySelectorAll('.login-section').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.logout-section').forEach(el => el.style.display = 'inline-block');
+    } else {
+      document.querySelectorAll('.login-section').forEach(el => el.style.display = 'inline-block');
+      document.querySelectorAll('.logout-section').forEach(el => el.style.display = 'none');
+    }
+  });
+</script>
 <script>
   (function () {
     const memberBtn = document.getElementById('memberAreaBtn');
@@ -96,11 +116,55 @@
             }
           });
         } else {
-          window.location.href = isMember
+          window.location.href = isMember1
             ? "/registerAndLogin/memberInfo"
             : "/registerAndLogin/storeInfo";
         }
       });
     }
   })();
+</script>
+
+<script>
+  (function () {
+		  const orderFoodBtn = document.getElementById('orderFoodBtn'); // ✅ 修正變數名
+		  if (orderFoodBtn) {
+		    orderFoodBtn.addEventListener("click", function (event) {
+		      event.preventDefault();
+
+		      const isMember = window.isMember;
+		      const isStore = window.isStore;
+
+		      if (!isMember && !isStore) {
+		        Swal.fire({
+		          title: '<span id="secretEasterTitle">尚未登入</span>',
+		          html: '<p>請先登入才能進入點餐畫面喔！</p>',
+		          icon: 'info',
+		          showCancelButton: true,
+		          confirmButtonText: '好，帶我去登入',
+		          cancelButtonText: '稍後再說',
+		          confirmButtonColor: '#f6a600',
+		          cancelButtonColor: '#aaa',
+		          didOpen: () => {
+		            let pressTimer;
+		            const title = document.getElementById('secretEasterTitle');
+		            title.addEventListener('mousedown', () => {
+		              pressTimer = setTimeout(() => {
+		                window.location.href = '/backStage';
+		              }, 1500);
+		            });
+		            title.addEventListener('mouseup', () => clearTimeout(pressTimer));
+		            title.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+		          }
+		        }).then((result) => {
+		          if (result.isConfirmed) {
+		            window.location.href = "/registerAndLogin/login";
+		          }
+		        });
+		      } else {
+		        window.location.href = "/map2";
+		      }
+		    });
+		  }
+		})();
 </script>
