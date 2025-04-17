@@ -173,7 +173,7 @@ public class MealController {
         try {
             Integer storeId = (Integer) orderData.get("storeId");
             Integer memberId = (Integer) orderData.get("memberId");
-            Integer pickStat = (Integer) orderData.getOrDefault("pickStat", 2);
+            Integer pickStat = (Integer) orderData.getOrDefault("pickStat", 0);
             Integer serveStat = (Integer) orderData.getOrDefault("serveStat", 0);
 
             OrderFoodVO order = new OrderFoodVO();

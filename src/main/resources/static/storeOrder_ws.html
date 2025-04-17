@@ -1,180 +1,310 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <title>訂單管理 - 攏呷霸 ALLiEAT</title>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-    body { font-family: sans-serif; margin: 0; background: #f6f9fc; }
-    .vendor_profile_wrapper { display: flex; min-height: 100vh; }
-    .vendor_sidebar {
-      width: 220px;
-      background: #ffffff;
-      padding-top: 20px;
-      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    }
-    .vendor_sidebar_item {
-      display: block;
-      padding: 12px 24px;
-      color: #333;
-      font-weight: 500;
-      text-decoration: none;
-    }
-    .vendor_active { background-color: #e0f3ff; color: #007bff; }
-    .vendor_main_content {
-      flex-grow: 1;
-      padding: 30px;
-      background-color: #f6f9fc;
-    }
-    .order-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .order-table th, .order-table td {
-      border-bottom: 1px solid #eee;
-      padding: 10px;
-      text-align: center;
-    }
-    .order-table th {
-      background-color: #d3eafd;
-    }
-    .badge {
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 13px;
-      color: #fff;
-    }
-    .badge-green { background: #28a745; }
-    .badge-blue { background: #007bff; }
-    .badge-red { background: #dc3545; }
-    .badge-gray { background: #6c757d; }
-    .badge-orange { background: #fd7e14; }
-  </style>
+<meta charset="UTF-8" />
+<title>訂單管理 - 攏呷霸 ALLiEAT</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+body {
+	font-family: sans-serif;
+	margin: 0;
+	background: #f6f9fc;
+}
+
+.vendor_profile_wrapper {
+	display: flex;
+	min-height: 100vh;
+}
+
+.vendor_sidebar {
+	width: 220px;
+	background: #ffffff;
+	padding-top: 20px;
+	box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.vendor_sidebar_item {
+	display: block;
+	padding: 12px 24px;
+	color: #333;
+	font-weight: 500;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.vendor_active {
+	background-color: #e0f3ff;
+	color: #007bff;
+}
+
+.vendor_main_content {
+	flex-grow: 1;
+	padding: 30px;
+	background-color: #f6f9fc;
+}
+
+.order-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: white;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.order-table th, .order-table td {
+	border-bottom: 1px solid #eee;
+	padding: 10px;
+	text-align: center;
+}
+
+.order-table th {
+	background-color: #d3eafd;
+}
+
+.badge {
+	padding: 4px 10px;
+	border-radius: 12px;
+	font-size: 13px;
+	color: #fff;
+}
+
+.badge-green {
+	background: #28a745;
+}
+
+.badge-blue {
+	background: #007bff;
+}
+
+.badge-red {
+	background: #dc3545;
+}
+
+.badge-gray {
+	background: #6c757d;
+}
+
+.badge-orange {
+	background: #fd7e14;
+}
+
+.action-btn {
+	margin: 2px;
+	padding: 5px 10px;
+	font-size: 12px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.accept {
+	background-color: #28a745;
+	color: white;
+}
+
+.reject {
+	background-color: #dc3545;
+	color: white;
+}
+
+.ready {
+	background-color: #17a2b8;
+	color: white;
+}
+
+.pickedUp {
+	background-color: green;
+	color: white;
+}
+
+.notPicked {
+	background-color: red;
+	color: white;
+}
+
+.complete {
+	background-color: #ffc107;
+	color: black;
+}
+
+.remove {
+	background-color: #6c757d;
+	color: white;
+}
+
+@media ( max-width : 768px) {
+	.order-table {
+		overflow-x: auto;
+		display: block;
+	}
+}
+</style>
 </head>
 <body>
 
-<div id="header-container"></div>
-<div id="bodySection-container"></div>
-<div class="container">
-<div class="vendor_profile_wrapper">
-  <div class="vendor_sidebar">
-    <a href="#" class="vendor_sidebar_item">店家資訊管理</a>
-    <a href="#" class="vendor_sidebar_item">餐點管理</a>
-    <a href="#" class="vendor_sidebar_item">核銷點數管理</a>
-    <a href="#" class="vendor_sidebar_item vendor_active">訂單管理</a>
-    <a href="#" class="vendor_sidebar_item">常見問題</a>
-  </div>
+	<div id="header-container"></div>
+	<div id="bodySection-container"></div>
+	<div class="container">
+		<div class="vendor_profile_wrapper">
+			<div class="vendor_sidebar">
+				<div class="vendor_sidebar_item">店家資訊管理</div>
+				<div class="vendor_sidebar_item">餐點管理</div>
+				<div class="vendor_sidebar_item">核銷點數管理</div>
+				<div class="vendor_sidebar_item vendor_active">訂單管理</div>
+				<div class="vendor_sidebar_item">常見問題</div>
+			</div>
 
-  <div class="vendor_main_content">
-    <h2>訂單管理</h2>
-    <table class="order-table">
-      <thead>
-        <tr>
-          <th>取餐號碼</th>
-          <th>訂餐時間</th>
-          <th>餐點名稱</th>
-          <th>訂單狀態</th>
-          <th>取餐狀態</th>
-          <th>取餐時限</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody id="orderTableBody"></tbody>
-    </table>
-  </div>
-</div>
-</div>
+			<div class="vendor_main_content">
+				<h2>訂單管理</h2>
+				<div id="loading"
+					style="display: none; text-align: center; margin: 20px;">載入中...</div>
+				<table class="order-table">
+					<thead>
+						<tr>
+							<th>取餐號碼</th>
+							<th>訂餐時間</th>
+							<th>餐點名稱</th>
+							<th>訂單狀態</th>
+							<th>取餐狀態</th>
+							<th>取餐時限</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody id="orderTableBody"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 
-<div id="footer-container"></div>
+	<div id="footer-container"></div>
 
-<script>
-  let storeId = localStorage.getItem("storeId");
-  if (!storeId) {
-    const params = new URLSearchParams(window.location.search);
-    storeId = params.get("storeId");
-    if (storeId) {
-      localStorage.setItem("storeId", storeId);
-    } else {
-      Swal.fire("錯誤", "無法取得 storeId，請重新登入", "error");
-    }
-  }
+	<script>
+		let storeId = localStorage.getItem("storeId");
+		if (!storeId) {
+		  const params = new URLSearchParams(window.location.search);
+		  storeId = params.get("storeId");
+		  if (storeId) {
+		    localStorage.setItem("storeId", storeId);
+		  } else {
+		    Swal.fire("錯誤", "無法取得 storeId，請重新登入", "error");
+		  }
+		}
+		
+		function getStatusColor(stat) {
+		  return stat === 0 ? "badge-blue" : stat === 1 ? "badge-green" : "badge-red";
+		}
+		
+		function getPickColor(stat) {
+		  return stat === 1 ? "badge-green" : stat === 2 ? "badge-orange" : "badge-gray";
+		}
+		
+		function getStatusLabel(stat) {
+		  return stat === 0 ? "尚未接單" : stat === 1 ? "已接單" : "拒絕接單";
+		}
+		
+		function getPickLabel(stat) {
+		  return stat === 0 ? "無" : stat === 1 ? "已領取" : "未領取";
+		}
+		
+		function loadTodayOrders() {
+		  document.getElementById("loading").style.display = "block";
+		  fetch(`/registerAndLogin/storeInfo/${storeId}/orders/today`)
+		    .then(res => res.json())
+		    .then(data => {
+		      const tbody = document.getElementById("orderTableBody");
+		      tbody.innerHTML = "";
+		      if (data.length === 0) {
+		        tbody.innerHTML = "<tr><td colspan='7'>目前無訂單</td></tr>";
+		      } else {
+		        data.forEach(order => {
+		          const row = document.createElement("tr");
+		          row.innerHTML = `
+		            <td>${String(order.orderId).padStart(7, "0")}</td>
+		            <td>${new Date(order.createdTime).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })}</td>
+		            <td>${order.foodItems.map(f => `${f.foodName} x${f.quantity}`).join("<br>")}</td>
+		            <td><span class="badge ${getStatusColor(order.serveStat)}">${getStatusLabel(order.serveStat)}</span></td>
+		            <td><span class="badge ${getPickColor(order.pickStat)}">${getPickLabel(order.pickStat)}</span></td>
+		            <td>${order.pickupDeadline ? new Date(order.pickupDeadline).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }) : "無"}</td>
+		            <td>${getActionButtons(order)}</td>
+		          `;
+		          tbody.appendChild(row);
+		        });
+		      }
+		    })
+		    .finally(() => {
+		      document.getElementById("loading").style.display = "none";
+		    });
+		}
+		
+		function getActionButtons(order) {
+		  const { serveStat, pickStat } = order;
+		  let buttons = [];
+		  if (serveStat === 0) {
+		    buttons.push(`<button class='action-btn accept' onclick='acceptOrder(${order.orderId})'>接單</button>`);
+		    buttons.push(`<button class='action-btn reject' onclick='rejectOrder(${order.orderId})'>拒接</button>`);
+		  } else if (serveStat === 1 && pickStat === 2) {
+		    buttons.push(`<button class='action-btn ready' onclick='readyForPickup(${order.orderId})'>可取餐</button>`);
+		    buttons.push(`<button class='action-btn pickedUp' onclick='pickedUpOrder(${order.orderId})'>已取餐</button>`);
+		    buttons.push(`<button class='action-btn notPicked' onclick='notPickedOrder(${order.orderId})'>未取餐</button>`);
+		  }
+		  if ((pickStat === 1 && serveStat === 1) || (pickStat === 3 && serveStat === 1)) {
+		    buttons.push(`<button class='action-btn complete' onclick='completeOrder(${order.orderId})'>完成訂單</button>`);
+		  }
+		  if (serveStat === 2) {
+		    buttons.push(`<button class='action-btn remove' onclick='removeOrder(${order.orderId})'>移除訂單</button>`);
+		  }
+		  return buttons.join("<br>");
+		}
+		
+		function acceptOrder(orderId) { action(orderId, 'accept'); }
+		function rejectOrder(orderId) { action(orderId, 'reject'); }
+		function readyForPickup(orderId) { action(orderId, 'ready'); }
+		function pickedUpOrder(orderId) { action(orderId, 'pickedUp'); }
+		function notPickedOrder(orderId) { action(orderId, 'notPicked'); }
+		function completeOrder(orderId) { action(orderId, 'complete'); }
+		function removeOrder(orderId) { action(orderId, 'remove'); }
+		
+		function action(orderId, type) {
+		  let url = `/registerAndLogin/storeInfo/${storeId}/orders/${orderId}/${type}`;
+		  fetch(url, { method: 'PUT' })
+		    .then(res => {
+		      if (res.ok) return res.text();
+		      else throw new Error("操作失敗");
+		    })
+		    .then(msg => {
+		      Swal.fire("成功", msg, "success").then(() => loadTodayOrders());
+		    })
+		    .catch(err => Swal.fire("錯誤", err.message, "error"));
+		}
+		
+		// websocket實作
+		const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+		const socket = new WebSocket(`${protocol}://${window.location.host}/ws/order?storeId=${storeId}`);
+// 		const socket = new WebSocket(`ws://localhost:8080/ws/order?storeId=${storeId}`);
+		socket.onopen = () => console.log("✅ WebSocket 連線建立");
+		socket.onmessage = (event) => {
+			  console.log("📥 收到推播訊息：", event.data);
+			  Swal.fire({
+			    title: "📦 新訂單通知",
+			    text: event.data,
+			    icon: "info",
+			    showCancelButton: true,
+			    confirmButtonText: "立即刷新",
+			    cancelButtonText: "稍後再說"
+			  }).then((result) => {
+			    if (result.isConfirmed) {
+			      loadTodayOrders();
+			    }
+			  });
+			};
 
-  function getStatusColor(stat) {
-    return stat === 0 ? "badge-blue" : stat === 1 ? "badge-green" : "badge-red";
-  }
-
-  function getPickColor(stat) {
-    return stat === 1 ? "badge-green" : stat === 2 ? "badge-orange" : "badge-gray";
-  }
-
-  function loadTodayOrders() {
-    fetch(`/registerAndLogin/storeInfo/${storeId}/orders/today`)
-      .then(res => res.json())
-      .then(data => {
-        const tbody = document.getElementById("orderTableBody");
-        tbody.innerHTML = "";
-        data.forEach(order => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${String(order.orderId).padStart(7, "0")}</td>
-            <td>${new Date(order.createdTime).toLocaleString()}</td>
-            <td>${order.foodItems.map(f => `${f.foodName} x${f.quantity}`).join("<br>")}</td>
-            <td><span class="badge ${getStatusColor(order.serveStat)}">${getStatusLabel(order.serveStat)}</span></td>
-            <td><span class="badge ${getPickColor(order.pickStat)}">${getPickLabel(order.pickStat)}</span></td>
-            <td>${order.pickupDeadline ? new Date(order.pickupDeadline).toLocaleString() : "無"}</td>
-            <td>（操作按鈕待補）</td>
-          `;
-          tbody.appendChild(row);
-        });
-      });
-  }
-
-  function getStatusLabel(stat) {
-    return stat === 0 ? "尚未接單" : stat === 1 ? "已接單" : "拒絕接單";
-  }
-
-  function getPickLabel(stat) {
-    return stat === 0 ? "無" : stat === 1 ? "已領取" : "未領取";
-  }
-
-  // 建立 WebSocket 並接收通知
-  const socket = new WebSocket(`ws://localhost:8080/ws/order?storeId=${storeId}`);
-  socket.onopen = () => console.log("✅ WebSocket 連線建立");
-  socket.onmessage = (event) => {
-    console.log("📥 收到推播訊息：", event.data);
-    Swal.fire({
-      title: "📦 新訂單通知",
-      text: event.data,
-      icon: "info",
-      confirmButtonText: "刷新訂單"
-    }).then(() => loadTodayOrders());
-  };
-
-  document.addEventListener("DOMContentLoaded", loadTodayOrders);
-  
-  // 共用css
-  fetch("/components/header")
-  .then(response => response.text())
-  .then(html => {
-      document.getElementById("header-container").innerHTML = html;
-  });
-
-  fetch("/components/bodySection")
-  .then(response => response.text())
-  .then(html => {
-      document.getElementById("bodySection-container").innerHTML = html;
-  });
-  
-  fetch("/components/footer")
-  .then(response => response.text())
-  .then(html => {
-      document.getElementById("footer-container").innerHTML = html;
-  });
-  
-</script>
+		
+		document.addEventListener("DOMContentLoaded", loadTodayOrders);
+		
+		// 統一css
+		fetch("/components/header").then(res => res.text()).then(html => document.getElementById("header-container").innerHTML = html);
+		fetch("/components/bodySection").then(res => res.text()).then(html => document.getElementById("bodySection-container").innerHTML = html);
+		fetch("/components/footer").then(res => res.text()).then(html => document.getElementById("footer-container").innerHTML = html);
+	</script>
 </body>
 </html>
