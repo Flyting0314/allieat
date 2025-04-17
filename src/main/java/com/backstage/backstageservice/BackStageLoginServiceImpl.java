@@ -13,10 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class BackStageLoginServiceImpl implements BackStageLoginService {
@@ -31,23 +33,28 @@ public class BackStageLoginServiceImpl implements BackStageLoginService {
 	public Map<String, Object> findByAccount(AdminDTO admin) {
 		// 資料Mapping
 		AdminVO adminVO = new AdminVO();
+		// 資料mapping
 		BeanUtils.copyProperties(admin, adminVO);
+
 		List<AdminVO> adminList = backStageLogin.findByAccount(adminVO);
-		if (!adminList.isEmpty()) {
-			AdminVO foundAdmin = adminList.get(0); // 取出結果
-			if (foundAdmin.getPassword() != null && encoder.matches(admin.getPassword(), foundAdmin.getPassword())) {
-				// 產生Token
-				String token = jwtUtil.generateToken(foundAdmin.getAccount());
-				// 回傳值設定
-				Map<String, Object> result = createResult("login ok");
-				result.put("token", token);
-				return result; // 密碼正確
-			} else {
-				return createResult("login failed password is incorrect"); // 密碼錯誤
-			}
-		} else {
-			return createResult("account does not exist"); 
+
+		if (adminList.isEmpty()) {
+			return createResult("account does not exist");
 		}
+		AdminVO foundAdmin = adminList.get(0); // 取出結果
+
+		if (!StringUtils.hasText(foundAdmin.getPassword())
+				|| ! encoder.matches(admin.getPassword(), foundAdmin.getPassword())) {
+			return createResult("login failed password is incorrect"); // 密碼錯誤
+		}
+
+		// 產生Token
+		String token = jwtUtil.generateToken(foundAdmin.getAccount());
+		// 回傳值設定
+		Map<String, Object> result = createResult("login ok");
+		result.put("token", token);
+		return result; // 密碼正確
+
 	}
 
 	// 用於回傳狀態創建
