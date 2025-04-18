@@ -60,16 +60,16 @@
                                 <p><strong>姓名：</strong><span th:text="${donaReq.identityData}"></span></p>
                                 <p><strong>Email：</strong><span th:text="${donaReq.email}"></span></p>
                                 <p><strong>行動電話：</strong><span th:text="${donaReq.phone}"></span></p>
-                                <p><strong>地址：</strong>
-                                    <span
-                                        th:text="${donaReq.county} + ' ' + donaReq.district + ' ' + donaReq.address"></span>
+                                <p th:if="${donaReq.mailMtd == 0}"><strong>地址：</strong>
+                                    <span th:text="${donaReq.county + ' ' + donaReq.district + ' ' + donaReq.address}"></span>
+
                                 </p>
-                                <p><strong>稱謂：</strong><span th:text="${donaReq.salutation}"></span></p>
-                                <p><strong>身分證號：</strong>
+                                <p th:if="${donaReq.mailMtd == 0}"><strong>稱謂：</strong><span th:text="${donaReq.salutation}"></span></p>
+                                <p th:if="${donaReq.mailMtd == 0 and donaReq.companyDonor == false}"><strong>身分證號：</strong>
                                     <span th:if="${donaReq.idNum != null and !#strings.isEmpty(donaReq.idNum)}"
                                         th:text="${donaReq.idNum}"></span>
                                 </p>
-                                <p><strong>統一編號：</strong>
+                                <p th:if="${donaReq.mailMtd == 0 and donaReq.companyDonor == true}"><strong>統一編號：</strong>
                                     <span th:if="${donaReq.guiNum != null and !#strings.isEmpty(donaReq.guiNum)}"
                                         th:text="${donaReq.guiNum}"></span>
                                 </p>

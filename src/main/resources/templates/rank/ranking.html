@@ -13,6 +13,7 @@
 
     <!-- 🅰 左側 A區：4 個排行榜 -->
     <div class="ranking-left-column">
+    
         <div class="tabs">
             <div class="tab active" onclick="switchAreaTab('a', 'personal-total', this)">個人總捐款</div>
             <div class="tab" onclick="switchAreaTab('a', 'company-total', this)">企業總捐款</div>
@@ -83,7 +84,7 @@
     <div class="ranking-right-column">
         <!-- 累計捐款金額 -->
         <div class="donation-total-supercard">
-            <h2> 累計捐款金額 </h2>
+            <h2> 累計捐款金額 <button onclick="location.href='/rank/refresh'" class="btn" style="width:30px">⟳</button></h2>
             <div id="donationAmount" class="donation-amount-glow">NT$ 0</div>
             <p class="donation-caption">感謝每位天使的溫暖 ❤️</p>
         </div>
