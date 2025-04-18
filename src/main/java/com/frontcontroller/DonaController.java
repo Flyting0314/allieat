@@ -137,11 +137,7 @@ public class DonaController {
             BindingResult result, RedirectAttributes redirectAttributes) {
         
 
-    	// 驗證信用卡資料
-        if (!donaService.isValidCard(cardNumber, cardExpiry, cardCvv)) {
-        	result.reject("creditCard.invalid", "信用卡資訊不正確！");
-            return "dona/donaAddC"; 
-        }
+    
         DonaVO savedDona = donaService.insertDona(donaReq);
         System.out.println(" 前往成功頁面 dona = " + savedDona);
        

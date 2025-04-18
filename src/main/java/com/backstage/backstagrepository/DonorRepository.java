@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.entity.DonaVO;
 
@@ -133,6 +135,10 @@ public interface DonorRepository extends JpaRepository<DonaVO, Integer> {
 
 //====================== 	   
  	   
- 	   
+ 	@Transactional
+ 	@Modifying
+ 	@Query("UPDATE DonaVO d SET d.paidStatus = 1 WHERE d.merchantTradeNo = :merchantTradeNo")
+ 	int updatePaidStatusByMerchantTradeNo(@Param("merchantTradeNo") String merchantTradeNo);
+   
  	}
 
