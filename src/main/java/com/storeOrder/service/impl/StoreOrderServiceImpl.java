@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,20 +77,29 @@ public class StoreOrderServiceImpl implements StoreOrderService {
         if (order == null) {
             throw new RuntimeException("訂單不存在");
         }
-
+        
+        String fcmToken = order.getFcmToken(); // 取fcmToken
+        String storeName = order.getStore().getName(); // 店名
+        
         switch (type) {
             case "archive":
                 order.setServeStat(99);
                 break;
             case "accept":
                 order.setServeStat(1);
+                order.setPickStat(0);
                 break;
             case "reject":
                 order.setServeStat(2);
+                if (fcmToken != null) {
+                    fcmService.sendNotification(fcmToken, "訂單被拒絕", "很抱歉，您的訂單被「" + storeName + "」拒絕了，期待下次再為您服務！");
+                }
                 break;
             case "ready":
                 order.setPickStat(2);
-                readyForPickup(orderId);
+                if (fcmToken != null) {
+                    fcmService.sendNotification(fcmToken, "餐點可取餐囉！", storeName + "準備好了！取餐編號：" + order.getOrderId());
+                }
                 break;
             case "pickedUp":
                 order.setPickStat(1);
@@ -129,8 +139,8 @@ public class StoreOrderServiceImpl implements StoreOrderService {
             dto.setServeStat(order.getServeStat());
             dto.setPickStat(order.getPickStat());
 
-            if (order.getServeStat() != null && order.getServeStat() == 1) {
-                Timestamp deadline = Timestamp.from(order.getCreatedTime().toInstant().plus(1, ChronoUnit.HOURS));
+            if (order.getPickStat() == 2 && order.getServeStat() == 1) {
+                Timestamp deadline = Timestamp.from(java.time.Instant.now().plus(1, ChronoUnit.HOURS));
                 dto.setPickupDeadline(deadline);
             }
 
@@ -149,13 +159,10 @@ public class StoreOrderServiceImpl implements StoreOrderService {
         return result;
     }
 
-	// fcm專用
 	@Override
-	public void readyForPickup(Integer orderId) {
-        OrderFoodVO order = orderFoodRepository.findById(orderId).orElse(null);
-        if (order != null) {
-            // 更新成可取餐
-            orderFoodRepository.save(order);
+	public String updateOpStat(Integer storeId, String type) {
+		
+	    Optional<StoreVO> optionalStore = storeRepository.findById(storeId);
 
 	    StoreVO store = optionalStore.get();
 
@@ -165,7 +172,7 @@ public class StoreOrderServiceImpl implements StoreOrderService {
 	            storeRepository.save(store);
 	            return "已切換為忙碌中，暫停接單";
 	        case "resume":
-	            store.setOpStat(1); // 營業中
+	            store.setOpStat(0); // 營業中
 	            storeRepository.save(store);
 	            return "已恢復正常接單";
 	        default:
