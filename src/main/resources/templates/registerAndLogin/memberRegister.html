@@ -32,6 +32,15 @@
             max-height: 90vh;
             overflow-y: auto;
         }
+        .hidden {
+  display: none !important;
+}
+
+.text-danger.hidden {
+    visibility: hidden;
+    height: 1em; /* 保留高度避免畫面跳動 */
+    display: block;
+}
 
     </style>
 
@@ -99,13 +108,11 @@
             <select id="permDistrictSelect" class="verification_select"></select>
             <input type="text" id="permZipcodeInput" class="verification_input" readonly placeholder="郵遞區號" />
         </div>
-        <input type="text" th:field="*{permAddr}" id="permDetail" class="verification_input" placeholder="請輸入詳細地址" />
-<div id="permAddrError"
-     class="text-danger"
-     style="display:none;"
-     th:if="${#fields.hasErrors('permAddr')}"
-     th:errors="*{permAddr}">
-</div>
+        <input type="text" id="permDetail" class="verification_input"
+       placeholder="請輸入詳細地址"
+       th:value="${permDetail}" />
+        <input type="hidden" th:field="*{permAddr}" id="permAddrHidden" />
+<div id="permAddrError" class="text-danger" th:if="${#fields.hasErrors('permAddr')}" th:errors="*{permAddr}"></div>
     </div>
 </div>
 
@@ -118,12 +125,13 @@
             <select id="commDistrictSelect" class="verification_select"></select>
             <input type="text" id="commZipcodeInput" class="verification_input" readonly placeholder="郵遞區號" />
         </div>
-        <input type="text" th:field="*{address}" id="commDetail" class="verification_input" placeholder="請輸入詳細地址" />
-<div id="addressError"
-     class="text-danger"
+        <input type="text" id="commDetail" class="verification_input"
+       placeholder="請輸入詳細地址"
+       th:value="${commDetail}" />
+        <input type="hidden" th:field="*{address}" id="addressHidden" />
+<div id="addressError" class="text-danger"
      th:if="${#fields.hasErrors('address')}"
-     th:errors="*{address}">
-</div>
+     th:errors="*{address}">⚠️通訊地址錯誤</div>
 
 
         <div style="margin-top: 14px;">
@@ -497,147 +505,144 @@ width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center;
 	
 
 	
-	function handleOrgChange(selectElement) {
-		const selectedValue = selectElement.value;
-		const hiddenField = document.getElementById("organizationIdField");
-		const otherInput = document.getElementById("otherOrganizationInput");
-		
-
- 		hiddenField.value = selectedValue;
-
- 		if (selectedValue === "-1") {
-     		otherInput.style.display = "block";
- 		} else {
-			otherInput.style.display = "none";
+		function handleOrgChange(selectElement) {
+			const selectedValue = selectElement.value;
+			const hiddenField = document.getElementById("organizationIdField");
+			const otherInput = document.getElementById("otherOrganizationInput");
+			
+	
+	 		hiddenField.value = selectedValue;
+	
+	 		if (selectedValue === "-1") {
+	     		otherInput.style.display = "block";
+	 		} else {
+				otherInput.style.display = "none";
+			}
 		}
-	}
 	
-	
-	
-    
-    
-
-	
-	
-          
-
-
 
             // 清除錯誤=====
-    document.querySelectorAll('.verification_input').forEach(input => {
-        input.addEventListener('input', function () {
-            const errorDiv = input.parentElement.querySelector('.text-danger');
-            if (errorDiv) {
-                errorDiv.style.display = 'none';
-            }
-        });
-    });
+		document.querySelectorAll('.verification_input').forEach(input => {
+		    input.addEventListener('input', function () {
+		        clearFieldError(input);
+		
+		        // ⚠️ 只有該欄位真的顯示錯誤才清除 generalErrors（避免閃現）
+		        const errorDiv = input.closest('.verification_form_controls')?.querySelector('.text-danger');
+		        const hasError = errorDiv && !errorDiv.classList.contains('hidden') && errorDiv.textContent.trim() !== '';
+		
+		        if (input.id !== 'permDetail' && input.id !== 'commDetail' && hasError) {
+		            clearGeneralErrors();
+		        }
+		    });
+		});
 
-    ['permCitySelect', 'permDistrictSelect', 'commCitySelect', 'commDistrictSelect'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('change', () => {
-                clearFieldError(el);
-                clearGeneralErrors();
-            });
-        }
-    });
+		['permCitySelect', 'permDistrictSelect', 'commCitySelect', 'commDistrictSelect'].forEach(id => {
+			const el = document.getElementById(id);
+			if (el) {
+				el.addEventListener('change', () => {
+					// 只清除非地址用的欄位錯誤
+					if (id !== 'permCitySelect' && id !== 'permDistrictSelect' && id !== 'commCitySelect' && id !== 'commDistrictSelect') {
+						clearFieldError(el);
+						clearGeneralErrors();
+					}
+				});
+			}
+		});
     
     
-    function setupAddressSelect(cityId, districtId, zipId, errorDivId) {
-	    const citySelect = document.getElementById(cityId);
-	    const districtSelect = document.getElementById(districtId);
-	    const zipInput = document.getElementById(zipId);
-	    const errorDiv = document.getElementById(errorDivId);
-
-    // 載入縣市==
-    citySelect.innerHTML = '<option value="">請選擇縣市</option>'; // 取消預設值
-	addrData.forEach(item => {
-	    const option = document.createElement('option');
-	    option.value = item.city;
-	    option.textContent = item.city;
-	    citySelect.appendChild(option);
-	});
-
-    // 載入預設值
-    const selectedCity = citySelect.value;
-    const selectedDistrict = districtSelect.value;
-    if (selectedCity) {
-        const cityObj = addrData.find(item => item.city === selectedCity);
-        if (cityObj) {
-            districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
-            cityObj.area.forEach(area => {
-                const option = document.createElement('option');
-                option.value = area.name;
-                option.textContent = area.name;
-                if (area.name === selectedDistrict) option.selected = true;
-                districtSelect.appendChild(option);
-            });
-            const zipObj = cityObj.area.find(area => area.name === selectedDistrict);
-            if (zipObj) zipInput.value = zipObj.zipcode;
-        }
-    }
-
-    // === 互動式錯誤清除 ===
-    citySelect.addEventListener('change', () => {
-        const selectedCity = citySelect.value;
-        const cityObj = addrData.find(item => item.city === selectedCity);
-        districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
-        zipInput.value = '';
-        if (cityObj && cityObj.area.length > 0) {
-            cityObj.area.forEach((area, index) => {
-                const option = document.createElement('option');
-                option.value = area.name;
-                option.textContent = area.name;
-                if (index === 0) {
-                    option.selected = true;
-                    zipInput.value = area.zipcode;
-                }
-                districtSelect.appendChild(option);
-            });
-        }
-        // 清除錯誤
-        if (errorDiv) errorDiv.style.display = 'none';
-    });
-
-    districtSelect.addEventListener('change', () => {
-        const selectedCity = citySelect.value;
-        const selectedDistrict = districtSelect.value;
-        const cityObj = addrData.find(item => item.city === selectedCity);
-        if (cityObj) {
-            const areaObj = cityObj.area.find(area => area.name === selectedDistrict);
-            zipInput.value = areaObj ? areaObj.zipcode : '';
-        } else {
-            zipInput.value = '';
-        }
-        // 清除錯誤
-        if (errorDiv) errorDiv.style.display = 'none';
-
-        // ✅ 加在這裡：補到詳細地址欄位
-        
-       
-
-		document.getElementById('permDetail')?.addEventListener('input', function () {
-		    const isSame = document.getElementById('sameAsPerm')?.checked;
-		    if (isSame) {
-		        const permCity = document.getElementById('permCitySelect').value;
-		        const permDistrict = document.getElementById('permDistrictSelect').value;
-		        const permZipcode = document.getElementById('permZipcodeInput').value;
-		        const permDetail = document.getElementById('permDetail').value;
-		        const commDetail = document.getElementById('commDetail');
-		        if (commDetail) {
-		        	const permCityText = document.querySelector('#permCitySelect option:checked')?.textContent || '';
-		        	const permDistrictText = document.querySelector('#permDistrictSelect option:checked')?.textContent || '';
-		        	commDetail.value = permZipcode + permCityText + permDistrictText + permDetail;
+	    function setupAddressSelect(cityId, districtId, zipId, errorDivId) {
+		    const citySelect = document.getElementById(cityId);
+		    const districtSelect = document.getElementById(districtId);
+		    const zipInput = document.getElementById(zipId);
+		    const errorDiv = document.getElementById(errorDivId);
+	
+	    // 載入縣市==
+		    citySelect.innerHTML = '<option value="">請選擇縣市</option>'; // 取消預設值
+			addrData.forEach(item => {
+			    const option = document.createElement('option');
+			    option.value = item.city;
+			    option.textContent = item.city;
+			    citySelect.appendChild(option);
+			});
+	
+	    // 載入預設值
+		    const selectedCity = citySelect.value;
+		    const selectedDistrict = districtSelect.value;
+		    if (selectedCity) {
+		        const cityObj = addrData.find(item => item.city === selectedCity);
+		        if (cityObj) {
+		            districtSelect.innerHTML = '<option value=""></option>';
+		            cityObj.area.forEach(area => {
+		                const option = document.createElement('option');
+		                option.value = area.name;
+		                option.textContent = area.name;
+		                if (area.name === selectedDistrict) option.selected = true;
+		                districtSelect.appendChild(option);
+		            });
+		            const zipObj = cityObj.area.find(area => area.name === selectedDistrict);
+		            if (zipObj) zipInput.value = zipObj.zipcode;
 		        }
 		    }
-		});
-    });
-    
- 
-}
-    
+	
+	    // === 互動式錯誤清除 ===
+		    citySelect.addEventListener('change', () => {
+			    const selectedCity = citySelect.value;
+			    const cityObj = addrData.find(item => item.city === selectedCity);
+			    districtSelect.innerHTML = '<option value=""></option>';
+			    zipInput.value = '';
+			
+			    if (cityObj && cityObj.area.length > 0) {
+			        cityObj.area.forEach((area, index) => {
+			            const option = document.createElement('option');
+			            option.value = area.name;
+			            option.textContent = area.name;
+			            if (index === 0) {
+			                option.selected = true;
+			                zipInput.value = area.zipcode;
+			            }
+			            districtSelect.appendChild(option);
+			        });
+			    }
+			
+			    // ✅ 新增條件：如果有選擇城市且對應的詳細地址有填入，才清除錯誤
+			    const detailInput = cityId === 'permCitySelect'
+			        ? document.getElementById('permDetail')
+			        : document.getElementById('commDetail');
+			
+			    if (selectedCity && detailInput && detailInput.value.trim()) {
+			        if (errorDiv) errorDiv.style.display = 'none';
+			    }
+			});
 
+
+		    districtSelect.addEventListener('change', () => {
+		        const selectedCity = citySelect.value;
+		        const selectedDistrict = districtSelect.value;
+		        const cityObj = addrData.find(item => item.city === selectedCity);
+
+		        if (cityObj) {
+		            const areaObj = cityObj.area.find(area => area.name === selectedDistrict);
+		            zipInput.value = areaObj ? areaObj.zipcode : '';
+		        } else {
+		            zipInput.value = '';
+		        }
+
+		        // ✅ 只有當實際選擇區域，且對應的詳細地址有值才清除錯誤
+		        const detailInput = districtId === 'permDistrictSelect'
+		            ? document.getElementById('permDetail')
+		            : document.getElementById('commDetail');
+
+		        if (selectedDistrict && detailInput && detailInput.value.trim()) {
+		            if (errorDiv) errorDiv.style.display = 'none';
+		        }
+
+		        // ✅ 加在這裡：補到詳細地址欄位（如需要）
+		    });
+		
+		
+		}
+    
+	
             //=========
 
     
@@ -653,46 +658,7 @@ width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center;
 
 
 
-        document.getElementById('sameAsPerm').addEventListener('change', function () {
-            const isChecked = this.checked;
-
-            const permCity = document.getElementById('permCitySelect').value;
-            const permDistrict = document.getElementById('permDistrictSelect').value;
-            const permZipcode = document.getElementById('permZipcodeInput').value;
-            const permDetail = document.getElementById('permDetail').value;
-
-            const commCitySelect = document.getElementById('commCitySelect');
-            const commDistrictSelect = document.getElementById('commDistrictSelect');
-            const commZipcodeInput = document.getElementById('commZipcodeInput');
-            const commDetailInput = document.getElementById('commDetail');
-
-            if (isChecked) {
-                // 套用戶籍地址（只有 value 不包含詳細文字）
-                commCitySelect.value = permCity;
-                commCitySelect.dispatchEvent(new Event('change'));
-
-                setTimeout(() => {
-                    commDistrictSelect.value = permDistrict;
-                    commDistrictSelect.dispatchEvent(new Event('change'));
-                }, 100);
-
-                commZipcodeInput.value = permZipcode;
-
-                // ✅ 僅複製詳細地址，不包含前綴
-                commDetailInput.value = permDetail;
-
-                // 鎖定欄位
-                commCitySelect.disabled = true;
-                commDistrictSelect.disabled = true;
-                commZipcodeInput.disabled = true;
-                commDetailInput.readOnly = true;
-            } else {
-                commCitySelect.disabled = false;
-                commDistrictSelect.disabled = false;
-                commZipcodeInput.disabled = false;
-                commDetailInput.readOnly = false;
-            }
-        });
+        
 
 
         
@@ -715,10 +681,10 @@ width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center;
         };
 
       
-        window.addEventListener('DOMContentLoaded', () => {
+        
             restoreAddress("permCitySelect", "permDistrictSelect", "permZipcodeInput", "permCity", "permDistrict");
             restoreAddress("commCitySelect", "commDistrictSelect", "commZipcodeInput", "commCity", "commDistrict");
-        });
+        
 
         
         document.getElementById('permCitySelect')?.addEventListener('change', function () {
@@ -757,36 +723,16 @@ width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center;
          * 通用清除錯誤樣式與訊息
          * @param {HTMLElement} element 欲清除錯誤的欄位元素
          */
-        function clearFieldError(element) {
-            if (!element) return;
-
-            // 1. 移除紅框樣式
-            element.classList.remove('is-invalid');
-
-            // 2. 找出同層級的錯誤訊息區塊
-            const parent = element.closest('.verification_form_controls');
-            if (parent) {
-            	const errorDivs = parent.querySelectorAll('.text-danger');
-            	errorDivs.forEach(div => div.classList.add('hidden'));
-
-            }
-        }
          
-         document.querySelectorAll('.verification_input').forEach(input => {
-        	    input.addEventListener('input', () => clearFieldError(input));clearGeneralErrors();
-        	});
+
+         
+
          
          ['permCitySelect', 'permDistrictSelect', 'commCitySelect', 'commDistrictSelect'].forEach(id => {
         	    const el = document.getElementById(id);
         	    if (el) el.addEventListener('change', () => clearFieldError(el));
         	});
          
-         document.getElementById('sameAsPerm')?.addEventListener('change', function () {
-        	    if (this.checked) {
-        	        const commDetail = document.getElementById('commDetail');
-        	        clearFieldError(commDetail);
-        	    }
-        	});
          
          document.getElementById('closePrivacy')?.addEventListener('click', function () {
         	    if (document.getElementById('privacyAgree').checked) {
@@ -795,10 +741,7 @@ width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center;
         	        clearGeneralErrors();
         	    }
         	});
-         function clearGeneralErrors() {
-        	    const generalError = document.getElementById('errorMessage');
-        	    if (generalError) generalError.style.display = 'none';
-        	}
+         
          fileInput?.addEventListener('change', function () {
         	    clearFieldError(fileInput);
         	    clearGeneralErrors();
@@ -810,14 +753,168 @@ width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center;
         	    }
         	});
          
-         document.getElementById('permDetail')?.addEventListener('input', () => {
-        	 const errorDiv = document.getElementById('permAddrError');
-        	    if (errorDiv) errorDiv.style.display = 'none';
-        	});
-        	document.getElementById('commDetail')?.addEventListener('input', () => {
-        	    document.getElementById('addressError')?.classList.add('hidden');
-        	});
-        });
+         const registerForm = document.querySelector('form');
+         if (registerForm) {
+           registerForm.addEventListener('submit', function () {
+             const permCity = document.querySelector('#permCitySelect option:checked')?.textContent || '';
+             const permDistrict = document.querySelector('#permDistrictSelect option:checked')?.textContent || '';
+             const permZipcode = document.getElementById('permZipcodeInput')?.value || '';
+             const permDetail = document.getElementById('permDetail')?.value || '';
+
+             // ✅ 寫進 hidden 欄位
+             document.getElementById('permAddrHidden').value = `${permZipcode}${permCity}${permDistrict}${permDetail}`;
+
+             const commCity = document.querySelector('#commCitySelect option:checked')?.textContent || '';
+             const commDistrict = document.querySelector('#commDistrictSelect option:checked')?.textContent || '';
+             const commZipcode = document.getElementById('commZipcodeInput')?.value || '';
+             const commDetail = document.getElementById('commDetail')?.value || '';
+
+             // ✅ 寫進 hidden 欄位
+             document.getElementById('addressHidden').value = `${commZipcode}${commCity}${commDistrict}${commDetail}`;
+           });
+         }
+         
+
+        
+	  
+	
+	function clearFieldError(element) {
+	    if (!element) return;
+
+	    const errorId = element.getAttribute('aria-describedby');
+	    if (errorId) {
+	        const errorDiv = document.getElementById(errorId);
+	        if (errorDiv && errorDiv.textContent.trim() !== '') {
+	            errorDiv.classList.add("hidden");
+	        }
+	        return;
+	    }
+
+	    // fallback：僅清除自身欄位下的錯誤，不清全部 text-danger
+	    const container = element.closest('.verification_form_controls');
+	    if (container) {
+	        const errorDiv = container.querySelector('.text-danger');
+	        if (errorDiv && errorDiv.textContent.trim() !== '') {
+	            errorDiv.classList.add("hidden");
+	        }
+	    }
+	}
+	function clearGeneralErrors() {
+	    const generalError = document.getElementById('errorMessage');
+	    if (generalError) generalError.style.display = 'none';
+	}
+	
+ 
+	
+ 
+
+ 
+ 
+ document.getElementById('sameAsPerm').addEventListener('change', function () {
+     const isChecked = this.checked;
+
+     const permCity = document.getElementById('permCitySelect').value;
+     const permDistrict = document.getElementById('permDistrictSelect').value;
+     const permZipcode = document.getElementById('permZipcodeInput').value;
+     const permDetail = document.getElementById('permDetail').value;
+
+     const commCitySelect = document.getElementById('commCitySelect');
+     const commDistrictSelect = document.getElementById('commDistrictSelect');
+     const commZipcodeInput = document.getElementById('commZipcodeInput');
+     const commDetailInput = document.getElementById('commDetail');
+
+     if (isChecked) {
+         // 套用戶籍地址（只有 value 不包含詳細文字）
+         commCitySelect.value = permCity;
+         commCitySelect.dispatchEvent(new Event('change'));
+
+         setTimeout(() => {
+             commDistrictSelect.value = permDistrict;
+             commDistrictSelect.dispatchEvent(new Event('change'));
+         }, 100);
+
+         commZipcodeInput.value = permZipcode;
+
+         // ✅ 僅複製詳細地址，不包含前綴
+         commDetailInput.value = permDetail;
+
+         // 鎖定欄位
+         commCitySelect.disabled = true;
+         commDistrictSelect.disabled = true;
+         commZipcodeInput.disabled = true;
+         commDetailInput.readOnly = true;
+     } else {
+         commCitySelect.disabled = false;
+         commDistrictSelect.disabled = false;
+         commZipcodeInput.disabled = false;
+         commDetailInput.readOnly = false;
+     }
+	 });
+ 
+ 
+ 
+ setTimeout(() => {
+	    const commDetail = document.getElementById('commDetail');
+	    const commDetailVal = /*[[${commDetail}]]*/ '';
+	    if (commDetail && !commDetail.value && commDetailVal) {
+	        commDetail.value = commDetailVal;
+	    }
+
+	    const permDetail = document.getElementById('permDetail');
+	    const permDetailVal = /*[[${permDetail}]]*/ '';
+	    if (permDetail && !permDetail.value && permDetailVal) {
+	        permDetail.value = permDetailVal;
+	    }
+	}, 200);
+ });//dom
+ 
+//✅ 詳細地址輸入：僅當有值才清除錯誤，並同步通訊地址（若同上）
+ document.getElementById('permDetail')?.addEventListener('input', function () {
+ 	const permAddrError = document.getElementById('permAddrError');
+ 	if (permAddrError && !this.value.trim()) return;
+ 	if (permAddrError) permAddrError.classList.add('hidden');
+
+ 	const isSame = document.getElementById('sameAsPerm')?.checked;
+ 	if (isSame) {
+ 		const permCity = document.getElementById('permCitySelect').value;
+ 		const permDistrict = document.getElementById('permDistrictSelect').value;
+ 		const permZipcode = document.getElementById('permZipcodeInput').value;
+ 		const permDetail = this.value;
+ 		const commDetail = document.getElementById('commDetail');
+
+ 		const permCityText = document.querySelector('#permCitySelect option:checked')?.textContent || '';
+ 		const permDistrictText = document.querySelector('#permDistrictSelect option:checked')?.textContent || '';
+
+ 		if (commDetail) {
+ 			commDetail.value = permZipcode + permCityText + permDistrictText + permDetail;
+ 		}
+ 	}
+ });
+
+ // ✅ 通訊地址輸入：僅當有值時才清除錯誤
+ document.getElementById('commDetail')?.addEventListener('input', function () {
+ 	const commAddrError = document.getElementById('addressError');
+ 	if (commAddrError && !this.value.trim()) return;
+ 	if (commAddrError) commAddrError.style.display = 'none';
+ });
+
+ // ✅ 勾選「同上」時：清除通訊地址錯誤（如存在）
+ document.getElementById('sameAsPerm')?.addEventListener('change', function () {
+ 	if (this.checked) {
+ 		const commDetail = document.getElementById('commDetail');
+ 		clearFieldError(commDetail);
+ 	}
+ });
+
+ // ✅ 補充：延遲錯誤清除工具函數（可用於 dropdowns）
+ function delayedClearError(errorDiv) {
+ 	setTimeout(() => {
+ 		if (errorDiv) errorDiv.style.display = 'none';
+ 	}, 200);
+ }
+
+ 
+	
     </script>
 
 

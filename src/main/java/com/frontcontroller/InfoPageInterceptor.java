@@ -3,6 +3,9 @@ package com.frontcontroller;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.entity.MemberVO;
+import com.entity.StoreVO;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -20,9 +23,18 @@ public class InfoPageInterceptor implements HandlerInterceptor {
         boolean isStoreLoggedIn = session != null && session.getAttribute("store") != null;
         boolean isMemberLoggedIn = session != null && session.getAttribute("member") != null;
 
-        if (isStoreLoggedIn || isMemberLoggedIn) {
-         
-            return true;
+        if (isStoreLoggedIn) {
+            StoreVO store = (StoreVO) session.getAttribute("store");
+            if (store != null && store.getStoreId() != null) {
+                return true;
+            }
+        }
+
+        if (isMemberLoggedIn) {
+            MemberVO member = (MemberVO) session.getAttribute("member");
+            if (member != null && member.getMemberId() != null) {
+                return true;
+            }
         }
 
       
