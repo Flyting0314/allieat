@@ -79,7 +79,7 @@ public class MemberRegistAndLoginController {
 
         MultipartFile sessionKycFile = (MultipartFile) session.getAttribute("kycFile");
 
-        // ❗ 統一錯誤處理
+        
         boolean hasFileError = (kycFile == null || kycFile.isEmpty()) && sessionKycFile == null;
         boolean hasTermsError = !"true".equals(agreedToTerms);
         boolean hasOrgError = result.hasFieldErrors("organization.organizationId");
@@ -90,12 +90,12 @@ public class MemberRegistAndLoginController {
                 model.addAttribute("error", "請上傳身分驗證檔案");
             }
 
-            if (hasTermsError) {
-                model.addAttribute("errorMessage", "請詳閱並同意使用須知");
+            if (!"true".equals(agreedToTerms)) {
+                model.addAttribute("errorMessage", "請詳閱並同意點數與須知相關條款");
             }
 
-            if (hasOrgError) {
-                model.addAttribute("orgErrorMessage", "請選擇註冊單位");
+            if (member.getOrganization() == null || member.getOrganization().getOrganizationId() == null) {
+                result.rejectValue("organization.organizationId", null, "請選擇註冊單位");
             }
 
             model.addAttribute("organizations", organizationRepository.findByStatus(1));

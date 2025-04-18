@@ -36,8 +36,9 @@ public class OrderFoodVO {
 
     @Column(name = "pickTime")
     private Timestamp pickTime;
-
-    @Column(name = "createdTime", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    
+    // 2025/04/18 刪除 insertable = false
+    @Column(name = "createdTime", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdTime;
 
     // 2025/04/13 新增：與訂單明細(OrderDetailVO)建立一對多關聯

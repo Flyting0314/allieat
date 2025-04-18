@@ -37,12 +37,12 @@ public class FcmController {
         }
     }
 
-    // 小小內部用的class，專門收前端傳來的 JSON
+    // 小小內部用的class，專門收前端傳來的json
     public static class FcmRegisterRequest {
+    	
         private Integer orderId;
         private String token;
 
-        // Getter and Setter
         public Integer getOrderId() {
             return orderId;
         }

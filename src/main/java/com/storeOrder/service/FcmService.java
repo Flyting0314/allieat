@@ -15,7 +15,7 @@ public class FcmService {
 
     private static final String PROJECT_ID = "allieat-notification"; // 你的Firebase專案ID
 
-    public void sendPickupNotification(String fcmToken, String storeName, Integer pickupCode) {
+    public void sendNotification(String fcmToken, String title, String body) {
         try {
             String accessToken = firebaseAuthService.getAccessToken();
             URL url = new URL("https://fcm.googleapis.com/v1/projects/" + PROJECT_ID + "/messages:send");
@@ -30,12 +30,12 @@ public class FcmService {
                   "message": {
                     "token": "%s",
                     "notification": {
-                      "title": "餐點可取餐囉！",
-                      "body": "%s 準備好了！取餐編號：%s"
+                      "title": "%s",
+                      "body": "%s"
                     }
                   }
                 }
-                """.formatted(fcmToken, storeName, pickupCode);
+                """.formatted(fcmToken, title, body);
 
             try (OutputStream os = conn.getOutputStream()) {
                 byte[] input = payload.getBytes("utf-8");
@@ -48,4 +48,5 @@ public class FcmService {
             e.printStackTrace();
         }
     }
+
 }

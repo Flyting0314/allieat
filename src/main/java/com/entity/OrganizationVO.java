@@ -21,7 +21,7 @@ public class OrganizationVO implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "organizationId", updatable = false)
-//	@NotNull(message = "請選擇註冊單位")==>已在表單下拉式不需檢查
+//	@NotNull(message = "請選擇註冊單位")
     private Integer organizationId;
 	
 	@OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)

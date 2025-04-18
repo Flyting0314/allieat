@@ -85,4 +85,9 @@ public class CartFoodService {
 
         return dto;
     }
+    
+    public List<FoodVO> getFoodsByStoreIdAndStatus(Integer storeId, Integer status) {
+        return foodRepository.findByStore_StoreIdAndStatus(storeId, status);
+    }
+
 }

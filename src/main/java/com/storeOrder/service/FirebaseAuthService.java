@@ -11,7 +11,7 @@ import java.util.Collections;
 public class FirebaseAuthService {
 
     private static final String SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
-    private static final String SERVICE_ACCOUNT_FILE = "src/main/resources/serviceAccountKey.json"; 
+    private static final String SERVICE_ACCOUNT_FILE = "src/main/resources/serverKey.json"; // JSON路徑
 
     public String getAccessToken() throws IOException {
         GoogleCredentials googleCredentials = GoogleCredentials
