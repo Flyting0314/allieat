@@ -1,151 +1,179 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<th:block th:replace="fragments/header :: header"></th:block>
-<link th:href="@{/css/donaC.css}" rel="stylesheet">
+    <th:block th:replace="fragments/header :: header"></th:block>
+    <link th:href="@{/css/donaC.css}" rel="stylesheet">
 
 
-   
+
 </head>
+
 <body>
-<!-- Navbar Start -->
-            <th:block th:replace="fragments/bodySection :: bodySection"></th:block>
+    <!-- Navbar Start -->
+    <th:block th:replace="fragments/bodySection :: bodySection"></th:block>
     <!-- Hero Section End -->
     <!-- Reservation Start -->
     <div class="container-fluid py-5">
         <div class="container">
             <div class="df-wrapper">
                 <div class="row">
-                <!-- 左側圖片與說明 -->
-                <div class="col-md-6">
-                    <img src="/img/001.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
-                    <h5 class="text-danger fw-bold">人人溫飽，生活才美好。</h5>
+                    <!-- 左側圖片與說明 -->
+                    <div class="col-md-6">
+                        <img src="/img/001.png" class="img-fluid rounded mb-3" alt="捐款食物圖片">
+                        <h5 class="text-danger fw-bold">人人溫飽，生活才美好。</h5>
 
-                    <p>
-                        我們傳遞的不僅僅是食物，更是一份深深的關愛與陪伴。每一份餐點都是無數人的愛心與付出。您的捐款帶來持續地穩定的經費，讓我們有能力將愛傳遞給最有需要的人，讓世界更美好，形成一個善的循環。
-                    </p>
-                </div>
-        
-                <!-- 右側捐款流程 -->   
-                <div class="col-md-6">
-                    <h3 class="text-danger fw-bold">信用卡捐款</h3>
-                    <p>支援 VISA、MasterCard、JCB</p>
-    
-                <!-- 步驟指示器 -->
-                <div class="df-progress">
-                    <div class="df-stage">
-                        <div class="df-circle df-done"></div>
-                        <div>選擇金額</div>
+                        <p>
+                            我們傳遞的不僅僅是食物，更是一份深深的關愛與陪伴。每一份餐點都是無數人的愛心與付出。您的捐款帶來持續地穩定的經費，讓我們有能力將愛傳遞給最有需要的人，讓世界更美好，形成一個善的循環。
+                        </p>
                     </div>
-                    <div class="df-stage">
-                        <div class="df-circle df-done"></div>
-                        <div>填寫資料</div>
-                    </div>
-                    <div class="df-stage">
-                        <div class="df-circle df-current">3</div>
-                        <div>線上付款</div>
-                    </div>
-                </div>
 
-                    <form th:action="@{/dona/donaAddC}" method="post">
-                        <h4 class="text-danger fw-bold">確認您的資料</h4>
-                        <div>
-                            <p><strong>捐款類型：</strong><span th:if="${donaReq.donationType != null}">
-                                    <span th:if="${donaReq.donationType != 1}">單筆捐款</span>
-                                    <span th:if="${donaReq.donationType == 1}">定期定額</span>
-                                </span></p>
-                            <p><strong>捐款金額：</strong><span th:text="${donaReq.donationIncome}"></span></p>
-                            <p><strong>姓名：</strong><span th:text="${donaReq.identityData}"></span></p>
-                            <p><strong>Email：</strong><span th:text="${donaReq.email}"></span></p>
-                            <p><strong>行動電話：</strong><span th:text="${donaReq.phone}"></span></p>
-                            <p><strong>地址：</strong>
-                                <span
-                                    th:text="${donaReq.county} + ' ' + donaReq.district + ' ' + donaReq.address"></span>
-                            </p>
-                            <p><strong>稱謂：</strong><span th:text="${donaReq.salutation}"></span></p>
-                            <p><strong>身分證號：</strong>
-                                <span th:if="${donaReq.idNum != null and !#strings.isEmpty(donaReq.idNum)}"
-                                    th:text="${donaReq.idNum}"></span>
-                            </p>
-                            <p><strong>統一編號：</strong>
-                                <span th:if="${donaReq.guiNum != null and !#strings.isEmpty(donaReq.guiNum)}"
-                                    th:text="${donaReq.guiNum}"></span>
-                            </p>
+                    <!-- 右側捐款流程 -->
+                    <div class="col-md-6">
+                        <h3 class="text-danger fw-bold">信用卡捐款</h3>
+                        <p>支援 VISA、MasterCard、JCB</p>
+
+                        <!-- 步驟指示器 -->
+                        <div class="df-progress">
+                            <div class="df-stage">
+                                <div class="df-circle df-done"></div>
+                                <div>選擇金額</div>
+                            </div>
+                            <div class="df-stage">
+                                <div class="df-circle df-done"></div>
+                                <div>填寫資料</div>
+                            </div>
+                            <div class="df-stage">
+                                <div class="df-circle df-current">3</div>
+                                <div>線上付款</div>
+                            </div>
                         </div>
 
+                        <form th:action="@{/dona/donaAddC}" method="post">
+                            <h4 class="text-danger fw-bold">確認您的資料</h4>
+                            <div>
+                                <p><strong>捐款類型：</strong><span th:if="${donaReq.donationType != null}">
+                                        <span th:if="${donaReq.donationType != 1}">單筆捐款</span>
+                                        <span th:if="${donaReq.donationType == 1}">定期定額</span>
+                                    </span></p>
+                                <p><strong>捐款金額：</strong><span th:text="${donaReq.donationIncome}"></span></p>
+                                <p><strong>姓名：</strong><span th:text="${donaReq.identityData}"></span></p>
+                                <p><strong>Email：</strong><span th:text="${donaReq.email}"></span></p>
+                                <p><strong>行動電話：</strong><span th:text="${donaReq.phone}"></span></p>
+                                <p><strong>地址：</strong>
+                                    <span
+                                        th:text="${donaReq.county} + ' ' + donaReq.district + ' ' + donaReq.address"></span>
+                                </p>
+                                <p><strong>稱謂：</strong><span th:text="${donaReq.salutation}"></span></p>
+                                <p><strong>身分證號：</strong>
+                                    <span th:if="${donaReq.idNum != null and !#strings.isEmpty(donaReq.idNum)}"
+                                        th:text="${donaReq.idNum}"></span>
+                                </p>
+                                <p><strong>統一編號：</strong>
+                                    <span th:if="${donaReq.guiNum != null and !#strings.isEmpty(donaReq.guiNum)}"
+                                        th:text="${donaReq.guiNum}"></span>
+                                </p>
+                            </div>
 
-                        <!-- 按鈕 -->
-                        <div class="df-actions">
-                            <button type="button" class="df-button df-button-prev"
-                                th:onclick="|location.href='@{/dona/donaAddB}'|">上一步</button>
-                            <button type="button" class="df-button df-button-next" onclick="pay()">前往捐款</button>
-                        </div>
+                            <input type="hidden" id="donationIncome" th:value="${donaReq.donationIncome}" />
+                            <input type="hidden" id="identityData" th:value="${donaReq.identityData}" />
+                            <input type="hidden" id="email" th:value="${donaReq.email}" />
+                            <input type="hidden" id="phone" th:value="${donaReq.phone}" />
+                            <input type="hidden" id="county" th:value="${donaReq.county}" />
+                            <input type="hidden" id="district" th:value="${donaReq.district}" />
+                            <input type="hidden" id="address" th:value="${donaReq.address}" />
+                            <input type="hidden" id="salutation" th:value="${donaReq.salutation}" />
+                            <input type="hidden" id="idNum" th:value="${donaReq.idNum}" />
+                            <input type="hidden" id="guiNum" th:value="${donaReq.guiNum}" />
+                            <input type="hidden" id="donationType" th:value="${donaReq.donationType}" />
 
 
-                    </form>
-               
+                            <!-- 按鈕 -->
+                            <div class="df-actions">
+                                <button type="button" class="df-button df-button-prev"
+                                    th:onclick="|location.href='@{/dona/donaAddB}'|">上一步</button>
+                                <button type="button" class="df-button df-button-next" onclick="pay()">前往捐款</button>
+                            </div>
+
+
+                        </form>
+
+                    </div>
+                </div>
+
             </div>
+
+
+
         </div>
 
-    </div>
-    
-    
-
-    </div>
-
-     <!-- Reservation End -->
-     <!-- Footer Start -->
+        <!-- Reservation End -->
+        <!-- Footer Start -->
 
 
 
-    <th:block th:replace="fragments/footer :: footer"></th:block>
+        <th:block th:replace="fragments/footer :: footer"></th:block>
 
 
-    <!-- Footer End -->
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
-        style="background-color: #c5a27b; border-color: #c5a27b;"><i class="fa fa-angle-double-up"></i></a>
+        <!-- Footer End -->
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
+            style="background-color: #c5a27b; border-color: #c5a27b;"><i class="fa fa-angle-double-up"></i></a>
 
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+        <script src="lib/easing/easing.min.js"></script>
+        <script src="lib/waypoints/waypoints.min.js"></script>
+        <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+        <script src="lib/tempusdominus/js/moment.min.js"></script>
+        <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+        <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-    <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
+        <!-- Contact Javascript File -->
+        <script src="mail/jqBootstrapValidation.min.js"></script>
+        <script src="mail/contact.js"></script>
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
-         <script>
+        <!-- Template Javascript -->
+        <script src="js/main.js"></script>
+        <script>
 
-        async function pay() {
-            const win = window.open();
-            if (!win) {
-                alert("請允許瀏覽器彈出視窗，才能完成付款！");
-                return;
+            async function pay() {
+                const win = window.open();
+                if (!win) {
+                    alert("請允許瀏覽器彈出視窗，才能完成付款！");
+                    return;
+                }
+
+                const data = {
+                		amount: parseInt(document.getElementById("donationIncome").value),
+                    identityData: document.getElementById("identityData").value,
+                    email: document.getElementById("email").value,
+                    phone: document.getElementById("phone").value,
+                    county: document.getElementById("county").value,
+                    district: document.getElementById("district").value,
+                    address: document.getElementById("address").value,
+                    salutation: document.getElementById("salutation").value,
+                    idNum: document.getElementById("idNum")?.value || "",
+                    guiNum: document.getElementById("guiNum")?.value || "",
+                    donationType: parseInt(document.getElementById("donationType").value),
+                    itemDesc: "愛心待用餐捐款" 
+                };
+
+                const response = await fetch('http://localhost:8080/donation/ecpay-donate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const html = await response.text();
+                win.document.write(html);
+                win.document.close();
             }
 
-            const response = await fetch('http://localhost:8080/donation/ecpay-donate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    amount: 300,
-                    itemDesc: '支持公益捐款'
-                })
-            });
-
-            const html = await response.text();
-            win.document.write(html);
-            win.document.close();
-        }
-    </script>
+        </script>
 
 </body>
+
 </html>
