@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,6 +75,7 @@ public class MemberRegistAndLoginController {
                            @RequestParam(value = "agreedToTerms", required = false) String agreedToTerms,
                            HttpSession session,
                            Model model) {
+    	System.out.println("✅ POST 會員註冊進來了");
 
         model.addAttribute("hasSubmitted", true);
 
@@ -83,9 +85,32 @@ public class MemberRegistAndLoginController {
         boolean hasFileError = (kycFile == null || kycFile.isEmpty()) && sessionKycFile == null;
         boolean hasTermsError = !"true".equals(agreedToTerms);
         boolean hasOrgError = result.hasFieldErrors("organization.organizationId");
-
+        
+        if (member.getPermAddr() == null || member.getPermAddr().contains("請選擇")) {
+            result.rejectValue("permAddr", null, "請正確填寫戶籍地址");
+        }
+        if (member.getAddress() == null || member.getAddress().isBlank() || member.getAddress().contains("請選擇")) {
+            result.rejectValue("address", null, "請正確填寫通訊地址");
+        }
+        System.out.println("是否有錯誤？" + result.hasErrors());
+        System.out.println("permAddr 是否為空字串？" + member.getPermAddr().isEmpty());
         if (hasFileError || hasTermsError || result.hasErrors()) {
+        	System.out.println("==== 進入驗證錯誤邏輯區塊 ====");
+            System.out.println("permAddr: " + member.getPermAddr());
+            System.out.println("email: " + member.getEmail());
 
+            for (FieldError fieldError : result.getFieldErrors()) {
+                System.out.println("欄位: " + fieldError.getField());
+                System.out.println("錯誤訊息: " + fieldError.getDefaultMessage());
+            }
+            if (member.getPermAddr() != null && member.getPermAddr().length() > 6) {
+                String detail = member.getPermAddr().substring(6); // 郵遞區號+縣市+區=約6碼
+                model.addAttribute("permDetail", detail);
+            }
+            if (member.getAddress() != null && member.getAddress().length() > 6) {
+                String detail = member.getAddress().substring(6);
+                model.addAttribute("commDetail", detail);
+            }
             if (hasFileError) {
                 model.addAttribute("error", "請上傳身分驗證檔案");
             }

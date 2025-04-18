@@ -35,17 +35,20 @@
                         <a th:href="@{/map2}" class="nav-item nav-link">我要取餐 / 點餐</a>
 
                         <!-- ✅ 登入 / 登出 切換 -->
-                        <div class="nav-item dropdown"
-                             th:if="${param.fromRegister != null or (session.member == null and session.store == null)}">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊 / 登入</a>
-                            <div class="dropdown-menu text-capitalize dropdown-custom">
-                                <a th:href="@{/registerAndLogin/register}" class="dropdown-item">註冊</a>
-                                <a th:href="@{/registerAndLogin/login}" class="dropdown-item">登入</a>
-                            </div>
-                        </div>
+<!-- ✅ 顯示 註冊 / 登入（只有未登入才顯示） -->
+<div class="nav-item dropdown"
+     th:if="${session.member == null or session.member.memberId == null} and ${session.store == null or session.store.storeId == null}">
+    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊 / 登入</a>
+    <div class="dropdown-menu text-capitalize dropdown-custom">
+        <a th:href="@{/registerAndLogin/register}" class="dropdown-item">註冊</a>
+        <a th:href="@{/registerAndLogin/login}" class="dropdown-item">登入</a>
+    </div>
+</div>
 
-                         <a th:if="${param.fromRegister == null and (session.member != null or session.store != null)}"
-                           th:href="@{/registerAndLogin/logout}" class="nav-item nav-link">登出</a>
+<!-- 顯示 登出（只有登入後才顯示） -->
+<a th:if="${(session.member?.memberId != null) or (session.store?.storeId != null)}"
+   th:href="@{/registerAndLogin/logout}" class="nav-item nav-link">登出</a>
+
 
 
                         <!-- 會員專區按鈕 -->
@@ -84,8 +87,9 @@
     document.addEventListener("DOMContentLoaded", function () {
         const memberBtn = document.getElementById('memberAreaBtn');
         memberBtn?.addEventListener("click", function (event) {
-            const isMember = /*[[${session.member != null}]]*/ false;
-            const isStore = /*[[${session.store != null}]]*/ false;
+        	const isStore = /*[[${session.store?.storeId != null}]]*/ false;
+        	const isMember = /*[[${session.member?.memberId != null}]]*/ false;
+
 
             event.preventDefault();
 
