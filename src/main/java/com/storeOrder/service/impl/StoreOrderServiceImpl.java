@@ -173,7 +173,7 @@ public class StoreOrderServiceImpl implements StoreOrderService {
 	            storeRepository.save(store);
 	            return "已切換為忙碌中，暫停接單";
 	        case "resume":
-	            store.setOpStat(0); // 營業中
+	            store.setOpStat(1); // 營業中
 	            storeRepository.save(store);
 	            return "已恢復正常接單";
 	        default:
