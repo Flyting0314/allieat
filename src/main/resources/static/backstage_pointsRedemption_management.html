@@ -1834,8 +1834,8 @@ function performBatchRedemption() {
                     <table class="table table-sm table-bordered" style="table-layout: fixed; width: 100%;">
                         <colgroup>
                             <col style="width: 25%;">
-                            <col style="width: 50%;">
-                            <col style="width: 25%;">
+                            <col style="width: 40%;">
+                            <col style="width: 35%;">
                         </colgroup>
                         <thead>
                             <tr>
@@ -1879,7 +1879,7 @@ function performBatchRedemption() {
         showCancelButton: true,
         confirmButtonText: '確定核銷',
         cancelButtonText: '取消',
-        width: '350px' // 顯著縮小整個彈窗的寬度
+        width: '400px' // 顯著縮小整個彈窗的寬度
     }).then((result) => {
         if (result.isConfirmed) {
             backstageAuth.authFetch('http://localhost:8080/pointsRedemption/batchRedemption', {
