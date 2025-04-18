@@ -3,32 +3,34 @@
 <head>
 <th:block th:replace="fragments/header :: header"></th:block>
 <!-- 評分星星樣式 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 <style>
 /* 評分星星樣式 */
 .stars-outer {
-	display: inline-block;
-	position: relative;
-	font-family: 'Font Awesome 5 Free';
-	font-weight: 900;
+  display: inline-block;
+  position: relative;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
 }
 
 .stars-outer::before {
-	content: "\f005 \f005 \f005 \f005 \f005";
-	color: #ccc;
+  content: "\f005 \f005 \f005 \f005 \f005";
+  color: #ccc;
 }
 
 .stars-inner {
-	position: absolute;
-	top: 0;
-	left: 0;
-	white-space: nowrap;
-	overflow: hidden;
-	width: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0; /* 寬度由JavaScript控制 */
 }
 
 .stars-inner::before {
-	content: "\f005 \f005 \f005 \f005 \f005";
-	color: #f8ce0b;
+  content: "\f005 \f005 \f005 \f005 \f005";
+  color: #f8ce0b;
 }
 
 /* 地圖信息視窗樣式 */
@@ -287,7 +289,7 @@
 					<h2 class="section-title text-uppercase mb-2">
 						<span>尋找愛心餐廳</span>
 					</h2>
-					<p class="text-muted">搜尋您附近的愛心代用餐合作餐廳</p>
+					<p class="text-muted">搜尋愛心代用餐合作餐廳</p>
 				</div>
 			</div>
 			<div class="row">
@@ -317,11 +319,9 @@
 							<div id="restaurant-info" class="mt-4 d-none">
 								<h5 class="restaurant-name font-weight-bold"></h5>
 								<div class="restaurant-rating mb-2">
-									<div class="stars-outer">
-										<div class="stars-inner"></div>
-									</div>
-									<span class="rating-value ml-2"></span>
-								</div>
+  <!-- JavaScript 會整個 .html() 塞進來 -->
+</div>
+
 								<p class="restaurant-address mb-1">
 									<i class="fas fa-map-marker-alt mr-2 text-primary"></i> <span></span>
 								</p>
@@ -348,7 +348,7 @@
 
 							<!-- ✅ 保留：愛心餐合作s列表 -->
 							<div class="nearby-restaurants mt-4">
-								<h5>附近愛心合作餐廳</h5>
+								<h5>愛心合作餐廳</h5>
 								<div class="list-group mt-3 restaurants-list">
 									<!-- 餐廳列表會由JS動態生成 -->
 								</div>
@@ -432,7 +432,7 @@
 							<p>本餐廳是「攏呷霸 ALLiEAT」愛心代用餐合作夥伴，您可以在此處：</p>
 							<ul>
 								<li>捐贈愛心餐點給有需要的人</li>
-								<li>若您有愛心代用餐券，可在此兌換餐點</li>
+							
 							</ul>
 						</div>
 					</div>
@@ -518,7 +518,34 @@
     let tempSearchMarker = null;  // 使用者搜尋位置的紅點
     let tempRouteMarker = null;   // 導航目的地的橘點
 
-    
+    function getStarsHtml(starNum, visitorsNum) {
+        let averageRating = 0;
+        if (starNum > 0 && visitorsNum > 0) {
+            averageRating = starNum / visitorsNum;
+        }
+        averageRating = Math.min(averageRating, 5).toFixed(1);
+
+        const fullStars = Math.floor(averageRating);
+        const halfStar = averageRating % 1 >= 0.5 ? 1 : 0;
+        const emptyStars = 5 - fullStars - halfStar;
+
+        let starsHtml = '';
+
+        for (let i = 0; i < fullStars; i++) {
+            starsHtml += '<i class="fas fa-star text-warning"></i>';
+        }
+
+        if (halfStar) {
+            starsHtml += '<i class="fas fa-star-half-alt text-warning"></i>';
+        }
+
+        for (let i = 0; i < emptyStars; i++) {
+            starsHtml += '<i class="far fa-star text-warning"></i>';
+        }
+
+        return `<span>${starsHtml} <span class="ml-1 text-muted small">${averageRating}</span></span>`;
+    }
+
   
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -760,7 +787,7 @@ tempSearchMarker = new google.maps.Marker({
                     selectRestaurant = {
                         name: store.name,
                         address: store.address,
-                        phoneNumber: store.phone,
+                        phoneNumber: store.phoneNum, 
                         rating: store.rating || 4.5,
                         location: storeLocation,
                         id: store.storeId || store.id, // 確保使用正確的 ID
@@ -938,20 +965,19 @@ function addRestaurantsList() {
             const renderRestaurantItem = (distance) => {
                 distanceText = distance < 1 ? `${Math.round(distance * 1000)} 公尺` : `${distance.toFixed(1)} 公里`;
 
+                const ratingHtml = getStarsHtml(store.starNum || store.rating, store.visitorsNum || 1);
                 restaurantItem.innerHTML = `
                     <div class="d-flex w-100 justify-content-between">
                         <h6 class="mb-1">${store.name}</h6>
                         <small>${distanceText}</small>
+
                     </div>
                     <div class="restaurant-category mb-1">
                         <small class="text-muted">${store.category || '餐飲'}</small>
                         ${tagHtml}
                     </div>
-                    <small class="d-block">
-                        <div class="stars-outer d-inline-block" style="font-size: 0.8rem;">
-                            <div class="stars-inner" style="width: ${((store.rating || 4.5) / 5) * 100}%"></div>
-                        </div>
-                        <span class="rating-value ml-1">${store.rating || 4.5}</span>
+                    <small class="d-block restaurant-rating">
+                        ${ratingHtml}
                     </small>
                 `;
 
@@ -1060,7 +1086,7 @@ function showRestaurantModal(restaurant) {
     // ✅ 設定餐廳資訊
     modal.find('.restaurant-name').text(restaurant.name);
     modal.find('.restaurant-address span').text(restaurant.address || "地址未知");
-    modal.find('.restaurant-phone span').text(restaurant.phone || restaurant.phoneNumber || "無電話資訊");
+    modal.find('.restaurant-phone span').text(restaurant.phoneNum || "無電話資訊");
     modal.find('.restaurant-category span').text(restaurant.category || '一般餐飲');
  // 先清空
     // 查詢庫存資料
@@ -1110,11 +1136,11 @@ fetch(`/meal/store/${restaurant.storeId}/inventory`)
 
 
     // ✅ 星星評分
-    const starsInner = modal.find('.stars-inner');
-    const rating = parseFloat(restaurant.rating || 4.5);
-    const starPercentage = (rating / 5) * 100;
-    starsInner.css('width', `${starPercentage}%`);
-    modal.find('.rating-value').text(`${rating.toFixed(1)} / 5`);
+  // ✅ 星星評分
+// 星星評分（改用 getStarsHtml）
+const ratingHtml = getStarsHtml(restaurant.starNum, restaurant.visitorsNum);
+modal.find('.restaurant-rating').html(ratingHtml);
+
 
     // ✅ 標籤渲染
     const tagsContainer = modal.find('.restaurant-tags');
@@ -1401,7 +1427,7 @@ fetch(`/meal/store/${restaurant.storeId}/inventory`)
             selectRestaurant = {
                 name: store.name,
                 address: store.address,
-                phoneNumber: store.phone,
+                phoneNumber: store.phoneNum, 
                 rating: store.rating || 4.5,
                 location: storeLocation,
                 id: store.storeId || store.id,
@@ -1431,20 +1457,19 @@ fetch(`/meal/store/${restaurant.storeId}/inventory`)
         restaurantItem.className = 'list-group-item list-group-item-action restaurant-item';
         restaurantItem.setAttribute('data-id', store.storeId);
 
+        const ratingHtml = getStarsHtml(store.starNum || store.rating, store.visitorsNum || 1);
         restaurantItem.innerHTML = `
             <div class="d-flex w-100 justify-content-between">
                 <h6 class="mb-1">${store.name}</h6>
-                <small>${distanceDisplay}</small>
+                <small>${distanceText}</small>
+
             </div>
             <div class="restaurant-category mb-1">
                 <small class="text-muted">${store.category || '餐飲'}</small>
                 ${tagHtml}
             </div>
-            <small class="d-block">
-                <div class="stars-outer d-inline-block" style="font-size: 0.8rem;">
-                    <div class="stars-inner" style="width: ${((store.rating || 4.5) / 5) * 100}%"></div>
-                </div>
-                <span class="rating-value ml-1">${store.rating || 4.5}</span>
+            <small class="d-block restaurant-rating">
+                ${ratingHtml}
             </small>
         `;
 

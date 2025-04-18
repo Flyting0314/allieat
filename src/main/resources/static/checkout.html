@@ -294,7 +294,7 @@
   <!-- 原始 checkout JS 功能 -->
   <script>
     let cartData = [];
-    let timer = 20;
+    let timer = 100;
     let countdownInterval;
     let stockCheckInterval;
     let storeCheckInterval;
@@ -448,19 +448,25 @@
     }
 
     function checkStock() {
-      if (!cartData.length) return;
-      fetch('/meal/cart/stock-status', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(cartData)
-      })
-      .then(res => res.json())
-      .then(stockList => {
-        if (stockList.some(item => item.available === false)) {
-          disableCheckout("❌ 有商品已售完，請重新點餐");
-        }
-      });
-    }
+    	  if (!cartData.length) return;
+
+    	  fetch('/meal/cart/stock-status', {
+    	    method: 'POST',
+    	    headers: { 'Content-Type': 'application/json' },
+    	    body: JSON.stringify(cartData)
+    	  })
+    	  .then(res => res.json())
+    	  .then(stockList => {
+    	    const soldOutItem = stockList.find(item => item.available === false);
+    	    if (soldOutItem) {
+    	      disableCheckout(`❌ ${soldOutItem.foodName || '某項餐點'} 已售完，請重新點餐`);
+    	      
+    	      // 額外提示畫面
+    	      showOutOfStockModal(soldOutItem.foodName || '某項餐點');
+    	    }
+    	  });
+    	}
+
 
     function checkStoreStatus() {
       const selectedFood = JSON.parse(localStorage.getItem('selectedFood'));
@@ -489,9 +495,30 @@
     window.onload = () => {
       loadCart();
       startCountdown();
-      stockCheckInterval = setInterval(checkStock, 10000);
+      stockCheckInterval = setInterval(checkStock, 1000);
       storeCheckInterval = setInterval(checkStoreStatus, 15000);
     };
+    
+    function showOutOfStockModal(foodName) {
+    	  const modal = document.getElementById("stockModal");
+    	  const text = document.getElementById("modalStockText");
+    	  text.textContent = `【${foodName}】已售完，請選擇其他餐點。`;
+    	  modal.style.display = "flex";
+    	}
+
+    
+    
   </script>
+  
+  <div id="stockModal" style="display:none; position:fixed; top:0; left:0; 
+    width:100%; height:100%; background:rgba(0,0,0,0.6); 
+    z-index:2000; justify-content:center; align-items:center;">
+  <div style="background:white; padding:30px; border-radius:12px; text-align:center; max-width:90%; width:400px;">
+    <h3 style="color:#e74c3c;">該餐點已無庫存</h3>
+    <p id="modalStockText">請選擇其他餐點</p>
+    <button onclick="goBackToOrder()" style="margin-top:20px; background:#2980b9; color:white; padding:10px 20px; border:none; border-radius:6px;">返回點餐頁面</button>
+  </div>
+</div>
+  
 </body>
 </html>
