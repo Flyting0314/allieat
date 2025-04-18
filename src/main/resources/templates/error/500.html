@@ -1,46 +1,127 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
-   <th:block th:replace="fragments/header :: header"></th:block>
     <style>
         body {
-            background: linear-gradient(to right, #f8f9fa, #e9ecef);
-            min-height: 100vh;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft JhengHei", sans-serif;
+            background: linear-gradient(to right, #fffaf3, #fce8cc);
+        }
+        .error-flexbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            max-width: 1000px;
+            max-height: 100vh;
+            min-height: 600px;
+            padding: 2rem;
+            flex-wrap: wrap;
+        }
+        .error-img {
+            max-width: 75%;
+            clip-path: circle(60%);
         }
         .error-container {
-            background: white;
-            padding: 3rem;
-            border-radius: 1rem;
-            box-shadow: 0 0 30px rgba(0,0,0,0.1);
-            text-align: center;
+            position: relative;
         }
-        .error-code {
-            font-size: 6rem;
+        .error-text {
+            position: absolute;
+            top: 17%;
+            left: 49%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #ff884d;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.5rem;
+        }
+        .error-title {
+            font-size: 2.5rem;
             font-weight: bold;
-            color: #dc3545;
+            color: #ff884d;
+            margin-bottom: 1rem;
         }
         .error-message {
-            font-size: 1.5rem;
-            margin-top: 1rem;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 2rem;
         }
         .btn-home {
+            background-color: #ffa94d;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            display: block;
+            margin-bottom: 1rem;
+            width: 70px;
+        }
+        .btn-home:hover {
+            background-color: #f08c00;
+        }
+                        .btn-home1 {
+            background-color: #ffa94d;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            display: block;
+            margin-bottom: 1rem;
+            width: 70px;
+            top: 29%;
+            left: 27%;
+            position: absolute;
+        }
+        
+                .btn-home:hover1 {
+            background-color: #f08c00;
+        }
+        .debug-info {
+            font-size: 0.9rem;
+            color: #666;
             margin-top: 2rem;
+        }
+        code {
+            background: #f1f1f1;
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="error-container">
-        <div class="error-code">500</div>
-        <div class="error-message">不好意思，服務異常，請聯繫官方</div>
+<div class="error-flexbox error-container">
+    <img src="/img/500-chef.png" alt="廚房冒煙了" class="error-img">
+    <a th:href="@{/}" class="btn-home1" th:if="${@environment.acceptsProfiles('prod')}" >返回首頁</a><br>
 
+    <div class="error-text">
+        <div class="error-title"></div>
+        <div class="error-message">
 
-        <a th:href="@{/}" class="btn btn-outline-danger btn-home">返回首頁</a>
+        </div>
+        <div class="debug-info" th:if="${@environment.acceptsProfiles('dev')}">
+            <p><strong>請求路徑：</strong><code th:text="${url}">/unknown</code></p>
+            <p><strong>錯誤訊息：</strong><code th:text="${errorMessage}">伺服器錯誤</code></p><br><br><br><br><br><br><br>
+            <a th:href="@{/}" class="btn-home">返回首頁</a>
+        </div>
 
+        
+
+        
     </div>
 </div>
 
