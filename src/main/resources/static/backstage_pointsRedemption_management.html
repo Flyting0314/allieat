@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-<head> 
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>店家點數核銷管理</title>
@@ -32,20 +32,149 @@
 
 
     
-    <style>
-   /* 漸層容器擴展到整個內容區域 */
-.content-wrapper {
+ <style>
+
+
+/* 漸層容器擴展到整個內容區域 */
+.col-md-10 {
     background: linear-gradient(135deg, #3a6186, #89253e);
-    padding: 20px;
-    border-radius: 8px;
 }
 
-/* 大標題 */
+/* 內容容器改為透明 */
+.content-wrapper {
+    padding: 20px;
+    border-radius: 8px;
+    background: transparent !important;
+}
+
+/* 為標題區域創建額外的容器，可覆蓋外部的漸層樣式 */
+.header-area {
+    color: white; /* 保持文字顏色 */
+    margin-bottom: 15px;
+    background: transparent !important;
+}
+
+/* 標題與搜尋區域的水平對齊 */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+}
+
 .header-title {
-    font-size: 30px; /* 可以根據需要調整大小 */
+    font-size: 28px;
     color: white;
     font-weight: bold;
-    margin-bottom: 15px; /* 保持原有的底部間距 */
+    margin-bottom: 10px;
+}
+
+.month-control {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+/* 按鈕對齊調整 */
+.actions-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.left-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.right-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+/* 搜尋區域調整 */
+.search-section {
+    display: flex;
+    flex-direction: column;
+    max-width: 65%;
+    align-self: flex-start;
+}
+
+.search-form-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+
+
+/* 整體欄位容器 */
+
+.field-with-label {
+    display: flex;
+    flex-direction: column;
+    width: 165px; /* 可以添加固定寬度 */
+    margin-right: 0px;
+    margin-bottom: 8px;
+    min-width: 120px;
+}
+
+
+.field-with-label label {
+    color: white;
+    font-size: 15px;   /* 搜尋標籤文字大小 */
+    margin-bottom: 3px;
+    font-weight: 500;
+}
+
+.field-with-label input,
+.field-with-label select {
+    height: 34px;
+    border-radius: 4px;
+    border: none;
+    padding: 4px 8px;
+    font-size: 14px;  /* 輸入框內文字大小 */
+    width: 100%;
+}
+
+/* 重置當月記錄按鈕的顏色 */
+#reset-historical-button {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+}
+
+.search-button,
+.btn-primary,
+.btn-success {
+    height: 36px;/* 按鈕高度 */
+    padding: 4px 12px;
+    font-size: 15px;/* 按鈕文字大小 */
+    white-space: nowrap;
+}
+
+/* 年月選擇器樣式調整 */
+.year-month-container {
+    display: flex;
+    width: 100%;
+}
+
+#yearSelector {
+    width: 50%;
+    margin-right: 5px;
+}
+
+#monthSelector {
+    width: 50%;
 }
 
 /* 表格內灰色小字 */
@@ -60,6 +189,8 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-top: 10px;
+    clear: both;
 }
 
 .table-responsive {
@@ -220,208 +351,79 @@
     background-color: #5a6268;
 }
 
-/* ===========搜尋區域相關樣式=========== */
-
-/* 搜尋區域樣式 */
-.search-section {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-    width: 100%;
-}
-
-.test-buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.search-form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-self: flex-end;
-    margin-left: auto; /* 讓搜尋區域靠右 */
-    width: 60%; /* 控制搜尋區域寬度 */
-}
-
-.search-row {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-}
-
-.field-with-label {
-    display: flex;
-    flex-direction: column;
-    flex: 1; /* 讓欄位平均分配寬度 */
-}
-
-.field-with-label label {
-    color: white;
-    font-size: 14px;
-    margin-bottom: 5px;
-}
-
-.field-with-label input,
-.field-with-label select {
-    width: 100%;
-    height: 38px;
-    border-radius: 4px;
-    border: none;
-    padding: 8px 12px;
-}
-
-.field-with-buttons {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    align-items: center;
-}
-
-.field-with-buttons select {
-    width: 110px; /* 固定核銷狀態寬度 */
-    flex-shrink: 0; /* 防止壓縮 */
-}
-
-.field-with-buttons button {
-    min-width: 90px; /* 確保按鈕有足夠寬度 */
-    height: 38px;
-}
-
-/* 搜尋按鈕 */
-.search-button {
-    height: 38px;
-    background-color: #5c9ce6;
-    border-color: #5c9ce6;
-    color: white;
-    font-weight: bold;
-    border-radius: 4px;
-    padding: 0 15px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-/* 重置當月記錄按鈕 */
-#reset-historical-button {
-    background-color: #dc3545;
-}
-
-/* 修復歷史資料按鈕 */
-#fix-historical-button {
-    background-color: #eec451;
-}
-
-/* 表格區域修復 */
-.table-container {
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-top: 15px;
-}
-
-.table-responsive {
-    overflow-x: auto;
-    width: 100%;
-}
-
-.table {
-    width: 100%;
-    margin-bottom: 0;
-}
-
-.table th, 
-.table td {
-    vertical-align: middle;
+/* 按鈕文字防止換行 */
+.btn,
+.search-button,
+button {
     white-space: nowrap; /* 防止文字換行 */
-    padding: 12px 8px; /* 適當的內邊距 */
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, 0.05);
+/* 確保按鈕有足夠寬度顯示完整文字 */
+.field-with-buttons button,
+.btn-primary,
+.btn-success {
+    min-width: 80px; /* 設定最小寬度 */
+    white-space: nowrap;
+    overflow: visible; /* 允許文字溢出按鈕邊界 */
 }
 
-.table-bordered {
-    border: 1px solid #dee2e6;
+/* 搜尋按鈕特別處理 */
+#search-button {
+    min-width: 80px;
 }
 
-.table-bordered th,
-.table-bordered td {
-    border: 1px solid #dee2e6;
+/* 批次核銷按鈕特別處理 */
+#batch-redemption-btn {
+    min-width: 90px; /* 可能需要更大的寬度 */
 }
 
-/* 確保表格在小螢幕也能正常顯示 */
+/* 響應式調整 */
+@media (max-width: 1200px) {
+    .header-container {
+        flex-direction: column;
+    }
+    
+    .search-section {
+        max-width: 100%;
+        margin-top: 15px;
+    }
+}
+
 @media (max-width: 992px) {
     .search-form-container {
-        width: 100%;
-    }
-    
-    .search-row {
         flex-direction: column;
-        gap: 15px;
     }
     
-    .field-with-buttons {
-        flex-wrap: wrap;
-    }
-    
-    .field-with-buttons select {
+    .field-with-label {
         width: 100%;
-        margin-bottom: 10px;
+        margin-right: 0;
     }
     
-    .field-with-buttons button {
+    .btn-row {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .btn-row button {
         flex: 1;
     }
 }
 
-
-
-/* 按鈕文字防止換行 */
-    .btn,
-    .search-button,
-    button {
-        white-space: nowrap; /* 防止文字換行 */
+/* 確保表格在小螢幕也能正常顯示 */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto;
     }
-
-    /* 確保按鈕有足夠寬度顯示完整文字 */
-    .field-with-buttons button,
-    .btn-primary,
-    .btn-success {
-        min-width: 90px; /* 設定最小寬度 */
-        white-space: nowrap;
-        overflow: visible; /* 允許文字溢出按鈕邊界 */
+    
+    .table-responsive table {
+        min-width: 800px;
     }
+}
 
-    /* 搜尋按鈕特別處理 */
-    #search-button {
-        min-width: 90px;
-    }
-
-    /* 批次核銷按鈕特別處理 */
-    #batch-redemption-btn {
-        min-width: 100px; /* 可能需要更大的寬度 */
-    }
-
-
-/* =========年月選擇器========= */
-
-/* 年月選擇器樣式 */
-    #yearSelector, #monthSelector {
-        height: 38px;
-        border-radius: 4px;
-        border: none;
-        padding: 8px 12px;
-    }
-
-    #yearSelector {
-        width: 40%;
-    }
-
-    #monthSelector {
-        width: 60%;
-    }
+/* 返回按鈕容器 */
+.back-button-container {
+    margin: 5px 0 10px 0;
+}
 
 
 
@@ -475,139 +477,135 @@
                 <a class="btn btn-logout">登出</a>
             </div>
             
-            <!-- 主要內容區域 -->
-             
-            <div class="col-md-10">
-                <div class="content-wrapper">
-                    <!-- 標題和搜尋區域 -->
-                    <div class="gradient-container">
-                        <div class="header-title mb-3">合作店家點數核銷</div>
+            <!-- 主內容區域 -->
+          <!-- 主內容區域 -->
+<div class="col-md-10">
+    <div class="content-wrapper">
+        <!-- 標題和搜尋區域 -->
+        <div class="header-area">
+            <!-- 標題和月份控制 -->
+            <div class="header-container">
+                <!-- 左側標題區域 -->
+                <div class="header-left">
+                    <div class="header-title">合作店家點數核銷</div>
+                    
+                    <!-- 月份控制按鈕 -->
+                    <div class="month-control" id="month-control-placeholder">
+                        <!-- 這裡的內容會由JavaScript動態生成 -->
+                    </div>
+                </div>
+                
+                <!-- 右側搜尋區域 -->
+                <div class="search-section">
+                    <!-- 搜尋欄位容器 -->
+                    <div class="search-form-container">
+                        <div class="field-with-label">
+                            <label>店家ID</label>
+                            <input type="text" id="search-store-id" placeholder="輸入店家ID">
+                        </div>
                         
-                       
-
-<!-- 修改後的搜尋區域HTML -->
-<!-- 搜尋區域 -->
-<div class="search-section">
-    <!-- 左側測試按鈕區 -->
-    <div class="test-buttons">
-        <button class="search-button" id="reset-historical-button" onclick="resetCurrentMonthRecords()">重置當月記錄</button>
-        <button class="search-button" id="fix-historical-button" onclick="fixHistoricalRecords()">修復歷史資料</button>
-    </div>
-    
-    <!-- 搜尋欄位容器 -->
-    <div class="search-form-container">
-        <!-- 第一行搜尋欄位 -->
-        <div class="search-row">
-            <div class="field-with-label">
-                <label>店家ID</label>
-                <input type="text" id="search-store-id" placeholder="輸入店家ID">
-            </div>
-            
-            <!-- 新的年月選擇器 -->
-            <div class="field-with-label">
-                <label>核銷批次</label>
-                <div class="d-flex">
-                    <select id="yearSelector" class="form-control mr-2">
-                        <!-- 年份選項會動態生成 -->
-                    </select>
-                    <select id="monthSelector" class="form-control">
-                        <option value="1">1月</option>
-                        <option value="2">2月</option>
-                        <option value="3">3月</option>
-                        <option value="4">4月</option>
-                        <option value="5">5月</option>
-                        <option value="6">6月</option>
-                        <option value="7">7月</option>
-                        <option value="8">8月</option>
-                        <option value="9">9月</option>
-                        <option value="10">10月</option>
-                        <option value="11">11月</option>
-                        <option value="12">12月</option>
-                    </select>
+                        <div class="field-with-label">
+                            <label>店家名稱</label>
+                            <input type="text" id="search-store-name" placeholder="輸入店家名稱">
+                        </div>
+                        
+                        <div class="field-with-label">
+                            <label>核銷批次</label>
+                            <div class="year-month-container">
+                                <select id="yearSelector" class="form-control">
+                                    <!-- 年份選項會動態生成 -->
+                                </select>
+                                <select id="monthSelector" class="form-control">
+                                    <option value="1">1月</option>
+                                    <option value="2">2月</option>
+                                    <option value="3">3月</option>
+                                    <option value="4">4月</option>
+                                    <option value="5">5月</option>
+                                    <option value="6">6月</option>
+                                    <option value="7">7月</option>
+                                    <option value="8">8月</option>
+                                    <option value="9">9月</option>
+                                    <option value="10">10月</option>
+                                    <option value="11">11月</option>
+                                    <option value="12">12月</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="field-with-label">
+                            <label>核銷狀態</label>
+                            <select id="search-status">
+                                <option value="">全部</option>
+                                <option value="0">未核銷</option>
+                                <option value="1">已核銷</option>
+                                <option value="2">核銷異常</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
         
-        <!-- 第二行搜尋欄位 -->
-        <div class="search-row">
-            <div class="field-with-label">
-                <label>店家名稱</label>
-                <input type="text" id="search-store-name" placeholder="輸入店家名稱">
-            </div>
-            
-            <div class="field-with-label">
-                <label>核銷狀態</label>
-                <div class="field-with-buttons">
-                    <select id="search-status">
-                        <option value="">全部</option>
-                        <option value="0">未核銷</option>
-                        <option value="1">已核銷</option>
-                        <option value="2">核銷異常</option>
-                    </select>
+            <!-- 按鈕操作區域 -->
+            <div class="actions-container">
+                <!-- 左側按鈕 -->
+                <div class="left-buttons">
+                    <button class="search-button" id="reset-historical-button" onclick="resetCurrentMonthRecords()">重置當月記錄</button>
+                </div>
+                
+                <!-- 右側按鈕 -->
+                <div class="right-buttons">
                     <button class="btn btn-primary" id="search-button">搜尋</button>
                     <button class="btn btn-success" id="batch-redemption-btn" onclick="performBatchRedemption()">批次核銷</button>
                 </div>
             </div>
+            
+            <!-- 返回按鈕容器 - 搜尋時才顯示 -->
+            <div class="back-button-container" style="display: none; margin: 5px 0 10px 0;">
+                <button class="back-button" id="back-button">
+                    <i class="fas fa-arrow-left"></i> 回上一頁
+                </button>
+            </div>
         </div>
-    </div>
-</div>
 
-
-
-
-
-
-
-                    
-                    <div class="back-button-container" style="display: none; margin: 10px 0 15px 0;">
-                        <button class="back-button" id="back-button" style="display: inline-block; color: white; background-color: #6c757d; border: none; border-radius: 4px; padding: 8px 15px; text-decoration: none; font-size: 14px; transition: background-color 0.3s; cursor: pointer;">
-                            <i class="fas fa-arrow-left"></i> 回上一頁
-                        </button>
-                    </div>
-
-
-
-                    <!-- 表格區域 -->
-                    <div class="table-container">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>核銷ID</th>
-                                            <th>店家ID</th>
-                                            <th>店家名稱</th>
-                                            <th>核銷批次</th>
-                                            <th>應核銷點數</th>
-                                            <th>已核銷金額</th>
-                                            <th>核銷時間</th>
-                                            <th>狀態</th>
-                                            <th>操作</th>
-                                            <th>
-                                                <input type="checkbox" id="selectAllCheckbox">
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="points-redemption-table">
-                                        <tr>
-                                            <td colspan="10" class="text-center"><i class="fas fa-spinner fa-spin"></i> 資料載入中...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        
-                      <!-- 分頁控制區塊 -->
-                        <div class="pagination-container">
-                            <ul class="pagination mb-0" id="pagination">
-                                <!-- 分頁按鈕將動態生成 -->
-                            </ul>
-                        </div>
-                    </div>
+        <!-- 表格區域 - 單一白色卡片 -->
+        <div class="table-container">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>核銷ID</th>
+                                <th>店家ID</th>
+                                <th>店家名稱</th>
+                                <th>核銷批次</th>
+                                <th>應核銷點數</th>
+                                <th>已核銷金額</th>
+                                <th>核銷時間</th>
+                                <th>狀態</th>
+                                <th>操作</th>
+                                <th>
+                                    <input type="checkbox" id="selectAllCheckbox">
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="points-redemption-table">
+                            <tr>
+                                <td colspan="10" class="text-center"><i class="fas fa-spinner fa-spin"></i> 資料載入中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+            
+            <!-- 分頁控制區塊 -->
+            <div class="pagination-container">
+                <ul class="pagination mb-0" id="pagination">
+                    <!-- 分頁按鈕將動態生成 -->
+                </ul>
             </div>
         </div>
     </div>
+</div>
 
     <!-- 核銷點數模態框 -->
     <div class="modal fade" id="redemptionModal" tabindex="-1" role="dialog" aria-labelledby="redemptionModalLabel" aria-hidden="true">
@@ -644,7 +642,7 @@
 let currentYear;
 let currentMonth;
 let currentPage = 1;
-const recordsPerPage = 8;
+const recordsPerPage = 5; //每頁幾筆資料
 let totalPages = 1;
 let allRecords = [];
 let payoutIdSortAscending = true; // 排序方向：預設為升序（由小到大）
@@ -653,14 +651,7 @@ let payoutIdSortAscending = true; // 排序方向：預設為升序（由小到�
 document.addEventListener('DOMContentLoaded', () => {
     // 檢查登入狀態
     backstageAuth.requireLogin();
-
-    const backButton = document.getElementById('back-button');
-    if (backButton) {
-        backButton.addEventListener('click', handleBackButtonClick);
-    }
     
-    
-
     initializeMonthControls();
     loadCurrentMonthData();
     initYearMonthSelector(); // <-- 年月選擇器
@@ -668,36 +659,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
     
-
     selectAllCheckbox.addEventListener('change', function() {
-    if (isSearchActive) {
-        // 搜尋模式：選取所有未核銷的記錄
-        const allUnredeemedIds = allRecords
-            .filter(item => item.status === 0)
-            .map(item => item.id);
-        
-        // 更新前端所有checkbox的狀態
-        document.querySelectorAll('.row-checkbox').forEach(checkbox => {
-            const redemptionId = parseInt(checkbox.dataset.redemptionId);
-            checkbox.checked = this.checked && allUnredeemedIds.includes(redemptionId);
-        });
-    } else {
-        // 非搜尋模式：選取所有頁面的未核銷記錄
-        const allUnredeemedIds = allRecords
-            .filter(item => item.status === 0)
-            .map(item => item.id);
-        
-        document.querySelectorAll('.row-checkbox').forEach(checkbox => {
-            const redemptionId = parseInt(checkbox.dataset.redemptionId);
-            checkbox.checked = this.checked && allUnredeemedIds.includes(redemptionId);
-        });
-    }
-}
-
-);
-    
+        if (isSearchActive) {
+            // 搜尋模式：選取所有未核銷的記錄
+            const allUnredeemedIds = allRecords
+                .filter(item => item.status === 0)
+                .map(item => item.id);
+            
+            // 更新前端所有checkbox的狀態
+            document.querySelectorAll('.row-checkbox').forEach(checkbox => {
+                const redemptionId = parseInt(checkbox.dataset.redemptionId);
+                checkbox.checked = this.checked && allUnredeemedIds.includes(redemptionId);
+            });
+        } else {
+            // 非搜尋模式：選取所有頁面的未核銷記錄
+            const allUnredeemedIds = allRecords
+                .filter(item => item.status === 0)
+                .map(item => item.id);
+            
+            document.querySelectorAll('.row-checkbox').forEach(checkbox => {
+                const redemptionId = parseInt(checkbox.dataset.redemptionId);
+                checkbox.checked = this.checked && allUnredeemedIds.includes(redemptionId);
+            });
+        }
+    });
 });
-
 
 
 
@@ -825,33 +811,52 @@ function fixHistoricalRecords() {
 
 
 // 新增月份控制按鈕
+// 初始化月份控制按鈕
+// 初始化月份控制按鈕
 function initializeMonthControls() {
     // 取得當前日期
     const now = new Date();
     currentYear = now.getFullYear();
     currentMonth = now.getMonth() + 1; // JavaScript 月份從 0 開始
     
-   // 建立月份控制元素
-   const controlsHtml = `
-        <div class="d-flex align-items-center mb-3">
-            <button id="prevMonth" class="btn btn-outline-light mr-2">
+    // 建立月份控制元素
+    const controlsHtml = `
+        <div class="d-flex align-items-center">
+            <button id="prevMonth" class="btn btn-outline-light btn-sm mr-2">
                 <i class="fas fa-chevron-left"></i> 上個月
             </button>
             <h5 class="text-white mb-0" id="currentMonthDisplay">${currentYear}年${currentMonth}月</h5>
-            <button id="nextMonth" class="btn btn-outline-light ml-2">
+            <button id="nextMonth" class="btn btn-outline-light btn-sm ml-2">
                 下個月 <i class="fas fa-chevron-right"></i>
             </button>
         </div>
     `;
     
-    // 插入到標題下方
-    const headerTitle = document.querySelector('.header-title');
-    headerTitle.insertAdjacentHTML('afterend', controlsHtml);
+    // 插入到月份控制區域
+    const monthControlPlaceholder = document.getElementById('month-control-placeholder');
+    if (monthControlPlaceholder) {
+        monthControlPlaceholder.innerHTML = controlsHtml;
+    }
     
     // 綁定事件
     document.getElementById('prevMonth').addEventListener('click', goToPrevMonth);
     document.getElementById('nextMonth').addEventListener('click', goToNextMonth);
 }
+
+// 綁定搜尋事件
+function bindSearchEvents() {
+    document.getElementById('search-button').addEventListener('click', performSearch);
+    
+    // 回上一頁按鈕事件
+    const backButton = document.getElementById('back-button');
+    if (backButton) {
+        backButton.addEventListener('click', handleBackButtonClick);
+    }
+}
+
+
+
+
 
 // 上一個月按鈕事件
 function goToPrevMonth() {
