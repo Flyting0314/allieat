@@ -11,6 +11,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "donationRecord")
@@ -19,7 +22,8 @@ public class DonaVO implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer donationRecordId;
-
+	
+	@Column(insertable = false, updatable = false)
 	private Timestamp createdTime;
 
 	private String identityData;
@@ -51,8 +55,15 @@ public class DonaVO implements Serializable{
 	private String guiNum;
 
 	private Integer anonymous;
+	
+	private String merchantTradeNo;
 
 	private Integer donationType;
+	
+	@NotNull(message = "付款狀態不可為空")
+	@Min(value = 0, message = "付款狀態最小為 0（未付款）")
+	@Max(value = 1, message = "付款狀態最大為 1（已付款）")
+	private Integer paidStatus = 0; // 預設值為 0
 
 	public DonaVO() {
 	}
@@ -192,6 +203,14 @@ public class DonaVO implements Serializable{
 	public void setAnonymous(Integer anonymous) {
 		this.anonymous = anonymous;
 	}
+	
+	public String getMerchantTradeNo() {
+	    return merchantTradeNo;
+	}
+	
+	public void setMerchantTradeNo(String merchantTradeNo) {
+	    this.merchantTradeNo = merchantTradeNo;
+	}
 
 	public Integer getDonationType() {
 		return donationType;
@@ -199,6 +218,13 @@ public class DonaVO implements Serializable{
 
 	public void setDonationType(Integer donationType) {
 		this.donationType = donationType;
+	}
+	
+	public Integer getPaidStatus() {
+	    return paidStatus;
+	}
+	public void setPaidStatus(Integer paidStatus) {
+	    this.paidStatus = paidStatus;
 	}
 
 	public static long getSerialversionuid() {
