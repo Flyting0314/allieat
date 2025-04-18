@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+
 
 
 @RestController
@@ -172,6 +175,7 @@ public class BackStagePointsRedemptionController {
             return ResponseEntity.internalServerError().body(response);
         }
     }
+    
     
     
  // 單獨處理店家點數更新，使用新的事務
@@ -379,10 +383,72 @@ public class BackStagePointsRedemptionController {
      
     
     
+    
+    
+    // ================= 獲取當月點數核銷統計 ===============
+    //包括：總點數、已核銷點數、待核銷點數  
+    
+    @GetMapping("/monthly-stats")
+    public ResponseEntity<Map<String, Object>> getMonthlyStats() {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // 獲取當前月份
+            LocalDate now = LocalDate.now();
+            Date currentMonth = Date.valueOf(now.withDayOfMonth(1));
+            Date lastDayOfMonth = Date.valueOf(now.withDayOfMonth(now.lengthOfMonth()));
+            
+            // 查詢當月所有核銷記錄
+            List<PointsRedemptionVO> monthlyRecords = pointsRedemptionRepository.findByRedemptionMonthBetween(
+                currentMonth, lastDayOfMonth);
+            
+            // 計算統計數據
+            int totalPoints = 0;
+            int redeemedPoints = 0;
+            int pendingPoints = 0;
+            
+            for (PointsRedemptionVO record : monthlyRecords) {
+                // 原始點數 = 目前剩餘的點數 + 已核銷的金額
+                int originalPoints = (record.getPointsAmount() != null ? record.getPointsAmount() : 0) + 
+                                    (record.getCashAmount() != null ? record.getCashAmount() : 0);
+                
+                totalPoints += originalPoints;
+                
+                // 依據狀態計算已核銷和待核銷的點數
+                if (record.getStatus() == 0) {
+                    // 未核銷
+                    pendingPoints += record.getPointsAmount() != null ? record.getPointsAmount() : 0;
+                } else {
+                    // 已核銷或核銷異常
+                    redeemedPoints += record.getCashAmount() != null ? record.getCashAmount() : 0;
+                    // 核銷異常可能還有剩餘點數
+                    pendingPoints += record.getPointsAmount() != null ? record.getPointsAmount() : 0;
+                }
+            }
+            
+            // 設置響應數據
+            response.put("totalPoints", totalPoints);
+            response.put("redeemedPoints", redeemedPoints);
+            response.put("pendingPoints", pendingPoints);
+            response.put("formattedMonth", now.format(DateTimeFormatter.ofPattern("yyyy年MM月")));
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("error", "獲取統計資訊失敗: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+    
+    
+   
+    
+    
+    
     //============= 修復顯示異常的歷史紀錄(開發測試用) =================
     //在瀏覽器直接訪問即可調用，或者在頁面加入一個測試按鈕
     
- // 修改 fixHistoricalRecords 方法，將部分核銷的記錄標記為狀態2
     @GetMapping("/fixHistoricalRecords")
     @Transactional
     public ResponseEntity<Map<String, Object>> fixHistoricalRecords() {
