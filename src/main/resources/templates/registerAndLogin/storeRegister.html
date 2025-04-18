@@ -84,11 +84,11 @@
                         <label class="partner_form_label">店家地址</label>
                         <div class="partner_form_controls">
                             <!-- 縣市 -->
-<select class="partner_select" id="citySelect" th:field="*{county}">
+<select class="partner_select" id="citySelect" th:field="*{county}" th:attr="data-selected=${county}">
     <option value="">請選擇縣市</option>
 </select>
 
-<select class="partner_select" id="districtSelect" th:field="*{district}">
+<select class="partner_select" id="districtSelect" th:field="*{district}"  th:attr="data-selected=${district}">
     <option value="">請選擇鄉鎮市區</option>
 </select>
 
@@ -317,6 +317,16 @@
         
         
         
+        // 🚀 優先讀取 sessionStorage，確保返回修改時保留選取狀態
+        const agreedSession = sessionStorage.getItem("noticeAgreed");
+        if (agreedSession !== null) {
+            agreeCheck.checked = agreedSession === "true";
+            agreedHiddenInput.value = agreeCheck.checked ? "true" : "false";
+        } else {
+            // 🚀 初次載入時不選取，避免預設勾選
+            agreeCheck.checked = false;
+            agreedHiddenInput.value = "false";
+        }
         //  開啟燈箱
         viewNotice.addEventListener('click', function (e) {
             e.preventDefault();
@@ -343,13 +353,15 @@
 
         //  同步狀態
         
-        if (localStorage.getItem("agreedToTerms") === "true") {
-            agreeCheck.checked = true;
-            agreedHiddenInput.value = "true";
-        } else {
-            agreeCheck.checked = false;
-            agreedHiddenInput.value = "false";
-        }
+		        // 使用 sessionStorage 確保只在當前流程內保留狀態
+		if (sessionStorage.getItem("noticeAgreed") === "true") {
+		    agreeCheck.checked = true;
+		    agreedHiddenInput.value = "true";
+		} else {
+		    agreeCheck.checked = false;
+		    agreedHiddenInput.value = "false";
+		}
+
 
         //  記錄變更
         agreeCheck.addEventListener("change", function () {
@@ -415,6 +427,26 @@
             checkHintAndPreview(coverPreview, coverHint);
             checkHintAndPreview(kitchenPreview, kitchenHint);
             checkHintAndPreview(storePreview, storeHint);
+         // 🧼 如果 file input 沒有值，就不要顯示圖片預覽
+            function hidePreviewIfNoFile(inputId, previewId, hintClass, labelId) {
+                const input = document.getElementById(inputId);
+                const preview = document.getElementById(previewId);
+                const hint = document.querySelector(hintClass);
+                const fileLabel = document.getElementById(labelId);
+                if (input && preview && input.files.length === 0) {
+                    preview.innerHTML = "";
+                    hint && (hint.style.display = "none");
+                    fileLabel && (fileLabel.textContent = "尚未選擇檔案");
+                }
+            }
+
+            // 🧼 清除預覽圖與錯誤提示文字（僅當返回修改但沒重新上傳時）
+            if (!hasSubmitted) {
+                hidePreviewIfNoFile("file_upload_cover", "coverPhotoPreview", ".cover-hint", "coverFileName");
+                hidePreviewIfNoFile("file_upload_kitchen", "kitchenPhotoPreview", ".kitchen-hint", "kitchenFileName");
+                hidePreviewIfNoFile("file_upload_store", "storePhotoPreview", ".store-hint", "storeFileName");
+            }
+
         }
         
      // 自動隱藏錯誤提示=====
@@ -466,6 +498,17 @@
         clearPhotoErrorOnSelect('file_upload_cover');
         clearPhotoErrorOnSelect('file_upload_kitchen');
         clearPhotoErrorOnSelect('file_upload_store');
+     // ✅ 若已有預覽圖，則補上檔名提示
+        if (document.querySelector('#coverPhotoPreview img')) {
+            document.getElementById('coverFileName').textContent = '已上傳圖片';
+        }
+        if (document.querySelector('#kitchenPhotoPreview img')) {
+            document.getElementById('kitchenFileName').textContent = '已上傳圖片';
+        }
+        if (document.querySelector('#storePhotoPreview img')) {
+            document.getElementById('storeFileName').textContent = '已上傳圖片';
+        }
+
         
    
  // ===== 還原 =====
@@ -514,70 +557,69 @@
         console.log("Zipcode Input:", zipInput);
         
         if (citySelect && districtSelect && zipInput) {
-            const selectedCity = citySelect.getAttribute("data-selected") || "";
-            const selectedDistrict = districtSelect.getAttribute("data-selected") || "";
-            
-            console.log("Selected City:", selectedCity);
-            console.log("Selected District:", selectedDistrict);
+            const selectedDistrict = districtSelect.value || "";
+            const selectedCity = initCitySelect(); // 🚀 由函式內自行取得初始值
 
-            // 初始化縣市選單
-            initCitySelect();
-            
-            // 如果有預選值，初始化地區選單
             if (selectedCity) {
                 updateDistricts(selectedCity, selectedDistrict);
             }
-
-            // 縣市選擇變動
+            
+            // 🚀 當「縣市」變更時，記住選擇
             citySelect.addEventListener("change", function () {
+                sessionStorage.setItem("selectedCity", this.value);
+                sessionStorage.removeItem("selectedDistrict"); // 🚀 清除舊鄉鎮市區
                 updateDistricts(this.value, "");
             });
 
-            // 鄉鎮市區選擇變動
+            // 🚀 當「鄉鎮市區」變更時，記住選擇
             districtSelect.addEventListener("change", function () {
+                sessionStorage.setItem("selectedDistrict", this.value);
                 updateZipcode(citySelect.value, this.value);
             });
         }
+
+
+
         
         // 初始化縣市選單
-        function initCitySelect() {
-            citySelect.innerHTML = '<option value="">請選擇縣市</option>';
-            addrData.forEach(item => {
-                const option = document.createElement("option");
-                option.value = item.city;
-                option.textContent = item.city;
-                if (item.city === citySelect.getAttribute("data-selected")) {
-                    option.selected = true;
-                }
-                citySelect.appendChild(option);
-            });
-        }
-        
+		function initCitySelect() {
+		    const selectedCity = citySelect.value || ""; // ✅ 用 .value 而非 getAttribute
+		    citySelect.innerHTML = '<option value="">請選擇縣市</option>';
+		
+		    addrData.forEach(item => {
+		        const option = document.createElement("option");
+		        option.value = item.city;
+		        option.textContent = item.city;
+		        citySelect.appendChild(option);
+		    });
+		
+		    if (selectedCity) {
+		        citySelect.value = selectedCity; // ✅ 選回正確的項目
+		    }
+		
+		    return selectedCity;
+		}
+
+		        
         // 更新鄉鎮市區選單
         function updateDistricts(city, selectedDistrict) {
-            const cityObj = addrData.find(item => item.city === city);
-            districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
-            
-            if (cityObj) {
-                cityObj.area.forEach(area => {
-                    const option = document.createElement("option");
-                    option.value = area.name;
-                    option.textContent = area.name;
-                    if (area.name === selectedDistrict) {
-                        option.selected = true;
-                    }
-                    districtSelect.appendChild(option);
-                });
-                
-                // 如果有選擇地區，更新郵遞區號
-                if (selectedDistrict) {
-                    updateZipcode(city, selectedDistrict);
-                } else if (cityObj.area.length > 0) {
-                    // 若沒有選擇地區但有地區可選，清空郵遞區號
-                    zipInput.value = "";
-                }
-            }
-        }
+    const cityObj = addrData.find(item => item.city === city);
+    districtSelect.innerHTML = '<option value="">請選擇鄉鎮市區</option>';
+
+    if (cityObj) {
+        cityObj.area.forEach(area => {
+            const option = document.createElement("option");
+            option.value = area.name;
+            option.textContent = area.name;
+            districtSelect.appendChild(option);
+        });
+
+        // 🚀 關鍵：所有選項渲染完後再設定選取值
+        setTimeout(() => {
+            districtSelect.value = selectedDistrict;
+        }, 50);
+    }
+}
         
         // 更新郵遞區號
         function updateZipcode(city, district) {
