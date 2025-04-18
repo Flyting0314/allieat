@@ -38,7 +38,7 @@ public class RankService {
 
     @Scheduled(cron = "0 0 * * * *")
     public void updateLatestDonations() {
-        latestDonationList = donorRepository.findLatestDonations(PageRequest.of(0, 20));
+        latestDonationList = donorRepository.findLatestDonations(PageRequest.of(0, 10));
     }
 
     public List<DonaVO> getLatestDonations() {
