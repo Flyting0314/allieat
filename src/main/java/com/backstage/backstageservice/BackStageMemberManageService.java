@@ -11,6 +11,7 @@ import com.frontservice.OrganizationService;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -112,6 +113,23 @@ public class BackStageMemberManageService {
         memberRepository.save(member);
     }
     
+    
+    
+ // 獲取會員的最新帳號啟用狀態資訊（用於檢查狀態更新）
+    public List<Map<String, Object>> getMembersStatusUpdates(List<Integer> memberIds) {
+        List<MemberVO> members = getMembersByIds(memberIds);
+        List<Map<String, Object>> updates = new java.util.ArrayList<>();
+        
+        for (MemberVO member : members) {
+            Map<String, Object> memberData = new java.util.HashMap<>();
+            memberData.put("memberId", member.getMemberId());
+            memberData.put("accStat", member.getAccStat());
+            memberData.put("reviewed", member.getReviewed());
+            updates.add(memberData);
+        }
+        
+        return updates;
+    }
    
     
     

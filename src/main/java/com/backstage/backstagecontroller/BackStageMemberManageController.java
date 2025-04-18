@@ -4,8 +4,12 @@ package com.backstage.backstagecontroller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.backstage.backstagedto.MemberSearchDTO;
 import com.backstage.backstageservice.BackStageMemberManageService;
@@ -13,13 +17,20 @@ import com.backstage.backstageservice.BackstageMemberEmailService;
 import com.backstage.backstagrepository.MemberRepository;
 import com.entity.MemberVO;
 import com.entity.OrganizationVO;
+import com.entity.StoreVO;
 import com.frontservice.OrganizationService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 @CrossOrigin(origins = "*")
@@ -51,9 +62,9 @@ public class BackStageMemberManageController {
         return ResponseEntity.ok(unitDTOs);
     }
     
+    
     // =========== 會員列表獲取與動態過濾搜尋功能 ===============
     @PostMapping("/listAll")
-//    public ResponseEntity<List<MemberVO>> getAllMembers(@RequestBody(required = false) MemberSearchDTO searchDTO) {
     public ResponseEntity<?> getAllMembers(@RequestBody(required = false) MemberSearchDTO searchDTO) {
     
     	
@@ -102,15 +113,14 @@ public class BackStageMemberManageController {
             })
             .collect(Collectors.toList());
 
-//        return ResponseEntity.ok(filteredMembers);
         return ResponseEntity.ok().body(filteredMembers);
     }
     
     
     
+    
     // ============== 更新會員審核狀態 =============== 
     @PutMapping("/updateReviewStatus/{memberId}")
-//    public ResponseEntity<Map<String, Object>> updateReviewStatus(
       public ResponseEntity<?> updateReviewStatus(	
     		  
             @PathVariable Integer memberId,
@@ -128,7 +138,7 @@ public class BackStageMemberManageController {
                 return ResponseEntity.badRequest().body(response);
             }
             
-            // 修改邏輯：允許已通過(1)和未通過(2)之間的轉換
+            // 邏輯：允許已通過(1)和未通過(2)之間的轉換
             // 但已審核的會員不能改為待審核(3)狀態
             if ((member.getReviewed() == 1 || member.getReviewed() == 2) && reviewedValue == 3) {
                 response.put("success", false);
@@ -166,34 +176,120 @@ public class BackStageMemberManageController {
     }
     
     
+    
     // ==============驗證郵件=================
     // 此端點需要與EmailService中生成的URL匹配
+//    @GetMapping("/verify")
+//    public ResponseEntity<?> verifyMember(@RequestParam String token) {
+//        Map<String, Object> response = new HashMap<>();
+//        
+//        boolean activated = memberEmailService.activateMemberByToken(token);
+//        
+//        if (activated) {
+//            // 使用 ResponseEntity 返回重定向：驗證成功，重定向到登入頁面
+//            return ResponseEntity.status(HttpStatus.FOUND)
+//                .header(HttpHeaders.LOCATION, "/registerAndLogin/login")
+//                .build();
+//        } else {
+//            response.put("success", false);
+//            response.put("message", "驗證連結無效或已過期");
+//            
+//            
+//        }
+//        
+//        return ResponseEntity.ok().body(response);
+//    }
+    
+    
+    //=============token過期更新版==================
     @GetMapping("/verify")
     public ResponseEntity<?> verifyMember(@RequestParam String token) {
         Map<String, Object> response = new HashMap<>();
-        
+
         boolean activated = memberEmailService.activateMemberByToken(token);
-        
+
         if (activated) {
-            // 使用 ResponseEntity 返回重定向
+            // 使用 ResponseEntity 返回重定向：驗證成功，重定向到登入頁面
             return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION, "/registerAndLogin/login")
                 .build();
         } else {
-            response.put("success", false);
-            response.put("message", "驗證連結無效或已過期");
+            // 直接返回 HTML 響應
+            String htmlResponse = "<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "<meta charset='UTF-8'>"
+                + "<title>連結已過期</title>"
+                + "<style>"
+                + "body { font-family: Arial, sans-serif; text-align: center; padding-top: 50px; }"
+                + "h1 { color: #333; }"
+                + "p { color: #666; }"
+                + "</style>"
+                + "</head>"
+                + "<body>"
+                + "<h1>驗證連結已過期</h1>"
+                + "<p>很抱歉，您點擊的驗證連結已失效。</p>"
+                + "<p>請回到登入頁面重新申請驗證。</p>"
+                + "</body>"
+                + "</html>";
+
+            return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_HTML)
+                .body(htmlResponse);
         }
-        
-        return ResponseEntity.ok().body(response);
     }
+
+    
+ // 重新寄送驗證信（店家 / 會員合併）
+//    @PostMapping("/resend")
+//    public Map<String, String> resendVerification(@RequestParam("email") String email) {
+//        Map<String, String> response = new HashMap<>();
+//
+//        if (email == null || email.trim().isEmpty()) {
+//            response.put("error", "請輸入 Email");
+//            return response;
+//        }
+//
+//        boolean found = false;
+//
+//        Optional<MemberVO> memberOpt = memberRepository.findByEmail(email);
+//        if (memberOpt.isPresent()) {
+//            found = true;
+//            MemberVO member = memberOpt.get();
+//            switch (member.getReviewed()) {
+//                case 3 -> response.put("error", "帳號審核中，通過後會核發信件");
+//                case 2 -> {
+//                    memberEmailService.sendRejectionEmail(member);
+//                    response.put("error", "帳號未通過審核");
+//                }
+//                case 0 -> {
+//                    memberEmailService.sendCorrectionEmail(member);
+//                    response.put("error", "補件通知已寄送，請補齊資料");
+//                }
+//                case 1 -> {
+//                    if (member.getAccStat() == 1) {
+//                        response.put("message", "帳號已啟用，請直接登入！");
+//                    } else {
+//                        memberEmailService.sendMemberVerificationEmail(member);
+//                        response.put("message", "驗證信已重新寄送，請至信箱點擊啟用！");
+//                    }
+//                }
+//            }
+//        }
+//        
+//        // 添加這個條件判斷，處理找不到信箱的情況
+//        if (!found) {
+//            response.put("error", "找不到此信箱");
+//        }
+//        
+//        return response;  // 確保在所有情況下都有回傳值
+//    }
     
     
     
+     
     
- 
-    
-    
-    // ============ 更新帳號啟用狀態 ==============
+    // ============ 更新帳號啟用狀態（會員點擊連結就將帳號啟用狀態從 0->1） ==============
     @PutMapping("/updateAccountStatus/{memberId}")
     public ResponseEntity<?> updateAccountStatus(
             @PathVariable Integer memberId,
@@ -245,6 +341,8 @@ public class BackStageMemberManageController {
         }
     }
 
+    
+    
     // 審核狀態轉換（前端 -> 後端）
     private Integer convertAuditStatusToValue(String status) {
         switch (status) {
@@ -285,4 +383,29 @@ public class BackStageMemberManageController {
             return name;
         }
     }
+    
+    
+    
+    
+ // ========= 檢查會員帳號狀態更新，用於前端頁面局部刷新資訊（使用者點擊驗證信連結、或送出補件，帳號狀態的變更即刻在不刷新頁面的情況下顯示於前端 ==========
+   
+    @PostMapping("/checkStatusUpdates")
+    public ResponseEntity<?> checkStatusUpdates(@RequestBody Map<String, List<Integer>> request) {
+        List<Integer> memberIds = request.get("memberIds");
+        if (memberIds == null || memberIds.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        // 使用服務層方法獲取狀態更新
+        List<Map<String, Object>> updates = memberManageService.getMembersStatusUpdates(memberIds);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("updates", updates);
+        
+        return ResponseEntity.ok().body(response);
+    }
+    
+    
+    
+    
 }
