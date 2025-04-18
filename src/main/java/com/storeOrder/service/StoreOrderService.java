@@ -13,7 +13,7 @@ public interface StoreOrderService {
 
 	void updateOrderStatus(Integer orderId, String type);
 
-	void readyForPickup(Integer orderId);
-	
+	String updateOpStat(Integer storeId, String type);
+
 }
 

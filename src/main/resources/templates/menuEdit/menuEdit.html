@@ -196,9 +196,9 @@ input:checked+.slider:before {
 						class="dropdown-item">編輯菜單</a>
 				</div>
 
-				<a href="#" class="vendor_sidebar_item"> <i
+				<a th:href="@{/registerAndLogin/storeInfo/{storeId}/pointsRedemption(storeId=${storeId})}" class="vendor_sidebar_item"> <i
 					class="fas fa-dollar-sign vendor_sidebar_icon"></i> 核銷點數管理
-				</a> <a href="#" class="vendor_sidebar_item"> <i
+				</a> <a href="/storeOrder_ws.html" class="vendor_sidebar_item"> <i
 					class="fas fa-clipboard-list vendor_sidebar_icon"></i> 訂單管理
 				</a> <a href="#" class="vendor_sidebar_item"> <i
 					class="fas fa-question-circle vendor_sidebar_icon"></i> 常見問題

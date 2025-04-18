@@ -47,10 +47,12 @@ public class StoreOrderController {
         return ResponseEntity.ok("訂單狀態更新成功: " + type);
     }
     
-    // fcm專用
-    @PutMapping("/pickup-ready/{orderId}")
-    public String readyForPickup(@PathVariable Integer orderId) {
-        storeOrderService.readyForPickup(orderId);
-        return "✅ 已設定為可取餐，推播已發送";
+    // 忙碌中切換用
+    @PutMapping("/changeAccepting/{type}")
+    public ResponseEntity<String> changeAcceptingStatus(
+            @PathVariable Integer storeId,
+            @PathVariable String type) {
+    	String message = storeOrderService.updateOpStat(storeId, type);
+        return ResponseEntity.ok(message);
     }
 }
