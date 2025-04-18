@@ -157,14 +157,21 @@ public class StoreOrderServiceImpl implements StoreOrderService {
             // 更新成可取餐
             orderFoodRepository.save(order);
 
-            // 推播通知
-            String fcmToken = order.getFcmToken();
-            if (fcmToken != null) {
-                fcmService.sendPickupNotification(fcmToken, order.getStore().getName(), order.getOrderId());
-            }
-        }
-    }
-	
+	    StoreVO store = optionalStore.get();
+
+	    switch (type) {
+	        case "cancel":
+	            store.setOpStat(2); // 忙碌中
+	            storeRepository.save(store);
+	            return "已切換為忙碌中，暫停接單";
+	        case "resume":
+	            store.setOpStat(1); // 營業中
+	            storeRepository.save(store);
+	            return "已恢復正常接單";
+	        default:
+	            throw new IllegalArgumentException("無效的操作類型: " + type);
+	    }
+	}
 	
 }
 
