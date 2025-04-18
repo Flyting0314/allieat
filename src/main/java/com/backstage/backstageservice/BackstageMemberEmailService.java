@@ -68,11 +68,17 @@ public class BackstageMemberEmailService {
         if (optionalMember.isPresent()) {
             MemberVO member = optionalMember.get();
             member.setAccStat(1); // 設置為啟用
+            
+            // 設置初始點數為1000
+            member.setPointsBalance(1000);
+            
             member.setVerificationMail(null); // 清除驗證token
             memberRepository.save(member);
             System.out.println("[DEBUG] 收到驗證 token: " + token);
             System.out.println("[DEBUG] 找到會員帳號: " + member.getAccount());
             System.out.println("[DEBUG] accStat 設為: " + member.getAccStat());
+            System.out.println("[DEBUG] 初始點數設為: " + member.getPointsBalance());
+
             return true;
         }
         return false;
