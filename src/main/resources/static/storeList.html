@@ -177,60 +177,88 @@
 	</div>
 
 	<script>
-		let page = 0;  
-		let size = 10; 
-		let totalPages = 0; 
-	
-		async function loadStores() {
-		  try {
-		    const res = await authFetch(`/backStage/stores?page=${page}&size=${size}`);
-		    const pageData = await res.json();
-	
-		    originalData = pageData.content;  
-		    totalPages = pageData.totalPages; 
-		    renderTable(originalData);
-		    updatePagination();
-		  } catch (err) {
-		    console.error("載入店家資料失敗", err);
-		    alert("無法取得資料，請重新登入");
-		    window.location.href = "/backstage_login.html";
-		  }
-		}
-	
-		function updatePagination() {
-		  const prevBtn = document.getElementById('prevPageBtn');
-		  const nextBtn = document.getElementById('nextPageBtn');
-		  const pageInfo = document.getElementById('currentPageInfo');
-	
-		  prevBtn.disabled = (page === 0);
-		  nextBtn.disabled = (page >= totalPages - 1);
-		  pageInfo.textContent = `第 ${page + 1} 頁 / 共 ${totalPages} 頁`;
-		}
-	
-		document.getElementById('prevPageBtn').addEventListener('click', () => {
-		  if (page > 0) {
-		    page--;
-		    loadStores();
-		  }
-		});
-	
-		document.getElementById('nextPageBtn').addEventListener('click', () => {
-		  if (page < totalPages - 1) {
-		    page++;
-		    loadStores();
-		  }
-		});
-	
-		document.getElementById('pageSizeSelect').addEventListener('change', (e) => {
-		  const selectedValue = e.target.value;
-		  if (selectedValue === "all") {
-		    size = 9999; 
-		  } else {
-		    size = parseInt(selectedValue);
-		  }
-		  page = 0; 
-		  loadStores();
-		});
+	let allData = [];
+	let filteredData = [];
+	let page = 0;
+	let size = 10;
+
+	async function loadStores() {
+	  try {
+	    const res = await authFetch(`/backStage/stores`);
+	    allData = await res.json();
+	    filteredData = allData;
+	    page = 0;
+	    updateTable();
+	  } catch (err) {
+	    alert("讀取失敗");
+	    window.location.href = "/backstage_login.html";
+	  }
+	}
+
+	function updateTable() {
+	  const start = page * size;
+	  const end = start + size;
+	  const pageData = filteredData.slice(start, end);
+	  renderTable(pageData);
+	  updatePagination();
+	}
+
+	function updatePagination() {
+	  const totalPages = Math.ceil(filteredData.length / size);
+	  document.getElementById('prevPageBtn').disabled = (page === 0);
+	  document.getElementById('nextPageBtn').disabled = (page >= totalPages - 1);
+	  document.getElementById('currentPageInfo').textContent = `第 ${page + 1} 頁 / 共 ${totalPages} 頁`;
+	}
+
+	function applyFilters() {
+	  const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+	  const reviewedFilter = document.getElementById('reviewedFilter').value;
+	  const accStatFilter = document.getElementById('accStatFilter').value;
+
+	  filteredData = allData.filter(store => {
+	    const matchesKeyword = store.name.toLowerCase().includes(keyword) || store.email.toLowerCase().includes(keyword);
+	    const matchesReviewed = reviewedFilter === "" || String(store.reviewed) === reviewedFilter;
+	    const matchesAccStat = accStatFilter === "" || String(store.accStat) === accStatFilter;
+	    return matchesKeyword && matchesReviewed && matchesAccStat;
+	  });
+	  page = 0;
+	  updateTable();
+	}
+
+	document.getElementById('pageSizeSelect').addEventListener('change', (e) => {
+	  size = e.target.value === 'all' ? filteredData.length : parseInt(e.target.value);
+	  page = 0;
+	  updateTable();
+	});
+
+	document.getElementById('searchInput').addEventListener('input', applyFilters);
+	document.getElementById('reviewedFilter').addEventListener('change', applyFilters);
+	document.getElementById('accStatFilter').addEventListener('change', applyFilters);
+
+	document.getElementById('prevPageBtn').addEventListener('click', () => {
+	  if (page > 0) {
+	    page--;
+	    updateTable();
+	  }
+	});
+
+	document.getElementById('nextPageBtn').addEventListener('click', () => {
+	  if (page < Math.ceil(filteredData.length / size) - 1) {
+	    page++;
+	    updateTable();
+	  }
+	});
+
+	document.addEventListener('DOMContentLoaded', () => {
+	  loadStores();
+	  document.querySelector(".btn-logout").addEventListener("click", function () {
+	    if (confirm("確定要登出嗎？")) {
+	      localStorage.removeItem("jwtToken");
+	      window.location.href = "/backstage_login.html";
+	    }
+	  });
+	});
+
 
 
 

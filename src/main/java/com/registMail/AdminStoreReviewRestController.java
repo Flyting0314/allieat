@@ -38,19 +38,8 @@ public class AdminStoreReviewRestController {
 
     // 取得所有店家，新增分頁功能
     @GetMapping("/stores")
-    public Page<StoreListDTO> getAllStores(@RequestParam(defaultValue = "0") int page,
-                                           @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<StoreVO> storePage = storeRepository.findAll(pageable);
-
-        return storePage.map(store -> new StoreListDTO(
-            store.getStoreId(),
-            store.getName(),
-            store.getEmail(),
-            store.getRegTime(),
-            store.getReviewed(),
-            store.getAccStat()
-        ));
+    public List<StoreVO> getAllStores() {
+        return storeRepository.findAll();
     }
 
     // 取得待審核的店家
