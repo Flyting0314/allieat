@@ -134,7 +134,7 @@ public class BackStagePayRecordSchedulerService {
  //=========掃描是否達到排程時間，並發放點數===========
  
  					//暫時改成100分鐘檢查一次！這邊可自由調整！
- @Scheduled(fixedRate = 600000) // 60000 毫秒 = 1分鐘 
+ @Scheduled(fixedRate = 6000) // 60000 毫秒 = 1分鐘 
  @Transactional
  public void checkAndDistributePoints() {
      try {
