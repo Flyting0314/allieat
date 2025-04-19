@@ -81,9 +81,7 @@ fetchComponent("bodySection-container", "/components/bodySection.html", () => {
 //======放法========
 //</style>
 //<script>
-//  window.renderMode = "fetch";
-//  window.isMember = false;
-//  window.isStore = false;
+//window.renderMode = "fetch";
 //</script>
 //</head>
 //<body>
