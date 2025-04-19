@@ -795,6 +795,18 @@
             const companyTab = document.getElementById('company-tab');
             const personalForm = document.getElementById('personal-form');
             const companyForm = document.getElementById('company-form');
+         // 🔧 切換 tab 時更新 companyDonor 隱藏欄位值
+            function updateCompanyDonorValue(isCompany) {
+			    const personalInput = document.querySelector('#personal-form input[name="companyDonor"]');
+			    const companyInput = document.querySelector('#company-form input[name="companyDonor"]');
+			    
+			    if (personalInput) personalInput.value = 'false';  // 預設都 false
+			    if (companyInput) companyInput.value = 'false';
+			
+			    // 根據當前 tab 正確設定
+			    if (isCompany && companyInput) companyInput.value = 'true';
+			}
+
 
 
             personalTab.addEventListener('click', function () {
@@ -802,6 +814,8 @@
                 companyTab.classList.remove('df-active');
                 personalForm.classList.add('df-visible');
                 companyForm.classList.remove('df-visible');
+                updateCompanyDonorValue(false);
+                
             });
 
             companyTab.addEventListener('click', function () {
@@ -809,6 +823,7 @@
                 personalTab.classList.remove('df-active');
                 companyForm.classList.add('df-visible');
                 personalForm.classList.remove('df-visible');
+                updateCompanyDonorValue(true);
             });
         });
 
@@ -898,6 +913,7 @@
                 personalForm.classList.add('df-visible');
                 companyForm.classList.remove('df-visible');
                 sessionStorage.setItem('activeTab', 'personal');
+                updateCompanyDonorValue(false);
             });
 
             companyTab.addEventListener('click', function () {
@@ -906,6 +922,7 @@
                 companyForm.classList.add('df-visible');
                 personalForm.classList.remove('df-visible');
                 sessionStorage.setItem('activeTab', 'company');
+                updateCompanyDonorValue(true);
             });
 
             // 顯示/隱藏收據欄位（需/不需收據）
