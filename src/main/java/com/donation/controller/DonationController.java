@@ -110,7 +110,7 @@ public class DonationController {
 //                aioChenkOutAll.setTradeDesc(URLEncoder.encode("Allieat 捐款平台", StandardCharsets.UTF_8));
 //                aioChenkOutAll.setItemName(URLEncoder.encode(request.getItemDesc(), StandardCharsets.UTF_8));
 //                aioChenkOutAll.setTotalAmount(String.valueOf(request.getAmount()));
-//                aioChenkOutAll.setReturnURL("https://8cf9-1-164-225-29.ngrok-free.app/donation/ecpay-return");
+//                aioChenkOutAll.setReturnURL("https://8cf9-1-164-225-29.ngrok-free.app/donation/ecpayReturn");
 //                aioChenkOutAll.setClientBackURL("http://localhost:8080/dona/donaAddOne");
 //                aioChenkOutAll.setNeedExtraPaidInfo("N");         
 //                
@@ -147,4 +147,13 @@ public class DonationController {
 	public String thank() {
 		return "thank";
 	}
+	
+	// 導回首頁
+	@GetMapping("/")
+	public String index() {
+	    return "index";
+	}
+	
 }
+
+	

@@ -138,7 +138,7 @@ public interface DonorRepository extends JpaRepository<DonaVO, Integer> {
  	@Transactional
  	@Modifying
  	@Query("UPDATE DonaVO d SET d.paidStatus = 1 WHERE d.merchantTradeNo = :merchantTradeNo")
- 	int updatePaidStatusByMerchantTradeNo(@Param("merchantTradeNo") String merchantTradeNo);
+ 	void updatePaidStatusByMerchantTradeNo(@Param("merchantTradeNo") String merchantTradeNo);
    
  	}
 
