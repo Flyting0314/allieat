@@ -30,5 +30,10 @@ public class MemberServiceImpl {
         return memberRepo.findByAccountAndPassword(account, password);
     }
 
+	public void updateMember(MemberVO member) {
+		// TODO Auto-generated method stub
+		
+	}
+
     // 其他會員相關功能可於此擴充
 }
