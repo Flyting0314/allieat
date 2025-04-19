@@ -2,9 +2,11 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8" />
-<title>訂單管理 - 攏呷霸 ALLiEAT</title>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link href="/css/storeInfo.css" rel="stylesheet">
+<meta charset="utf-8">
+<script th:inline="javascript">
+  window.isMember = /*[[${session.member != null}]]*/ false;
+  window.isStore = /*[[${session.store != null}]]*/ false;
+</script>
 <style>
 body {
 	font-family: sans-serif;
@@ -140,49 +142,56 @@ body {
 	}
 }
 </style>
+<script>
+  window.renderMode = "fetch";
+  window.isMember = false;
+  window.isStore = false;
+</script>
 </head>
 <body>
-
 	<div id="header-container"></div>
 	<div id="bodySection-container"></div>
+	<!-- Navbar Start -->
+	<!-- Hero Section End -->
 	<div class="container">
 		<div class="vendor_profile_wrapper">
+			<!-- sidebar開始 -->
 			<div class="vendor_sidebar">
-				<a href="#" class="vendor_sidebar_item vendor_active"> <i
-					class="fas fa-store vendor_sidebar_icon"></i> 店家資訊管理
-				</a>
-
-				<!-- 餐點管理 Dropdown 開始 -->
-				<a href="javascript:void(0);" class="vendor_sidebar_item"
-					onclick="toggleDropdown(this)"> <i
-					class="fas fa-utensils vendor_sidebar_icon"></i> 餐點管理 <i
-					class="fas fa-chevron-down vendor_dropdown_icon"></i>
-				</a>
-				<div class="vendor_dropdown_menu"
-					style="display: none; margin-left: 40px; padding-top: 5px;">
-					<a
-						href="/registerAndLogin/storeInfo/{storeId}/menuEdit(storeId=${store.storeId})"
-						class="dropdown-item">菜單</a> <a
-						th:href="@{/registerAndLogin/storeInfo/{storeId}/food(storeId=${store.storeId})}"
-						class="dropdown-item">編輯菜單</a>
-				</div>
-				<!-- 餐點管理 Dropdown 結束 -->
-
-				<!-- tess加入超連結測試 -->
-			<a th:href="@{/registerAndLogin/storeInfo/{storeId}/pointsRedemption(storeId=${store.storeId})}" class="vendor_sidebar_item">
-			    <i class="fas fa-dollar-sign vendor_sidebar_icon"></i>
-			    核銷點數管理
-			</a>
-				 <a href="/storeOrder_ws.html" class="vendor_sidebar_item"> <i
-					class="fas fa-clipboard-list vendor_sidebar_icon"></i> 訂單管理
-				</a> 
-				<a href="#" class="vendor_sidebar_item"> <i
-					class="fas fa-question-circle vendor_sidebar_icon"></i> 常見問題
-				</a>
+			  <a id="storeInfoLink" class="vendor_sidebar_item">
+			    <i class="fas fa-store vendor_sidebar_icon"></i> 店家資訊管理
+			  </a>
+			
+			  <!-- 餐點管理 Dropdown -->
+			  <a href="javascript:void(0);" class="vendor_sidebar_item" onclick="toggleDropdown(this)">
+			    <i class="fas fa-utensils vendor_sidebar_icon"></i> 餐點管理
+			    <i class="fas fa-chevron-down vendor_dropdown_icon"></i>
+			  </a>
+			  <div class="vendor_dropdown_menu" style="display: none; margin-left: 40px; padding-top: 5px;">
+			    <a id="menuEditLink" class="dropdown-item">菜單</a>
+			    <a id="foodEditLink" class="dropdown-item">編輯菜單</a>
+			  </div>
+			
+			  <a id="pointsLink" class="vendor_sidebar_item">
+			    <i class="fas fa-dollar-sign vendor_sidebar_icon"></i> 核銷點數管理
+			  </a>
+			
+			  <a href="/storeOrder_ws.html" class="vendor_sidebar_item vendor_active">
+			    <i class="fas fa-clipboard-list vendor_sidebar_icon"></i> 訂單管理
+			  </a>
+			
+			  <a href="#" class="vendor_sidebar_item">
+			    <i class="fas fa-question-circle vendor_sidebar_icon"></i> 常見問題
+			  </a>
 			</div>
 
 			<div class="vendor_main_content">
-				<h2>訂單管理</h2>
+				<div style="display: flex; align-items: center; justify-content: space-between; align-items: center;">
+				  <h2 style="margin: 20;">訂單管理</h2>
+				  <div id="acceptingControlButtons">
+					  <button id="cancelAcceptingBtn" class="action-btn reject" style="height: 40px;">取消接單</button>
+					  <button id="resumeAcceptingBtn" class="action-btn accept" style="height: 40px; display: none;">恢復接單</button>
+					</div>
+				</div>
 				<div id="loading"
 					style="display: none; text-align: center; margin: 20px;">載入中...</div>
 				<table class="order-table">
@@ -203,7 +212,12 @@ body {
 		</div>
 	</div>
 
+	<!-- Footer Start -->
+	<!-- Footer End -->
 	<div id="footer-container"></div>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="/components/loader.js" defer></script>
+	<!-- JavaScript Libraries -->
 
 	<script>
 		let storeId = localStorage.getItem("storeId");
@@ -213,7 +227,7 @@ body {
 		  if (storeId) {
 		    localStorage.setItem("storeId", storeId);
 		  } else {
-		    Swal.fire("錯誤", "無法取得 storeId，請重新登入", "error");
+		    Swal.fire("錯誤", "請先登入", "error");
 		  }
 		}
 		
@@ -248,7 +262,11 @@ body {
 		          row.innerHTML = `
 		            <td>${String(order.orderId).padStart(7, "0")}</td>
 		            <td>${new Date(order.createdTime).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })}</td>
-		            <td>${order.foodItems.map(f => `${f.foodName} x${f.quantity}`).join("<br>")}</td>
+		            <td>${order.foodItems.map(f => {
+		            	  let foodLine = `${f.foodName} x${f.quantity}`;
+		            	  let noteLine = f.note ? `<div style="font-size: 12px; color: #666;">（備註：${f.note}）</div>` : "";
+		            	  return `${foodLine}${noteLine}`;
+		            	}).join("<br>")}</td>
 		            <td><span class="badge ${getStatusColor(order.serveStat)}">${getStatusLabel(order.serveStat)}</span></td>
 		            <td><span class="badge ${getPickColor(order.pickStat)}">${getPickLabel(order.pickStat)}</span></td>
 		            <td>${order.pickupDeadline ? new Date(order.pickupDeadline).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }) : "無"}</td>
@@ -269,7 +287,7 @@ body {
 		  if (serveStat === 0) {
 		    buttons.push(`<button class='action-btn accept' onclick='acceptOrder(${order.orderId})'>接單</button>`);
 		    buttons.push(`<button class='action-btn reject' onclick='rejectOrder(${order.orderId})'>拒接</button>`);
-		  } else if (serveStat === 1 && pickStat === 2) {
+		  } else if ((serveStat === 1 && pickStat === 0) || (serveStat === 1 && pickStat === 2)) {
 		    buttons.push(`<button class='action-btn ready' onclick='readyForPickup(${order.orderId})'>可取餐</button>`);
 		    buttons.push(`<button class='action-btn pickedUp' onclick='pickedUpOrder(${order.orderId})'>已取餐</button>`);
 		    buttons.push(`<button class='action-btn notPicked' onclick='notPickedOrder(${order.orderId})'>未取餐</button>`);
@@ -304,6 +322,45 @@ body {
 		    .catch(err => Swal.fire("錯誤", err.message, "error"));
 		}
 		
+		// 接單與否
+		document.getElementById("cancelAcceptingBtn").addEventListener("click", function() {
+			  changeAcceptingStatus("cancel");
+			});
+
+			document.getElementById("resumeAcceptingBtn").addEventListener("click", function() {
+			  changeAcceptingStatus("resume");
+			});
+
+			function changeAcceptingStatus(type) {
+			  fetch(`/registerAndLogin/storeInfo/${storeId}/orders/changeAccepting/${type}`, { method: 'PUT' })
+			    .then(res => {
+			      if (!res.ok) throw new Error("操作失敗");
+			      return res.text();
+			    })
+			    .then(msg => {
+			      Swal.fire("成功", msg, "success").then(() => {
+			        toggleAcceptingButtons(type);
+			      });
+			    })
+			    .catch(err => {
+			      Swal.fire("錯誤", err.message, "error");
+			    });
+			}
+
+			// 根據操作後的 type 來切換按鈕
+			function toggleAcceptingButtons(lastAction) {
+			  const cancelBtn = document.getElementById("cancelAcceptingBtn");
+			  const resumeBtn = document.getElementById("resumeAcceptingBtn");
+
+			  if (lastAction === "cancel") {
+			    cancelBtn.style.display = "none";
+			    resumeBtn.style.display = "inline-block";
+			  } else if (lastAction === "resume") {
+			    cancelBtn.style.display = "inline-block";
+			    resumeBtn.style.display = "none";
+			  }
+			}
+		
 		// websocket實作
 		const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
 		const socket = new WebSocket(`${protocol}://${window.location.host}/ws/order?storeId=${storeId}`);
@@ -328,29 +385,22 @@ body {
 		
 		document.addEventListener("DOMContentLoaded", loadTodayOrders);
 		
-		// 統一css
-		fetch("/components/header").then(res => res.text()).then(html => document.getElementById("header-container").innerHTML = html);
-		fetch("/components/bodySection").then(res => res.text()).then(html => document.getElementById("bodySection-container").innerHTML = html);
-		fetch("/components/footer").then(res => res.text()).then(html => document.getElementById("footer-container").innerHTML = html);
 	
 		// 側邊攔
 		function toggleDropdown(triggerElement) {
 		    const dropdown = triggerElement.nextElementSibling;
 		    if (dropdown && dropdown.classList.contains('vendor_dropdown_menu')) {
-		        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+		      dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
 		    }
-		}
-		
-		sidebarItems.forEach(item => {
-        const dropdownIcon = item.querySelector('.vendor_dropdown_icon');
-        if (dropdownIcon) {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                this.classList.toggle('vendor_dropdown_open');
-	            });
-	        }
-	    });
-		
+		  }
+		if (storeId) {
+		      document.getElementById("storeInfoLink").href = `/registerAndLogin/storeInfo`;
+		      document.getElementById("menuEditLink").href = `/registerAndLogin/storeInfo/${storeId}/menuEdit`;
+		      document.getElementById("foodEditLink").href = `/registerAndLogin/storeInfo/${storeId}/food`;
+		      document.getElementById("pointsLink").href = `/registerAndLogin/storeInfo/${storeId}/pointsRedemption`;
+		    } else {
+		      console.error("找不到 storeId，無法設定 sidebar 連結！");
+		    }
 	</script>
 </body>
 </html>
