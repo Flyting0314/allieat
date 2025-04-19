@@ -501,7 +501,7 @@
 
 	<!-- 地圖相關腳本 -->
 	
-	let stores = [];
+	
 	<script>
     // 整合地圖JavaScript
  
@@ -530,21 +530,19 @@
         const emptyStars = 5 - fullStars - halfStar;
 
         let starsHtml = '';
-
         for (let i = 0; i < fullStars; i++) {
             starsHtml += '<i class="fas fa-star text-warning"></i>';
         }
-
         if (halfStar) {
             starsHtml += '<i class="fas fa-star-half-alt text-warning"></i>';
         }
-
         for (let i = 0; i < emptyStars; i++) {
             starsHtml += '<i class="far fa-star text-warning"></i>';
         }
 
-        return `<span>${starsHtml} <span class="ml-1 text-muted small">${averageRating}</span></span>`;
+        return `<span>${starsHtml}<span class="ml-1 text-muted small">${averageRating}</span></span>`;
     }
+
 
   
     function initMap() {
@@ -681,19 +679,20 @@ tempSearchMarker = new google.maps.Marker({
         updateRestaurantInfo(selectRestaurant);
         
         // 顯示信息窗口
-        const content = `
-            <div class="info-window">
-                <h3>${selectRestaurant.name}</h3>
-                <div><strong>地址：</strong>${selectRestaurant.address}</div>
-                <div><strong>電話：</strong>${selectRestaurant.phoneNumber}</div>
-                <div><strong>評分：</strong>${selectRestaurant.rating} / 5</div>
-                <div class="mt-2 text-center">
-                    <button class="btn btn-sm btn-primary mt-2" onclick="showRouteInMap(${selectRestaurant.location.lat}, ${selectRestaurant.location.lng}, '${selectRestaurant.name}')">
-                        <i class="fas fa-route mr-1"></i>顯示路線
-                    </button>
-                </div>
-            </div>
-        `;
+      const content = `
+    <div class="info-window">
+        <h3>${selectRestaurant.name}</h3>
+        <div><strong>地址：</strong>${selectRestaurant.address}</div>
+        <div><strong>電話：</strong>${selectRestaurant.phoneNum}</div> <!-- ✅ 修正這行 -->
+        <div><strong>評分：</strong>${selectRestaurant.rating} / 5</div>
+        <div class="mt-2 text-center">
+            <button class="btn btn-sm btn-primary mt-2" onclick="showRouteInMap(${selectRestaurant.location.lat}, ${selectRestaurant.location.lng}, '${selectRestaurant.name}')">
+                <i class="fas fa-route mr-1"></i>顯示路線
+            </button>
+        </div>
+    </div>
+`;
+
         
         infowindow.setContent(content);
         infowindow.open(map, marker);
@@ -702,26 +701,22 @@ tempSearchMarker = new google.maps.Marker({
     function updateRestaurantInfo(restaurant) {
         const infoDiv = document.getElementById('restaurant-info');
         infoDiv.classList.remove('d-none');
-        
-        // 更新餐廳名稱
+
         infoDiv.querySelector('.restaurant-name').textContent = restaurant.name;
-        
-        // 更新評分星星
-        const starsInner = infoDiv.querySelector('.stars-inner');
-        const starPercentage = (restaurant.rating / 5) * 100;
-        starsInner.style.width = `${starPercentage}%`;
-        infoDiv.querySelector('.rating-value').textContent = `${restaurant.rating} / 5`;
-        
-        // 更新地址與電話
+
+        const ratingHtml = getStarsHtml(restaurant.starNum || restaurant.rating, restaurant.visitorsNum || 1);
+        infoDiv.querySelector('.restaurant-rating').innerHTML = ratingHtml;
+
         infoDiv.querySelector('.restaurant-address span').textContent = restaurant.address;
-        infoDiv.querySelector('.restaurant-phone span').textContent = restaurant.phoneNumber || restaurant.phone;
+        infoDiv.querySelector('.restaurant-phone span').textContent = restaurant.phoneNum || "無電話資訊"; // ✅ 統一 phoneNum
         
-        // 更新步行時間
+        infoDiv.querySelector('.restaurant-rating').style.display = 'none';
+
+
         if (restaurant.duration) {
             infoDiv.querySelector('.walking-time span').textContent = restaurant.duration;
         } else {
             infoDiv.querySelector('.walking-time span').textContent = "計算中...";
-            // 計算步行時間
             if (currentPosition && restaurant.location) {
                 directionsService.route({
                     origin: new google.maps.LatLng(currentPosition.lat, currentPosition.lng),
@@ -736,8 +731,7 @@ tempSearchMarker = new google.maps.Marker({
                 });
             }
         }
-        
-        // 更新導航按鈕事件 - 在地圖上顯示路線
+
         const navButton = infoDiv.querySelector('.btn-primary');
         navButton.onclick = function() {
             if (restaurant.location) {
@@ -745,6 +739,8 @@ tempSearchMarker = new google.maps.Marker({
             }
         };
     }
+
+
 
     // 添加餐廳標記 - 使用從 Thymeleaf 獲取的數據
     function addRestaurantMarkers() {
@@ -784,21 +780,21 @@ tempSearchMarker = new google.maps.Marker({
        
              // 點擊標記時顯示信息
                 marker.addListener('click', function() {
-                    selectRestaurant = {
-                        name: store.name,
-                        address: store.address,
-                        phoneNumber: store.phoneNum, 
-                        rating: store.rating || 4.5,
-                        location: storeLocation,
-                        id: store.storeId || store.id, // 確保使用正確的 ID
-                        category: store.category || '餐飲',
-                        tags: store.tags || ['愛心合作店'],
-                        amount: store.amount || '庫存',
-                    };
-                    
-                    // 直接顯示模態視窗，而不是在地圖上顯示信息窗口
-                    showRestaurantModal(store);
-                });
+    selectRestaurant = {
+        name: store.name,
+        address: store.address,
+        phoneNumber: store.phoneNum || store.phone || store.phoneNumber || "無電話資訊", // ✅ 名稱對齊
+        rating: store.rating || 4.5,
+        location: storeLocation,
+        id: store.storeId || store.id,
+        category: store.category || '餐飲',
+        tags: store.tags || ['愛心合作店'],
+        amount: store.amount || '庫存',
+    };
+
+    showRestaurantModal(store);
+});
+
                     
                     
                     //測試用======================
@@ -820,7 +816,7 @@ tempSearchMarker = new google.maps.Marker({
     function handlePlacesResult(results, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
             const place = results[0];
-            
+
             selectRestaurant = {
                 location: {
                     lat: place.geometry.location.lat(),
@@ -829,31 +825,27 @@ tempSearchMarker = new google.maps.Marker({
                 placeId: place.place_id,
                 name: place.name,
                 address: place.formatted_address || "無地址資訊",
-                phoneNumber: "02-XXXX-XXXX", // la4模擬電話
+                phoneNum: place.formatted_phone_number || "無電話資訊", // ✅ 修正
                 rating: place.rating || "尚未評分"
             };
-            
-            // 更新地圖
+
             map.setCenter(selectRestaurant.location);
             map.setZoom(17);
-            
-            // 更新標記
+
             if (marker) marker.setMap(null);
             marker = new google.maps.Marker({
                 map: map,
                 position: selectRestaurant.location,
                 animation: google.maps.Animation.DROP
             });
-            
-            // 更新側邊欄資訊
+
             updateRestaurantInfo(selectRestaurant);
-            
-            // 創建信息窗口
+
             const infoContent = `
                 <div class="info-window">
                     <h3>${selectRestaurant.name}</h3>
                     <div><strong>地址：</strong>${selectRestaurant.address}</div>
-                    <div><strong>電話：</strong>${selectRestaurant.phoneNumber}</div>
+                    <div><strong>電話：</strong>${selectRestaurant.phoneNum}</div>
                     <div><strong>評分：</strong>${selectRestaurant.rating} / 5</div>
                     <div class="mt-2 text-center">
                         <button class="btn btn-sm btn-primary mt-2" onclick="showRouteInMap({lat: ${selectRestaurant.location.lat}, lng: ${selectRestaurant.location.lng}}, '${selectRestaurant.name}')">
@@ -862,13 +854,13 @@ tempSearchMarker = new google.maps.Marker({
                     </div>
                 </div>
             `;
-            
             infowindow.setContent(infoContent);
             infowindow.open(map, marker);
         } else {
             alert("找不到相關餐廳");
         }
     }
+
     
     // 更新側邊欄
     function updateSidebar() {
@@ -1139,7 +1131,7 @@ fetch(`/meal/store/${restaurant.storeId}/inventory`)
   // ✅ 星星評分
 // 星星評分（改用 getStarsHtml）
 const ratingHtml = getStarsHtml(restaurant.starNum, restaurant.visitorsNum);
-modal.find('.restaurant-rating').html(ratingHtml);
+    modal.find('.restaurant-rating').html(ratingHtml);
 
 
     // ✅ 標籤渲染
@@ -1461,7 +1453,7 @@ modal.find('.restaurant-rating').html(ratingHtml);
         restaurantItem.innerHTML = `
             <div class="d-flex w-100 justify-content-between">
                 <h6 class="mb-1">${store.name}</h6>
-                <small>${distanceText}</small>
+                
 
             </div>
             <div class="restaurant-category mb-1">
@@ -1714,27 +1706,28 @@ $(document).on('click', '.restaurant-item', function(e) {
                         
                         // 創建信息窗口
                         const infoContent = `
-                            <div class="info-window">
-                                <h3>${store.name}</h3>
-                                <div><strong>地址：</strong>${store.address}</div>
-                                <div><strong>電話：</strong>${store.phone || '無電話資訊'}</div>
-                                <div><strong>評分：</strong>${store.rating || 4.5} / 5</div>
-                            </div>
-                        `;
-                        
+    <div class="info-window">
+        <h3>${store.name}</h3>
+        <div><strong>地址：</strong>${store.address}</div>
+        <div><strong>電話：</strong>${store.phoneNum || store.phone || store.phoneNumber || '無電話資訊'}</div>
+        
+    </div>
+`;
+
                         // 顯示信息窗口
                         infowindow.setContent(infoContent);
                         infowindow.open(map, window.tempMarker);
                         
                         // 更新餐廳信息面板
                         selectRestaurant = {
-                            name: store.name,
-                            address: store.address,
-                            phoneNumber: store.phone || '',
-                            rating: store.rating || 4.5,
-                            location: position,
-                            id: store.storeId, 
-                        };
+    name: store.name,
+    address: store.address,
+    phoneNum: store.phoneNum || store.phone || store.phoneNumber || '', // ✅ 統一這裡
+    rating: store.rating || 4.5,
+    location: position,
+    id: store.storeId,
+};
+
                         
                         updateRestaurantInfo(selectRestaurant);
                     } catch (error) {

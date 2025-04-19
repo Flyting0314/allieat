@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <title>取餐地點 - 攏呷霸 ALLiEAT</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
+<meta charset="utf-8">
+<script th:inline="javascript">
+  window.isMember = /*[[${session.member != null}]]*/ false;
+  window.isStore = /*[[${session.store != null}]]*/ false;
+</script>
+<style>
     body {
       font-family: 'Arial', sans-serif;
       background-color: #f4f4f4;
@@ -58,9 +60,20 @@
       height: 500px;
       border-radius: 10px;
     }
-  </style>
+    
+ </style>
+<script>
+  window.renderMode = "fetch";
+  window.isMember = false;
+ window.isStore = false;
+</script>
 </head>
 <body>
+
+<div id="header-container"></div>
+<div id="bodySection-container"></div>
+<!-- Navbar Start -->
+<!-- Hero Section End -->
   <div id="header-placeholder"></div>
   <div id="body-section-placeholder"></div>
   <div class="container">
@@ -76,48 +89,9 @@
     </div>
     <div id="map"></div>
   </div>
-  <div id="footer-placeholder"></div>
+<!--   <div id="footer-placeholder"></div> -->
 
-  <script>
-    function loadFragment(id, path) {
-      fetch(path)
-        .then(res => res.text())
-        .then(html => {
-          const container = document.getElementById(id);
-          container.innerHTML = html;
-          container.style.display = 'block';
-          convertThAttributes(container);
-        })
-        .catch(err => {
-          console.error(`❌ ${path} 載入失敗`, err);
-          const fallback = document.createElement('div');
-          fallback.style.color = 'red';
-          fallback.textContent = `⚠️ 無法載入 ${path}`;
-          document.getElementById(id).appendChild(fallback);
-        });
-    }
 
-    function convertThAttributes(container) {
-      container.querySelectorAll('[th\\:href]').forEach(el => {
-        const val = el.getAttribute('th:href');
-        if (val?.startsWith('@{') && val.endsWith('}')) {
-          el.setAttribute('href', val.slice(2, -1));
-          el.removeAttribute('th:href');
-        }
-      });
-      container.querySelectorAll('[th\\:src]').forEach(el => {
-        const val = el.getAttribute('th:src');
-        if (val?.startsWith('@{') && val.endsWith('}')) {
-          el.setAttribute('src', val.slice(2, -1));
-          el.removeAttribute('th:src');
-        }
-      });
-    }
-
-    loadFragment("header-placeholder", "/header.html");
-    loadFragment("body-section-placeholder", "/bodySection.html");
-    loadFragment("footer-placeholder", "/footer.html");
-  </script>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -294,5 +268,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   <script async
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwk4bH6RdOWmqwmrpdYu7-NKZin0St0vQ&libraries=places&callback=initMap&region=TW&language=zh-TW">
   </script>
+  
+  <!-- Footer Start -->
+<!-- Footer End -->
+<div id="footer-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/components/loader.js" defer></script>
+<!-- JavaScript Libraries -->
+  
 </body>
 </html>
