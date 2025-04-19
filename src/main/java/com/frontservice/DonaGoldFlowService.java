@@ -1,6 +1,9 @@
 package com.frontservice;
 
 import com.entity.DonaVO;
+
+import jakarta.transaction.Transactional;
+
 import com.backstage.backstagrepository.DonorRepository;
 import com.ecpay.payment.integration.AllInOne;
 import com.ecpay.payment.integration.domain.AioCheckOutOneTime;
@@ -38,36 +41,37 @@ public class DonaGoldFlowService {
         }).orElse(null);
     }
     
-    //  根據商店訂單編號更新付款狀態為已付款
-    public void updatePaidStatusByMerchantTradeNo(String merchantTradeNo) {
-        donorRepository.updatePaidStatusByMerchantTradeNo(merchantTradeNo);
-    }
-
-    
     //  驗證金流背景通知並更新付款狀態（一次性與定期定額共用）
     public ResponseEntity<String> verifyAndUpdatePaymentStatus(Map<String, String> data) {
-        AllInOne all = new AllInOne("");
+        AllInOne all = new AllInOne(""); // 讀取 SDK 金鑰設定
         Hashtable<String, String> ecpayParams = new Hashtable<>();
         ecpayParams.putAll(data);
-
+    	
+     // 1. 驗證 CheckMacValue
         boolean isValid = all.compareCheckMacValue(ecpayParams);
 
         if (!isValid) {
             return ResponseEntity.badRequest().body("CheckMacValue 錯誤");
         }
-
-        String orderNo = data.get("MerchantTradeNo");
-        String rtnCode = data.get("RtnCode");
+        
+     // 2. 判斷付款成功則更新資料庫
+        String orderNo = data.get("MerchantTradeNo"); // 訂單編號
+        String rtnCode = data.get("RtnCode"); // 綠界付款狀態
 
         if ("1".equals(rtnCode)) {
-            updatePaidStatusByMerchantTradeNo(orderNo);
+            updatePaidStatusByMerchantTradeNo(orderNo); // 用 merchantTradeNo更新付款狀態
             return ResponseEntity.ok("1|OK");
         }
 
         return ResponseEntity.ok("0|FAIL");
     }
 
-    //  查詢所有捐款紀錄
+    @Transactional
+    private void updatePaidStatusByMerchantTradeNo(String orderNo) {
+        donorRepository.updatePaidStatusByMerchantTradeNo(orderNo);	
+	}
+
+	//  查詢所有捐款紀錄
     public List<DonaVO> getAllDonas() {
         return donorRepository.findAll();
     }
@@ -76,6 +80,19 @@ public class DonaGoldFlowService {
     public DonaVO findById(Integer donationRecordId) {
         return donorRepository.findById(donationRecordId).orElse(null);
     }
+    
+//	@Transactional
+//	public void updatePaidStatusByMerchantTradeNo(String merchantTradeNo) {
+//	    DonaVO dona = donorRepository.findByMerchantTradeNo(merchantTradeNo);
+//	    if (dona != null) {
+//	    	donorRepository.updatePaidStatusByMerchantTradeNo(merchantTradeNo);
+//	        dona.setPaidStatus(1); // 設為已付款
+//	        dona.setUpdatedTime(new Timestamp(System.currentTimeMillis())); // 若有付款時間欄位
+//	        donorRepository.save(dona);
+//	    }
+//	}
+    
+    
     
     //將存入資料庫的物件拿出來用於建立ECPay訂單 回傳付款頁面
     public String toEcpay(DonaVO vo) {
@@ -92,7 +109,7 @@ public class DonaGoldFlowService {
 		aioChenkOutAll.setMerchantTradeNo(tradeNo);
 		aioChenkOutAll.setMerchantTradeDate(dateStr);
 		aioChenkOutAll.setTradeDesc("Allieat 捐款平台");
-		aioChenkOutAll.setItemName("捐款");
+		aioChenkOutAll.setItemName("待用餐愛心捐款");
 		aioChenkOutAll.setTotalAmount(String.valueOf(vo.getDonationIncome()));
 		aioChenkOutAll.setReturnURL("https://8cf9-1-164-225-29.ngrok-free.app/donation/ecpayReturn");
 		aioChenkOutAll.setClientBackURL("http://localhost:8080/dona/donaAddOne");
@@ -116,15 +133,18 @@ public class DonaGoldFlowService {
     		String val = y.length == 1 ? "" : y[1];
     		ECPayReqTable.put(key, val);
     	}
-    	Integer DonationRecordId = Integer.valueOf(ECPayReqTable.get("MerchantTradeNo").replaceAll(".*D(\\d+)T.*", "$1"));
+    	String DonationRecordId = ECPayReqTable.get("MerchantTradeNo").replaceAll(".*D(\\d+)T.*", "$1");
+    	
     	System.out.println(DonationRecordId);
     	AllInOne aio = new AllInOne("");
     	if (aio.compareCheckMacValue(ECPayReqTable)) {
     		System.out.println("比對通過");
     		if ("1".equals(ECPayReqTable.get("RtnCode"))) {
+    			donorRepository.updatePaidStatusByMerchantTradeNo(DonationRecordId);
     			System.out.println("已付款");
     			
     		}else{
+    			
     			System.out.println("付款失敗");
     		}
     	}else {

@@ -17,7 +17,7 @@
             <p>感謝您的愛心捐贈，以下為您剛剛填寫的捐款資訊：</p>
         </div>
 <p th:text="${dona} ?: '⚠ 無資料'"></p>
-        <div class="card p-4">
+<!--         <div class="card p-4">
             <ul class="list-group list-group-flush">
             
                 <li class="list-group-item"> 紀錄編號：<span th:text="${dona.donationRecordId} ?: '未產生'"></span></li>
@@ -27,19 +27,19 @@
                 <li class="list-group-item">電話：<span th:text="${dona.phone}">--</span></li>
                 <li class="list-group-item">性別：<span th:text="${dona.gender == 1 ? '男' : (dona.gender == 0 ? '女' : '其他')}">--</span></li>
 <!--                 <li class="list-group-item" th:if="${dona.bthDate != null}">生日：<span th:text="${dona.bthDate}"></span></li> -->
-                <li class="list-group-item">捐款金額：<span th:text="${dona.donationIncome}"></span> 元</li>
+<!--                 <li class="list-group-item">捐款金額：<span th:text="${dona.donationIncome}"></span> 元</li>
                 <li class="list-group-item">捐款類型：<span th:text="${dona.donationType == 0 ? '單筆捐贈' : '定期定額'}"></span></li>
                 <li class="list-group-item">捐款抬頭：<span th:text="${dona.salutation}">--</span></li>
                 <li class="list-group-item" th:if="${dona.idNum != null}">身分證：<span th:text="${dona.idNum}"></span></li>
                 <li class="list-group-item" th:if="${dona.guiNum != null}">統編：<span th:text="${dona.guiNum}"></span></li>
 <!--                 <li class="list-group-item">地址：<span th:text="${#strings.concat(dona.county ?: '', dona.district ?: '', dona.address ?: '')}"></span>（<span th:text="${dona.postalCode}"></span>）</li> -->
-                <li class="list-group-item">寄發收據：<span th:text="${dona.mailMtd == 0 ? '需要寄發捐款紙本收據' : '不需捐款收據'}"></span></li>
+<!--                 <li class="list-group-item">寄發收據：<span th:text="${dona.mailMtd == 0 ? '需要寄發捐款紙本收據' : '不需捐款收據'}"></span></li>
                 <li class="list-group-item">徵信匿名：<span th:text="${dona.anonymous == 1 ? '徵信匿名' : '公開徵信'}"></span></li>
             </ul>
-        </div>
+        </div>   -->
 
         <div class="text-center mt-4">
-            <a th:href="@{/dona/donaAddA}" class="btn btn-primary">回首頁</a>
+            <a th:href="@{/}" class="btn btn-primary">回首頁</a>
         </div>
     </div>
     <!-- Footer Start -->
