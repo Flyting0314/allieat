@@ -182,6 +182,48 @@ font-family: 'Noto Sans TC', sans-serif;
   background-color: #d23c3c;
 }
 
+.map-marker {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: #f25454;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+  cursor: pointer;
+  z-index: 10;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 0.4; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+.map-card {
+  position: absolute;
+  background-color: #fff9e6; /* 淡米黃色 */
+  border: 1px solid #f7e4b3;
+  padding: 10px;
+  border-radius: 8px;
+  width: 230px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  z-index: 10;
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease-in-out;
+}
+
+.map-card.fade-in {
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateY(0);
+}
+  .fade-in {
+    opacity: 1 !important;
+  }
 
     </style>
     
@@ -310,6 +352,63 @@ font-family: 'Noto Sans TC', sans-serif;
     </section>
     <!-- Featured Food Section End -->
    
+<!-- 地圖預覽區塊 Start -->
+<section id="inventory-map-preview" class="py-5" style="background-color: #fffdf8;">
+  <div class="container">
+    <div class="section-title text-center mb-4">
+      <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">即時功能預覽</h4>
+      <h1 class="display-4">地圖上的愛心據點</h1>
+      <p class="text-muted">模擬即時庫存＋點擊浮出資訊卡片</p>
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <div class="position-relative" style="max-width: 720px; width: 100%;">
+        <img src="/img/map-preview.jpg" alt="地圖預覽" class="img-fluid w-100 rounded shadow">
+
+        <!-- marker + 資訊卡 1 -->
+        <div class="map-marker" style="top: 39%; left:13%; background-color: green;" onclick="showCard('store1')"></div>
+        <div class="map-card" id="card-store1" style="top: 49%; left: 3%;">
+          <h5>美味屋</h5>
+          <p class="mb-1 text-muted">台北市愛心路123號</p>
+          <p class="mb-1"><strong>剩餘餐點：</strong>0 份</p>
+          <p class="mb-2 text-muted small">※ 完整資訊請登入查看</p>
+          <a th:href="@{/registerAndLogin/login}" class="btn btn-sm btn-warning text-white">登入查看</a>
+        </div>
+
+        <!-- marker + 資訊卡 2 -->
+        <div class="map-marker" style="top:62%; left: 51%; background-color: green;" onclick="showCard('store2')"></div>
+        <div class="map-card" id="card-store2" style="top: 68%; left: 43%;">
+          <h5>超級堡</h5>
+          <p class="mb-1 text-muted">台北市堡堡街66號</p>
+          <p class="mb-1"><strong>剩餘餐點：</strong>12 份</p>
+          <p class="mb-2 text-muted small">※ 完整資訊請登入查看</p>
+          <a th:href="@{/registerAndLogin/login}" class="btn btn-sm btn-warning text-white">登入查看</a>
+        </div>
+
+        <!-- marker + 資訊卡 3 -->
+        <div class="map-marker" style="top: 18%; left: 82%; background-color: green;" onclick="showCard('store3')"></div>
+        <div class="map-card" id="card-store3" style="top: 24%; left: 67%;">
+          <h5>牛角火鍋</h5>
+          <p class="mb-1 text-muted">台北市牛肉路88號</p>
+          <p class="mb-1"><strong>剩餘餐點：</strong>3 份</p>
+          <p class="mb-2 text-muted small">※ 完整資訊請登入查看</p>
+          <a th:href="@{/registerAndLogin/login}" class="btn btn-sm btn-warning text-white">登入查看</a>
+        </div>
+        <div class="map-marker" style="top:12%; left: 11%;" ></div>
+        <div class="map-marker" style="top:82%; left: 21%;" ></div>
+        <div class="map-marker" style="top:32%; left: 31%;" ></div>
+        <div class="map-marker" style="top:42%; left: 41%;" ></div>
+        <div class="map-marker" style="top:52%; left: 51%;" ></div>
+        <div class="map-marker" style="top:62%; left: 61%;" ></div>
+        <div class="map-marker" style="top:72%; left: 39%;" ></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
                     
        <th:block th:replace="fragments/statsSection :: statsSection"></th:block>   
        
@@ -433,7 +532,69 @@ function animateAmount(el, target, duration) {
       });
   });
 
+  </script>
+
+<script>
+  let currentIndex = 0;
+  const cardIds = ['store1', 'store2', 'store3']; // 注意這裡是純 store 名稱（對應 showCard）
+  const intervalTime = 2000;
+  let cardInterval = null;
+
+  function showCard(id) {
+    // 停止自動輪播
+    if (cardInterval) {
+      clearInterval(cardInterval);
+      cardInterval = null;
+    }
+
+    // 隱藏所有卡片
+    document.querySelectorAll(".map-card").forEach(el => {
+      el.classList.remove("fade-in");
+      el.style.opacity = 0;
+      el.style.display = "none";
+    });
+
+    // 顯示目標卡片
+    const targetCard = document.getElementById("card-" + id);
+    if (targetCard) {
+      targetCard.style.display = "block";
+      setTimeout(() => {
+        targetCard.classList.add("fade-in");
+      }, 10);
+    }
+  }
+
+  function autoShowCard(id) {
+    // 類似 showCard 但不會中斷輪播
+    document.querySelectorAll(".map-card").forEach(el => {
+      el.classList.remove("fade-in");
+      el.style.opacity = 0;
+      el.style.display = "none";
+    });
+
+    const targetCard = document.getElementById("card-" + id);
+    if (targetCard) {
+      targetCard.style.display = "block";
+      setTimeout(() => {
+        targetCard.classList.add("fade-in");
+      }, 10);
+    }
+  }
+
+  function cycleCards() {
+    autoShowCard(cardIds[currentIndex]);
+    currentIndex = (currentIndex + 1) % cardIds.length;
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    cycleCards(); // 先顯示第一個
+    cardInterval = setInterval(cycleCards, intervalTime);
+  });
 </script>
+
+
+
+
 
 
 <div class="floating-donation-box">
