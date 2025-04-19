@@ -149,6 +149,7 @@ public class StoreOrderServiceImpl implements StoreOrderService {
                 StoreOrderDTO.FoodItem item = new StoreOrderDTO.FoodItem();
                 item.setFoodName(detail.getFood().getName());
                 item.setQuantity(detail.getAmount());
+                item.setNote(detail.getNote());
                 foodItems.add(item);
             }
 
