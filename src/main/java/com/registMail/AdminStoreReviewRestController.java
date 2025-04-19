@@ -7,12 +7,21 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.backstage.backstagrepository.PhotoRepository;
 import com.backstage.backstagrepository.StoreRepository;
 import com.entity.PhotoVO;
 import com.entity.StoreVO;
+import com.registMail.dto.StoreListDTO;
 
 @RestController
 @RequestMapping("/backStage") 
@@ -27,10 +36,21 @@ public class AdminStoreReviewRestController {
     @Autowired
     private PhotoRepository photoRepository;
 
-    // 取得所有店家
+    // 取得所有店家，新增分頁功能
     @GetMapping("/stores")
-    public List<StoreVO> getAllStores() {
-        return storeRepository.findAll();
+    public Page<StoreListDTO> getAllStores(@RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<StoreVO> storePage = storeRepository.findAll(pageable);
+
+        return storePage.map(store -> new StoreListDTO(
+            store.getStoreId(),
+            store.getName(),
+            store.getEmail(),
+            store.getRegTime(),
+            store.getReviewed(),
+            store.getAccStat()
+        ));
     }
 
     // 取得待審核的店家
@@ -122,4 +142,5 @@ public class AdminStoreReviewRestController {
         storeRepository.save(store);
         return "店家帳號狀態已切換為 " + (store.getAccStat() == 1 ? "啟用中" : "停用中");
     }
+    
 }
