@@ -73,6 +73,7 @@
 		<div class="row">
 			<!-- 側邊欄 -->
 			<div class="col-md-2 side-bar">
+				<h4>合作店家管理</h4>
 				<a href="./backstage_homepage.html" class="active">後台首頁</a>
 
 				<!-- 可展開的合作店家管理選項 -->
@@ -262,7 +263,7 @@
 		          </button>
 		        `;
 		      } else {
-		        leftAction = `<a href="storeReview.html?storeId=${store.storeId}" class="btn btn-secondary">查看</a>`;
+		        leftAction = `<a href="storeView.html?storeId=${store.storeId}" class="btn btn-secondary">查看</a>`;
 		      }
 
 		      const dividerHTML = rightAction ? `<div class="divider"></div>` : '';
