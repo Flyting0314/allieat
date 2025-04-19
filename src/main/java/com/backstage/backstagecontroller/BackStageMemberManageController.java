@@ -201,7 +201,7 @@ public class BackStageMemberManageController {
 //    }
     
     
-    //=============token過期更新版==================
+    //=============驗證郵件：token過期更新版==================
     @GetMapping("/verify")
     public ResponseEntity<?> verifyMember(@RequestParam String token) {
         Map<String, Object> response = new HashMap<>();
@@ -239,54 +239,7 @@ public class BackStageMemberManageController {
         }
     }
 
-    
- // 重新寄送驗證信（店家 / 會員合併）
-//    @PostMapping("/resend")
-//    public Map<String, String> resendVerification(@RequestParam("email") String email) {
-//        Map<String, String> response = new HashMap<>();
-//
-//        if (email == null || email.trim().isEmpty()) {
-//            response.put("error", "請輸入 Email");
-//            return response;
-//        }
-//
-//        boolean found = false;
-//
-//        Optional<MemberVO> memberOpt = memberRepository.findByEmail(email);
-//        if (memberOpt.isPresent()) {
-//            found = true;
-//            MemberVO member = memberOpt.get();
-//            switch (member.getReviewed()) {
-//                case 3 -> response.put("error", "帳號審核中，通過後會核發信件");
-//                case 2 -> {
-//                    memberEmailService.sendRejectionEmail(member);
-//                    response.put("error", "帳號未通過審核");
-//                }
-//                case 0 -> {
-//                    memberEmailService.sendCorrectionEmail(member);
-//                    response.put("error", "補件通知已寄送，請補齊資料");
-//                }
-//                case 1 -> {
-//                    if (member.getAccStat() == 1) {
-//                        response.put("message", "帳號已啟用，請直接登入！");
-//                    } else {
-//                        memberEmailService.sendMemberVerificationEmail(member);
-//                        response.put("message", "驗證信已重新寄送，請至信箱點擊啟用！");
-//                    }
-//                }
-//            }
-//        }
-//        
-//        // 添加這個條件判斷，處理找不到信箱的情況
-//        if (!found) {
-//            response.put("error", "找不到此信箱");
-//        }
-//        
-//        return response;  // 確保在所有情況下都有回傳值
-//    }
-    
-    
-    
+      
      
     
     // ============ 更新帳號啟用狀態（會員點擊連結就將帳號啟用狀態從 0->1） ==============
