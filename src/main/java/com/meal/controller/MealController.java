@@ -376,26 +376,25 @@ public class MealController {
         result.put("orders", resultList);
         return result;
     }
+    
     @GetMapping("/order/wait-pickup")
     public ResponseEntity<?> waitForPickup(@RequestParam Integer orderId) {
-        long timeout = 15_000;
-        long start = System.currentTimeMillis();
-
-        while (System.currentTimeMillis() - start < timeout) {
-            Optional<OrderFoodVO> optional = orderService.findOrderById(orderId);
-            if (optional.isPresent() && optional.get().getPickStat() == 0) {
-                return ResponseEntity.ok(Map.of("pickedUp", true));
-            }
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                break;
-            }
+        Optional<OrderFoodVO> optional = orderService.findOrderById(orderId);
+        if (optional.isEmpty()) {
+            return ResponseEntity.status(404).body(Map.of("error", "找不到訂單"));
         }
 
-        return ResponseEntity.ok(Map.of("pickedUp", false));
+        OrderFoodVO order = optional.get();
+        int pickStat = order.getPickStat();      // 取餐狀態
+        int serveStat = order.getServeStat();    // 接單狀態
+
+        return ResponseEntity.ok(Map.of(
+            "pickStat", pickStat,
+            "serveStat", serveStat
+        ));
     }
+
+    
     @GetMapping("/order/{orderId}")
     public ResponseEntity<?> getOrderSimpleInfo(@PathVariable Integer orderId) {
         Optional<OrderFoodVO> optional = orderService.findOrderById(orderId);
@@ -490,7 +489,7 @@ public class MealController {
     }
 
   
-  
+
 
     
 
