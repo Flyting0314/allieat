@@ -77,10 +77,10 @@ public class StoreOrderServiceImpl implements StoreOrderService {
         if (order == null) {
             throw new RuntimeException("訂單不存在");
         }
-
+        
         String fcmToken = order.getFcmToken(); // 取fcmToken
         String storeName = order.getStore().getName(); // 店名
-
+        
         switch (type) {
             case "archive":
                 order.setServeStat(99);
@@ -108,15 +108,14 @@ public class StoreOrderServiceImpl implements StoreOrderService {
                 order.setPickStat(3);
                 break;
             case "remove":
-                order.setServeStat(99);
-                break;
+            	order.setServeStat(99);
+            	break;
             default:
                 throw new RuntimeException("不支援的動作類型: " + type);
         }
 
         orderFoodRepository.save(order);
     }
-
 
 	@Override
     public List<StoreOrderDTO> getTodayOrders(Integer storeId) {
@@ -150,6 +149,7 @@ public class StoreOrderServiceImpl implements StoreOrderService {
                 StoreOrderDTO.FoodItem item = new StoreOrderDTO.FoodItem();
                 item.setFoodName(detail.getFood().getName());
                 item.setQuantity(detail.getAmount());
+                item.setNote(detail.getNote());
                 foodItems.add(item);
             }
 
@@ -159,7 +159,7 @@ public class StoreOrderServiceImpl implements StoreOrderService {
 
         return result;
     }
-	
+
 	@Override
 	public String updateOpStat(Integer storeId, String type) {
 		

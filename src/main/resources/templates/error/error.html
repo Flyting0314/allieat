@@ -1,52 +1,163 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
-   <th:block th:replace="fragments/header :: header"></th:block>
+
     <style>
         body {
-            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+        	display: flex;
+        	justify-content: flex-start;
+        	align-items: center;
+        	flex-direction: column;
+        	min-height: 100vh;
+            background: linear-gradient(to right, #fffaf3, #fce8cc);
+            
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft JhengHei", sans-serif;
             min-height: 100vh;
+            
+            
+            
+        }
+        .error-flexbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            max-width: 1000px;
+            max-height: 100vh;
+            min-height: 600px;
+            padding: 2rem;
+            flex-wrap: wrap;
+             width: 80vw; 
+            
+        }
+       .error-img {
+		    max-width: 100%;
+		     height: auto;
+		    clip-path: circle(59%); 
+		    margin: 0 auto;
+		    display: block;
+		}
+		        .error-container {
+		    position: relative;
+            width: 90%;
+            max-width: 900px;
+            height: auto;
             display: flex;
             justify-content: center;
             align-items: center;
-        }
-        .error-container {
-            background: white;
-            padding: 3rem;
-            border-radius: 1rem;
-            box-shadow: 0 0 30px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .error-code {
-            font-size: 5rem;
+		}
+		
+		.error-text {
+		    position: absolute;
+		    top: 53%; 
+		    left: 33%; 
+		    transform: translate(-50%, -50%);
+		    text-align: center; 
+		    color: #ff884d;
+		    padding: 1rem;
+		    border-radius: 8px;
+		    font-size: 1.5rem;
+		    
+		}
+
+        .error-title {
+            font-size: 2.5rem;
             font-weight: bold;
-            color: #dc3545;
+            color: #ff884d;
+            margin-bottom: 1rem;
         }
         .error-message {
-            font-size: 1.25rem;
-            margin-top: 1rem;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 2rem;
         }
         .btn-home {
+            background-color: #ffa94d;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            display: block; 
+    		margin-bottom: 1rem;
+    		width: 120px;
+        }
+        .btn-home:hover {
+            background-color: #f08c00;
+        }
+                           .btn-home1 {
+            background-color: #ffa94d;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            display: block;
+            margin-bottom: 1rem;
+            width: 70px;
+            top:16%;
+            left: 51%;
+            position: absolute;
+        }
+        
+                .btn-home:hover1 {
+            background-color: #f08c00;
+        }
+        .debug-info {
+            font-size: 0.9rem;
+            color: #666;
             margin-top: 2rem;
+            top: 73%;
+            left:34%;
         }
         code {
-            word-break: break-word;
+            background: #f1f1f1;
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+        }
+        @media (max-width: 768px) {
+            .error-text {
+                top: auto;
+                bottom: 5%;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: rgba(255, 255, 255, 0.9);
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="error-container">
-        <div class="error-code">Oops!</div>
-        <div class="error-message">系統發生錯誤，請聯繫客服或稍後再試。</div>
-
-        <div class="mt-4 text-start">
-            <p><strong>請求路徑：</strong><code th:text="${url}">/unknown</code></p>
-            <p><strong>錯誤訊息：</strong><code th:text="${errorMessage}">未預期的錯誤</code></p>
+<div class="error-flexbox error-container">
+    <img src="/img/opps-delivery-crash.png" alt="便當遲到了" class="error-img">
+    <a th:href="@{/}" class="btn-home1" th:if="${@environment.acceptsProfiles('prod')}" >返回首頁</a><br>
+    
+    
+    <div class="error-text">
+    
+            <div class="error-message">
+            
         </div>
 
-        <a th:href="@{/}" class="btn btn-outline-danger btn-home">返回首頁</a>
+        
+
+        <div class="debug-info" th:if="${@environment.acceptsProfiles('dev')}">
+            <p><strong>請求路徑：</strong><code th:text="${url}">/unknown</code></p>
+            <p><strong>錯誤訊息：</strong><code th:text="${errorMessage}">找不到頁面</code></p>
+            <a th:href="@{/}" class="btn-home">返回首頁</a>
+        </div><br>
+        
+        
+    
+        
+
     </div>
 </div>
 

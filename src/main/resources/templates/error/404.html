@@ -1,48 +1,120 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
-   <th:block th:replace="fragments/header :: header"></th:block>
     <style>
         body {
-            background: linear-gradient(to right, #f8f9fa, #e9ecef);
-            min-height: 100vh;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft JhengHei", sans-serif;
+            background: linear-gradient(to right, #fffaf3, #fce8cc);
+        }
+        .error-flexbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            max-width: 1000px;
+            max-height: 100vh;
+            min-height: 600px;
+            padding: 2rem;
+            flex-wrap: wrap;
+        }
+        .error-img {
+            max-width: 75%;
+            clip-path: circle(50%);
         }
         .error-container {
-            background: white;
-            padding: 3rem;
-            border-radius: 1rem;
-            box-shadow: 0 0 30px rgba(0,0,0,0.1);
-            text-align: center;
+            position: relative;
         }
-        .error-code {
-            font-size: 6rem;
-            font-weight: bold;
-            color: #dc3545;
+        .error-text {
+            position: absolute;
+            top: 44%;
+            left: 49%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #ff884d;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.5rem;
         }
         .error-message {
-            font-size: 1.5rem;
-            margin-top: 1rem;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 2rem;
         }
         .btn-home {
+            background-color: #ffa94d;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            display: block;
+            margin-bottom: 1rem;
+            width: 70px;
+        }
+        .btn-home:hover {
+            background-color: #f08c00;
+        }
+        
+                .btn-home1 {
+            background-color: #ffa94d;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            display: block;
+            margin-bottom: 1rem;
+            width: 70px;
+            top: 49%;
+            left: 30%;
+            position: absolute;
+        }
+        
+                .btn-home:hover1 {
+            background-color: #f08c00;
+        }
+        .debug-info {
+            font-size: 0.75rem;
+            color: #666;
             margin-top: 2rem;
+        }
+        code {
+            background: #f1f1f1;
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="error-container">
-        <div class="error-code">404</div>
-        <div class="error-message">不好意思，您訪問的網頁不存在</div>
+<div class="error-flexbox error-container">
+    <img src="/img/404-bento.png" alt="便當盒空了" class="error-img">
+    <a th:href="@{/}" class="btn-home1" th:if="${@environment.acceptsProfiles('prod')}" >返回首頁</a><br>
+    <div class="error-text">
 
+        <div class="error-title"></div>
+        <div class="error-message">
+        </div>
+        <div class="debug-info" th:if="${@environment.acceptsProfiles('dev')}">
+            <p><strong>請求路徑：</strong><code th:text="${url}">/unknown</code></p>
+            <p><strong>錯誤訊息：</strong><code th:text="${errorMessage}">找不到頁面</code></p><br><br><br>
+        <a th:href="@{/}" class="btn-home">返回首頁</a>
 
-        <a th:href="@{/}" class="btn btn-outline-danger btn-home">返回首頁</a>
 
     </div>
 </div>
-
+</div>
 </body>
 </html>

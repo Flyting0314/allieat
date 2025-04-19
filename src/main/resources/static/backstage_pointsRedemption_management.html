@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-<head> 
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>店家點數核銷管理</title>
@@ -32,20 +32,149 @@
 
 
     
-    <style>
-   /* 漸層容器擴展到整個內容區域 */
-.content-wrapper {
+ <style>
+
+
+/* 漸層容器擴展到整個內容區域 */
+.col-md-10 {
     background: linear-gradient(135deg, #3a6186, #89253e);
-    padding: 20px;
-    border-radius: 8px;
 }
 
-/* 大標題 */
+/* 內容容器改為透明 */
+.content-wrapper {
+    padding: 20px;
+    border-radius: 8px;
+    background: transparent !important;
+}
+
+/* 為標題區域創建額外的容器，可覆蓋外部的漸層樣式 */
+.header-area {
+    color: white; /* 保持文字顏色 */
+    margin-bottom: 15px;
+    background: transparent !important;
+}
+
+/* 標題與搜尋區域的水平對齊 */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+}
+
 .header-title {
-    font-size: 30px; /* 可以根據需要調整大小 */
+    font-size: 28px;
     color: white;
     font-weight: bold;
-    margin-bottom: 15px; /* 保持原有的底部間距 */
+    margin-bottom: 10px;
+}
+
+.month-control {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+/* 按鈕對齊調整 */
+.actions-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.left-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.right-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+/* 搜尋區域調整 */
+.search-section {
+    display: flex;
+    flex-direction: column;
+    max-width: 65%;
+    align-self: flex-start;
+}
+
+.search-form-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+
+
+/* 整體欄位容器 */
+
+.field-with-label {
+    display: flex;
+    flex-direction: column;
+    width: 165px; /* 可以添加固定寬度 */
+    margin-right: 0px;
+    margin-bottom: 8px;
+    min-width: 120px;
+}
+
+
+.field-with-label label {
+    color: white;
+    font-size: 15px;   /* 搜尋標籤文字大小 */
+    margin-bottom: 3px;
+    font-weight: 500;
+}
+
+.field-with-label input,
+.field-with-label select {
+    height: 34px;
+    border-radius: 4px;
+    border: none;
+    padding: 4px 8px;
+    font-size: 14px;  /* 輸入框內文字大小 */
+    width: 100%;
+}
+
+/* 重置當月記錄按鈕的顏色 */
+#reset-historical-button {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+}
+
+.search-button,
+.btn-primary,
+.btn-success {
+    height: 36px;/* 按鈕高度 */
+    padding: 4px 12px;
+    font-size: 15px;/* 按鈕文字大小 */
+    white-space: nowrap;
+}
+
+/* 年月選擇器樣式調整 */
+.year-month-container {
+    display: flex;
+    width: 100%;
+}
+
+#yearSelector {
+    width: 50%;
+    margin-right: 5px;
+}
+
+#monthSelector {
+    width: 50%;
 }
 
 /* 表格內灰色小字 */
@@ -60,6 +189,8 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-top: 10px;
+    clear: both;
 }
 
 .table-responsive {
@@ -220,208 +351,79 @@
     background-color: #5a6268;
 }
 
-/* ===========搜尋區域相關樣式=========== */
-
-/* 搜尋區域樣式 */
-.search-section {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-    width: 100%;
-}
-
-.test-buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.search-form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-self: flex-end;
-    margin-left: auto; /* 讓搜尋區域靠右 */
-    width: 60%; /* 控制搜尋區域寬度 */
-}
-
-.search-row {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-}
-
-.field-with-label {
-    display: flex;
-    flex-direction: column;
-    flex: 1; /* 讓欄位平均分配寬度 */
-}
-
-.field-with-label label {
-    color: white;
-    font-size: 14px;
-    margin-bottom: 5px;
-}
-
-.field-with-label input,
-.field-with-label select {
-    width: 100%;
-    height: 38px;
-    border-radius: 4px;
-    border: none;
-    padding: 8px 12px;
-}
-
-.field-with-buttons {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    align-items: center;
-}
-
-.field-with-buttons select {
-    width: 110px; /* 固定核銷狀態寬度 */
-    flex-shrink: 0; /* 防止壓縮 */
-}
-
-.field-with-buttons button {
-    min-width: 90px; /* 確保按鈕有足夠寬度 */
-    height: 38px;
-}
-
-/* 搜尋按鈕 */
-.search-button {
-    height: 38px;
-    background-color: #5c9ce6;
-    border-color: #5c9ce6;
-    color: white;
-    font-weight: bold;
-    border-radius: 4px;
-    padding: 0 15px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-/* 重置當月記錄按鈕 */
-#reset-historical-button {
-    background-color: #dc3545;
-}
-
-/* 修復歷史資料按鈕 */
-#fix-historical-button {
-    background-color: #eec451;
-}
-
-/* 表格區域修復 */
-.table-container {
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-top: 15px;
-}
-
-.table-responsive {
-    overflow-x: auto;
-    width: 100%;
-}
-
-.table {
-    width: 100%;
-    margin-bottom: 0;
-}
-
-.table th, 
-.table td {
-    vertical-align: middle;
+/* 按鈕文字防止換行 */
+.btn,
+.search-button,
+button {
     white-space: nowrap; /* 防止文字換行 */
-    padding: 12px 8px; /* 適當的內邊距 */
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, 0.05);
+/* 確保按鈕有足夠寬度顯示完整文字 */
+.field-with-buttons button,
+.btn-primary,
+.btn-success {
+    min-width: 80px; /* 設定最小寬度 */
+    white-space: nowrap;
+    overflow: visible; /* 允許文字溢出按鈕邊界 */
 }
 
-.table-bordered {
-    border: 1px solid #dee2e6;
+/* 搜尋按鈕特別處理 */
+#search-button {
+    min-width: 80px;
 }
 
-.table-bordered th,
-.table-bordered td {
-    border: 1px solid #dee2e6;
+/* 批次核銷按鈕特別處理 */
+#batch-redemption-btn {
+    min-width: 90px; /* 可能需要更大的寬度 */
 }
 
-/* 確保表格在小螢幕也能正常顯示 */
+/* 響應式調整 */
+@media (max-width: 1200px) {
+    .header-container {
+        flex-direction: column;
+    }
+    
+    .search-section {
+        max-width: 100%;
+        margin-top: 15px;
+    }
+}
+
 @media (max-width: 992px) {
     .search-form-container {
-        width: 100%;
-    }
-    
-    .search-row {
         flex-direction: column;
-        gap: 15px;
     }
     
-    .field-with-buttons {
-        flex-wrap: wrap;
-    }
-    
-    .field-with-buttons select {
+    .field-with-label {
         width: 100%;
-        margin-bottom: 10px;
+        margin-right: 0;
     }
     
-    .field-with-buttons button {
+    .btn-row {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .btn-row button {
         flex: 1;
     }
 }
 
-
-
-/* 按鈕文字防止換行 */
-    .btn,
-    .search-button,
-    button {
-        white-space: nowrap; /* 防止文字換行 */
+/* 確保表格在小螢幕也能正常顯示 */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto;
     }
-
-    /* 確保按鈕有足夠寬度顯示完整文字 */
-    .field-with-buttons button,
-    .btn-primary,
-    .btn-success {
-        min-width: 90px; /* 設定最小寬度 */
-        white-space: nowrap;
-        overflow: visible; /* 允許文字溢出按鈕邊界 */
+    
+    .table-responsive table {
+        min-width: 800px;
     }
+}
 
-    /* 搜尋按鈕特別處理 */
-    #search-button {
-        min-width: 90px;
-    }
-
-    /* 批次核銷按鈕特別處理 */
-    #batch-redemption-btn {
-        min-width: 100px; /* 可能需要更大的寬度 */
-    }
-
-
-/* =========年月選擇器========= */
-
-/* 年月選擇器樣式 */
-    #yearSelector, #monthSelector {
-        height: 38px;
-        border-radius: 4px;
-        border: none;
-        padding: 8px 12px;
-    }
-
-    #yearSelector {
-        width: 40%;
-    }
-
-    #monthSelector {
-        width: 60%;
-    }
+/* 返回按鈕容器 */
+.back-button-container {
+    margin: 5px 0 10px 0;
+}
 
 
 
@@ -444,7 +446,7 @@
         <div class="row">
             <!-- 側邊欄 -->
             <div class="col-md-2 side-bar">
-                <h4>攏呷霸-後台首頁</h4>
+                <h4>合作店家點數核銷</h4>
                 <a href="./backstage_homepage.html">後台首頁</a>
                 
                 <!-- 合作店家管理選項 -->
@@ -453,8 +455,10 @@
                 </a>
                 <div class="collapse" id="storeSubMenu">
                     <div class="sub-menu">
-                        <a href="#" class="sub-item">合作店家管理</a>
-                        <a href="#" class="sub-item active">合作店家點數核銷</a>
+                        <a href="./storeList.html" class="sub-item">合作店家管理</a>
+                        <a
+							href="./backstage_pointsRedemption_management.html"
+							class="sub-item active">合作店家點數核銷</a>
                     </div>
                 </div>
                 
@@ -475,139 +479,151 @@
                 <a class="btn btn-logout">登出</a>
             </div>
             
-            <!-- 主要內容區域 -->
-             
-            <div class="col-md-10">
-                <div class="content-wrapper">
-                    <!-- 標題和搜尋區域 -->
-                    <div class="gradient-container">
-                        <div class="header-title mb-3">合作店家點數核銷</div>
+      
+          <!-- 主內容區域 -->
+<div class="col-md-10">
+    <div class="content-wrapper">
+        <!-- 標題和搜尋區域 -->
+        <div class="header-area">
+            <!-- 標題和月份控制 -->
+            <div class="header-container">
+                <!-- 左側標題區域 -->
+                <div class="header-left">
+                    <div class="header-title">合作店家點數核銷</div>
+                    
+                    <!-- 月份控制按鈕 -->
+                    <div class="month-control" id="month-control-placeholder">
+                        <!-- 這裡的內容會由JavaScript動態生成 -->
+                    </div>
+                </div>
+                
+                <!-- 右側搜尋區域 -->
+                <div class="search-section">
+                    <!-- 搜尋欄位容器 -->
+                    <div class="search-form-container">
+                        <div class="field-with-label">
+                            <label>店家ID</label>
+                            <input type="text" id="search-store-id" placeholder="輸入店家ID">
+                        </div>
                         
-                       
-
-<!-- 修改後的搜尋區域HTML -->
-<!-- 搜尋區域 -->
-<div class="search-section">
-    <!-- 左側測試按鈕區 -->
-    <div class="test-buttons">
-        <button class="search-button" id="reset-historical-button" onclick="resetCurrentMonthRecords()">重置當月記錄</button>
-        <button class="search-button" id="fix-historical-button" onclick="fixHistoricalRecords()">修復歷史資料</button>
-    </div>
-    
-    <!-- 搜尋欄位容器 -->
-    <div class="search-form-container">
-        <!-- 第一行搜尋欄位 -->
-        <div class="search-row">
-            <div class="field-with-label">
-                <label>店家ID</label>
-                <input type="text" id="search-store-id" placeholder="輸入店家ID">
-            </div>
-            
-            <!-- 新的年月選擇器 -->
-            <div class="field-with-label">
-                <label>核銷批次</label>
-                <div class="d-flex">
-                    <select id="yearSelector" class="form-control mr-2">
-                        <!-- 年份選項會動態生成 -->
-                    </select>
-                    <select id="monthSelector" class="form-control">
-                        <option value="1">1月</option>
-                        <option value="2">2月</option>
-                        <option value="3">3月</option>
-                        <option value="4">4月</option>
-                        <option value="5">5月</option>
-                        <option value="6">6月</option>
-                        <option value="7">7月</option>
-                        <option value="8">8月</option>
-                        <option value="9">9月</option>
-                        <option value="10">10月</option>
-                        <option value="11">11月</option>
-                        <option value="12">12月</option>
-                    </select>
+                        <div class="field-with-label">
+                            <label>店家名稱</label>
+                            <input type="text" id="search-store-name" placeholder="輸入店家名稱">
+                        </div>
+                        
+                        <div class="field-with-label">
+                            <label>核銷批次</label>
+                            <div class="year-month-container">
+                                <select id="yearSelector" class="form-control">
+                                    <!-- 年份選項會動態生成 -->
+                                </select>
+                                <select id="monthSelector" class="form-control">
+                                    <option value="1">1月</option>
+                                    <option value="2">2月</option>
+                                    <option value="3">3月</option>
+                                    <option value="4">4月</option>
+                                    <option value="5">5月</option>
+                                    <option value="6">6月</option>
+                                    <option value="7">7月</option>
+                                    <option value="8">8月</option>
+                                    <option value="9">9月</option>
+                                    <option value="10">10月</option>
+                                    <option value="11">11月</option>
+                                    <option value="12">12月</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="field-with-label">
+                            <label>核銷狀態</label>
+                            <select id="search-status">
+                                <option value="">全部</option>
+                                <option value="0">未核銷</option>
+                                <option value="1">已核銷</option>
+                                <option value="2">核銷異常</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
         
-        <!-- 第二行搜尋欄位 -->
-        <div class="search-row">
-            <div class="field-with-label">
-                <label>店家名稱</label>
-                <input type="text" id="search-store-name" placeholder="輸入店家名稱">
-            </div>
-            
-            <div class="field-with-label">
-                <label>核銷狀態</label>
-                <div class="field-with-buttons">
-                    <select id="search-status">
-                        <option value="">全部</option>
-                        <option value="0">未核銷</option>
-                        <option value="1">已核銷</option>
-                        <option value="2">核銷異常</option>
-                    </select>
+            <!-- 按鈕操作區域 -->
+            <div class="actions-container">
+                <!-- 左側按鈕 -->
+                <div class="left-buttons">
+                    <button class="search-button" id="reset-historical-button" onclick="resetCurrentMonthRecords()">重置當月記錄</button>
+                </div>
+                
+                <!-- 右側按鈕 -->
+                <div class="right-buttons">
                     <button class="btn btn-primary" id="search-button">搜尋</button>
                     <button class="btn btn-success" id="batch-redemption-btn" onclick="performBatchRedemption()">批次核銷</button>
                 </div>
             </div>
+            
+            <!-- 返回按鈕容器 - 搜尋時才顯示 -->
+            <div class="back-button-container" style="display: none; margin: 5px 0 10px 0;">
+                <button class="back-button" id="back-button">
+                    <i class="fas fa-arrow-left"></i> 回上一頁
+                </button>
+            </div>
         </div>
-    </div>
-</div>
 
 
-
-
-
-
-
-                    
-                    <div class="back-button-container" style="display: none; margin: 10px 0 15px 0;">
-                        <button class="back-button" id="back-button" style="display: inline-block; color: white; background-color: #6c757d; border: none; border-radius: 4px; padding: 8px 15px; text-decoration: none; font-size: 14px; transition: background-color 0.3s; cursor: pointer;">
-                            <i class="fas fa-arrow-left"></i> 回上一頁
-                        </button>
-                    </div>
-
-
-
-                    <!-- 表格區域 -->
-                    <div class="table-container">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>核銷ID</th>
-                                            <th>店家ID</th>
-                                            <th>店家名稱</th>
-                                            <th>核銷批次</th>
-                                            <th>應核銷點數</th>
-                                            <th>已核銷金額</th>
-                                            <th>核銷時間</th>
-                                            <th>狀態</th>
-                                            <th>操作</th>
-                                            <th>
-                                                <input type="checkbox" id="selectAllCheckbox">
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="points-redemption-table">
-                                        <tr>
-                                            <td colspan="10" class="text-center"><i class="fas fa-spinner fa-spin"></i> 資料載入中...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        
-                      <!-- 分頁控制區塊 -->
-                        <div class="pagination-container">
-                            <ul class="pagination mb-0" id="pagination">
-                                <!-- 分頁按鈕將動態生成 -->
-                            </ul>
+        <!-- 統計信息區塊 -->
+        <div class="stats-container" style="background-color: white; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="stats-info" class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-spinner fa-spin"></i> 載入統計資訊中...
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
+
+        <!-- 表格區域 - 單一白色卡片 -->
+        <div class="table-container">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>核銷ID</th>
+                                <th>店家ID</th>
+                                <th>店家名稱</th>
+                                <th>核銷批次</th>
+                                <th>應核銷點數</th>
+                                <th>已核銷金額</th>
+                                <th>核銷時間</th>
+                                <th>狀態</th>
+                                <th>操作</th>
+                                <th>
+                                    <input type="checkbox" id="selectAllCheckbox">
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="points-redemption-table">
+                            <tr>
+                                <td colspan="10" class="text-center"><i class="fas fa-spinner fa-spin"></i> 資料載入中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 分頁控制區塊 -->
+            <div class="pagination-container">
+                <ul class="pagination mb-0" id="pagination">
+                    <!-- 分頁按鈕將動態生成 -->
+                </ul>
+            </div>
+        </div>
     </div>
+</div>
 
     <!-- 核銷點數模態框 -->
     <div class="modal fade" id="redemptionModal" tabindex="-1" role="dialog" aria-labelledby="redemptionModalLabel" aria-hidden="true">
@@ -644,59 +660,177 @@
 let currentYear;
 let currentMonth;
 let currentPage = 1;
-const recordsPerPage = 8;
+const recordsPerPage = 5; //每頁幾筆資料
 let totalPages = 1;
 let allRecords = [];
 let payoutIdSortAscending = true; // 排序方向：預設為升序（由小到大）
+
+
+
+// 添加缺失的 showSuccess 函數
+function showSuccess(message) {
+    // 使用 SweetAlert2 或類似工具來顯示美觀的成功消息
+    if (window.Swal) {
+        Swal.fire({
+            icon: 'success',
+            title: '成功',
+            text: message,
+            timer: 2000
+        });
+    } else {
+        alert(message);
+    }
+}
+
+
+
 
 // 初始化頁面
 document.addEventListener('DOMContentLoaded', () => {
     // 檢查登入狀態
     backstageAuth.requireLogin();
-
-    const backButton = document.getElementById('back-button');
-    if (backButton) {
-        backButton.addEventListener('click', handleBackButtonClick);
-    }
     
-    
-
     initializeMonthControls();
     loadCurrentMonthData();
     initYearMonthSelector(); // <-- 年月選擇器
     bindSearchEvents();
+    
+    // 載入統計資訊
+    loadPlatformStats();
 
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
     
-
     selectAllCheckbox.addEventListener('change', function() {
-    if (isSearchActive) {
-        // 搜尋模式：選取所有未核銷的記錄
-        const allUnredeemedIds = allRecords
-            .filter(item => item.status === 0)
-            .map(item => item.id);
-        
-        // 更新前端所有checkbox的狀態
-        document.querySelectorAll('.row-checkbox').forEach(checkbox => {
-            const redemptionId = parseInt(checkbox.dataset.redemptionId);
-            checkbox.checked = this.checked && allUnredeemedIds.includes(redemptionId);
-        });
-    } else {
-        // 非搜尋模式：選取所有頁面的未核銷記錄
-        const allUnredeemedIds = allRecords
-            .filter(item => item.status === 0)
-            .map(item => item.id);
-        
-        document.querySelectorAll('.row-checkbox').forEach(checkbox => {
-            const redemptionId = parseInt(checkbox.dataset.redemptionId);
-            checkbox.checked = this.checked && allUnredeemedIds.includes(redemptionId);
+        if (isSearchActive) {
+            // 搜尋模式：選取所有未核銷的記錄
+            const allUnredeemedIds = allRecords
+                .filter(item => item.status === 0)
+                .map(item => item.id);
+            
+            // 更新前端所有checkbox的狀態
+            document.querySelectorAll('.row-checkbox').forEach(checkbox => {
+                const redemptionId = parseInt(checkbox.dataset.redemptionId);
+                checkbox.checked = this.checked && allUnredeemedIds.includes(redemptionId);
+            });
+        } else {
+            // 非搜尋模式：選取所有頁面的未核銷記錄
+            const allUnredeemedIds = allRecords
+                .filter(item => item.status === 0)
+                .map(item => item.id);
+            
+            document.querySelectorAll('.row-checkbox').forEach(checkbox => {
+                const redemptionId = parseInt(checkbox.dataset.redemptionId);
+                checkbox.checked = this.checked && allUnredeemedIds.includes(redemptionId);
+            });
+        }
+    });
+
+
+    // 綁定登出按鈕功能
+    const logoutBtn = document.querySelector(".btn-logout");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", function() {
+            if (confirm("確定要登出嗎？")) {
+                backstageAuth.logout();
+            }
         });
     }
+});
+
+
+
+
+// 2. 添加統計信息載入函數
+function loadPlatformStats() {
+    console.log("開始載入統計資訊...");
+
+    // 取得元素
+    const statsInfoElement = document.getElementById('stats-info');
+    if (!statsInfoElement) {
+        console.error("找不到統計資訊容器元素");
+        return;
+    }
+    
+    // 顯示載入中狀態
+    statsInfoElement.innerHTML = '<div><i class="fas fa-spinner fa-spin"></i> 載入統計資訊中...</div>';
+    
+     // 分開處理兩個API請求，以便更容易定位問題
+     backstageAuth.authFetch('http://localhost:8080/pointsRedemption/monthly-stats')
+        .then(response => {
+            console.log("月度統計API響應狀態:", response.status);
+            if (!response.ok) {
+                throw new Error('月度統計API請求失敗');
+            }
+            return response.json();
+        })
+        .then(monthlyStats => {
+            console.log("月度統計數據:", monthlyStats);
+            
+            // 獲取平台資金資訊
+            return backstageAuth.authFetch('http://localhost:8080/payrecord/platform-funds')
+                .then(response => {
+                    console.log("平台資金API響應狀態:", response.status);
+                    if (!response.ok) {
+                        throw new Error('平台資金API請求失敗');
+                    }
+                    return response.json().then(platformFunds => {
+                        return { monthlyStats, platformFunds };
+                    });
+                });
+        })
+        .then(data => {
+            const { monthlyStats, platformFunds } = data;
+            
+            // 提取數據
+            const monthlyTotalPoints = monthlyStats.totalPoints || 0;
+            const monthlyRedeemedPoints = monthlyStats.redeemedPoints || 0;
+            const monthlyPendingPoints = monthlyStats.pendingPoints || 0;
+            const availableFunds = platformFunds.availableFunds || 0;
+            
+            console.log("整理後的統計數據:", {
+                monthlyTotalPoints,
+                monthlyRedeemedPoints,
+                monthlyPendingPoints,
+                availableFunds
+            });
+            
+            // 更新統計信息 UI
+            statsInfoElement.innerHTML = `
+                <div class="stats-block">
+                    <h5 class="mb-2"><i class="fas fa-chart-pie text-primary"></i> 本月數據</h5>
+                    <div class="d-flex flex-wrap">
+                        <div class="mr-4">
+                            <span class="text-muted">累積應核銷點數：</span>
+                            <span class="font-weight-bold">${monthlyTotalPoints}</span>
+                            <span class="text-muted ml-1">點</span>
+                        </div>
+                        <div class="mr-4">
+                            <span class="text-muted">已核銷：</span>
+                            <span class="font-weight-bold text-success">${monthlyRedeemedPoints}</span>
+                            <span class="text-muted ml-1">點</span>
+                        </div>
+                        <div class="mr-4">
+                            <span class="text-muted">待核銷：</span>
+                            <span class="font-weight-bold text-warning">${monthlyPendingPoints}</span>
+                            <span class="text-muted ml-1">點</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats-block">
+                    <h5 class="mb-2"><i class="fas fa-wallet text-success"></i> 平台資金</h5>
+                    <div>
+                        <span class="text-muted">可用資金：</span>
+                        <span class="font-weight-bold">NT$ ${availableFunds.toLocaleString()}</span>
+                    </div>
+                </div>
+            `;
+        })
+        .catch(error => {
+            console.error('獲取統計資訊失敗:', error);
+            statsInfoElement.innerHTML = `<div class="text-danger">載入統計資訊失敗: ${error.message}</div>`;
+        });
 }
 
-);
-    
-});
 
 
 
@@ -825,33 +959,55 @@ function fixHistoricalRecords() {
 
 
 // 新增月份控制按鈕
+// 初始化月份控制按鈕
+// 初始化月份控制按鈕
 function initializeMonthControls() {
     // 取得當前日期
     const now = new Date();
     currentYear = now.getFullYear();
     currentMonth = now.getMonth() + 1; // JavaScript 月份從 0 開始
     
-   // 建立月份控制元素
-   const controlsHtml = `
-        <div class="d-flex align-items-center mb-3">
-            <button id="prevMonth" class="btn btn-outline-light mr-2">
+    // 建立月份控制元素
+    const controlsHtml = `
+        <div class="d-flex align-items-center">
+            <button id="prevMonth" class="btn btn-outline-light btn-sm mr-2">
                 <i class="fas fa-chevron-left"></i> 上個月
             </button>
             <h5 class="text-white mb-0" id="currentMonthDisplay">${currentYear}年${currentMonth}月</h5>
-            <button id="nextMonth" class="btn btn-outline-light ml-2">
+            <button id="nextMonth" class="btn btn-outline-light btn-sm ml-2">
                 下個月 <i class="fas fa-chevron-right"></i>
             </button>
         </div>
     `;
     
-    // 插入到標題下方
-    const headerTitle = document.querySelector('.header-title');
-    headerTitle.insertAdjacentHTML('afterend', controlsHtml);
+    // 插入到月份控制區域
+    const monthControlPlaceholder = document.getElementById('month-control-placeholder');
+    if (monthControlPlaceholder) {
+        monthControlPlaceholder.innerHTML = controlsHtml;
+    }
     
     // 綁定事件
     document.getElementById('prevMonth').addEventListener('click', goToPrevMonth);
     document.getElementById('nextMonth').addEventListener('click', goToNextMonth);
 }
+
+// 綁定搜尋事件
+function bindSearchEvents() {
+    document.getElementById('search-button').addEventListener('click', performSearch);
+    
+    // 回上一頁按鈕事件 - 確保使用正確的選擇器
+    const backButton = document.getElementById('back-button');
+    if (backButton) {
+        console.log('找到回上一頁按鈕，添加點擊事件');
+        backButton.addEventListener('click', handleBackButtonClick);
+    } else {
+        console.log('未找到回上一頁按鈕');
+    }
+}
+
+
+
+
 
 // 上一個月按鈕事件
 function goToPrevMonth() {
@@ -929,6 +1085,9 @@ function loadCurrentMonthData() {
         .then(data => {
             // 保存所有記錄
             allRecords = data;
+
+            // 更新統計資訊
+        loadPlatformStats();
             
             // 計算總頁數
             totalPages = Math.ceil(allRecords.length / recordsPerPage);
@@ -1005,6 +1164,9 @@ function loadMonthData(year, month) {
             
             // 更新分頁控制
             updatePagination();
+
+            // 更新統計資訊
+            loadPlatformStats();
         })
         .catch(error => {
             console.error('獲取數據失敗:', error);
@@ -1012,6 +1174,33 @@ function loadMonthData(year, month) {
             tableBody.innerHTML = `<tr><td colspan="9" class="text-center text-danger">載入 ${year}年${month}月 數據失敗</td></tr>`;
         });
 }
+
+
+// 輔助函數：格式化日期
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '-';
+        
+        return date.toLocaleDateString('zh-TW', {
+            year: 'numeric',
+            month: '2-digit'
+        });
+    } catch (e) {
+        return '-';
+    }
+}
+
+
+
+
+
+
+
+
+
 
 // 顯示特定頁的記錄
 // 在前端 displayRecords 函數中修改狀態顯示邏輯
@@ -1144,10 +1333,6 @@ function changePage(page) {
     }
 }
 
-// 搜尋功能
-function bindSearchEvents() {
-    document.getElementById('search-button').addEventListener('click', performSearch);
-}
 
 
 // 添加全局變量以追踪搜尋狀態和原始資料
@@ -1262,8 +1447,10 @@ function performSearch() {
 }
 
 
-// 處理返回按鈕點擊事件
+// 確保處理返回按鈕點擊事件正確實現
 function handleBackButtonClick() {
+    console.log('回上一頁按鈕被點擊');
+    
     // 清空所有搜尋條件
     document.getElementById('search-store-id').value = '';
     document.getElementById('search-store-name').value = '';
@@ -1273,11 +1460,12 @@ function handleBackButtonClick() {
     document.querySelector('.back-button-container').style.display = 'none';
     isSearchActive = false;
     
-    // 重新載入當前月份資料而不是使用原始記錄
-    // 這確保我們獲取完整的分頁數據
+    // 重新載入當前月份資料
     loadMonthData(currentYear, currentMonth);
+    
+    // 更新統計資訊
+    loadPlatformStats();
 }
-
 
 
 
@@ -1354,6 +1542,27 @@ function openRedemptionModal(redemptionId, points) {
             const modalTitle = document.getElementById('redemptionModalLabel');
             modalTitle.textContent = data.status === 0 ? '核銷點數並執行撥款' : '調整核銷';
             
+            // 修改模態框內容，增加核銷資訊摘要
+            const modalBody = document.querySelector('#redemptionModal .modal-body');
+            
+            // 額外顯示核銷資訊摘要
+            const storeInfoElement = document.createElement('div');
+            storeInfoElement.className = 'alert alert-info mb-3';
+            storeInfoElement.innerHTML = `
+                <h6 class="mb-2"><strong>店家資訊</strong></h6>
+                <div><strong>店家ID:</strong> ${data.storeId}</div>
+                <div><strong>店家名稱:</strong> ${data.storeName || '未知店家'}</div>
+                <div><strong>核銷批次:</strong> ${formatDate(data.redemptionMonth)}</div>
+            `;
+            
+            // 檢查是否已存在資訊摘要元素，避免重複添加
+            const existingInfo = modalBody.querySelector('.alert-info');
+            if (existingInfo) {
+                existingInfo.replaceWith(storeInfoElement);
+            } else {
+                modalBody.insertBefore(storeInfoElement, modalBody.firstChild);
+            }
+            
             // 若是調整核銷，額外顯示說明
             if (data.status !== 0) {
                 const previousCashAmount = parseInt(data.cashAmount || 0, 10);
@@ -1363,14 +1572,14 @@ function openRedemptionModal(redemptionId, points) {
                 if (!existingNote) {
                     const noteElem = document.createElement('div');
                     noteElem.id = 'redemption-note';
-                    noteElem.className = 'alert alert-info mt-3';
+                    noteElem.className = 'alert alert-warning mt-3';
                     noteElem.innerHTML = `
                         <strong>調整說明：</strong><br>
                         已核銷金額: ${previousCashAmount} 點<br>
                         剩餘點數: ${pointsAmount} 點<br>
                         建議本次核銷金額: ${pointsAmount} 點
                     `;
-                    document.querySelector('.modal-body').appendChild(noteElem);
+                    modalBody.appendChild(noteElem);
                 } else {
                     existingNote.innerHTML = `
                         <strong>調整說明：</strong><br>
@@ -1378,6 +1587,7 @@ function openRedemptionModal(redemptionId, points) {
                         剩餘點數: ${pointsAmount} 點<br>
                         建議本次核銷金額: ${pointsAmount} 點
                     `;
+                    existingNote.className = 'alert alert-warning mt-3';
                 }
             } else {
                 // 移除可能存在的說明元素
@@ -1385,6 +1595,16 @@ function openRedemptionModal(redemptionId, points) {
                 if (existingNote) {
                     existingNote.remove();
                 }
+                
+                // 新增提示
+                const noteElem = document.createElement('div');
+                noteElem.id = 'redemption-note';
+                noteElem.className = 'alert alert-info mt-3';
+                noteElem.innerHTML = `
+                    <strong>核銷說明：</strong><br>
+                    此筆將核銷 ${pointsAmount} 點，折合新台幣 ${pointsAmount} 元。
+                `;
+                modalBody.appendChild(noteElem);
             }
             
             // 顯示模態框
@@ -1488,26 +1708,14 @@ function submitRedemption(redemptionId, cashAmount) {
         
         // 重新加載當前月份數據 - 確保能看到已核銷的資料
         loadMonthData(currentYear, currentMonth);
+        
+        // 更新統計信息
+        loadPlatformStats();
     })
     .catch(error => {
         console.error('核銷失敗:', error);
         showError(error.message || '核銷失敗，請稍後再試');
     });
-}
-
-// 顯示成功消息
-function showSuccess(message) {
-    // 使用 SweetAlert2 或類似工具來顯示美觀的成功消息
-    if (window.Swal) {
-        Swal.fire({
-            icon: 'success',
-            title: '成功',
-            text: message,
-            timer: 2000
-        });
-    } else {
-        alert(message);
-    }
 }
 
 // 顯示錯誤消息
@@ -1523,6 +1731,11 @@ function showError(message) {
         alert(message);
     }
 }
+
+
+
+
+
 
 // 顯示提示信息
 function showInfo(message) {
@@ -1549,25 +1762,36 @@ document.addEventListener('DOMContentLoaded', function() {
 // 批次核銷函數
 function performBatchRedemption() {
     let selectedRedemptionIds;
+    let totalPointsToRedeem = 0;
+    let selectedItems = [];
 
     if (isSearchActive) {
         // 搜尋模式：選取所有未核銷的記錄ID
-        selectedRedemptionIds = allRecords
-            .filter(item => item.status === 0)
-            .map(item => item.id);
+        selectedItems = allRecords.filter(item => item.status === 0);
+        selectedRedemptionIds = selectedItems.map(item => item.id);
+        totalPointsToRedeem = selectedItems.reduce((sum, item) => sum + (item.pointsAmount || 0), 0);
     } else {
         // 非搜尋模式：檢查全選按鈕狀態
         const selectAllCheckbox = document.getElementById('selectAllCheckbox');
         
         if (selectAllCheckbox.checked) {
             // 如果全選按鈕被勾選，選取當前頁面所有未核銷的記錄ID
-            selectedRedemptionIds = allRecords
-                .filter(item => item.status === 0)
-                .map(item => item.id);
+            selectedItems = allRecords.filter(item => item.status === 0);
+            selectedRedemptionIds = selectedItems.map(item => item.id);
+            totalPointsToRedeem = selectedItems.reduce((sum, item) => sum + (item.pointsAmount || 0), 0);
         } else {
             // 否則只選取手動勾選的記錄ID
-            selectedRedemptionIds = Array.from(document.querySelectorAll('.row-checkbox:checked'))
-                .map(checkbox => parseInt(checkbox.dataset.redemptionId));
+            const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+            selectedRedemptionIds = Array.from(checkedBoxes).map(checkbox => parseInt(checkbox.dataset.redemptionId));
+            
+            // 計算選中項目的總點數
+            for (const id of selectedRedemptionIds) {
+                const item = allRecords.find(record => record.id === id);
+                if (item) {
+                    selectedItems.push(item);
+                    totalPointsToRedeem += item.pointsAmount || 0;
+                }
+            }
         }
     }
 
@@ -1576,12 +1800,86 @@ function performBatchRedemption() {
         return;
     }
 
+    // 準備詳細的店家核銷項目清單HTML
+    let itemsHtml = '';
+    if (selectedItems.length <= 10) {
+        // 如果項目不多，顯示所有項目
+        itemsHtml = selectedItems.map(item => 
+            `<tr>
+                <td>${item.storeId}</td>
+                <td>${item.storeName || '未知店家'}</td>
+                <td>${item.pointsAmount || 0} 點</td>
+            </tr>`
+        ).join('');
+    } else {
+        // 如果項目很多，只顯示前5個，然後顯示剩餘數量
+        const firstFive = selectedItems.slice(0, 5);
+        itemsHtml = firstFive.map(item => 
+            `<tr>
+                <td>${item.storeId}</td>
+                <td>${item.storeName || '未知店家'}</td>
+                <td>${item.pointsAmount || 0} 點</td>
+            </tr>`
+        ).join('');
+        itemsHtml += `<tr><td colspan="3" class="text-center">...以及其他 ${selectedItems.length - 5} 筆記錄</td></tr>`;
+    }
+
     Swal.fire({
-        title: `確定要核銷 ${selectedRedemptionIds.length} 筆記錄嗎？`,
+        title: `批次核銷確認`,
+        html: `
+            <div class="text-left">
+                <p>您準備核銷 <strong>${selectedRedemptionIds.length}</strong> 筆記錄，共計 <strong>${totalPointsToRedeem}</strong> 點。</p>
+                
+                <div style="max-width: 300px; margin: 0 auto;">
+                    <table class="table table-sm table-bordered" style="table-layout: fixed; width: 100%;">
+                        <colgroup>
+                            <col style="width: 25%;">
+                            <col style="width: 40%;">
+                            <col style="width: 35%;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>店家名稱</th>
+                                <th>點數</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${selectedItems.length <= 10 ? 
+                                selectedItems.map(item => 
+                                `<tr>
+                                    <td class="text-center">${item.storeId}</td>
+                                    <td class="text-center small">${item.storeName || '未知'}</td>
+                                    <td class="text-center">${item.pointsAmount || 0}</td>
+                                </tr>`
+                                ).join('') : 
+                                firstFive.map(item => 
+                                `<tr>
+                                    <td class="text-center">${item.storeId}</td>
+                                    <td class="text-center small">${item.storeName || '未知'}</td>
+                                    <td class="text-center">${item.pointsAmount || 0}</td>
+                                </tr>`
+                                ).join('') + 
+                                `<tr><td colspan="3" class="text-center small">...及其他 ${selectedItems.length - 5} 筆</td></tr>`
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-primary">
+                                <th colspan="2" class="text-right">總計</th>
+                                <th class="text-center">${totalPointsToRedeem}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <p class="mt-3 mb-0">確定要執行批次核銷嗎？</p>
+            </div>
+        `,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: '確定核銷',
-        cancelButtonText: '取消'
+        cancelButtonText: '取消',
+        width: '400px' // 顯著縮小整個彈窗的寬度
     }).then((result) => {
         if (result.isConfirmed) {
             backstageAuth.authFetch('http://localhost:8080/pointsRedemption/batchRedemption', {
@@ -1597,6 +1895,9 @@ function performBatchRedemption() {
                 
                 // 重新載入當前頁面資料
                 loadMonthData(currentYear, currentMonth);
+                
+                // 更新統計資訊
+                loadPlatformStats();
             })
             .catch(error => {
                 console.error('批次核銷失敗:', error);
@@ -1629,6 +1930,8 @@ function resetCurrentMonthRecords() {
                 showSuccess(data.message);
                 // 重新載入當前月份資料
                 loadMonthData(currentYear, currentMonth);
+                // 更新統計資訊
+                loadPlatformStats();
             })
             .catch(error => {
                 console.error('重置失敗:', error);
@@ -1637,6 +1940,7 @@ function resetCurrentMonthRecords() {
         }
     });
 }
+
 
 
 

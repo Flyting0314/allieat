@@ -304,7 +304,7 @@
     <script>
         // 定義全域變數與分頁相關變數
         let currentPage = 1;
-        const recordsPerPage = 7; // 統一設定為7筆
+        const recordsPerPage = 5; // 統一設定為7筆
         let totalPages = 1;
         let allRecords = [];
         let idSortAscending = true; // 排序方向全局變量
@@ -417,11 +417,15 @@
             }
         };
     
-        // 發放點數函數
-        function grantPointsToMember(payDetailId, points) {
-    // 從父表資訊中取得 payoutId
+    // 發放點數函數
+    function grantPointsToMember(payDetailId, points) {
+    // 從父表資訊中取得 payoutId 和當前頁碼
     const parentRecordInfo = JSON.parse(localStorage.getItem('parentPayRecordInfo'));
     const payoutId = parentRecordInfo ? parentRecordInfo.payoutId : null;
+    const payoutPoints = parentRecordInfo ? parentRecordInfo.payoutPoints : 10000;
+    
+    // 從 PayRecord 頁面的 localStorage 中獲取頁碼
+    const payRecordPage = localStorage.getItem('payrecordCurrentPage') || 1;
 
     backstageAuth.authFetch("http://localhost:8080/paydetails/update-points", {
         method: "POST",
@@ -454,10 +458,7 @@
             const currentButton = row.querySelector('.grant-points-btn');
 
             if (pointsCell && currentButton) {
-                // 獲取應發放點數
-                const payoutPoints = parseInt(currentButton.getAttribute("data-payout-points")) || 10000;
-                
-                // 更新已發放點數
+                // 使用父記錄的 payoutPoints
                 const currentPoints = parseInt(pointsCell.textContent);
                 const newTotalPoints = currentPoints + points;
                 pointsCell.textContent = newTotalPoints;
@@ -481,7 +482,11 @@
             // 導向父表並高亮
             if (payoutId) {
                 localStorage.setItem('highlightedPayRecordId', payoutId);
-                window.location.href = 'backstage_payrecord_management.html';
+                // 還需要標記發放總點數欄位需要高亮
+                localStorage.setItem('highlightTotalPoints', 'true');
+                
+                // 使用 PayRecord 頁面的頁碼
+                window.location.href = `backstage_payrecord_management.html?page=${payRecordPage}`;
             }
         } else {
             alert(data.message || '點數發放處理失敗');
@@ -504,8 +509,6 @@
         }
     });
 }
-
-
 
 
 
@@ -567,20 +570,24 @@
                 return response.json();
             })
             .then(data => {
-                console.log('Received data:', data);
-                
-                // 根據排序方向對數據進行排序
-                allRecords = idSortAscending
-                    ? data.sort((a, b) => a.payDetailId - b.payDetailId)
-                    : data.sort((a, b) => b.payDetailId - a.payDetailId);
-                
-                totalPages = Math.ceil(allRecords.length / recordsPerPage);
-                totalPages = totalPages === 0 ? 1 : totalPages;
-                
-                currentPage = 1;
-                displayRecords(currentPage);
-                updatePagination();
-            })
+        console.log('Received data:', data);
+        
+        // 根據排序方向對數據進行排序
+        allRecords = idSortAscending
+            ? data.sort((a, b) => a.payDetailId - b.payDetailId)
+            : data.sort((a, b) => b.payDetailId - a.payDetailId);
+        
+        totalPages = Math.ceil(allRecords.length / recordsPerPage);
+        totalPages = totalPages === 0 ? 1 : totalPages;
+        
+        // 只有在初始載入時重置為第一頁，搜尋時保留當前頁碼
+        if (isInitialLoad) {
+            currentPage = 1;
+        }
+        
+        displayRecords(currentPage);
+        updatePagination();
+    })
             .catch(error => {
                 console.error("獲取資料時發生錯誤:", error);
                 document.getElementById('paydetail-table').innerHTML = 
@@ -731,40 +738,44 @@
     
         // 為發放點數按鈕綁定事件
         function bindPointsButtonEvents() {
-            // 點擊發放點數按鈕時顯示彈窗
-            document.querySelectorAll(".grant-points-btn").forEach(btn => {
-                if (!btn.classList.contains('btn-disabled')) {
-                    if (!btn.hasAttribute('data-event-bound')) {
-                        btn.setAttribute('data-event-bound', 'true');
-                        
-                        btn.addEventListener("click", function () {
-                            const payDetailId = this.getAttribute("data-paydetail-id");
-                            const memberId = this.getAttribute("data-member-id");
-                            const memberName = this.getAttribute("data-member-name");
-                            const payoutPoints = this.getAttribute("data-payout-points") || 10000; // 獲取應發點數
-                            
-                            // 獲取當前已發點數
-                            const row = this.closest('tr');
-                            const currentPoints = parseInt(row.querySelector('td:nth-child(8)').textContent) || 0;
-                            
-                            document.getElementById("paydetail-member-id").innerText = memberId;
-                            document.getElementById("paydetail-member-name").innerText = memberName;
-                            document.getElementById("paydetail-payout-points").innerText = payoutPoints;
-                            document.getElementById("paydetail-current-points").innerText = currentPoints;
-    
-                            // 計算剩餘可發放點數，並設置為預設值
-                            const remainingPoints = parseInt(payoutPoints) - currentPoints;
-                            document.getElementById("paydetail-points-input").value = Math.max(0, remainingPoints);
-    
-                            $('#paydetail-modal').modal('show').attr({
-                                "data-paydetail-id": payDetailId,
-                                "data-payout-points": payoutPoints
-                            });
-                        });
-                    }
-                }
-            });
+    document.querySelectorAll(".grant-points-btn").forEach(btn => {
+        if (!btn.classList.contains('btn-disabled')) {
+            if (!btn.hasAttribute('data-event-bound')) {
+                btn.setAttribute('data-event-bound', 'true');
+                
+                btn.addEventListener("click", function () {
+                    const payDetailId = this.getAttribute("data-paydetail-id");
+                    const memberId = this.getAttribute("data-member-id");
+                    const memberName = this.getAttribute("data-member-name");
+                    
+                    // 從父記錄獲取正確的應發放點數
+                    const parentRecordInfo = JSON.parse(localStorage.getItem('parentPayRecordInfo'));
+                    const payoutPoints = parentRecordInfo ? parentRecordInfo.payoutPoints : 10000;
+                    
+                    // 獲取當前已發點數
+                    const row = this.closest('tr');
+                    const currentPoints = parseInt(row.querySelector('td:nth-child(8)').textContent) || 0;
+                    
+                    document.getElementById("paydetail-member-id").innerText = memberId;
+                    document.getElementById("paydetail-member-name").innerText = memberName;
+                    document.getElementById("paydetail-payout-points").innerText = payoutPoints;
+                    document.getElementById("paydetail-current-points").innerText = currentPoints;
+
+                    // 計算剩餘可發點數，並設置為預設值
+                    const remainingPoints = payoutPoints - currentPoints;
+                    document.getElementById("paydetail-points-input").value = Math.max(0, remainingPoints);
+
+                    $('#paydetail-modal').modal('show').attr({
+                        "data-paydetail-id": payDetailId,
+                        "data-payout-points": payoutPoints
+                    });
+                });
+            }
         }
+    });
+}
+
+
     </script>
 
 
@@ -780,7 +791,25 @@
 document.addEventListener("DOMContentLoaded", function () {
     // 獲取URL中的payoutId
     const urlParams = new URLSearchParams(window.location.search);
-    const payoutId = urlParams.get('payRecordId'); // URL參數保持不變，仍使用payRecordId作為參數名
+    const payoutId = urlParams.get('payRecordId'); 
+
+    // 檢查 URL 中是否有指定頁碼
+    const pageParam = urlParams.get('page');
+    
+    // 優先使用 URL 參數中的頁碼，如果沒有則嘗試使用 localStorage 中的頁碼
+    if (pageParam) {
+        currentPage = parseInt(pageParam);
+    } else {
+        const storedPage = localStorage.getItem('payrecordCurrentPage');
+        if (storedPage) {
+            currentPage = parseInt(storedPage);
+        }
+    }
+
+    // 保存當前頁碼到 localStorage
+    window.addEventListener('beforeunload', function() {
+        localStorage.setItem('payrecordCurrentPage', currentPage);
+    });
 
     // 如果有payoutId，則載入資料
     if (payoutId) {
@@ -955,38 +984,38 @@ function formatTimestamp(timestamp) {
 }
 
 // 為發放點數按鈕綁定事件
-function bindPointsButtonEvents() {
-    // 點擊發放點數按鈕時顯示彈窗
-    document.querySelectorAll(".grant-points-btn").forEach(btn => {
-        if (!btn.classList.contains('btn-disabled')) {
-            if (!btn.hasAttribute('data-event-bound')) {
-                btn.setAttribute('data-event-bound', 'true');
+// function bindPointsButtonEvents() {
+//     // 點擊發放點數按鈕時顯示彈窗
+//     document.querySelectorAll(".grant-points-btn").forEach(btn => {
+//         if (!btn.classList.contains('btn-disabled')) {
+//             if (!btn.hasAttribute('data-event-bound')) {
+//                 btn.setAttribute('data-event-bound', 'true');
                 
-                btn.addEventListener("click", function () {
-                    const payDetailId = this.getAttribute("data-paydetail-id");
-                    const memberId = this.getAttribute("data-member-id");
-                    const memberName = this.getAttribute("data-member-name");
-                    const payoutPoints = this.getAttribute("data-payout-points") || 10000; // 獲取應發點數
+//                 btn.addEventListener("click", function () {
+//                     const payDetailId = this.getAttribute("data-paydetail-id");
+//                     const memberId = this.getAttribute("data-member-id");
+//                     const memberName = this.getAttribute("data-member-name");
+//                     const payoutPoints = this.getAttribute("data-payout-points") || 10000; // 獲取應發點數
                     
-                    // 獲取當前已發點數
-                    const row = this.closest('tr');
-                    const currentPoints = parseInt(row.querySelector('td:nth-child(8)').textContent) || 0;
+//                     // 獲取當前已發點數
+//                     const row = this.closest('tr');
+//                     const currentPoints = parseInt(row.querySelector('td:nth-child(8)').textContent) || 0;
                     
-                    document.getElementById("paydetail-member-id").innerText = memberId;
-                    document.getElementById("paydetail-member-name").innerText = memberName;
-                    document.getElementById("paydetail-payout-points").innerText = payoutPoints;
-                    document.getElementById("paydetail-current-points").innerText = currentPoints;
+//                     document.getElementById("paydetail-member-id").innerText = memberId;
+//                     document.getElementById("paydetail-member-name").innerText = memberName;
+//                     document.getElementById("paydetail-payout-points").innerText = payoutPoints;
+//                     document.getElementById("paydetail-current-points").innerText = currentPoints;
 
-                    // 計算剩餘可發點數，並設置為預設值
-                    const remainingPoints = parseInt(payoutPoints) - currentPoints;
-                    document.getElementById("paydetail-points-input").value = Math.max(0, remainingPoints);
+//                     // 計算剩餘可發點數，並設置為預設值
+//                     const remainingPoints = parseInt(payoutPoints) - currentPoints;
+//                     document.getElementById("paydetail-points-input").value = Math.max(0, remainingPoints);
 
-                    $('#paydetail-modal').modal('show').attr("data-paydetail-id", payDetailId);
-                });
-            }
-        }
-    });
-}
+//                     $('#paydetail-modal').modal('show').attr("data-paydetail-id", payDetailId);
+//                 });
+//             }
+//         }
+//     });
+// }
 
 
 

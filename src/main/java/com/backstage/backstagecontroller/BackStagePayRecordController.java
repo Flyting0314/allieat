@@ -154,6 +154,8 @@ public class BackStagePayRecordController {
         return ResponseEntity.ok(response);
     }
     
+    
+    
     //=============== 獲取啟用狀態會員數量 ===============
     @GetMapping("/active-member-count")
     public ResponseEntity<Map<String, Integer>> getActiveMemberCount() {

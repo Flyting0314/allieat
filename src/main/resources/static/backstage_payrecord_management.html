@@ -10,7 +10,8 @@
     <script src="./js/backstage_auth_js.js"></script>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -217,7 +218,6 @@
 
 
 
-
         /* 移除卡片頂部的邊距 */
         .card-body {
             padding-top: 0;
@@ -273,6 +273,39 @@
         .back-button i {
             margin-right: 5px;
         }
+
+
+ /* =========== 輪詢highlight更新資料 ===========*/ 
+
+  /* 高亮样式 */
+        .table-info {
+            background-color: rgba(92, 156, 230, 0.3) !important; /* 使用!important确保样式应用 */
+            animation: fadeHighlight 10s ease-in-out;
+        }
+
+        @keyframes fadeHighlight {
+            0% { background-color: rgba(92, 156, 230, 0.5); }
+            70% { background-color: rgba(92, 156, 230, 0.3); }
+            100% { background-color: rgba(92, 156, 230, 0.2); }
+        }
+
+
+        /* 發放總點數欄位高亮樣式 */
+        .highlight-total-points {
+            color: #1e88e5;
+            font-weight: bold;
+            animation: pulseTotalPoints 10s ease-in-out;
+            position: relative;
+        }
+
+        @keyframes pulseTotalPoints {
+            0% { color: #1e88e5; font-size: 110%; }
+            50% { color: #1e88e5; font-size: 100%; }
+            100% { color: inherit; font-size: 100%; }
+        }
+
+
+
     </style>
 </head>
 
@@ -281,7 +314,7 @@
         <div class="row">
             <!-- 左側側邊欄 -->
             <div class="col-md-2 side-bar">
-                <h4>攏呷霸-後台首頁</h4>
+                <h4>受助者點數發放</h4>
                 <a href="./backstage_homepage.html">後台首頁</a>
                 
                 <!-- 可展開的合作店家管理選項 -->
@@ -290,7 +323,7 @@
                 </a>
                 <div class="collapse" id="storeSubMenu">
                     <div class="sub-menu">
-                        <a href="#" class="sub-item">合作店家管理</a>
+                        <a href="./storeList.html" class="sub-item">合作店家管理</a>
                         <a href="./backstage_pointsRedemption_management.html" class="sub-item">合作店家點數核銷</a>
                     </div>
                 </div>
@@ -482,6 +515,8 @@
     </div>
 </div>
 
+
+
 <!-- 批量發放成功提示模態框 -->
 <div class="modal fade" id="batchSuccessModal" tabindex="-1" role="dialog" aria-labelledBy="batchSuccessModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -503,6 +538,8 @@
         </div>
     </div>
 </div>
+
+
 
 <!-- 編輯發放紀錄浮動視窗 -->
 <div class="payrecord-modal" id="payrecord-edit-modal">
@@ -531,9 +568,10 @@
 <!-- 模態框覆蓋層 -->
 <div class="payrecord-modal-overlay" id="payrecord-modal-overlay"></div>
 
-<!-- 引入JavaScript檔案 -->
+
 
 <script>
+
 /* ======= main.js ============
  * 點數發放主頁面邏輯
  * 
@@ -548,17 +586,51 @@
 
 // 全局變數定義
 let currentPage = 1;
-const recordsPerPage = 8; //每頁幾筆資料
+const recordsPerPage = 6; //每頁幾筆資料
 let totalPages = 1;
 let allRecords = [];
 let originalRecords = []; // 保存原始數據，以便返回
 let isSearchActive = false; // 標記是否處於搜索狀態
 let payoutIdSortAscending = true; // 排序方向
+// 添加輪詢檢查機制，定期檢查資料更新
+let lastKnownRecords = {};
+
+
+
+
 
 // 頁面初始化
 document.addEventListener("DOMContentLoaded", function () {
     // 檢查登入狀態
     backstageAuth.requireLogin();
+
+    // 檢查 URL 中是否有指定頁碼
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageParam = urlParams.get('page');
+    
+    console.log("初始頁碼檢查：");
+    console.log("URL 參數頁碼：", pageParam);
+    console.log("localStorage 頁碼：", localStorage.getItem('payrecordCurrentPage'));
+    
+    // 優先使用 URL 參數中的頁碼，如果沒有則嘗試使用 localStorage 中的頁碼
+    if (pageParam) {
+        currentPage = parseInt(pageParam);
+    } else {
+        const storedPage = localStorage.getItem('payrecordCurrentPage');
+        if (storedPage) {
+            currentPage = parseInt(storedPage);
+        }
+    }
+    
+    console.log("最終設置頁碼：", currentPage);
+
+    // 保存當前頁碼到 localStorage
+    window.addEventListener('beforeunload', function() {
+        localStorage.setItem('payrecordCurrentPage', currentPage);
+    });
+
+
+
 
     // 初始化日期範圍選擇器
     $('#dateRangePicker').daterangepicker({
@@ -598,8 +670,20 @@ document.addEventListener("DOMContentLoaded", function () {
         $(this).val('');
     });
 
-    // 預設載入所有資料
-    fetchRecords(true);
+       // 预设载入所有资料
+       fetchRecords(true)
+        .then(() => {
+            // 数据加载完成后，开始状态轮询
+            startPolling();
+            
+            // 请求通知权限
+            if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+        })
+        .catch(err => {
+            console.error("初始化数据加载失败:", err);
+        });
     
     // 搜尋按鈕事件
     document.getElementById('search-button').addEventListener('click', function() {
@@ -666,6 +750,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // 獲取記錄資料
+// 修改 fetchRecords 函数，确保返回 Promise
 function fetchRecords(isInitialLoad = false) {
     const searchId = document.getElementById('search-id').value;
     const searchStatus = document.getElementById('search-status').value;
@@ -695,50 +780,56 @@ function fetchRecords(isInitialLoad = false) {
     
     const url = `http://localhost:8080/payrecord/listAll${isInitialLoad ? '' : `?${queryParams.toString()}`}`;
     
-    // 添加重試邏輯和錯誤處理
-    const fetchWithRetry = (attempt = 1) => {
-        backstageAuth.authFetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`網路回應不正確: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // 保存原始數據並顯示
-            if (isInitialLoad) {
-                originalRecords = [...data];
-            }
-            
-            // 不對數據進行額外的排序，直接使用後端返回的排序（已經是降序）
-            allRecords = [...data];
-            
-            totalPages = Math.ceil(allRecords.length / recordsPerPage);
-            totalPages = totalPages === 0 ? 1 : totalPages;
-            
-            currentPage = 1;
-            displayRecords(currentPage);
-            updatePagination();
-        })
-        .catch(error => {
-            console.error("獲取資料時發生錯誤:", error);
-            
-            // 如果錯誤是連接問題且重試次數少於3次，則重試
-            if (attempt < 3) {
-                console.log(`嘗試重新連接 (${attempt+1}/3)...`);
-                setTimeout(() => fetchWithRetry(attempt + 1), 1000); // 延遲1秒再重試
-            } else {
-                // 顯示錯誤消息
-                document.getElementById('payrecord-table').innerHTML = 
-                    '<tr><td colspan="8" class="text-center text-danger">資料載入失敗，請稍後再試或重新整理頁面</td></tr>';
-            }
-        });
-    };
-    
-    // 開始首次嘗試
-    fetchWithRetry();
+    // 返回Promise以便链式调用
+    return new Promise((resolve, reject) => {
+        // 添加重试逻辑和错误处理
+        const fetchWithRetry = (attempt = 1) => {
+            backstageAuth.authFetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`網路回應不正確: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 不對數據進行額外的排序，直接使用後端返回的排序（已經是降序）
+                allRecords = [...data];
+                
+                totalPages = Math.ceil(allRecords.length / recordsPerPage);
+                totalPages = totalPages === 0 ? 1 : totalPages;
+                
+                // 只有在初始載入時重置為第一頁，搜尋時保留當前頁碼
+                if (isInitialLoad) {
+                    currentPage = 1;
+                } else {
+                    // 確保當前頁碼不會超過總頁數
+                    currentPage = Math.min(currentPage, totalPages);
+                }
+                
+                displayRecords(currentPage);
+                updatePagination();
+                resolve(data); // 解析Promise
+            })
+            .catch(error => {
+                console.error("獲取資料時發生錯誤:", error);
+                
+                // 如果错误是连接问题且重试次数少于3次，则重试
+                if (attempt < 3) {
+                    console.log(`嘗試重新連接 (${attempt+1}/3)...`);
+                    setTimeout(() => fetchWithRetry(attempt + 1), 1000); // 延迟1秒再重试
+                } else {
+                    // 显示错误消息
+                    document.getElementById('payrecord-table').innerHTML = 
+                        '<tr><td colspan="8" class="text-center text-danger">資料載入失敗，請稍後再試或重新整理頁面</td></tr>';
+                    reject(error); // 拒绝Promise
+                }
+            });
+        };
+        
+        // 开始首次尝试
+        fetchWithRetry();
+    });
 }
-
 
 
 // 數字輸入框驗證 - 限制只能輸入數字
@@ -810,6 +901,46 @@ function togglePayoutIdSort() {
     }
 }
 
+
+
+// 初始化已知記錄狀態
+function initializeKnownRecords() {
+  lastKnownRecords = {};
+  allRecords.forEach(record => {
+    lastKnownRecords[record.payoutId] = {
+      status: record.status,
+      payoutDate: record.payoutDate,
+      totalPoints: record.totalPoints
+    };
+  });
+  console.log("初始化已知記錄狀態:", lastKnownRecords);
+}
+
+// 更新已知記錄
+function updateKnownRecords(newRecords) {
+  newRecords.forEach(record => {
+    lastKnownRecords[record.payoutId] = {
+      status: record.status,
+      payoutDate: record.payoutDate,
+      totalPoints: record.totalPoints
+    };
+  });
+}
+
+// 顯示更新通知
+function showUpdateNotification(updatedRecordIds) {
+  console.log("更新的記錄ID:", updatedRecordIds);
+  // 桌面通知
+  if (Notification.permission === "granted") {
+    new Notification("點數發放更新", {
+      body: `有 ${updatedRecordIds.length} 筆記錄已更新`
+    });
+  }
+}
+
+
+
+
 /* ============== operation.js ================
  * 點數發放頁面操作邏輯
  * 
@@ -823,17 +954,6 @@ function togglePayoutIdSort() {
  * 最後更新：2024-04-11
  */
 
-// 查看點數發放明細
-// function viewDetails(payRecordId) {
-//    // 將完整的記錄存入 localStorage
-//    localStorage.setItem('parentPayRecordInfo', JSON.stringify(record));
-
-//     // 跳轉到明細頁面
-//     window.location.href = `backstage_paydetail.html?payRecordId=${record.payoutId}`;
-//     // window.location.href = `backstage_paydetail.html?payRecordId=${payRecordId}`;
-
-
-//   }
 
 
 //=========新跳轉寫法 查看明細頁面==============
@@ -842,15 +962,18 @@ function viewDetails(currentRecord) {
     // 將完整的記錄存入 localStorage
     localStorage.setItem('parentPayRecordInfo', JSON.stringify(currentRecord));
     
-    // 跳轉到明細頁面
-    window.location.href = `backstage_paydetail.html?payRecordId=${currentRecord.payoutId}`;
+    // 確保保存當前頁碼到 localStorage
+    localStorage.setItem('payrecordCurrentPage', currentPage);
+    
+    // 跳轉到明細頁面，並帶上當前頁碼
+    window.location.href = `backstage_paydetail.html?payRecordId=${currentRecord.payoutId}&page=${currentPage}`;
 }
 
 
-
   
-  // 立刻發放點數
-  function executePay(payoutId) { 
+
+  // 立刻發放點數 - 成功后添加高亮
+function executePay(payoutId) { 
     if (!confirm(`確定要執行發放 payoutId: ${payoutId} 嗎？`)) return;
   
     const rows = document.querySelectorAll('#payrecord-table tr');
@@ -873,24 +996,32 @@ function viewDetails(currentRecord) {
     actionCell.innerHTML = '<span class="text-info"><i class="fas fa-spinner fa-spin"></i> 處理中...</span>';
   
     backstageAuth.authFetch(`http://localhost:8080/payrecord/execute/${payoutId}`, {
-      method: "POST"
+        method: "POST"
     })
     .then(response => {
-      if (!response.ok) {
-        throw new Error('發放處理失敗');
-      }
-      return response.json();
+        if (!response.ok) {
+            throw new Error('發放處理失敗');
+        }
+        return response.json();
     })
     .then(result => {
-      alert(`發放成功: ${result.message || '點數已成功發放'}`);
-      fetchRecords();
+        alert(`發放成功: ${result.message || '點數已成功發放'}`);
+        
+        // 添加高亮标记
+        localStorage.setItem('highlightedPayRecordId', payoutId);
+        
+        fetchRecords();
     })
     .catch(error => {
-      console.error("發放失敗:", error);
-      alert(`發放失敗：${error.message || '請稍後再試'}`);
-      actionCell.innerHTML = originalContent;
+        console.error("發放失敗:", error);
+        alert(`發放失敗：${error.message || '請稍後再試'}`);
+        actionCell.innerHTML = originalContent;
     });
-  }
+}
+
+
+
+
   
   // 編輯發放紀錄
   function editRecord(payoutId, payoutPoints, scheduleTime, status) {
@@ -1106,11 +1237,156 @@ function calculateTotalPoints() {
 }
 
 
+
+// main.js 區塊
+function startPolling() {
+  console.log("開始輪詢檢查更新...");
+  
+  // 初始化已知記錄狀態
+  initializeKnownRecords();
+  
+  // 每30秒檢查一次更新
+  const pollingInterval = setInterval(() => {
+    console.log("執行輪詢檢查...");
+    
+    backstageAuth.authFetch('http://localhost:8080/payrecord/listAll')
+    .then(response => response.json())
+    .then(data => {
+      // 比較新舊數據，只更新有變化的部分
+      updateChangedRecords(data);
+    })
+    .catch(error => {
+      console.error("輪詢檢查失敗:", error);
+    });
+  }, 3000); // 3秒輪詢一次
+  
+  // 頁面離開時清除輪詢
+  window.addEventListener('beforeunload', () => {
+    clearInterval(pollingInterval);
+  });
+}
+
+// 更新有變化的記錄
+function updateChangedRecords(newRecords) {
+  // 檢查哪些記錄有變化
+  const updatedRecordIds = [];
+  
+  newRecords.forEach(newRecord => {
+    const oldRecord = lastKnownRecords[newRecord.payoutId];
+    if (oldRecord) {
+      const statusChanged = oldRecord.status !== newRecord.status;
+      const totalPointsChanged = oldRecord.totalPoints !== newRecord.totalPoints;
+      const payoutDateChanged = oldRecord.payoutDate !== newRecord.payoutDate;
+      
+      // 檢查是否有任何變化
+      if (statusChanged || totalPointsChanged || payoutDateChanged) {
+        console.log(`記錄 ${newRecord.payoutId} 發生變化:`, {
+          狀態變化: statusChanged,
+          點數變化: totalPointsChanged,
+          時間變化: payoutDateChanged
+        });
+        
+        updatedRecordIds.push(newRecord.payoutId);
+        
+        // 更新表格中對應的行
+        updateTableRow(newRecord);
+      }
+    }
+  });
+  
+  // 更新已知記錄
+  updateKnownRecords(newRecords);
+  
+  // 如果有更新，顯示通知
+  if (updatedRecordIds.length > 0) {
+    showUpdateNotification(updatedRecordIds);
+  }
+}
+
+// 更新表格中的特定行
+function updateTableRow(record) {
+  console.log("更新表格行:", record);
+  
+  // 獲取當前頁的所有行
+  const rows = document.querySelectorAll('#payrecord-table tr');
+  
+  // 尋找對應記錄的行
+  for (let i = 0; i < rows.length; i++) {
+    const cells = rows[i].querySelectorAll('td');
+    if (cells.length > 0 && cells[0].textContent.trim() === record.payoutId.toString()) {
+      console.log("找到對應的行，開始更新內容");
+      
+      // 更新行內容
+      // 點數
+      const totalPointsClass = (record.status === 1) ? 'highlight-total-points' : '';
+      cells[1].innerHTML = `<span class="${totalPointsClass}">${record.totalPoints ? record.totalPoints.toLocaleString() : '<span class="text-muted-small">未發放</span>'}</span>`;
+      
+      // 實際發放時間
+      cells[3].innerHTML = record.payoutDate ? formatTimestamp(record.payoutDate) : '<span class="text-muted-small">尚未發放</span>';
+      
+      // 發放狀態
+      cells[4].innerHTML = formatStatusWithBadge(record.status);
+      
+      // 更新操作按鈕
+      if (record.status === 1) {
+        // 已發放狀態
+        cells[5].innerHTML = '<span class="text-muted-small">已發放</span>';
+        cells[6].innerHTML = '<span class="text-muted-small">已發放</span>';
+        cells[7].innerHTML = `<button class="btn btn-outline-primary btn-sm" onclick='viewDetails(${JSON.stringify(record).replace(/'/g, "\\'")})')>查看</button>`;
+      } else {
+        // 未發放狀態
+        cells[5].innerHTML = `<button class="btn btn-outline-success btn-sm" onclick="executePay(${record.payoutId})">立刻發放</button>`;
+        cells[6].innerHTML = `<button class="btn btn-outline-primary btn-sm" onclick="editRecord(${record.payoutId}, ${record.payoutPoints}, '${record.scheduleTime}', ${record.status})">修改</button>`;
+        cells[7].innerHTML = `<button class="btn btn-outline-secondary btn-sm" disabled>查看</button>`;
+      }
+      
+      // 添加高亮效果
+      rows[i].classList.add('table-info');
+      
+      // 設定定時器，10秒後移除高亮
+      setTimeout(() => {
+        rows[i].classList.remove('table-info');
+        // 同時移除點數高亮效果
+        const pointsCell = cells[1].querySelector('.highlight-total-points');
+        if (pointsCell) {
+          pointsCell.classList.remove('highlight-total-points');
+        }
+      }, 10000);
+      
+      break;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   // 在文檔載入完成後執行
 document.addEventListener("DOMContentLoaded", function () {
     // 獲取確認按鈕元素
     const confirmButton = document.getElementById('confirmBatchDistribute');
+
+    // 請求通知權限
+    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission();
+    }
+    
+    // 載入資料後開始輪詢
+    fetchRecords(true).then(() => {
+        startPolling();
+    });
     
     // 如果已經綁定過事件，先移除，防止重複綁定
     if (confirmButton) {
@@ -1251,6 +1527,8 @@ function displayRecords(page) {
       return;
   }
   
+
+  
   // 計算當前頁的資料範圍
   const startIndex = (page - 1) * recordsPerPage;
   const endIndex = Math.min(startIndex + recordsPerPage, allRecords.length);
@@ -1258,50 +1536,62 @@ function displayRecords(page) {
   // 取得當前頁的資料
   const currentRecords = allRecords.slice(startIndex, endIndex);
   
-  // 檢查是否有高亮的記錄
-  const highlightedId = localStorage.getItem('highlightedPayRecordId');
+// 檢查是否有高亮的記錄
+const highlightedId = localStorage.getItem('highlightedPayRecordId');
+const highlightTotalPoints = localStorage.getItem('highlightTotalPoints') === 'true';
   
   // 生成表格行
   currentRecords.forEach(record => {
-      const row = document.createElement("tr");
+        const row = document.createElement("tr");
       
-      // 如果這筆記錄是剛剛更新的，加上高亮類別
-      const highlightClass = record.payoutId == highlightedId ? 'table-info' : ''; // 藍色
-      row.className = highlightClass;
+        // 如果這筆記錄是剛剛更新的，加上高亮類別
+        const highlightClass = record.payoutId == highlightedId ? 'table-info' : '';
+        row.className = highlightClass;
       
-      row.innerHTML = `
-          <td>${record.payoutId}</td>
-          <td>${record.totalPoints === null || record.totalPoints === 0 ? '<span class="text-muted-small">未發放</span>' : record.totalPoints.toLocaleString()}</td>
-          <td>${formatTimestamp(record.scheduleTime)}</td>
-          <td>${record.payoutDate ? formatTimestamp(record.payoutDate) : '<span class="text-muted-small">尚未發放</span>'}</td>
-          <td>${formatStatusWithBadge(record.status)}</td>
-          <td>
-            ${record.status === 0 || record.status === 2 ? 
-            `<button class="btn btn-outline-success btn-sm" onclick="executePay(${record.payoutId})">立刻發放</button>` : 
-            `<span class="text-muted-small">已發放</span>`}
-          </td>
-          <td>
-            ${record.status === 0 || record.status === 2 ? 
-            `<button class="btn btn-outline-primary btn-sm" onclick="editRecord(${record.payoutId}, ${record.payoutPoints}, '${record.scheduleTime}', ${record.status})">修改</button>` : 
-            `<span class="text-muted-small">已發放</span>`}
-          </td>
-          
-   <td>
-    ${record.status === 1 ? 
-    `<button class="btn btn-outline-primary btn-sm" onclick='viewDetails(${JSON.stringify(record).replace(/'/g, "\\'")})')>查看</button>` : 
-    `<button class="btn btn-outline-secondary btn-sm" disabled>查看</button>`}
-</td>
-      `;
-      tableBody.appendChild(row);
-  });
+        // 檢查是否需要高亮發放總點數
+        const totalPointsClass = (record.payoutId == highlightedId && highlightTotalPoints) ? 'highlight-total-points' : '';
+      
+        row.innerHTML = `
+            <td>${record.payoutId}</td>
+            <td class="${totalPointsClass}">${record.totalPoints === null || record.totalPoints === 0 ? '<span class="text-muted-small">未發放</span>' : record.totalPoints.toLocaleString()}</td>
+            <td>${formatTimestamp(record.scheduleTime)}</td>
+            <td>${record.payoutDate ? formatTimestamp(record.payoutDate) : '<span class="text-muted-small">尚未發放</span>'}</td>
+            <td>${formatStatusWithBadge(record.status)}</td>
+            <td>
+                ${record.status === 0 || record.status === 2 ? 
+                `<button class="btn btn-outline-success btn-sm" onclick="executePay(${record.payoutId})">立刻發放</button>` : 
+                `<span class="text-muted-small">已發放</span>`}
+            </td>
+            <td>
+                ${record.status === 0 || record.status === 2 ? 
+                `<button class="btn btn-outline-primary btn-sm" onclick="editRecord(${record.payoutId}, ${record.payoutPoints}, '${record.scheduleTime}', ${record.status})">修改</button>` : 
+                `<span class="text-muted-small">已發放</span>`}
+            </td>
+            <td>
+                ${record.status === 1 ? 
+                `<button class="btn btn-outline-primary btn-sm" onclick='viewDetails(${JSON.stringify(record).replace(/'/g, "\\'")})')>查看</button>` : 
+                `<button class="btn btn-outline-secondary btn-sm" disabled>查看</button>`}
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
 
-  // 3秒後移除高亮
-  if (highlightedId) {
-      setTimeout(() => {
-          localStorage.removeItem('highlightedPayRecordId');
-          fetchRecords(true); // 重新載入並移除高亮
-      }, 10000);
-  }
+    // 清除高亮標記
+    if (highlightedId) {
+        setTimeout(() => {
+            localStorage.removeItem('highlightedPayRecordId');
+            localStorage.removeItem('highlightTotalPoints');
+            
+            // 移除高亮效果
+            document.querySelectorAll('.table-info').forEach(el => {
+                el.classList.remove('table-info');
+            });
+            
+            document.querySelectorAll('.highlight-total-points').forEach(el => {
+                el.classList.remove('highlight-total-points');
+            });
+        }, 10000);
+    }
 }
 
 

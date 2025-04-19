@@ -15,6 +15,7 @@ public class StoreOrderDTO {
     public static class FoodItem {
         private String foodName;
         private Integer quantity;
+        private String note;
 
         public String getFoodName() {
             return foodName;
@@ -31,6 +32,14 @@ public class StoreOrderDTO {
         public void setQuantity(Integer quantity) {
             this.quantity = quantity;
         }
+
+		public String getNote() {
+			return note;
+		}
+
+		public void setNote(String note) {
+			this.note = note;
+		}
     }
 
     // ===== Getter / Setter =====

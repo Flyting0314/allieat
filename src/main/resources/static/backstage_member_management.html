@@ -268,28 +268,37 @@
 
 /* ===============表格水平滾動軸================== */
 
-        .table-responsive {
-            overflow: visible; /* 允許下拉選單溢出 */
-            overflow-x: auto;
-            max-width: 100%;
-            -webkit-overflow-scrolling: touch; /* 為 iOS 裝置改善捲動 */
+
+        /* 修改在冊單位欄位 */
+        .table td:nth-child(3) {
+            max-width: 350px; /* 增加最大寬度 */
+            white-space: none; /* 允許文字自動換行 */
+            overflow: visible; /* 移除滾動功能 */
+            text-overflow: initial; /* 移除省略號 */
+            cursor: default; /* 恢復正常游標樣式 */
         }
 
-        .table-responsive table {
-            min-width: 1200px; /* 根據欄位數量調整 */
-        }
-
+        /* 調整表格容器，確保其他欄位能正確顯示 */
         .memberManagement-table-container {
             width: 100%;
             overflow-x: auto;
         }
 
+        /* 確保表格有足夠寬度 */
         .table-responsive table {
-            min-width: 1200px; /* 根據欄位數量調整 */
+            min-width: 1300px; /* 稍微增加整體表格最小寬度 */
             width: 100%;
             margin-bottom: 0;
         }
 
+
+
+/* =====================會員帳號狀態欄位啟用狀態採用ajax局部更新========================== */
+
+/* 最簡單的高亮效果 - 只有背景色，沒有動畫和定位 */
+.simple-highlight {
+    background-color: rgba(92, 156, 230, 0.3) !important; /* 淺藍色背景 */
+}
 
 
     </style>
@@ -300,7 +309,7 @@
     <div class="row">
         <!-- 左側側邊欄 -->
     <div class="col-md-2 side-bar">
-        <h4>攏呷霸-後台首頁</h4>
+        <h4>受助者管理</h4>
         <a href="./backstage_homepage.html">後台首頁</a>
         
         <!-- 可展開的合作店家管理選項 -->
@@ -309,8 +318,10 @@
         </a>
         <div class="collapse" id="storeSubMenu">
             <div class="sub-menu">
-                <a href="#" class="sub-item">合作店家管理</a>
-                <a href="#" class="sub-item">合作店家點數核銷</a>
+                <a href="./storeList.html" class="sub-item">合作店家管理</a>
+                <a
+							href="./backstage_pointsRedemption_management.html"
+							class="sub-item">合作店家點數核銷</a>
             </div>
         </div>
         
@@ -458,7 +469,7 @@
 <script>
 
 // 頁面加載完成後執行
-const itemsPerPage = 7; // 每頁顯示的資料數量
+const itemsPerPage = 5; // 每頁顯示的資料數量
 
 
 // 保存原始數據，以便返回
@@ -468,6 +479,10 @@ let isSearchActive = false;
 // 全域變數，追蹤排序狀態
 let memberIdSortAscending = true;
 let currentSortedData = []; // 全域變數儲存排序後的完整資料
+
+// 全域變數，保存輪詢計時器
+let statusPollInterval;
+
 
 // 頁面加載完成後執行
 document.addEventListener('DOMContentLoaded', function() {
@@ -480,6 +495,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 載入在冊單位選項
     loadOrganizatonOptions();
     
+    // 啟動定期輪詢
+    startStatusPolling();
+
     // 搜尋按鈕事件處理
     document.getElementById('search-button').addEventListener('click', function() {
         isSearchActive = true;
@@ -923,11 +941,8 @@ window.changeAccountStatus = function(element, memberId) {
 }
 
 
-// 顯示照片或文件預覽模態框
+// 顯示照片或文件預覽 - 修改為全部另開分頁
 window.showImageModal = function(fileUrl) {
-    const modal = document.getElementById('memberManagement-imageModal');
-    const modalImg = document.getElementById('memberManagement-modalImage');
-    
     // 確保使用完整的 URL (包含域名)
     if (!fileUrl.startsWith('http')) {
         // 使用當前域名作為基礎
@@ -937,57 +952,8 @@ window.showImageModal = function(fileUrl) {
     
     console.log("顯示檔案:", fileUrl);
     
-    // 取得檔案副檔名
-    const fileExtension = fileUrl.split('.').pop().toLowerCase();
-    
-    // 定義需要處理的檔案類型
-    const imageTypes = ['jpg', 'jpeg', 'png', 'bmp'];
-    const pdfType = ['pdf'];
-    
-    // 檢查檔案類型
-    if (imageTypes.includes(fileExtension)) {
-        // 圖片類型：使用模態框顯示
-        modalImg.style.display = 'none';
-        modal.style.display = "block";
-        modalImg.src = fileUrl;
-        
-        // 圖片加載完成後顯示並置中
-        modalImg.onload = function() {
-            modalImg.style.display = 'block';
-            
-            // 計算並設置圖片的垂直位置以達到居中效果
-            const windowHeight = window.innerHeight;
-            const imgHeight = modalImg.offsetHeight;
-            
-            if (imgHeight < windowHeight) {
-                const topMargin = Math.max(0, (windowHeight - imgHeight) / 2);
-                modalImg.style.marginTop = topMargin + 'px';
-            } else {
-                modalImg.style.marginTop = '30px'; // 如果圖片較大，保留上方空間
-            }
-        };
-        
-        // 關閉模態框的事件處理
-        const closeBtn = document.getElementsByClassName('memberManagement-close')[0];
-        closeBtn.onclick = function() {
-            modal.style.display = "none";
-        }
-        
-        // 點擊模態框背景也可以關閉
-        modal.onclick = function(event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        }
-    } else if (pdfType.includes(fileExtension)) {
-        // PDF 檔案：在新視窗中打開
-        window.open(fileUrl, '_blank');
-        return;
-    } else {
-        // 其他未知類型的檔案：提示不支援
-        alert('不支援此檔案類型的預覽');
-        return;
-    }
+    // 直接在新分頁中打開所有檔案
+    window.open(fileUrl, '_blank');
 }
 
 
@@ -1012,6 +978,214 @@ window.getAccountStatusText = function(status) {
     };
     return statusMap[status] || '未知狀態';
 }
+
+
+
+// 啟動狀態輪詢
+function startStatusPolling() {
+    // 每幾秒查詢一次最新狀態
+    statusPollInterval = setInterval(checkForStatusUpdates, 2000);
+    
+    // 當頁面隱藏時暫停輪詢，以節省資源
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            clearInterval(statusPollInterval);
+        } else {
+            startStatusPolling();
+        }
+    });
+}
+
+
+// 檢查狀態更新
+function checkForStatusUpdates() {
+    // 獲取當前表格中的所有會員 ID
+    const memberIds = [];
+    const tableRows = document.querySelectorAll('#member-table tr');
+    
+    // 建立當前表格中會員狀態的映射
+    const currentTableState = {};
+    tableRows.forEach(row => {
+        const idCell = row.querySelector('td:first-child');
+        if (idCell && idCell.textContent) {
+            const memberId = parseInt(idCell.textContent);
+            memberIds.push(memberId);
+            
+            // 獲取審核狀態
+            const reviewStatusCell = row.querySelector('td:nth-child(8) .memberManagement-status-badge');
+            // 獲取帳號狀態
+            const accountStatusCell = row.querySelector('td:nth-child(10) .memberManagement-status-badge');
+            
+            currentTableState[memberId] = {
+                reviewStatusText: reviewStatusCell ? reviewStatusCell.textContent : '',
+                accountStatusText: accountStatusCell ? accountStatusCell.textContent : ''
+            };
+        }
+    });
+    
+    // 如果表格為空，不進行查詢
+    if (memberIds.length === 0) return;
+    
+    // 發送 AJAX 請求檢查這些會員的狀態
+    backstageAuth.authFetch('http://localhost:8080/memberManagement/checkStatusUpdates', {
+        method: 'POST',
+        body: { memberIds: memberIds }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.updates) {
+            // 審核狀態和帳號狀態的文字映射
+            const reviewStatusMap = {
+                0: '審核中',
+                1: '已通過',
+                2: '未通過',
+                3: '待審核'
+            };
+            
+            const accountStatusMap = {
+                0: '未啟用',
+                1: '啟用',
+                2: '停用'
+            };
+            
+            // 處理每個狀態更新
+            data.updates.forEach(update => {
+                const memberId = update.memberId;
+                const newAccStat = update.accStat;
+                const newReviewed = update.reviewed;
+                
+                // 獲取對應狀態的文字描述
+                const newAccountStatusText = accountStatusMap[newAccStat] || '未知';
+                const newReviewStatusText = reviewStatusMap[newReviewed] || '未知';
+                
+                // 檢查是否有狀態變化
+                let statusChanged = false;
+                let accStatChanged = false;
+                let reviewedChanged = false;
+                
+                if (currentTableState[memberId]) {
+                    // 檢查帳號狀態是否變化
+                    if (currentTableState[memberId].accountStatusText !== newAccountStatusText) {
+                        accStatChanged = true;
+                        statusChanged = true;
+                    }
+                    
+                    // 檢查審核狀態是否變化
+                    if (currentTableState[memberId].reviewStatusText !== newReviewStatusText) {
+                        reviewedChanged = true;
+                        statusChanged = true;
+                    }
+                }
+                
+                // 只有在狀態有變化時才更新 UI
+                if (statusChanged) {
+                    updateTableMemberStatus(
+                        memberId, 
+                        accStatChanged ? newAccStat : undefined, 
+                        reviewedChanged ? newReviewed : undefined
+                    );
+                }
+            });
+        }
+    })
+    .catch(error => {
+        console.error('檢查狀態更新失敗:', error);
+    });
+}
+
+
+
+
+// 更新表格中會員的狀態
+// 更新表格中會員的狀態 - 使用最簡單的高亮效果
+function updateTableMemberStatus(memberId, newAccStat, newReviewed) {
+    // 查找表格中對應的行
+    const tableRows = document.querySelectorAll('#member-table tr');
+    let updatedRow = null;
+    let statusChanged = false;
+    
+    for (const row of tableRows) {
+        const idCell = row.querySelector('td:first-child');
+        if (idCell && idCell.textContent == memberId) {
+            updatedRow = row;
+            
+            // 更新審核狀態（如果提供了）
+            if (newReviewed !== undefined) {
+                const reviewStatusCell = row.querySelector('td:nth-child(8)');
+                const reviewActionCell = row.querySelector('td:nth-child(9)');
+                
+                if (reviewStatusCell && reviewActionCell) {
+                    const auditStatusMap = {
+                        0: {text: '審核中', class: 'memberManagement-status-pending'},
+                        1: {text: '已通過', class: 'memberManagement-status-approved'},
+                        2: {text: '未通過', class: 'memberManagement-status-rejected'},
+                        3: {text: '待審核', class: 'memberManagement-status-waiting'}
+                    };
+                    
+                    const auditStatus = auditStatusMap[newReviewed] || {text: '未知', class: ''};
+                    
+                    // 更新審核狀態單元格
+                    reviewStatusCell.innerHTML = `<span class="memberManagement-status-badge ${auditStatus.class}">${auditStatus.text}</span>`;
+                    
+                    // 更新審核操作單元格
+                    reviewActionCell.innerHTML = window.generateAuditOptions(newReviewed, memberId);
+                    
+                    statusChanged = true;
+                }
+            }
+            
+            // 更新帳號狀態（如果提供了）
+            if (newAccStat !== undefined) {
+                const statusCell = row.querySelector('td:nth-child(10)');
+                const actionCell = row.querySelector('td:nth-child(11)');
+                
+                if (statusCell && actionCell) {
+                    const accountStatusMap = {
+                        0: {text: '未啟用', class: 'memberManagement-status-not-activated'},
+                        1: {text: '啟用', class: 'memberManagement-status-active'},
+                        2: {text: '停用', class: 'memberManagement-status-inactive'}
+                    };
+                    
+                    const accountStatus = accountStatusMap[newAccStat] || {text: '未知', class: ''};
+                    
+                    // 更新狀態單元格
+                    statusCell.innerHTML = `<span class="memberManagement-status-badge ${accountStatus.class}">${accountStatus.text}</span>`;
+                    
+                    // 更新操作單元格
+                    actionCell.innerHTML = window.generateAccountActions(newAccStat, newReviewed !== undefined ? newReviewed : 1, memberId);
+                    
+                    statusChanged = true;
+                }
+            }
+            
+            break; // 找到並更新後跳出循環
+        }
+    }
+    
+    // 如果找到了行並且有狀態變更，使用最簡單的高亮方式
+    if (updatedRow && statusChanged) {
+        // 使用簡單的CSS類，沒有動畫或絕對定位
+        updatedRow.classList.add('simple-highlight');
+        
+        // 10秒後移除高亮
+        setTimeout(() => {
+            updatedRow.classList.remove('simple-highlight');
+        }, 10000);
+    }
+    
+    // 更新原始數據和當前排序數據
+    [originalMemberData, currentSortedData].forEach(dataArray => {
+        const member = dataArray.find(m => m.memberId == memberId);
+        if (member) {
+            if (newAccStat !== undefined) member.accStat = newAccStat;
+            if (newReviewed !== undefined) member.reviewed = newReviewed;
+        }
+    });
+}
+
+
+
+
 
 
 

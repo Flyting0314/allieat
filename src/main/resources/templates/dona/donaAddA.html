@@ -206,7 +206,11 @@
                         </div>
                     </div>
 
-                    <div class="text-danger fw-bold mb-2" id="donationIncomeError" style="display: none;"></div>
+                    <div class="text-danger fw-bold mb-2" 
+     th:if="${#fields.hasErrors('donationIncome')}"
+     th:errors="*{donationIncome}" 
+     id="donationIncomeError"></div>
+
                     <div class="df-actions">
                         <button type="submit" class="df-button df-button-next">下一步</button>
                     </div>
@@ -265,6 +269,23 @@
                     customRadioCompany.value = customInputCompany.value || "-1";
                 });
             }
+            
+            const inputs = [
+                document.getElementById("customAmountInput"),
+                document.getElementById("customAmountInputCompany")
+            ];
+
+            inputs.forEach(input => {
+                if (input) {
+                    input.addEventListener("input", function () {
+                        const errorDiv = document.getElementById("donationIncomeError");
+                        if (errorDiv) {
+                            errorDiv.style.display = "none";
+                            errorDiv.textContent = "";
+                        }
+                    });
+                }
+            });
         });
     </script>
 
@@ -451,16 +472,16 @@
         });
 
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const form = document.getElementById("donationForm");
-            form.addEventListener("submit", function (e) {
-                const income = document.getElementById("donationIncomeHidden").value;
-                if (!income || parseInt(income) < 100) {
-                    e.preventDefault();
-                    alert("請選擇或輸入有效的捐款金額！");
-                }
-            });
-        });
+//         document.addEventListener("DOMContentLoaded", function () {
+//             const form = document.getElementById("donationForm");
+//             form.addEventListener("submit", function (e) {
+//                 const income = document.getElementById("donationIncomeHidden").value;
+//                 if (!income || parseInt(income) < 100) {
+//                     e.preventDefault();
+//                     alert("請選擇或輸入有效的捐款金額！");
+//                 }
+//             });
+//         });
 
 
         function selectDonation(amount, isCompany, inputElement) {
