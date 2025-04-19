@@ -23,7 +23,6 @@ public class BackStageAuditOrgServiceImpl implements BackStageAuditOrgService {
 
     @Override
     public ResponseEntity<byte[]> getImgByOrgId(Integer orgId) {
-    	System.err.println(orgId);
    
         String path = "upload/member/"+memberRepository.findPendingPicByOrgId(orgId);
         String defaultImagePath = "upload/member/FileNotFound.png";
