@@ -311,6 +311,251 @@
 	justify-content: center;
 	align-items: center;
 }
+
+/* 以下是你的改動部分 - 請放在組員代碼的下方 */
+/* 餐廳橫幅樣式 - 參考靜態網頁 */
+.restaurant-banner {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 24px;
+	margin-bottom: 5px; /* 減少下方留白 */
+}
+
+.restaurant-banner-inner {
+	position: relative;
+	width: 100%;
+	border-radius: 12px;
+	overflow: hidden;
+	aspect-ratio: 16 / 4;
+}
+
+.banner-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.2); /* 更淺的遮罩 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	border-radius: 12px;
+}
+
+.banner-path {
+	color: white;
+	font-size: 16px;
+	margin-bottom: 5px;
+}
+
+.banner-path a {
+	color: white;
+	text-decoration: none;
+}
+
+.banner-path a:hover {
+	text-decoration: underline;
+}
+
+.banner-title {
+	color: white;
+	font-size: 36px;
+	font-weight: bold;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.restaurant-banner-inner img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 12px;
+	display: block;
+}
+
+/* 移除餐廳白色卡片背景 */
+.restaurant-info {
+	margin-bottom: 0 !important;
+	padding-bottom: 0 !important;
+	padding: 10px 20px;
+	border-radius: 5px;
+	text-align: center;
+	background-color: transparent;
+	box-shadow: none;
+}
+
+/* 如果中間存在任何隱藏元素，也強制其高度為0 */
+.restaurant-info + *, #restaurantInfo + * {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+/* 調整餐廳名稱樣式 */
+.restaurant-name {
+	font-size: 36px;
+	font-weight: bold;
+	margin-bottom: 12px;
+	color: #da9f5b;
+}
+
+/* 調整評分樣式 */
+.restaurant-rating {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 12px;
+	font-size: 18px;
+}
+
+.restaurant-stars {
+	color: #f8ce0b;
+	margin-right: 10px;
+}
+
+/* 調整地址樣式 */
+.restaurant-address {
+	color: #6b7280;
+	margin-bottom: 24px;
+	font-size: 16px;
+	text-align: center;
+}
+
+/* 調整營業資訊樣式 */
+.restaurant-hours {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	margin-bottom: 5px;
+	gap: 30px;
+}
+
+.info-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 5px;
+	color: #4b5563;
+	margin-right: 0;
+}
+
+.info-item i {
+	color: #da9f5b;
+	margin-right: 8px;
+	width: 16px;
+	text-align: center;
+}
+
+/* 調整餐點詳情樣式為置中 */
+.food-details {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	height: calc(100% - 200px);
+}
+
+.food-title {
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 8px;
+	color: #333;
+	text-align: center;
+}
+
+.food-points {
+	font-size: 18px;
+	font-weight: bold;
+	color: #da9f5b;
+	margin-bottom: 15px;
+	text-align: center;
+}
+
+.food-stock {
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+	font-size: 0.9rem;
+	color: #6c757d;
+	justify-content: center;
+}
+
+/* 修改選擇主餐標題樣式 - 移除橫線 */
+.section-title {
+	position: relative;
+	display: inline-block;
+	letter-spacing: 1px;
+	color: #da9f5b;
+	margin-bottom: 20px;
+}
+
+.section-title::after {
+	display: none; /* 移除橫線 */
+}
+
+.section-title span {
+	position: relative;
+	background: transparent; /* 移除白色背景 */
+	padding: 0 15px;
+}
+
+/* 縮小與橫幅的間距 */
+.container.py-5 {
+	padding-top: 0.5rem !important;
+	padding-bottom: 1rem !important;
+}
+
+/* 減少選擇主餐與餐廳資訊之間的距離 */
+.row.mb-5 {
+    margin-bottom: 0.75rem !important; /* 再減少一半的距離 */
+}
+
+.row.mb-4 {
+    margin-bottom: 0.5rem !important;
+}
+
+/* 修正按鈕點擊後出現紫色外框的問題 */
+.select-food-btn:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: #c28a4d !important;
+}
+
+.select-food-btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* 響應式調整 */
+@media (max-width: 768px) {
+	.restaurant-hours {
+		flex-direction: column;
+		gap: 15px;
+	}
+	
+	.banner-title {
+		font-size: 24px;
+	}
+}
+
+/* 修復購物車圖示CSS衝突 */
+.pizza-floating-cart {
+	text-decoration: none;
+	border: none;
+	outline: none;
+}
+
+.pizza-floating-cart:focus,
+.pizza-floating-cart:active {
+	outline: none;
+	box-shadow: none;
+}
+
+.pizza-floating-cart::after {
+	display: none !important;
+}
 </style>
 </head>
 
@@ -335,14 +580,20 @@
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">捐款專區</a>
                     <div class="dropdown-menu text-capitalize">
                         <a href="/dona/donaAddA" class="dropdown-item">我要捐款</a>
-                        <a href="dona/donaAddD" class="dropdown-item">捐款查詢</a>
+                        <a href="/dona/search" class="dropdown-item">捐款查詢</a>
                     </div>
                 </div>
                 <a href="/map2" class="nav-item nav-link">我要取餐 / 點餐</a>
 
                 <!-- 登入 / 登出選項，靜態頁面無法動態切換 -->
-                <a href="/registerAndLogin" class="nav-item nav-link">註冊/登入</a>
-                <!-- 可選：硬寫一個登出/會員專區按鈕，依實際需求顯示 -->
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊 / 登入</a>
+                    <div class="dropdown-menu text-capitalize">
+                        <a href="/registerAndLogin/register" class="dropdown-item">註冊</a>
+                        <a href="/registerAndLogin/login" class="dropdown-item">登入</a>
+                    </div>
+                </div>
+
                 <a href="/registerAndLogin/logout" class="nav-item nav-link">登出</a>
                 <a href="/member" id="memberAreaBtn" class="nav-item nav-link">會員專區</a>
             </div>
@@ -353,7 +604,7 @@
 
 <!-- Hero Section Start -->
 <section id="hero">
-    <div class="container-fluid p-0 mb-5">
+    <div class="container-fluid p-0 mb-3">
         <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active" style="
@@ -374,39 +625,25 @@
 </section>
 <!-- Hero Section End -->
 
+<!-- 新增：餐廳橫幅圖片 (替代Page Header) -->
+<div class="restaurant-banner">
+    <div class="restaurant-banner-inner">
+        <!-- 背景圖片 -->
+        <img src="https://images.unsplash.com/photo-1737012199412-ccf6a9270a5b?q=80&w=2968&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            alt="餐廳背景圖">
 
-	<!-- Page Header Start -->
-	<div
-		class="container-fluid page-header mb-5 position-relative overlay-bottom">
-		<div
-			class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5"
-			style="min-height: 200px">
-			<h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">餐點選擇</h1>
-			<div class="d-inline-flex mb-lg-5">
-				<p class="m-0 text-white">
-					<a class="text-white" href="/">首頁</a>
-				</p>
-				<p class="m-0 text-white px-2">/</p>
-				<p class="m-0 text-white">
-					<a class="text-white" href="/map2">餐廳地圖</a>
-				</p>
-				<p class="m-0 text-white px-2">/</p>
-				<p class="m-0 text-white">餐點選擇</p>
-			</div>
-		</div>
-	</div>
-	<!-- Page Header End -->
+        <!-- 文字疊加層 -->
+        <div class="banner-overlay">
+            <div class="banner-path">
+                <a href="/">首頁</a> / <a href="/map2">餐廳地圖</a> / 餐點選擇
+            </div>
+            <div class="banner-title">餐點選擇</div>
+        </div>
+    </div>
+</div>
 
 	<!-- 主內容區域 -->
 	<div class="container py-5">
-		<div class="row mb-4">
-			<div class="col-12">
-				<a href="#" id="backButton" class="back-button"> <i
-					class="fas fa-arrow-left"></i> 返回餐廳地圖
-				</a>
-			</div>
-		</div>
-
 		<!-- 餐廳信息區塊 -->
 		<div class="row mb-5">
 			<div class="col-12">
@@ -426,7 +663,6 @@
 				<h2 class="section-title text-uppercase mb-4">
 					<span>選擇主餐</span>
 				</h2>
-				<p class="text-muted mb-4">請選擇一項您想捐贈的主餐</p>
 			</div>
 		</div>
 
@@ -438,7 +674,930 @@
 			</div>
 		</div>
 	</div>
-	<!-- 主內容區域結束 -->
+	<!-- A主內容區域結束 -->
+
+	<script>
+
+        // 顯示加載中狀態的函數
+        function showLoading() {
+            // 已經在 HTML 中有載入中的預設介面，不需要額外實現
+            console.log('載入中...');
+        }
+
+        // 顯示錯誤信息的函數
+        function showError(message) {
+            document.getElementById('restaurantInfo').innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> ${message}
+                </div>
+            `;
+        }
+
+
+       // 當頁面加載完成後執行
+       document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const restaurantId = urlParams.get('id');
+    const restaurantName = urlParams.get('name');
+
+    console.log('獲取到的餐廳ID:', restaurantId, '餐廳名稱:', restaurantName);
+
+    // ✅ 新增：記錄餐廳資料到 localStorage
+    localStorage.setItem('selectedFood', JSON.stringify({
+        storeId: restaurantId,
+        storeName: restaurantName
+    }));
+
+    if (!restaurantId) {
+        showError('找不到餐廳ID，請返回上一頁重新選擇餐廳');
+        return;
+    }
+
+    showLoading();
+    loadRestaurantInfo(restaurantId);
+    loadFoodList(restaurantId);
+});
+
+
+ // 星星評分的 HTML 生成函數 - 計算平均星級
+function getStarsHtml(starNum, visitorsNum) {
+    // 模擬計算平均星級（總星數/總評論數）
+    const averageRating = starNum && visitorsNum 
+        ? (starNum / visitorsNum).toFixed(1)
+        : 4.5;  // 如果沒有數據，預設4.5
+
+    const fullStars = Math.floor(averageRating);
+    const halfStar = averageRating % 1 >= 0.5 ? 1 : 0;
+    const emptyStars = 5 - fullStars - halfStar;
+
+    let starsHtml = '';
+    
+    // 實心星星
+    for (let i = 0; i < fullStars; i++) {
+        starsHtml += '<i class="fas fa-star"></i>';
+    }
+    
+    // 半實心星星
+    if (halfStar) {
+        starsHtml += '<i class="fas fa-star-half-alt"></i>';
+    }
+    
+    // 空心星星
+    for (let i = 0; i < emptyStars; i++) {
+        starsHtml += '<i class="far fa-star"></i>';
+    }
+
+    return starsHtml;
+}
+
+// 加載餐廳信息
+function loadRestaurantInfo(restaurantId) {
+    console.log('正在獲取餐廳信息，ID:', restaurantId);
+    
+    fetch(`/meal/restaurant/${restaurantId}`)
+        .then(response => {
+            console.log('API響應狀態:', response.status);
+            if (!response.ok) {
+                throw new Error(`伺服器回應狀態碼: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(restaurant => {
+            console.log('獲取到的餐廳信息:', restaurant);
+            displayRestaurantInfo(restaurant);
+        })
+        .catch(error => {
+            console.error('獲取餐廳資訊出錯:', error);
+            
+            // 顯示用戶友好的錯誤信息
+            showError(`無法獲取餐廳資訊: ${error.message}`);
+            
+            // 嘗試使用URL中的餐廳名稱顯示基本信息
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('name')) {
+                const basicRestaurantInfo = {
+                    storeName: decodeURIComponent(urlParams.get('name')),
+                    rating: 4.5,
+                    reviewCount: 0,
+                    storeAddress: '地址資訊暫時無法獲取',
+                    openTime: '營業時間暫時無法獲取',
+                    closeTime: '',
+                    lastOrderTime: ''
+                };
+                displayRestaurantInfo(basicRestaurantInfo);
+            }
+        });
+}
+
+// 加載主餐列表
+// 加載主餐列表
+function loadFoodList(restaurantId) {
+    console.log('正在獲取餐點信息，餐廳ID:', restaurantId);
+
+    fetch(`/meal/food/store/dto?storeId=${restaurantId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`伺服器回應狀態碼: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(foodList => {
+            console.log('獲取到的餐點列表:', foodList);
+
+            // ✅ 篩選僅顯示 status 為 1（啟用）的餐點
+            const activeFoods = foodList.filter(food => food.status === 1);
+
+            if (activeFoods.length === 0) {
+                document.getElementById('foodList').innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i> 此餐廳目前沒有可用的主餐
+                        </div>
+                    </div>
+                `;
+            } else {
+                displayFoodList(activeFoods);
+            }
+        })
+        .catch(error => {
+            console.error('獲取主餐資訊出錯:', error);
+            document.getElementById('foodList').innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-circle mr-2"></i> 暫時無法獲取餐點信息，請稍後再試。
+                    </div>
+                </div>
+            `;
+        });
+}
+
+// 顯示餐廳信息
+function displayRestaurantInfo(restaurant) {
+    // 更新頁面標題
+    document.title = `${restaurant.name || '餐廳'} - 攏呷霸 ALLiEAT`;
+    
+    // 更新餐廳信息區塊
+    const restaurantInfoHtml = `
+    <div class="restaurant-info">
+        <h2 class="restaurant-name">${restaurant.name || '餐廳名稱'}</h2>
+        <div class="restaurant-rating">
+            <div class="restaurant-stars">
+                ${getStarsHtml(restaurant.starNum, restaurant.visitorsNum)}
+            </div>
+            <span>${(restaurant.starNum / restaurant.visitorsNum || 4.5).toFixed(1)} (${restaurant.visitorsNum || '0'} 評價)</span>
+        </div>
+        <p class="restaurant-address">
+            <i class="fas fa-map-marker-alt mr-2 text-primary"></i> ${restaurant.address || '餐廳地址'}
+        </p>
+        <div class="restaurant-hours">
+            <div class="info-item">
+                <i class="far fa-clock"></i>
+                <span>營業時間: ${restaurant.opTime} - ${restaurant.closeTime}</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-utensils"></i>
+                <span>最後點餐時間: ${restaurant.lastOrder}</span>
+            </div>
+        </div>
+    </div>
+`;
+    
+    document.getElementById('restaurantInfo').innerHTML = restaurantInfoHtml;
+}
+
+// 顯示主餐列表
+// 顯示主餐列表
+function displayFoodList(foodList) {
+    if (!foodList || foodList.length === 0) {
+        document.getElementById('foodList').innerHTML = `
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle mr-2"></i> 目前沒有可用的主餐
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    let foodListHtml = '';
+
+    foodList.forEach(food => {
+        console.log("🟡 foodId =", food.foodId, typeof food.foodId); // 檢查foodId的類型和值
+        
+        // 確定庫存狀態和相應的類別
+        let stockStatus = 'high';
+        let stockClass = 'stock-high';
+
+        if (food.amount <= 5) {
+            stockStatus = 'low';
+            stockClass = 'stock-low';
+        } else if (food.amount <= 15) {
+            stockStatus = 'medium';
+            stockClass = 'stock-medium';
+        }
+
+        // 修正：將foodId轉換為純數字
+        const foodId = parseInt(food.foodId);
+        const photoPath = food.photo && food.photo.startsWith('/')
+        ? food.photo 
+        : `/img/upload/${food.photo}`;
+
+        const fallback = '/img/default-food.png';
+
+        foodListHtml += `
+            <div class="col-md-4 mb-4">
+                <div class="food-card" data-food-id="${foodId}">
+                    <div class="food-image">
+                        <img src="${photoPath}" 
+                             alt="${food.name}" 
+                             onerror="this.onerror=null;this.src='${fallback}'">
+                    </div>
+
+                    <div class="food-details">
+                        <h3 class="food-title">${food.name}</h3>
+                        <p class="food-points">${food.cost} 點</p>
+                        <div class="food-stock">
+                            <span class="stock-indicator ${stockClass}"></span>
+                            <span>庫存: ${food.amount} 個</span>
+                        </div>
+                        <button class="select-food-btn" data-food-id="${foodId}" 
+                                ${food.amount <= 0 ? 'disabled' : ''}>
+                            ${food.amount <= 0 ? '已售完' : '選取餐點'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    document.getElementById('foodList').innerHTML = foodListHtml;
+
+    // 添加選取餐點按鈕的點擊事件
+    document.querySelectorAll('.select-food-btn').forEach(button => {
+    const foodId = button.getAttribute('data-food-id');
+    
+    // 檢查這個foodId是否曾經被選取但未完成購物車流程
+    // 如果從附餐頁面返回，需要檢查 sessionStorage 中是否有失敗的標記
+    if (sessionStorage.getItem('cartAddFailed') === 'true') {
+        // 重置所有按鈕
+        document.querySelectorAll('.select-food-btn').forEach(btn => {
+            btn.textContent = '選取餐點';
+            btn.classList.remove('selected');
+        });
+        // 清除失敗標記
+        sessionStorage.removeItem('cartAddFailed');
+    }
+    
+    // 為按鈕添加點擊事件
+    button.addEventListener('click', function() {
+        const foodId = this.getAttribute('data-food-id');
+        const selectedFood = foodList.find(food => parseInt(food.foodId) == foodId);
+
+        if (selectedFood) {
+            // 重置所有其他按鈕
+            document.querySelectorAll('.select-food-btn').forEach(btn => {
+                if (btn !== this) {
+                    btn.textContent = '選取餐點';
+                    btn.classList.remove('selected');
+                }
+            });
+            
+            // 標記當前按鈕為已選取
+            this.textContent = '已選取';
+            this.classList.add('selected');
+
+            // 在存儲前確保selectedFood包含正確的foodId
+            const updatedSelectedFood = {
+                ...selectedFood,
+                foodId: parseInt(selectedFood.foodId)
+            };
+            
+            // 記錄臨時選擇狀態到 sessionStorage
+            sessionStorage.setItem(`selectedFood_${foodId}`, 'true');
+            
+            // 存儲到 localStorage 用於後續頁面
+            localStorage.setItem('selectedFood', JSON.stringify(updatedSelectedFood));
+
+            setTimeout(() => {
+                window.location.href = `/orderattached.html?foodId=${foodId}`;
+            }, 500);
+        }
+    });
+    
+    // 檢查這個餐點是否已經成功添加到購物車
+    // 如果成功添加到購物車 (從附餐頁面返回後)，應該重置按鈕狀態
+    if (sessionStorage.getItem('cartAddSuccessful') === 'true') {
+        button.textContent = '選取餐點';
+        button.classList.remove('selected');
+        sessionStorage.removeItem('cartAddSuccessful');
+    }}
+	
+	
+	
+	);
+}
+
+
+        // 在頁面底部添加購物車圖示
+        document.addEventListener('DOMContentLoaded', function() {
+            // 創建浮動購物車按鈕
+            const floatingCart = document.createElement('div');
+            floatingCart.className = 'pizza-floating-cart';
+            floatingCart.innerHTML = `
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 3H5L5.4 5M5.4 5H21L17 13H7M5.4 5L7 13M7 13L5.2 17H19M9 21C9 21.5523 8.55228 22 8 22C7.44772 22 7 21.5523 7 21C7 20.4477 7.44772 20 8 20C8.55228 20 9 20.4477 9 21ZM17 21C17 21.5523 16.5523 22 16 22C15.4477 22 15 21.5523 15 21C15 20.4477 15.4477 20 16 20C16.5523 20 17 20.4477 17 21Z" 
+                        stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="pizza-cart-count">0</div>
+            `;
+
+            // 添加點擊事件
+            floatingCart.addEventListener('click', () => {
+                // 暫時不增加數量，因為還要繼續在下一頁點附餐
+                window.location.href = 'cart.html';
+            });
+
+            // 添加到頁面
+            document.body.appendChild(floatingCart);
+        });
+        
+        function updateCartCount() {
+            fetch('/api/cart')
+                .then(res => res.json())
+                .then(cart => {
+                    const cartCountElement = document.querySelector('.pizza-cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = cart.length;
+                    }
+                })
+                .catch(err => {
+                    console.error("取得購物車數量失敗：", err);
+                });
+        }
+
+        // ✅ 在 DOMContentLoaded 或適當時機呼叫一次
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+        });
+
+
+
+    </script>
+
+	<!-- Footer Start -->
+	<div
+		class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
+		<div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">聯絡我們</h4>
+				<p>
+					<i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號
+				</p>
+				<p>
+					<i class="fa fa-phone-alt mr-2"></i>02-2222-5252
+				</p>
+				<p class="m-0">
+					<i class="fa fa-envelope mr-2"></i>allieat105@gmail.com
+				</p>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">關注我們</h4>
+				<p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
+				<div class="d-flex justify-content-start">
+					<a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+						class="fab fa-twitter"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+						class="fab fa-facebook-f"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+						class="fab fa-linkedin-in"></i></a> <a
+						class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i
+						class="fab fa-instagram"></i></a>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">客服時間</h4>
+				<div>
+					<h6 class="text-white text-uppercase">周一 - 週五</h6>
+					<p>早上10:00 - 晚上21:00</p>
+					<h6 class="text-white text-uppercase">週六 - 週日</h6>
+					<p>早上11:00 - 晚上19:00</p>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6 mb-5">
+				<h4 class="text-white text-uppercase mb-4"
+					style="letter-spacing: 3px;">訂閱電子報</h4>
+				<p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
+				<div class="w-100">
+					<div class="input-group">
+						<input type="text" class="form-control border-light"
+							style="padding: 25px;" placeholder="輸入您的信箱">
+						<div class="input-group-append">
+							<button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div
+			class="container-fluid text-center text-white border-top mt-4 py-4 px-sm-3 px-md-5"
+			style="border-color: rgba(256, 256, 256, .1) !important;">
+			<p class="mb-2 text-white">
+				版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>.
+				保留所有權利
+			</p>
+			<p class="m-0 text-white">
+				網站設計由 <a class="font-weight-bold" href="#">攏呷霸股份有限公司 設計部 設計</a>
+			</p>
+		</div>
+	</div>
+	<!-- Footer End -->
+
+	<!-- Back to Top -->
+	<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
+		class="fa fa-angle-double-up"></i></a>
+
+	<!-- JavaScript Libraries -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+	<script src="lib/easing/easing.min.js"></script>
+	<script src="lib/waypoints/waypoints.min.js"></script>
+	<script src="lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="lib/tempusdominus/js/moment.min.js"></script>
+	<script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+	<script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+	<!-- 主餐選擇頁面JavaScript -->
+ 	<script src="/js/restaurant-detail.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ============================以下為原始版本=================================== -->
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<title>攏呷霸 ALLiEAT - 餐點選擇</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="愛心代用餐, 公益, 餐飲捐贈" name="keywords">
+<meta content="攏呷霸愛心代用餐平台，連結善心人士與需要溫飽的人" name="description">
+
+Favicon
+<link href="img/favicon.ico" rel="icon">
+
+Google Font
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link
+	href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap"
+	rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap"
+	rel="stylesheet">
+
+Font Awesome
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+	rel="stylesheet">
+
+Libraries Stylesheet
+<link href="lib/owlcarousel/assets/owl.carousel.min.css"
+	rel="stylesheet">
+<link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
+	rel="stylesheet" />
+
+Customized Bootstrap Stylesheet
+<link rel="stylesheet" href="/css/style.css">
+
+<style>
+/* 主餐選擇頁面樣式 */
+.meal-header {
+	background-color: #f8f9fa;
+	padding: 30px 0;
+	border-bottom: 1px solid #e9ecef;
+	margin-bottom: 30px;
+}
+
+.restaurant-info {
+	margin-bottom: 20px;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 5px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.restaurant-name {
+	color: #da9f5b;
+	margin-bottom: 15px;
+}
+
+.restaurant-rating {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.restaurant-stars {
+	color: #f8ce0b;
+	margin-right: 10px;
+}
+
+.restaurant-address {
+	color: #6c757d;
+	margin-bottom: 10px;
+}
+
+.restaurant-hours {
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 5px;
+}
+
+.info-item {
+	display: flex;
+	align-items: center;
+	margin-right: 20px;
+	margin-bottom: 5px;
+	color: #495057;
+}
+
+.info-item i {
+	color: #da9f5b;
+	margin-right: 8px;
+	width: 16px;
+	text-align: center;
+}
+
+.food-card {
+	border: 1px solid #e9ecef;
+	border-radius: 8px;
+	overflow: hidden;
+	transition: all 0.3s ease;
+	margin-bottom: 25px;
+	background-color: #fff;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+	height: 100%;
+}
+
+.food-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.food-image {
+	height: 200px;
+	overflow: hidden;
+	position: relative;
+}
+
+.food-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
+
+.food-card:hover .food-image img {
+	transform: scale(1.05);
+}
+
+.food-details {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	height: calc(100% - 200px);
+}
+
+.food-title {
+	font-size: 1.2rem;
+	font-weight: 600;
+	color: #343a40;
+	margin-bottom: 10px;
+}
+
+.food-points {
+	font-size: 1.1rem;
+	font-weight: bold;
+	color: #da9f5b;
+	margin-bottom: 15px;
+}
+
+.food-stock {
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+	font-size: 0.9rem;
+	color: #6c757d;
+}
+
+.stock-indicator {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	margin-right: 8px;
+}
+
+.stock-high {
+	background-color: #28a745;
+}
+
+.stock-medium {
+	background-color: #ffc107;
+}
+
+.stock-low {
+	background-color: #dc3545;
+}
+
+.select-food-btn {
+	width: 100%;
+	padding: 10px;
+	background-color: #da9f5b;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	margin-top: auto;
+}
+
+.select-food-btn:hover {
+	background-color: #c28a4a;
+}
+
+.select-food-btn:disabled {
+	background-color: #adb5bd;
+	cursor: not-allowed;
+}
+
+.select-food-btn.selected {
+	background-color: #28a745;
+}
+
+.section-title {
+	position: relative;
+	display: inline-block;
+	letter-spacing: 1px;
+	color: #da9f5b;
+	margin-bottom: 30px;
+}
+
+.section-title::after {
+	position: absolute;
+	content: "";
+	width: 100%;
+	height: 0;
+	top: 50%;
+	left: 0;
+	border-top: 2px dashed #bbb;
+	z-index: -1;
+}
+
+.section-title span {
+	position: relative;
+	background: #ffffff;
+	padding: 0 15px;
+}
+
+/* 載入中動畫 */
+.loading-spinner {
+	display: inline-block;
+	width: 2rem;
+	height: 2rem;
+	border: 3px solid rgba(218, 159, 91, 0.2);
+	border-radius: 50%;
+	border-top-color: #da9f5b;
+	animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {to { transform:rotate(360deg);
+	
+}
+
+}
+.loading-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: 200px;
+}
+
+/* 返回按鈕 */
+.back-button {
+	display: inline-flex;
+	align-items: center;
+	padding: 8px 15px;
+	background-color: #f8f9fa;
+	color: #495057;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	text-decoration: none;
+	font-weight: 500;
+	margin-bottom: 20px;
+	transition: all 0.2s;
+}
+
+.back-button:hover {
+	background-color: #e9ecef;
+	color: #212529;
+	text-decoration: none;
+}
+
+.back-button i {
+	margin-right: 8px;
+}
+
+/* 浮動購物車樣式 */
+.pizza-floating-cart {
+	position: fixed;
+	bottom: 24px;
+	right: 24px;
+	background-color: #DA9F5B;
+	color: white;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	transition: transform 0.3s;
+	z-index: 100;
+}
+
+.pizza-floating-cart:hover {
+	transform: scale(1.1);
+}
+
+.pizza-cart-count {
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	background-color: #e53e3e;
+	color: white;
+	border-radius: 50%;
+	width: 24px;
+	height: 24px;
+	font-size: 14px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+</style>
+</head>
+
+<body>
+	Navbar Start
+<div class="container-fluid p-0 nav-bar">
+    <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+        <a href="/index.html" class="navbar-brand px-lg-4 m-0">
+            <h1 class="m-0 display-4 text-uppercase text-white">
+                <img src="/img/logo3.png" width="80px" height="80px" alt="ALLiEAT Logo"
+                     style="vertical-align: middle; border-radius: 50%; object-fit: cover;">
+                <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+            </h1>
+        </a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+            <div class="navbar-nav ml-auto p-4">
+                <a href="/index" class="nav-item nav-link active">關於我們</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">捐款專區</a>
+                    <div class="dropdown-menu text-capitalize">
+                        <a href="/dona/donaAddA" class="dropdown-item">我要捐款</a>
+                        <a href="dona/donaAddD" class="dropdown-item">捐款查詢</a>
+                    </div>
+                </div>
+                <a href="/map2" class="nav-item nav-link">我要取餐 / 點餐</a>
+
+                登入 / 登出選項，靜態頁面無法動態切換
+                <a href="/registerAndLogin" class="nav-item nav-link">註冊/登入</a>
+                可選：硬寫一個登出/會員專區按鈕，依實際需求顯示
+                <a href="/registerAndLogin/logout" class="nav-item nav-link">登出</a>
+                <a href="/member" id="memberAreaBtn" class="nav-item nav-link">會員專區</a>
+            </div>
+        </div>
+    </nav>
+</div>
+</header>
+
+Hero Section Start
+<section id="hero">
+    <div class="container-fluid p-0 mb-5">
+        <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="
+                    background-image: url(/img/圖片3.png);
+                    background-size: 110% auto;
+                    background-position: center 50px;
+                    height: 300px;
+                    filter: brightness(225%);">
+                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                        <h2 class="text-primary font-weight-medium m-0"></h2>
+                        <h1 class="display-1 text-white m-0"></h1>
+                        <h2 class="text-white m-0"></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+Hero Section End
+
+
+	Page Header Start
+	<div
+		class="container-fluid page-header mb-5 position-relative overlay-bottom">
+		<div
+			class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5"
+			style="min-height: 200px">
+			<h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">餐點選擇</h1>
+			<div class="d-inline-flex mb-lg-5">
+				<p class="m-0 text-white">
+					<a class="text-white" href="/">首頁</a>
+				</p>
+				<p class="m-0 text-white px-2">/</p>
+				<p class="m-0 text-white">
+					<a class="text-white" href="/map2">餐廳地圖</a>
+				</p>
+				<p class="m-0 text-white px-2">/</p>
+				<p class="m-0 text-white">餐點選擇</p>
+			</div>
+		</div>
+	</div>
+	Page Header End
+
+	主內容區域
+	<div class="container py-5">
+		<div class="row mb-4">
+			<div class="col-12">
+				<a href="#" id="backButton" class="back-button"> <i
+					class="fas fa-arrow-left"></i> 返回餐廳地圖
+				</a>
+			</div>
+		</div>
+
+		餐廳信息區塊
+		<div class="row mb-5">
+			<div class="col-12">
+				<div id="restaurantInfo">
+					餐廳信息將動態載入
+					<div class="loading-container">
+						<div class="loading-spinner"></div>
+						<p class="mt-3">載入餐廳資訊中...</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		主餐列表區塊
+		<div class="row mb-4">
+			<div class="col-12 text-center">
+				<h2 class="section-title text-uppercase mb-4">
+					<span>選擇主餐</span>
+				</h2>
+				<p class="text-muted mb-4">請選擇一項您想捐贈的主餐</p>
+			</div>
+		</div>
+
+		<div class="row" id="foodList">
+			主餐列表將動態載入
+			<div class="loading-container w-100">
+				<div class="loading-spinner"></div>
+				<p class="mt-3">載入餐點資訊中...</p>
+			</div>
+		</div>
+	</div>
+	主內容區域結束
 
 	<script>
 
@@ -773,7 +1932,7 @@ function displayFoodList(foodList) {
 
     </script>
 
-	<!-- Footer Start -->
+	Footer Start
 	<div
 		class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
 		<div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
@@ -842,13 +2001,13 @@ function displayFoodList(foodList) {
 			</p>
 		</div>
 	</div>
-	<!-- Footer End -->
+	Footer End
 
-	<!-- Back to Top -->
+	Back to Top
 	<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
 		class="fa fa-angle-double-up"></i></a>
 
-	<!-- JavaScript Libraries -->
+	JavaScript Libraries
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
@@ -859,8 +2018,9 @@ function displayFoodList(foodList) {
 	<script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
 	<script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-	<!-- 主餐選擇頁面JavaScript -->
-	<script src="/js/restaurant-detail.js"></script>
+	主餐選擇頁面JavaScript
+ 	<script src="/js/restaurant-detail.js"></script>
 </body>
 </html>
 
+ -->
