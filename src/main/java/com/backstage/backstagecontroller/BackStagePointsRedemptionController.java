@@ -179,7 +179,7 @@ public class BackStagePointsRedemptionController {
     
     
  // 單獨處理店家點數更新，使用新的事務
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     private void updateStorePoints(Integer storeId, int pointsToDeduct) {
         try {
             StoreVO store = storeService.getStoreById(storeId);

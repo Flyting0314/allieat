@@ -118,4 +118,26 @@ public class StoreService {
         }
     }
     
+    
+    
+    
+    
+    
+    // =========後台餐廳點數核銷用：由排程器每月創建一筆活躍餐廳的資料============
+    
+    public List<StoreVO> getAllActiveStores() {
+        // 使用 JPA Criteria API 查詢活躍商家
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<StoreVO> query = cb.createQuery(StoreVO.class);
+        Root<StoreVO> root = query.from(StoreVO.class);
+        
+        // 活躍條件：帳號狀態=1 且 審核通過=1
+        Predicate activePredicate = cb.and(
+            cb.equal(root.get("accStat"), 1),
+            cb.equal(root.get("reviewed"), 1)
+        );
+        
+        query.where(activePredicate);
+        return entityManager.createQuery(query).getResultList();
+    }
 }

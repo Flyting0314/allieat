@@ -19,7 +19,9 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -31,9 +33,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+//日誌記錄器
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @Service
 public class BackStagePointsRedemptionService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(BackStagePointsRedemptionService.class);
 
     @Autowired
     private PointsRedemptionRepository pointsRedemptionRepository;
@@ -177,6 +185,9 @@ public class BackStagePointsRedemptionService {
         return entityManager.createQuery(query).getResultList();
     }
 
+    
+    
+    
     // 自動建立每月的點數兌換記錄
     @Transactional
     public List<PointsRedemptionVO> generateMonthlyRedemptions() {
@@ -315,7 +326,7 @@ public class BackStagePointsRedemptionService {
 
     
     
-    
+    //==============更新店家點數===============
 
     @Transactional
     public void updatePointsRedemptionForStore(Integer storeId, Integer newPoints) {
@@ -360,7 +371,8 @@ public class BackStagePointsRedemptionService {
     }
     
     
- // 添加事件監聽器方法
+    
+ // ==============添加事件監聽器方法，處理當餐廳點數變多時，欄位的點數也會同步更新！===============
     @EventListener
     @Transactional
     public void handleStorePointsUpdated(RedemptionStorePointsUpdatedEvent event) {
@@ -382,6 +394,38 @@ public class BackStagePointsRedemptionService {
     }
     
     
+    
+    
+ // ================= 月初自動創建所有店家的記錄 =====================
+    @Scheduled(cron = "0 0 1 1 * ?") // 每月1日凌晨執行，針對活躍店家自動創建一筆紀錄
+    @Transactional
+    public void createMonthlyRecordsForAllStores() {
+        List<StoreVO> activeStores = storeService.getAllActiveStores();
+        LocalDate now = LocalDate.now();
+        Date thisMonth = Date.valueOf(now.withDayOfMonth(1));
+        
+        int createdCount = 0;
+        for (StoreVO store : activeStores) {
+            // 檢查記錄是否已存在
+            if (!pointsRedemptionRepository.existsByStore_StoreIdAndRedemptionMonth(
+                    store.getStoreId(), thisMonth)) {
+                
+                // 創建新記錄
+                PointsRedemptionVO record = new PointsRedemptionVO();
+                record.setStore(store);
+                record.setStoreId(store.getStoreId());
+                record.setPointsAmount(store.getPoints());
+                record.setRedemptionMonth(thisMonth);
+                record.setStatus(0); // 未核銷
+                record.setCreatedTime(new Timestamp(System.currentTimeMillis()));
+                
+                pointsRedemptionRepository.save(record);
+                createdCount++;
+            }
+        }
+        
+        logger.info("月初自動創建了 {} 筆店家點數核銷記錄", createdCount);
+    }  
     
     
     
