@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="utf-8">
-<title>攏呷霸 ALLiEAT - 餐點選擇</title>
+<title>攏呷霸 ALLiEAT - 副餐選擇</title>
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <meta content="愛心代用餐, 公益, 餐飲捐贈" name="keywords">
 <meta content="攏呷霸愛心代用餐平台，連結善心人士與需要溫飽的人" name="description">
@@ -31,6 +31,1243 @@
 	rel="stylesheet" />
 
 <!-- Customized Bootstrap Stylesheet -->
+<link href="/css/style.css" rel="stylesheet">
+
+<style>
+/* 浮動購物車樣式 - 修正CSS衝突 */
+/* 浮動購物車樣式 */
+.pizza-floating-cart {
+	position: fixed;
+	bottom: 24px;
+	right: 24px;
+	background-color: #DA9F5B;
+	color: white;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	transition: transform 0.3s;
+	z-index: 100;
+    text-decoration: none;
+	border: none;
+	outline: none;
+}
+
+.pizza-floating-cart:hover {
+	transform: scale(1.1);
+}
+
+.pizza-floating-cart:focus,
+.pizza-floating-cart:active {
+	outline: none;
+	box-shadow: none;
+}
+
+.pizza-floating-cart::after {
+	display: none !important;
+}
+
+.pizza-cart-count {
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	background-color: #e53e3e;
+	color: white;
+	border-radius: 50%;
+	width: 24px;
+	height: 24px;
+	font-size: 14px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* 基本重置 */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Roboto', sans-serif;
+	color: #333;
+	background-color: #f8f9fa;
+}
+
+/* 餐廳橫幅樣式 - 新增 */
+.restaurant-banner {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 24px;
+	margin-bottom: 5px; /* 減少下方留白 */
+}
+
+.restaurant-banner-inner {
+	position: relative;
+	width: 100%;
+	border-radius: 12px;
+	overflow: hidden;
+	aspect-ratio: 16 / 4;
+}
+
+.banner-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.2); /* 較淺的遮罩 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	border-radius: 12px;
+}
+
+.banner-path {
+	color: white;
+	font-size: 16px;
+	margin-bottom: 5px;
+}
+
+.banner-path a {
+	color: white;
+	text-decoration: none;
+}
+
+.banner-path a:hover {
+	text-decoration: underline;
+}
+
+.banner-title {
+	color: white;
+	font-size: 36px;
+	font-weight: bold;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.restaurant-banner-inner img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 12px;
+	display: block;
+}
+
+/* 頁面頭部樣式 */
+.page-header {
+	position: relative;
+	background: linear-gradient(rgba(51, 33, 29, 0.5), rgba(51, 33, 29, 0.5)),
+		url(img/header.jpg) center center no-repeat;
+	background-size: cover;
+	margin-bottom: 1rem;
+}
+
+.overlay-bottom {
+	position: relative;
+}
+
+/* 頁面主體樣式 */
+.afo-content-wrapper {
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 15px;
+	box-sizing: border-box;
+}
+
+/* 主要內容樣式 */
+.afo-main-container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: transparent;
+}
+
+/* 網格布局 */
+.afo-order-grid {
+	display: grid;
+	grid-template-columns: 1fr 2fr; /* 1:2比例 */
+	gap: 30px;
+	margin-bottom: 40px;
+}
+
+/* 左側主餐卡片 */
+.afo-main-dish-card {
+	background-color: white;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.afo-dish-image {
+	width: 100%;
+	position: relative;
+}
+
+.afo-dish-image img {
+	width: 100%;
+	height: auto;
+	max-height: 300px;
+	object-fit: cover;
+	display: block;
+}
+
+.afo-dish-info {
+	padding: 20px;
+}
+
+.afo-dish-title {
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 8px;
+}
+
+.afo-dish-price {
+	font-size: 20px;
+	font-weight: bold;
+	color: #DA9F5B;
+	margin-bottom: 15px;
+}
+
+.afo-dish-tags {
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 15px;
+}
+
+.afo-tag {
+	display: inline-block;
+	padding: 4px 10px;
+	margin-right: 8px;
+	margin-bottom: 8px;
+	background-color: #f3f4f6;
+	color: #4b5563;
+	border-radius: 4px;
+	font-size: 14px;
+}
+
+.afo-dish-description {
+	color: #6b7280;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+/* 右側附餐選擇 */
+.afo-side-dish-card {
+	background-color: white;
+	border-radius: 12px;
+	padding: 20px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.afo-section-heading {
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 15px;
+	color: #333;
+	padding-bottom: 10px;
+	border-bottom: 3px solid #DA9F5B;
+}
+
+.afo-section-subtitle {
+	font-size: 16px;
+	color: #6b7280;
+	margin-bottom: 20px;
+}
+
+.afo-required-mark {
+	color: #dc3545;
+	font-weight: bold;
+}
+
+/* 選項樣式 */
+.afo-option-list {
+	margin-bottom: 30px;
+}
+
+.afo-option-item {
+	background-color: white;
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	padding: 15px;
+	margin-bottom: 12px;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.afo-option-item:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.afo-option-item.afo-selected {
+	border: 2px solid #DA9F5B;
+}
+
+/* 修復選項單選圓圈的樣式問題 */
+.afo-option-radio {
+	margin-right: 15px;
+	width: 20px;
+	height: 20px;
+	accent-color: #DA9F5B;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	border: 2px solid #e5e7eb;
+	border-radius: 50%;
+	outline: none;
+	position: relative;
+}
+
+.afo-option-radio:checked {
+	border-color: #DA9F5B;
+}
+
+.afo-option-radio:checked::before {
+	content: '';
+	width: 10px;
+	height: 10px;
+	background-color: #DA9F5B;
+	border-radius: 50%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.afo-option-radio:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(218, 159, 91, 0.2);
+}
+
+.afo-option-label {
+	font-size: 18px;
+	font-weight: 500;
+}
+
+/* 備註區域 */
+.afo-notes-area {
+	background-color: white;
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	padding: 20px;
+	margin-bottom: 30px;
+}
+
+.afo-notes-title {
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 15px;
+	color: #333;
+}
+
+.afo-notes-input {
+	width: 100%;
+	min-height: 100px;
+	padding: 12px;
+	border: 1px solid #d1d5db;
+	border-radius: 8px;
+	resize: vertical;
+	font-size: 16px;
+}
+
+.afo-notes-input:focus {
+	outline: none;
+	border-color: #DA9F5B;
+	box-shadow: 0 0 0 3px rgba(218, 159, 91, 0.2);
+}
+
+/* 按鈕 */
+.afo-button-group {
+	display: flex;
+	justify-content: space-between;
+}
+
+.afo-btn {
+	display: inline-block;
+	padding: 12px 25px;
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.3s;
+	text-decoration: none;
+	border: none;
+	outline: none;
+}
+
+.afo-btn:focus {
+	outline: none;
+	box-shadow: none;
+}
+
+.afo-btn-back {
+	background-color: #f3f4f6;
+	color: #4b5563;
+}
+
+.afo-btn-back:hover {
+	background-color: #e5e7eb;
+}
+
+.afo-btn-next {
+	background-color: #DA9F5B;
+	color: white;
+}
+
+.afo-btn-next:hover {
+	background-color: #c78d4d;
+}
+
+.afo-btn-next:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(218, 159, 91, 0.2);
+}
+
+/* 錯誤提示 */
+.afo-error-box {
+	padding: 12px;
+	background-color: #fee2e2;
+	border-left: 4px solid #dc2626;
+	color: #b91c1c;
+	margin-bottom: 20px;
+	font-weight: bold;
+	border-radius: 4px;
+	margin-top: 10px;
+}
+
+/* 容器控制顯示/隱藏 */
+#afoErrorContainer {
+	display: none;
+}
+
+@keyframes afo-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+.afo-shake-animation {
+	animation: afo-shake 0.5s;
+}
+
+/* 載入動畫 */
+.loading-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+}
+
+.loading-spinner {
+	width: 50px;
+	height: 50px;
+	border: 5px solid #f3f3f3;
+	border-top: 5px solid #DA9F5B;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+	.afo-order-grid {
+		grid-template-columns: 1fr; /* 單列布局 */
+	}
+	.afo-button-group {
+		flex-direction: column;
+		gap: 15px;
+	}
+	.afo-btn {
+		width: 100%;
+	}
+	.banner-title {
+		font-size: 24px;
+	}
+}
+
+/* Bootstrap 兼容性樣式 */
+.btn {
+	display: inline-block;
+	font-weight: 400;
+	text-align: center;
+	vertical-align: middle;
+	user-select: none;
+	background-color: transparent;
+	border: 1px solid transparent;
+	padding: .375rem .75rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	border-radius: .25rem;
+	transition: color .15s ease-in-out, background-color .15s ease-in-out,
+		border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.btn-primary {
+	color: #fff;
+	background-color: #da9f5b;
+	border-color: #da9f5b;
+}
+
+.container-fluid {
+	width: 100%;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.row {
+	display: flex;
+	flex-wrap: wrap;
+	margin-right: -15px;
+	margin-left: -15px;
+}
+
+.col-lg-3 {
+	position: relative;
+	width: 100%;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+@media ( min-width : 992px) {
+	.col-lg-3 {
+		flex: 0 0 25%;
+		max-width: 25%;
+	}
+}
+
+.text-white {
+	color: #fff !important;
+}
+
+.text-uppercase {
+	text-transform: uppercase !important;
+}
+
+.font-weight-bold {
+	font-weight: 700 !important;
+}
+
+.m-0 {
+	margin: 0 !important;
+}
+
+.mb-2 {
+	margin-bottom: .5rem !important;
+}
+
+.mb-4 {
+	margin-bottom: 1.5rem !important;
+}
+
+.mb-5 {
+	margin-bottom: 3rem !important;
+}
+
+.p-0 {
+	padding: 0 !important;
+}
+
+.pt-5 {
+	padding-top: 3rem !important;
+}
+
+.py-3 {
+	padding-top: 1rem !important;
+	padding-bottom: 1rem !important;
+}
+
+.py-4 {
+	padding-top: 1.5rem !important;
+	padding-bottom: 1.5rem !important;
+}
+
+.mt-4 {
+	margin-top: 1.5rem !important;
+}
+
+.mt-5 {
+	margin-top: 3rem !important;
+}
+
+.px-0 {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+.px-sm-3 {
+	padding-left: 1rem !important;
+	padding-right: 1rem !important;
+}
+
+@media ( min-width : 576px) {
+	.px-sm-3 {
+		padding-left: 1rem !important;
+		padding-right: 1rem !important;
+	}
+}
+
+@media ( min-width : 992px) {
+	.px-lg-5 {
+		padding-left: 3rem !important;
+		padding-right: 3rem !important;
+	}
+}
+
+.mr-2 {
+	margin-right: .5rem !important;
+}
+
+.d-flex {
+	display: flex !important;
+}
+
+.justify-content-start {
+	justify-content: flex-start !important;
+}
+
+.justify-content-between {
+	justify-content: space-between !important;
+}
+
+.w-100 {
+	width: 100% !important;
+}
+
+.form-control {
+	display: block;
+	width: 100%;
+	height: calc(1.5em + .75rem + 2px);
+	padding: .375rem .75rem;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #495057;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid #ced4da;
+	border-radius: .25rem;
+	transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.input-group {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+	width: 100%;
+}
+
+.input-group-append {
+	margin-left: -1px;
+	display: flex;
+}
+
+/* 頂部導航按鈕樣式 */
+.navbar-toggler {
+	background-color: transparent;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	padding: .25rem .75rem;
+	font-size: 1.25rem;
+	line-height: 1;
+	border-radius: .25rem;
+}
+
+.navbar-toggler-icon {
+	display: inline-block;
+	width: 1.5em;
+	height: 1.5em;
+	vertical-align: middle;
+	content: "";
+	background: no-repeat center center;
+	background-size: 100% 100%;
+}
+
+/* Alert 樣式 */
+.alert {
+	position: relative;
+	padding: 1rem 1.25rem;
+	margin-bottom: 1rem;
+	border: 1px solid transparent;
+	border-radius: .25rem;
+}
+
+.alert-warning {
+	color: #856404;
+	background-color: #fff3cd;
+	border-color: #ffeeba;
+}
+
+.alert-info {
+	color: #0c5460;
+	background-color: #d1ecf1;
+	border-color: #bee5eb;
+}
+
+.alert-danger {
+	color: #721c24;
+	background-color: #f8d7da;
+	border-color: #f5c6cb;
+}
+</style>
+</head>
+<body>
+	<!-- Navbar Start -->
+<div class="container-fluid p-0 nav-bar">
+    <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+        <a href="/index" class="navbar-brand px-lg-4 m-0">
+            <h1 class="m-0 display-4 text-uppercase text-white">
+                <img src="/img/logo3.png" width="80px" height="80px" alt="ALLiEAT Logo"
+                     style="vertical-align: middle; border-radius: 50%; object-fit: cover;">
+                <span style="font-family: 'Satisfy', cursive;">ALLiEAT</span>
+            </h1>
+        </a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+            <div class="navbar-nav ml-auto p-4">
+                <a href="/index" class="nav-item nav-link active">關於我們</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">捐款專區</a>
+                    <div class="dropdown-menu text-capitalize">
+                        <a href="/dona/donaAddA" class="dropdown-item">我要捐款</a>
+                        <a href="/dona/search" class="dropdown-item">捐款查詢</a>
+                    </div>
+                </div>
+                <a href="/map2" class="nav-item nav-link">我要取餐 / 點餐</a>
+
+                <!-- 登入 / 登出選項，靜態頁面無法動態切換 -->
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">註冊 / 登入</a>
+                    <div class="dropdown-menu text-capitalize">
+                        <a href="/registerAndLogin/register" class="dropdown-item">註冊</a>
+                        <a href="/registerAndLogin/login" class="dropdown-item">登入</a>
+                    </div>
+                </div>
+
+                <a href="/registerAndLogin/logout" class="nav-item nav-link">登出</a>
+                <a href="/member" id="memberAreaBtn" class="nav-item nav-link">會員專區</a>
+            </div>
+        </div>
+    </nav>
+</div>
+</header>
+
+<!-- Hero Section Start -->
+<section id="hero">
+    <div class="container-fluid p-0 mb-3">
+        <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="
+                    background-image: url(/img/圖片3.png);
+                    background-size: 110% auto;
+                    background-position: center 50px;
+                    height: 300px;
+                    filter: brightness(225%);">
+                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                        <h2 class="text-primary font-weight-medium m-0"></h2>
+                        <h1 class="display-1 text-white m-0"></h1>
+                        <h2 class="text-white m-0"></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Hero Section End -->
+
+<!-- 新增：餐廳橫幅圖片 (替代Page Header) -->
+<div class="restaurant-banner">
+    <div class="restaurant-banner-inner">
+        <!-- 背景圖片 - 更新為新的圖片 -->
+        <img src="https://images.unsplash.com/photo-1737012199412-ccf6a9270a5b?q=80&w=2968&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 			            alt="餐廳背景圖">
+
+        <!-- 文字疊加層 -->
+        <div class="banner-overlay">
+            <div class="banner-path">
+                <a href="/">首頁</a> / <a href="/map2">餐廳地圖</a> / <a href="javascript:history.back()">主餐選擇</a> / 副餐選擇
+            </div>
+            <div class="banner-title">副餐選擇</div>
+        </div>
+    </div>
+</div>
+
+	<!-- 主要內容區域 -->
+	<div class="afo-content-wrapper">
+		<div class="afo-main-container">
+			<div class="afo-order-grid">
+				<!-- 左側：主餐信息 -->
+				<div class="afo-main-dish-card">
+					<div class="afo-dish-image">
+						<img id="mainDishImage"
+							src="https://via.placeholder.com/300x200?text=載入中..." alt="主餐圖片">
+					</div>
+					<div class="afo-dish-info">
+						<h2 class="afo-dish-title" id="mainDishTitle">載入中...</h2>
+						<p class="afo-dish-price" id="mainDishPrice">載入中...</p>
+						<div class="afo-dish-tags" id="mainDishTags">
+							<!-- 動態載入標籤 -->
+						</div>
+						<p class="afo-dish-description">已選擇主餐，請繼續選擇您的附餐選項。</p>
+					</div>
+				</div>
+
+				<!-- 右側：附餐選擇 -->
+				<div class="afo-side-dish-card">
+					<h2 class="afo-section-heading">附餐選擇</h2>
+					<p class="afo-section-subtitle">
+						請選擇一個附餐<span class="afo-required-mark">（選填，可略過）</span>
+					</p>
+
+					<!-- 錯誤提示容器 -->
+					<div id="afoErrorContainer" style="display: none;">
+						<div class="afo-error-box">
+							<i class="fas fa-exclamation-circle"></i> 請選擇一個附餐
+						</div>
+					</div>
+
+					<div class="afo-option-list" id="afoOptionContainer">
+						<!-- 動態載入附餐選項 -->
+						<div class="loading-container">
+							<div class="loading-spinner"></div>
+							<p class="mt-3">載入附餐中...</p>
+						</div>
+					</div>
+
+					<!-- 備註區域 -->
+					<div class="afo-notes-area">
+						<h3 class="afo-notes-title">備註</h3>
+						<textarea class="afo-notes-input" id="afoNotesInput"
+							placeholder="有特殊需求請在此說明，例如：不要冰塊、少糖..."></textarea>
+					</div>
+
+					<!-- 按鈕區域 -->
+					<div class="afo-button-group">
+						<a href="javascript:history.back()" class="afo-btn afo-btn-back" id="afoBackButton">回主餐選擇</a>
+						<button type="button" class="afo-btn afo-btn-next"
+							id="afoNextButton">下一步，加入購物車</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 浮動購物車按鈕 -->
+	<div class="pizza-floating-cart" id="pizzaFloatingCart">
+		<svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+			xmlns="http://www.w3.org/2000/svg">
+            <path
+				d="M3 3H5L5.4 5M5.4 5H21L17 13H7M5.4 5L7 13M7 13L5.2 17H19M9 21C9 21.5523 8.55228 22 8 22C7.44772 22 7 21.5523 7 21C7 20.4477 7.44772 20 8 20C8.55228 20 9 20.4477 9 21ZM17 21C17 21.5523 16.5523 22 16 22C15.4477 22 15 21.5523 15 21C15 20.4477 15.4477 20 16 20C16.5523 20 17 20.4477 17 21Z"
+				stroke="white" stroke-width="2" stroke-linecap="round"
+				stroke-linejoin="round" />
+        </svg>
+		<div class="pizza-cart-count">0</div>
+	</div>
+
+
+
+	<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const foodId = urlParams.get('foodId');
+
+    if (!foodId) {
+        showError('找不到食物ID，請返回上一頁重新選擇餐點');
+        return;
+    }
+
+    showLoading();
+    loadFoodInfo(foodId);
+    loadAttachedInfo(foodId);
+
+    // 不再需要監聽back按鈕，使用HTML的直接導航
+    // document.getElementById('afoBackButton')?.addEventListener('click', e => {
+    //    e.preventDefault();
+    //    window.history.back();
+    // });
+
+    document.getElementById('pizzaFloatingCart')?.addEventListener('click', () => {
+        window.location.href = '/cart';
+    });
+
+    updateCartCount();
+
+    function showLoading() {
+        console.log('載入中...');
+    }
+
+    function showError(message) {
+        const container = document.getElementById('afoOptionContainer');
+        if (container) {
+            container.innerHTML = `
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-circle mr-2"></i> ${message}
+                </div>
+            `;
+        }
+    }
+
+    function loadFoodInfo(foodId) {
+        const selectedStore = JSON.parse(localStorage.getItem('selectedFood'));
+        const storeId = selectedStore?.storeId;
+        if (!storeId) {
+            showError("找不到餐廳 ID，請重新返回上一頁");
+            return;
+        }
+
+        fetch(`/meal/food/store/dto?storeId=${storeId}`)
+            .then(res => res.json())
+            .then(list => {
+                const food = list.find(f => f.foodId == foodId);
+                if (!food) return showError("找不到指定的主餐資訊");
+
+                document.getElementById('mainDishTitle').textContent = food.name || '未知餐點';
+                document.getElementById('mainDishPrice').textContent = `${food.cost || 0} 點`;
+                const img = document.getElementById('mainDishImage');
+                img.src = `/meal/photo/${food.foodId}`
+                img.alt = food.name || '主餐圖片';
+                document.title = `${food.name} - 攏呷霸 ALLiEAT`;
+            })
+            .catch(err => {
+                console.error('主餐資料讀取失敗：', err);
+                showError("主餐資料讀取失敗：" + err.message);
+            });
+    }
+
+    function loadAttachedInfo(foodId) {
+        fetch(`/meal/attached/food/${foodId}`)
+            .then(res => res.json())
+            .then(list => {
+                const container = document.getElementById('afoOptionContainer');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                if (!list || list.length === 0) {
+                    container.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle mr-2"></i> 此餐點目前沒有可選的附餐選項
+                        </div>`;
+                    return;
+                }
+
+                list.forEach(item => {
+                    const label = document.createElement('label');
+                    label.className = 'afo-option-item';
+                    label.htmlFor = `option-${item.attachedId}`;
+                    label.innerHTML = `
+                        <input type="radio" id="option-${item.attachedId}" name="side-option" value="${item.name}" class="afo-option-radio">
+                        <span class="afo-option-label">${item.name}</span>`;
+                    container.appendChild(label);
+                });
+
+                bindOptionEvents();
+            })
+            .catch(err => {
+                console.error('獲取附餐資訊出錯：', err);
+                const container = document.getElementById('afoOptionContainer');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-circle mr-2"></i> 無法載入附餐選項，請稍後再試<br>
+                            <small>錯誤訊息: ${err.message}</small>
+                        </div>`;
+                }
+            });
+    }
+
+    function bindOptionEvents() {
+        const radios = document.getElementsByName("side-option");
+        const optionItems = document.querySelectorAll(".afo-option-item");
+        const nextButton = document.getElementById("afoNextButton");
+
+        for (let i = 0; i < radios.length; i++) {
+            radios[i].onchange = function () {
+                optionItems.forEach(item => item.classList.remove("afo-selected"));
+                optionItems[i].classList.add("afo-selected");
+            };
+        }
+
+
+				
+        // 修改 nextButton.onclick 函數
+					nextButton.onclick = function () {
+							let selectedOption = null;
+							for (let i = 0; i < radios.length; i++) {
+									if (radios[i].checked) {
+											selectedOption = radios[i];
+											break;
+									}
+							}
+
+							const selectedValue = selectedOption?.value || null;
+							const selectedId = selectedOption?.id.replace('option-', '') || null;
+							const notes = document.getElementById("afoNotesInput")?.value || "";
+
+							// 調用 addToCart 並完全依賴它來處理後續流程
+							addToCart(selectedValue, selectedId, notes);
+							// 不需要額外的 alert 或 confirm，addToCart 會處理這些
+					};
+    }
+
+
+
+
+		//============以下為 tess修改：如果沒加入購物車返回主餐頁面時，清空餐點已選取狀態=========
+
+    function addToCart(sideDish, sideDishId, notes) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const foodId = urlParams.get('foodId');
+
+    const newItem = {
+        foodId: parseInt(foodId),
+        attachedId: sideDishId ? parseInt(sideDishId) : null,
+        quantity: 1,
+        note: notes
+    };
+
+    fetch('/api/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newItem)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('加入購物車失敗');
+        return res.text();
+    })
+    .then(msg => {
+        console.log(msg);
+        
+        // 成功加入購物車後，清除臨時選取狀態並記錄成功狀態
+        sessionStorage.removeItem(`selectedFood_${foodId}`);
+        sessionStorage.setItem('cartAddSuccessful', 'true');
+        
+        updateCartCount();
+        
+        alert(`已成功添加到購物車！\n主餐: ${document.getElementById('mainDishTitle').textContent}\n附餐: ${sideDish || "無"}\n備註: ${notes}`);
+        
+        // 使用handleCartNavigation
+        handleCartNavigation(foodId);
+    })
+    .catch(err => {
+        console.error('加入購物車發生錯誤：', err);
+        
+        // 加入購物車失敗，保留臨時選取狀態並記錄失敗狀態
+        sessionStorage.setItem('cartAddFailed', 'true');
+        
+        alert('加入購物車失敗，請稍後再試');
+    });
+}
+
+
+// 修改確認是否前往購物車的邏輯
+function handleCartNavigation(foodId) {
+    if (confirm("是否前往購物車頁面？")) {
+        window.location.href = "/cart";
+    } else {
+        // 如果不前往購物車頁面，則返回主餐選擇頁面
+        // 已經在 addToCart 成功時設置了 cartAddSuccessful 標記
+        window.history.back();
+    }
+}
+	//============以上為 tess 修改：如果沒加入購物車返回主餐頁面時，清空餐點已選取狀態=========
+
+
+
+
+    function updateCartCount() {
+        fetch('/api/cart')
+            .then(res => res.json())
+            .then(cart => {
+                const countEl = document.querySelector('.pizza-cart-count');
+                if (countEl) countEl.textContent = cart.length;
+            })
+            .catch(err => console.error("取得購物車數量失敗：", err));
+    }
+});
+
+// ✅ 假會員 ID 測試用（正式版請移除）
+if (!localStorage.getItem('memberId')) {
+    localStorage.setItem('memberId', '1');
+    console.log('🔧 假會員ID已寫入 localStorage: 1');
+}
+</script>
+
+
+
+
+	<!-- Footer Start -->
+	<section id="footer">
+		<div
+			class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
+			<div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">聯絡我們</h4>
+					<p>
+						<i class="fa fa-map-marker-alt mr-2"></i>台北市愛你區愛你一路5255號
+					</p>
+					<p>
+						<i class="fa fa-phone-alt mr-2"></i>02-2222-5252
+					</p>
+					<p class="m-0">
+						<i class="fa fa-envelope mr-2"></i>allieat105@gmail.com
+					</p>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">關注我們</h4>
+					<p>在這個世界上，有些人每天為了溫飽而努力，而你的一份愛心，可以成為他們的一絲希望。愛心代用餐是一個簡單卻充滿溫度的公益行動，讓需要幫助的人能夠獲得一份熱騰騰的餐點，感受社會的關懷與支持。</p>
+					<div class="d-flex justify-content-start">
+						<a class="btn btn-lg btn-outline-light btn-lg-square mr-2"
+							href="#"><i class="fab fa-twitter"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+							class="fab fa-facebook-f"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i
+							class="fab fa-linkedin-in"></i></a> <a
+							class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i
+							class="fab fa-instagram"></i></a>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">客服時間</h4>
+					<div>
+						<h6 class="text-white text-uppercase">周一 - 週五</h6>
+						<p>早上10:00 - 晚上21:00</p>
+						<h6 class="text-white text-uppercase">週六 - 週日</h6>
+						<p>早上11:00 - 晚上19:00</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 mb-5">
+					<h4 class="text-white text-uppercase mb-4"
+						style="letter-spacing: 3px;">訂閱電子報</h4>
+					<p>訂閱愛心代用餐電子報，獲取最新愛心計畫、新增合作店家與公益活動資訊，讓溫暖持續傳遞！</p>
+					<div class="w-100">
+						<div class="input-group">
+							<input type="text" class="form-control border-light"
+								style="padding: 25px;" placeholder="輸入您的信箱">
+							<div class="input-group-append">
+								<button class="btn btn-primary font-weight-bold px-3">立即訂閱</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div
+				class="container-fluid text-center text-white  mt-4 py-4 px-sm-3 px-md-5"
+				style="border-color: rgba(256, 256, 256, .1) !important;">
+				<p class="mb-2 text-white">
+					版權所有 &copy; <a class="font-weight-bold" href="#">攏呷霸股份有限公司</a>.
+					保留所有權利
+				</p>
+				<p class="m-0 text-white">
+					網站設計由 <a class="font-weight-bold" href="https://htmlcodex.com">攏呷霸股份有限公司
+						設計部 設計</a>
+				</p>
+			</div>
+		</div>
+	</section>
+	<!-- Footer End -->
+
+	<!-- Back to Top -->
+	<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
+		class="fa fa-angle-double-up"></i></a>
+
+	<!-- JavaScript Libraries -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+	<script src="lib/easing/easing.min.js"></script>
+	<script src="lib/waypoints/waypoints.min.js"></script>
+	<script src="lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="lib/tempusdominus/js/moment.min.js"></script>
+	<script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+	<script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+	<!-- 自定義JavaScript -->
+	<script src="js/attached-meals.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======================以下為原始寫法========================== -->
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<title>攏呷霸 ALLiEAT - 餐點選擇</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="愛心代用餐, 公益, 餐飲捐贈" name="keywords">
+<meta content="攏呷霸愛心代用餐平台，連結善心人士與需要溫飽的人" name="description">
+
+Favicon
+<link href="img/favicon.ico" rel="icon">
+
+Google Font
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link
+	href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Roboto:wght@400;500;700&display=swap"
+	rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap"
+	rel="stylesheet">
+
+Font Awesome
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+	rel="stylesheet">
+
+Libraries Stylesheet
+<link href="lib/owlcarousel/assets/owl.carousel.min.css"
+	rel="stylesheet">
+<link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
+	rel="stylesheet" />
+
+Customized Bootstrap Stylesheet
 <link href="/css/style.css" rel="stylesheet">
 
 <style>
@@ -618,7 +1855,7 @@ body {
 </style>
 </head>
 <body>
-	<!-- Navbar Start -->
+	Navbar Start
 <div class="container-fluid p-0 nav-bar">
     <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
         <a href="/index.html" class="navbar-brand px-lg-4 m-0">
@@ -643,9 +1880,9 @@ body {
                 </div>
                 <a href="/map2" class="nav-item nav-link">我要取餐 / 點餐</a>
 
-                <!-- 登入 / 登出選項，靜態頁面無法動態切換 -->
+                登入 / 登出選項，靜態頁面無法動態切換
                 <a href="/registerAndLogin" class="nav-item nav-link">註冊/登入</a>
-                <!-- 可選：硬寫一個登出/會員專區按鈕，依實際需求顯示 -->
+                可選：硬寫一個登出/會員專區按鈕，依實際需求顯示
                 <a href="/registerAndLogin/logout" class="nav-item nav-link">登出</a>
                 <a href="/member" id="memberAreaBtn" class="nav-item nav-link">會員專區</a>
             </div>
@@ -654,7 +1891,7 @@ body {
 </div>
 </header>
 
-<!-- Hero Section Start -->
+Hero Section Start
 <section id="hero">
     <div class="container-fluid p-0 mb-5">
         <div id="hero-carousel" class="carousel slide overlay-bottom" data-ride="carousel">
@@ -675,10 +1912,10 @@ body {
         </div>
     </div>
 </section>
-<!-- Hero Section End -->
+Hero Section End
 
 
-	<!-- Page Header Start -->
+	Page Header Start
 	<div
 		class="container-fluid page-header mb-5 position-relative overlay-bottom">
 		<div
@@ -698,13 +1935,13 @@ body {
 			</div>
 		</div>
 	</div>
-	<!-- Page Header End -->
+	Page Header End
 
-	<!-- 主要內容區域 -->
+	主要內容區域
 	<div class="afo-content-wrapper">
 		<div class="afo-main-container">
 			<div class="afo-order-grid">
-				<!-- 左側：主餐信息 -->
+				左側：主餐信息
 				<div class="afo-main-dish-card">
 					<div class="afo-dish-image">
 						<img id="mainDishImage"
@@ -714,20 +1951,20 @@ body {
 						<h2 class="afo-dish-title" id="mainDishTitle">載入中...</h2>
 						<p class="afo-dish-price" id="mainDishPrice">載入中...</p>
 						<div class="afo-dish-tags" id="mainDishTags">
-							<!-- 動態載入標籤 -->
+							動態載入標籤
 						</div>
 						<p class="afo-dish-description">已選擇主餐，請繼續選擇您的附餐選項。</p>
 					</div>
 				</div>
 
-				<!-- 右側：附餐選擇 -->
+				右側：附餐選擇
 				<div class="afo-side-dish-card">
 					<h2 class="afo-section-heading">附餐選擇</h2>
 					<p class="afo-section-subtitle">
 						請選擇一個附餐<span class="afo-required-mark">（選填，可略過）</span>
 					</p>
 
-					<!-- 錯誤提示容器 -->
+					錯誤提示容器
 					<div id="afoErrorContainer" style="display: none;">
 						<div class="afo-error-box">
 							<i class="fas fa-exclamation-circle"></i> 請選擇一個附餐
@@ -735,21 +1972,21 @@ body {
 					</div>
 
 					<div class="afo-option-list" id="afoOptionContainer">
-						<!-- 動態載入附餐選項 -->
+						動態載入附餐選項
 						<div class="loading-container">
 							<div class="loading-spinner"></div>
 							<p class="mt-3">載入附餐中...</p>
 						</div>
 					</div>
 
-					<!-- 備註區域 -->
+					備註區域
 					<div class="afo-notes-area">
 						<h3 class="afo-notes-title">備註</h3>
 						<textarea class="afo-notes-input" id="afoNotesInput"
 							placeholder="有特殊需求請在此說明，例如：不要冰塊、少糖..."></textarea>
 					</div>
 
-					<!-- 按鈕區域 -->
+					按鈕區域
 					<div class="afo-button-group">
 						<a href="#" class="afo-btn afo-btn-back" id="afoBackButton">回上一頁</a>
 						<button type="button" class="afo-btn afo-btn-next"
@@ -760,7 +1997,7 @@ body {
 		</div>
 	</div>
 
-	<!-- 浮動購物車按鈕 -->
+	浮動購物車按鈕
 	<div class="pizza-floating-cart" id="pizzaFloatingCart">
 		<svg width="28" height="28" viewBox="0 0 24 24" fill="none"
 			xmlns="http://www.w3.org/2000/svg">
@@ -969,7 +2206,7 @@ if (!localStorage.getItem('memberId')) {
 
 
     </script>
-	<!-- Footer Start -->
+	Footer Start
 	<section id="footer">
 		<div
 			class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
@@ -1041,13 +2278,13 @@ if (!localStorage.getItem('memberId')) {
 			</div>
 		</div>
 	</section>
-	<!-- Footer End -->
+	Footer End
 
-	<!-- Back to Top -->
+	Back to Top
 	<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
 		class="fa fa-angle-double-up"></i></a>
 
-	<!-- JavaScript Libraries -->
+	JavaScript Libraries
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
@@ -1058,7 +2295,7 @@ if (!localStorage.getItem('memberId')) {
 	<script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
 	<script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-	<!-- 自定義JavaScript -->
+	自定義JavaScript
 	<script src="js/attached-meals.js"></script>
 </body>
-</html>
+</html> -->
