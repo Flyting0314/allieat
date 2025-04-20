@@ -43,12 +43,19 @@ public class ResetPasswordController {
             return "registerAndLogin/resetPassword";
         }
 
-        boolean exists = storeRepository.findByEmail(email).isPresent()
-                || memberRepository.findByEmail(email).isPresent();
+        boolean isStore = storeRepository.findByEmail(email).isPresent();
+        boolean isMember = memberRepository.findByEmail(email).isPresent();
 
-        if (!exists) {
+        if (!isStore && !isMember) {
             model.addAttribute("error", "查無此 Email，請確認是否正確");
             return "registerAndLogin/resetPassword";
+        }
+
+        // 儲存帳號類型（只記其中一種）
+        if (isStore) {
+            session.setAttribute("resetType", "store");
+        } else {
+            session.setAttribute("resetType", "member");
         }
 
         String code = String.format("%06d", new SecureRandom().nextInt(999999));
@@ -90,32 +97,35 @@ public class ResetPasswordController {
     @GetMapping("/registerAndLogin/newPassword")
     public String showNewPasswordPage(HttpSession session) {
         Boolean verified = (Boolean) session.getAttribute("codeVerified");
-        
         return (verified != null && verified) ? "registerAndLogin/resetNewPassword" : "redirect:/registerAndLogin/resetPassword";
-
     }
 
     // 第五步：儲存新密碼
     @PostMapping("/registerAndLogin/savePassword")
     public String saveNewPassword(@RequestParam("password") String password,
-                                  HttpSession session, Model model) {
+                                  HttpSession session,
+                                  Model model) {
         String email = (String) session.getAttribute("resetEmail");
+        String resetType = (String) session.getAttribute("resetType");
 
-        if (email == null) {
+        if (email == null || resetType == null) {
             return "redirect:/registerAndLogin/resetPassword";
         }
 
-        storeRepository.findByEmail(email).ifPresent(store -> {
-            store.setPassword(password);
-            storeRepository.save(store);
-        });
+        if ("store".equals(resetType)) {
+            storeRepository.findByEmail(email).ifPresent(store -> {
+                store.setPassword(password);
+                storeRepository.save(store);
+            });
+        } else if ("member".equals(resetType)) {
+            memberRepository.findByEmail(email).ifPresent(member -> {
+                member.setPassword(password);
+                memberRepository.save(member);
+            });
+        }
 
-        memberRepository.findByEmail(email).ifPresent(member -> {
-            member.setPassword(password);
-            memberRepository.save(member);
-        });
+        session.invalidate(); // 重設後清除 session
 
-        session.invalidate();
         model.addAttribute("success", "密碼重設成功，請重新登入");
         return "registerAndLogin/login";
     }
