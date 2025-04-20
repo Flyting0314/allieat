@@ -300,6 +300,14 @@
     background-color: rgba(92, 156, 230, 0.3) !important; /* 淺藍色背景 */
 }
 
+/* 分頁樣式 - 添加省略號樣式 */
+.page-item.disabled.ellipsis .page-link {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+    cursor: default;
+}
+
 
     </style>
 </head>
@@ -338,6 +346,7 @@
         
         <a href="./backstage_unit_management.html">在冊單位管理</a>
         <a href="./backstage_donation_management.html">捐款管理</a>
+        <a href="#">未領餐紀錄</a>
         <a class="btn btn-logout">登出</a>
     </div>
         
@@ -395,16 +404,8 @@
                         </div>
                         
                         <div class="memberManagement-search-group">
-                            <label for="missedMealsFilter">以未取餐次數篩選</label>
-                            <div class="input-button-group">
-                                <select class="form-control" id="missedMealsFilter">
-                                    <option value="">所有</option>
-                                    <option value="0">0次</option>
-                                    <option value="1-5">1-5次</option>
-                                    <option value="6-10">6-10次</option>
-                                    <option value="11-15">11-15次</option>
-                                    <option value="15+">15次以上</option>
-                                </select>
+                            <!-- 保留空間以維持排版，但不顯示未取餐次數篩選 -->
+                            <div class="input-button-group" style="margin-top: 24px;">
                                 <button class="memberManagement-search-button" id="search-button">搜尋</button>
                             </div>
                         </div>
@@ -432,7 +433,6 @@
                                         <th>身分證字號</th>
                                         <th>行動電話</th>
                                         <th>證明照片</th>
-                                        <th>未領餐次數</th>
                                         <th>審核狀態</th>
                                         <th>審核操作</th>
                                         <th>帳號狀態</th>
@@ -512,7 +512,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('unitFilter').value = '';
         document.getElementById('auditStatusFilter').value = '';
         document.getElementById('activeStatusFilter').value = '';
-        document.getElementById('missedMealsFilter').value = '';
         
         // 隱藏返回按鈕
         document.querySelector('.memberManagement-back-button-container').style.display = 'none';
@@ -595,7 +594,7 @@ function loadMemberData(page = 1) {
         // 關鍵修改：特別處理 reviewed 和 accStat，確保 0 值能正確傳遞
         reviewed: reviewedFilter ? window.convertAuditStatusToValue(reviewedFilter) : null,
         accStat: activeStatusFilter ? window.convertAccountStatusToValue(activeStatusFilter) : null,
-        unclaimedMealCount: document.getElementById('missedMealsFilter').value || null
+        unclaimedMealCount: null // 保留此字段以兼容後端DTO，但永遠傳null
     };
     
     // 特別處理未啟用狀態
@@ -756,7 +755,7 @@ window.renderTable = function(members) {
     if (members.length === 0) {
         const noResultRow = document.createElement('tr');
         noResultRow.innerHTML = `
-            <td colspan="11" class="text-center text-muted py-3">
+            <td colspan="10" class="text-center text-muted py-3">
                 沒有符合條件的搜尋結果
             </td>
         `;
@@ -815,7 +814,7 @@ window.renderTable = function(members) {
                 proofImageHTML = '<span class="text-muted">無照片</span>';
             }
 
-        // 填充行數據
+        // 填充行數據 - 移除了未領餐次數欄位
         row.innerHTML = `
             <td>${member.memberId}</td>
             <td>${member.name}</td>
@@ -823,7 +822,6 @@ window.renderTable = function(members) {
             <td>${member.idNum}</td>
             <td>${member.phone}</td>
             <td>${proofImageHTML}</td>
-            <td>${member.unclaimedMealCount || 0}</td>
             <td><span class="memberManagement-status-badge ${auditStatus.class}">${auditStatus.text}</span></td>
             <td>${window.generateAuditOptions(member.reviewed, member.memberId)}</td>
             <td><span class="memberManagement-status-badge ${accountStatus.class}">${accountStatus.text}</span></td>
@@ -834,29 +832,80 @@ window.renderTable = function(members) {
     });
 }
 
-// 渲染分頁
+// 渲染分頁 - 改進版，包含省略號
 window.renderPagination = function(pagination) {
     const paginationEl = document.getElementById('pagination');
     paginationEl.innerHTML = '';
     
+    const totalPages = pagination.total_pages;
+    const currentPage = pagination.current_page;
+    
     // 前一頁按鈕
     const prevLi = document.createElement('li');
-    prevLi.className = `page-item ${pagination.current_page === 1 ? 'disabled' : ''}`;
-    prevLi.innerHTML = `<a class="page-link" href="#" onclick="loadMemberData(${pagination.current_page - 1}); return false;">Previous</a>`;
+    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.innerHTML = `<a class="page-link" href="#" onclick="loadMemberData(${currentPage - 1}); return false;">Previous</a>`;
     paginationEl.appendChild(prevLi);
     
-    // 頁碼按鈕
-    for (let i = 1; i <= pagination.total_pages; i++) {
-        const li = document.createElement('li');
-        li.className = `page-item ${pagination.current_page === i ? 'active' : ''}`;
-        li.innerHTML = `<a class="page-link" href="#" onclick="loadMemberData(${i}); return false;">${i}</a>`;
-        paginationEl.appendChild(li);
+    // 頁碼按鈕 - 改進的版本，使用省略號
+    // 決定顯示哪些頁碼
+    const pagesToShow = [];
+    
+    // 總是顯示第一頁
+    pagesToShow.push(1);
+    
+    // 如果頁數很多，使用省略號
+    if (totalPages > 10) {
+        // 當前頁附近的頁碼
+        const startPage = Math.max(2, currentPage - 2);
+        const endPage = Math.min(totalPages - 1, currentPage + 2);
+        
+        // 添加第一頁之後的省略號（如果需要）
+        if (startPage > 2) {
+            pagesToShow.push('ellipsis-start');
+        }
+        
+        // 添加當前頁附近的頁碼
+        for (let i = startPage; i <= endPage; i++) {
+            pagesToShow.push(i);
+        }
+        
+        // 添加最後一頁之前的省略號（如果需要）
+        if (endPage < totalPages - 1) {
+            pagesToShow.push('ellipsis-end');
+        }
+    } else {
+        // 頁數不多，顯示所有頁碼
+        for (let i = 2; i < totalPages; i++) {
+            pagesToShow.push(i);
+        }
     }
+    
+    // 總是顯示最後一頁（如果有多頁）
+    if (totalPages > 1) {
+        pagesToShow.push(totalPages);
+    }
+    
+    // 渲染頁碼
+    pagesToShow.forEach(page => {
+        const li = document.createElement('li');
+        
+        if (page === 'ellipsis-start' || page === 'ellipsis-end') {
+            // 渲染省略號
+            li.className = 'page-item disabled ellipsis';
+            li.innerHTML = '<span class="page-link">...</span>';
+        } else {
+            // 渲染一般頁碼
+            li.className = `page-item ${currentPage === page ? 'active' : ''}`;
+            li.innerHTML = `<a class="page-link" href="#" onclick="loadMemberData(${page}); return false;">${page}</a>`;
+        }
+        
+        paginationEl.appendChild(li);
+    });
     
     // 下一頁按鈕
     const nextLi = document.createElement('li');
-    nextLi.className = `page-item ${pagination.current_page === pagination.total_pages ? 'disabled' : ''}`;
-    nextLi.innerHTML = `<a class="page-link" href="#" onclick="loadMemberData(${pagination.current_page + 1}); return false;">Next</a>`;
+    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.innerHTML = `<a class="page-link" href="#" onclick="loadMemberData(${currentPage + 1}); return false;">Next</a>`;
     paginationEl.appendChild(nextLi);
 }
 
@@ -1011,9 +1060,9 @@ function checkForStatusUpdates() {
             memberIds.push(memberId);
             
             // 獲取審核狀態
-            const reviewStatusCell = row.querySelector('td:nth-child(8) .memberManagement-status-badge');
+            const reviewStatusCell = row.querySelector('td:nth-child(7) .memberManagement-status-badge');
             // 獲取帳號狀態
-            const accountStatusCell = row.querySelector('td:nth-child(10) .memberManagement-status-badge');
+            const accountStatusCell = row.querySelector('td:nth-child(9) .memberManagement-status-badge');
             
             currentTableState[memberId] = {
                 reviewStatusText: reviewStatusCell ? reviewStatusCell.textContent : '',
@@ -1110,8 +1159,8 @@ function updateTableMemberStatus(memberId, newAccStat, newReviewed) {
             
             // 更新審核狀態（如果提供了）
             if (newReviewed !== undefined) {
-                const reviewStatusCell = row.querySelector('td:nth-child(8)');
-                const reviewActionCell = row.querySelector('td:nth-child(9)');
+                const reviewStatusCell = row.querySelector('td:nth-child(7)');
+                const reviewActionCell = row.querySelector('td:nth-child(8)');
                 
                 if (reviewStatusCell && reviewActionCell) {
                     const auditStatusMap = {
@@ -1135,8 +1184,8 @@ function updateTableMemberStatus(memberId, newAccStat, newReviewed) {
             
             // 更新帳號狀態（如果提供了）
             if (newAccStat !== undefined) {
-                const statusCell = row.querySelector('td:nth-child(10)');
-                const actionCell = row.querySelector('td:nth-child(11)');
+                const statusCell = row.querySelector('td:nth-child(9)');
+                const actionCell = row.querySelector('td:nth-child(10)');
                 
                 if (statusCell && actionCell) {
                     const accountStatusMap = {
