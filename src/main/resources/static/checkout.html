@@ -294,7 +294,7 @@
   <!-- 原始 checkout JS 功能 -->
   <script>
     let cartData = [];
-    let timer = 100;
+    let timer = 5;
     let countdownInterval;
     let stockCheckInterval;
     let storeCheckInterval;
@@ -395,7 +395,7 @@
       const orderPayload = {
         storeId: selectedFood.storeId,
         memberId: parseInt(memberId),
-        pickStat: 2,
+        pickStat: 0,
         serveStat: 0,
         foodId: selectedFood.foodId,
         attachedId: selectedFood.attachedId || null,
@@ -419,7 +419,7 @@
         sessionStorage.setItem("orderSuccess", JSON.stringify(data));
         clearCartStorage();
         fetch('/api/cart/clear', { method: 'POST' });
-        window.location.href = "/success.html";
+        window.location.href = "/success";
       })
       .catch(err => {
         console.error("訂單建立失敗：", err);

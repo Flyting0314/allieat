@@ -102,7 +102,7 @@
       document.getElementById("pickupTime").textContent = "店家接單後會通知您";
       setTimeout(() => {
         console.log("✅ 導頁前儲存的經緯度：", fullData.storeLat, fullData.storeLng);
-        window.location.href = "/pickupMap.html";
+        window.location.href = "/pickupMap";
       }, 5000);
     } else {
       alert("⚠️ 無訂單資料，請重新下單！");

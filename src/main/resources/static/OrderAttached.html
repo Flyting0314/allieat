@@ -1010,35 +1010,37 @@ document.addEventListener("DOMContentLoaded", function() {
         const optionItems = document.querySelectorAll(".afo-option-item");
         const nextButton = document.getElementById("afoNextButton");
 
-        for (let i = 0; i < radios.length; i++) {
-            radios[i].onchange = function () {
-                optionItems.forEach(item => item.classList.remove("afo-selected"));
-                optionItems[i].classList.add("afo-selected");
-            };
-        }
+        let lastChecked = null; // 記錄上次選取的 radio
 
+        radios.forEach((radio, i) => {
+            const parent = optionItems[i];
 
-				
-        // 修改 nextButton.onclick 函數
-					nextButton.onclick = function () {
-							let selectedOption = null;
-							for (let i = 0; i < radios.length; i++) {
-									if (radios[i].checked) {
-											selectedOption = radios[i];
-											break;
-									}
-							}
+            radio.addEventListener("click", function () {
+                if (lastChecked === radio) {
+                    // 再點一次同一個 → 取消選取
+                    radio.checked = false;
+                    parent.classList.remove("afo-selected");
+                    lastChecked = null;
+                } else {
+                    // 點到新選項 → 移除所有選取狀態，並設定為目前選取
+                    radios.forEach(r => r !== radio && (r.checked = false));
+                    optionItems.forEach(item => item.classList.remove("afo-selected"));
+                    radio.checked = true;
+                    parent.classList.add("afo-selected");
+                    lastChecked = radio;
+                }
+            });
+        });
 
-							const selectedValue = selectedOption?.value || null;
-							const selectedId = selectedOption?.id.replace('option-', '') || null;
-							const notes = document.getElementById("afoNotesInput")?.value || "";
+        nextButton.onclick = function () {
+            const selectedOption = Array.from(radios).find(r => r.checked);
+            const selectedValue = selectedOption?.value || null;
+            const selectedId = selectedOption?.id.replace('option-', '') || null;
+            const notes = document.getElementById("afoNotesInput")?.value || "";
 
-							// 調用 addToCart 並完全依賴它來處理後續流程
-							addToCart(selectedValue, selectedId, notes);
-							// 不需要額外的 alert 或 confirm，addToCart 會處理這些
-					};
+            addToCart(selectedValue, selectedId, notes);
+        };
     }
-
 
 
 

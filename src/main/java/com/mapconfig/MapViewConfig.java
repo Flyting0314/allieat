@@ -13,5 +13,8 @@ public class MapViewConfig implements WebMvcConfigurer {
         registry.addViewController("/cart").setViewName("forward:/cart.html");
         registry.addViewController("/orderfood").setViewName("forward:/orderfood.html");
         registry.addViewController("/orderattached").setViewName("forward:/orderattached.html");
+        registry.addViewController("/checkout").setViewName("forward:/checkout.html");
+        registry.addViewController("/success").setViewName("forward:/success.html");
+        registry.addViewController("/pickupMap").setViewName("forward:/pickupMap.html");
     }
 }
