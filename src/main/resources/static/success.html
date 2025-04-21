@@ -99,7 +99,7 @@
       document.getElementById("storeName").textContent = fullData.storeName || "未知餐廳";
       document.getElementById("storeAddress").textContent = fullData.address || "未提供地址";
       document.getElementById("pickupCode").textContent = fullData.pickupCode || "------";
-      document.getElementById("pickupTime").textContent = "店家接單後會通知您";
+      document.getElementById("pickupTime").textContent = "可取餐時會跳取餐通知";
       setTimeout(() => {
         console.log("✅ 導頁前儲存的經緯度：", fullData.storeLat, fullData.storeLng);
         window.location.href = "/pickupMap";

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>跳步擋路頁</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background-color: #e7c496; /* 你要的橘色背景 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: "Microsoft JhengHei", sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      height: 100%;
+      background-image: url('/img/cats.png'); /* 替換成你的圖片名稱 */
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: contain; /* ✅ 保證圖片完整不裁切 */
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .text-box {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #e60909;
+      
+      padding: 15px 25px;
+      border-radius: 10px;
+    }
+
+    .top-right, .bottom-right {
+      position: absolute;
+      font-size: 0.8rem;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.4);
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+
+    .top-right {
+      top: 10px;
+      right: 10px;
+    }
+
+    .bottom-right {
+      bottom: 10px;
+      right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="text-box">想跳步嗎</div>
+    <div class="text-box">不給跳喔</div>
+  </div>
+  <div class="top-right">圖片概念: 大吳老師</div>
+  <div class="bottom-right">圖片來源: 仲緯大大</div>
+</body>
+</html>

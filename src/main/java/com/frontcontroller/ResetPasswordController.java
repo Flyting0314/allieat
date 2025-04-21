@@ -36,40 +36,40 @@ public class ResetPasswordController {
     // 第二步：寄送驗證碼
     @PostMapping("/registerAndLogin/sendCode")
     public String sendVerificationCode(@RequestParam("email") String email,
-                                       Model model,
-                                       HttpSession session) {
-        if (email == null || email.isBlank()) {
-            model.addAttribute("error", "請輸入 Email");
-            return "registerAndLogin/resetPassword";
-        }
+            @RequestParam("userType") String userType,
+            Model model,
+            HttpSession session) {
+if (email == null || email.isBlank()) {
+model.addAttribute("error", "請輸入 Email");
+return "registerAndLogin/resetPassword";
+}
 
-        boolean isStore = storeRepository.findByEmail(email).isPresent();
-        boolean isMember = memberRepository.findByEmail(email).isPresent();
+boolean isStore = storeRepository.findByEmail(email).isPresent();
+boolean isMember = memberRepository.findByEmail(email).isPresent();
 
-        if (!isStore && !isMember) {
-            model.addAttribute("error", "查無此 Email，請確認是否正確");
-            return "registerAndLogin/resetPassword";
-        }
+// 檢查是否這個身分類型真的存在這個 email
+if ("store".equals(userType) && !isStore) {
+model.addAttribute("error", "此信箱不是註冊的店家帳號");
+return "registerAndLogin/resetPassword";
+} else if ("member".equals(userType) && !isMember) {
+model.addAttribute("error", "此信箱不是註冊的受助者帳號");
+return "registerAndLogin/resetPassword";
+}
 
-        // 儲存帳號類型（只記其中一種）
-        if (isStore) {
-            session.setAttribute("resetType", "store");
-        } else {
-            session.setAttribute("resetType", "member");
-        }
+// ✅ 合法後才進行寄送與紀錄
+session.setAttribute("resetType", userType);
+session.setAttribute("resetEmail", email);
 
-        String code = String.format("%06d", new SecureRandom().nextInt(999999));
-        String subject = "【攏呷霸 ALLiEAT】密碼重設驗證碼";
-        String body = "您的驗證碼為：" + code + "\n\n請於10分鐘內輸入驗證碼完成驗證。";
+String code = String.format("%06d", new SecureRandom().nextInt(999999));
+String subject = "【攏呷霸 ALLiEAT】密碼重設驗證碼";
+String body = "您的驗證碼為：" + code + "\n\n請於10分鐘內輸入驗證碼完成驗證。";
 
-        emailService.sendPlainTextEmail(email, subject, body);
+emailService.sendPlainTextEmail(email, subject, body);
+session.setAttribute("resetCode", code);
+session.setAttribute("codeVerified", false);
 
-        session.setAttribute("resetEmail", email);
-        session.setAttribute("resetCode", code);
-        session.setAttribute("codeVerified", false);
-
-        return "registerAndLogin/resetPasswordConF";
-    }
+return "registerAndLogin/resetPasswordConF";
+}
 
     // 第三步：驗證碼驗證
     @PostMapping("/registerAndLogin/verifyCode")
@@ -97,7 +97,8 @@ public class ResetPasswordController {
     @GetMapping("/registerAndLogin/newPassword")
     public String showNewPasswordPage(HttpSession session) {
         Boolean verified = (Boolean) session.getAttribute("codeVerified");
-        return (verified != null && verified) ? "registerAndLogin/resetNewPassword" : "redirect:/registerAndLogin/resetPassword";
+        return (verified != null && verified) ? "registerAndLogin/resetNewPassword" : "error/jumpBlock";
+        
     }
 
     // 第五步：儲存新密碼
