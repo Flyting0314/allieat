@@ -155,7 +155,7 @@ public class BackStagePayRecordSchedulerService {
     //========================批次處理交易版本=================================
     
     //=========掃描是否達到排程時間，並發放點數===========
-    @Scheduled(fixedRate = 6000) // 60000 毫秒 = 1分鐘，測試用設定較短 
+    @Scheduled(fixedRate = 6000000) // 60000 毫秒 = 1分鐘，測試用設定較短 
     @Transactional
     public void checkAndDistributePointsBatch() {
         Instant startTime = Instant.now();
@@ -190,7 +190,7 @@ public class BackStagePayRecordSchedulerService {
             Instant endTime = Instant.now();
             long executionTime = Duration.between(startTime, endTime).toMillis();
             logger.error("批次點數分配過程中發生錯誤，執行時間: {} 毫秒", executionTime, e);
-            throw e;
+            throw e; //由呼叫 distributePointsForPayRecordBatch 的外層方法來捕捉並處理。
         }
     }
 

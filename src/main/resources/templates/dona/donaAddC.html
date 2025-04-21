@@ -65,10 +65,11 @@
 
                                 </p>
                                 <p th:if="${donaReq.mailMtd == 0}"><strong>稱謂：</strong><span th:text="${donaReq.salutation}"></span></p>
-                                <p th:if="${donaReq.mailMtd == 0 and donaReq.companyDonor == false}"><strong>身分證號：</strong>
-                                    <span th:if="${donaReq.idNum != null and !#strings.isEmpty(donaReq.idNum)}"
-                                        th:text="${donaReq.idNum}"></span>
-                                </p>
+                                <p th:if="${donaReq.mailMtd == 0 and not donaReq.companyDonor}">
+    <strong>身分證號：</strong>
+    <span th:if="${donaReq.idNum != null and !#strings.isEmpty(donaReq.idNum)}"
+          th:text="${donaReq.idNum}"></span>
+</p>
                                 <p th:if="${donaReq.mailMtd == 0 and donaReq.companyDonor == true}"><strong>統一編號：</strong>
                                     <span th:if="${donaReq.guiNum != null and !#strings.isEmpty(donaReq.guiNum)}"
                                         th:text="${donaReq.guiNum}"></span>

@@ -131,7 +131,7 @@
 							id="reviewedFilter" class="form-control w-auto mr-3">
 							<option value="">全部</option>
 							<option value="3">審核中</option>
-							<option value="1">啟用中</option>
+							<option value="1">已通過</option>
 							<option value="0">補件中</option>
 							<option value="2">審核未通過</option>
 						</select> <label for="accStatFilter" class="mr-2 mb-0">啟用狀態:</label> <select
@@ -270,7 +270,7 @@
 		      const tr = document.createElement('tr');
 		
 		      const reviewedText = store.reviewed === 3 ? "審核中" :
-		                           store.reviewed === 1 ? "啟用中" :
+		                           store.reviewed === 1 ? "已通過" :
 		                           store.reviewed === 2 ? "審核未通過" :
 		                           store.reviewed === 0 ? "補件中" : "未知";
 		
